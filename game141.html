@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fortune 14/1</title>
+</head>
+<body>
+
+<div data-role="page" id="pageGame141" data-add-back-btn="true">
+    <div data-role="header" style="z-index: 1">
+        <h1>Game to <span id="game141ScoreGoal">100</span></h1>
+    </div>
+    
+    <div id="activePlayer" class="activePlayer0" style="position: absolute; z-index: 0; width: 100%; right: 0; height: 100%; top: 0">
+        
+    </div>
+    
+    <div data-role="content">
+        <div class="ui-grid-b" id="overviewTable" style="position: relative; z-index: 1">            
+            <div class="ui-block-a">
+                <span style="font-size: 12pt; text-shadow: none;">Ingo Bürk</span>
+                <!--<img src="img/players/player0.jpg" class="userPictureMedium" />-->
+            </div>
+            <div class="ui-block-b">
+                
+            </div>
+            <div class="ui-block-c">
+                <span style="font-size: 12pt; text-shadow: none;">Efren Reyes</span>
+                <!--<img src="img/players/playerDummy.jpg" class="userPictureMedium" />-->
+            </div>
+            
+            <!-- Score display -->
+            <div class="ui-block-a">
+                <span id="ptsPlayer0" class="score">0</span>
+            </div>
+            <div class="ui-block-b">
+                <span class="score">&mdash;</span>
+            </div>
+            <div class="ui-block-c">
+                <span id="ptsPlayer1" class="score">0</span>
+            </div>
+            
+            <!-- Consecutive Fouls display -->
+            <div class="ui-block-a">
+                <div class="consecFoulMarkerWrapper">
+                    <img src="img/foul.png" id="player0foul1" class="consecFoulMarker" style="margin-left: 0;" />
+                    <img src="img/foul.png" id="player0foul2" class="consecFoulMarker" />
+                </div>
+            </div>
+            <div class="ui-block-b">    
+            </div>
+            <div class="ui-block-c">
+                <div class="consecFoulMarkerWrapper">
+                    <img src="img/foul.png" id="player1foul1" class="consecFoulMarker" style="margin-left: 0;" />
+                    <img src="img/foul.png" id="player1foul2" class="consecFoulMarker" />
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="panelDetails" class="panel">
+        <div id="btnDetailsBack" class="panelButton" style="left: 0; clear: left; border-left-width: 0;">
+            Back
+        </div>
+        <div id="btnDetailsUndo" class="panelButton" style="right: 0; margin-right: -.5px; clear: right;">
+            Undo
+        </div>
+        
+        <div style="width: 100%; position: relative; top: 40px;">
+            <div id="detailsScoreBoard" style="width: 100%"></div>
+        </div>
+    </div>
+    
+    <div id="panelRackAndMenu" class="panel">
+        <!-- Displays details -->
+        <div class="minimizePanel" style="left:  0; border-left-width:  0;">Details</div>
+        <div class="minimizePanel" style="right: 0; border-right-width: 0;">Details</div>
+        
+        <!-- Player Switch -->
+        <div id="playerSwitch">Switch Turn</div>
+        
+        <div id="ballRack">
+            <div id="ball0"></div>
+            
+            <div id="ball1"></div>
+            <div id="ball2"></div>
+            <div id="ball3"></div>
+            <div id="ball4"></div>
+            <div id="ball5"></div>
+            <div id="ball6"></div>
+            <div id="ball7"></div>
+            <div id="ball8"></div>
+            <div id="ball9"></div>
+            <div id="ball10"></div>
+            <div id="ball11"></div>
+            <div id="ball12"></div>
+            <div id="ball13"></div>
+            <div id="ball14"></div>
+            <div id="ball15"></div>
+			
+			
+	    <div id="shadow0" class="ballShadow"></div>
+	    <div id="shadow1" class="ballShadow"></div>
+            <div id="shadow2" class="ballShadow"></div>
+            <div id="shadow3" class="ballShadow"></div>
+            <div id="shadow4" class="ballShadow"></div>
+            <div id="shadow5" class="ballShadow"></div>
+            <div id="shadow6" class="ballShadow"></div>
+            <div id="shadow7" class="ballShadow"></div>
+            <div id="shadow8" class="ballShadow"></div>
+            <div id="shadow9" class="ballShadow"></div>
+            <div id="shadow10" class="ballShadow"></div>
+            <div id="shadow11" class="ballShadow"></div>
+            <div id="shadow12" class="ballShadow"></div>
+            <div id="shadow13" class="ballShadow"></div>
+            <div id="shadow14" class="ballShadow"></div>
+            <div id="shadow15" class="ballShadow"></div>
+        </div>
+    
+        <div style="z-index: 2; position: fixed; bottom: 0; width: 100%;">
+            <div class="navbarButton" id="usrFoulDisplay">
+                <span id="foulDisplayString">Fouls</span>
+                <br />
+                <span id="foulDisplayName" data-rerack="false">None</span> (<span id="foulDisplay">0</span>)
+            </div>
+            <div class="navbarButton" id="usrSafeDisplay">
+                <span id="safetyString">Safety</span>
+                <br />
+                <span id="safetyDisplay">No</span>
+            </div>
+            <div class="navbarButton" id="usrAccept">
+                <span id="usrAcceptString">Accept</span>
+            </div>
+        </div>
+    </div>
+    
+    <div id="panelLoading" style="position: absolute; z-index: 100; top: 0; left: 0; width: 100%; height: 100%; background-color: black; color: white;">
+        <div style="width: 100px; height: 50px; position: absolute; left: 50%; top: 50%; margin-left: -50px; margin-top: -25px; line-height: 50px; text-align: center;">
+            Loading...
+        </div>
+    </div>
+    
+    <!-- Consecutive Fouls rule warning -->
+    <div data-role="popup" id="consecFoulsWarning" data-overlay-theme="a">
+        <div data-role="content">
+            <h2>Warning!</h2>
+            
+            <p>You're already up to two consecutive foul. If you foul on this inning, you will get a 15 points penalty.</p>
+            <p>If this applies to your opponent and not to you, you should now inform him about this.</p>
+            
+            <a href="#" data-role="button" onClick="javascript:$('#consecFoulsWarning').popup('close');">Close</a>
+        </div>
+    </div>
+    
+    <!-- Severe Foul input -->
+    <div data-role="popup" id="popupSevereFoul" data-overlay-theme="a" data-dismissable="false">
+        <div data-role="content">
+            <h2>Severe Foul</h2>
+            
+            <p>You have chosen the manual entry mode for a severe foul. Please enter the amount of penalty points.</p>
+            <div data-role="controlgroup" data-type="horizontal" style="width: 50%; float: left; clear: left;">
+                    <input type="button" id="severeFoulMinusButton" data-corners="false" data-shadow="false" data-icon="minus" data-iconpos="notext" />
+                    <input type="button" id="severeFoulPlusButton" data-corners="false" data-shadow="false" data-icon="plus" data-iconpos="notext" />
+            </div>
+            <input type="number" pattern="[0-9]*" value="2" id="popupSevereFoulPoints" style="width: 50%; float: left; clear: right; height: 42px" />
+            
+            <div data-role="fieldcontain">
+                <fieldset data-role="controlgroup">
+                    <legend>Seve Fouls may require the balls to be reracked:</legend>
+                    <input type="checkbox" name="popupSevereFoulRerack" id="popupSevereFoulRerack" />
+                    <label for="popupSevereFoulRerack">Rerack</label>
+                </fieldset>
+            </div>
+                
+            <a href="#" id="severeFoulSubmitButton" data-role="button" style="clear: both;">Enter</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
