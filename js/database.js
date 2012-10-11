@@ -1,4 +1,116 @@
 /*
+ *  Dummies function used to avoid creating too many
+ *  anonymous functions
+ */
+function DummyFalse () { return false; }
+function DummyTrue  () { return true;  }
+
+
+function Player (database) {
+    var self = this;
+    
+    self.db = database;
+    
+    /*
+     *	Player information
+     */
+    self.pID 		 = -1;
+    self.name 		 = '';
+    self.nickname 	 = '';
+    self.image 		 = '';
+    self.isFavorite 	 = false;
+    self.displayNickname = false;
+    
+    /*
+     *	Create a new player and add to database
+     */
+    self.create = function (name, nickname, image, isFavorite, displayNickname) {
+	var mainUser = (typeof arguments[5] !== 'undefined') ? arguments[5] : false,
+	    query    = new dbFortuneQuery(self.db.db);
+	    
+	self.name 	     = name;
+	self.nickname 	     = nickname;
+	self.image 	     = image;
+	self.isFavorite      = isFavorite;
+	self.displayNickname = displayNickname;
+	
+	// If the flag to create the main user is set, reinit the whole database
+	if (mainUser) {
+	    query.add(
+		self.db.getDropTableStatement(self.db.tables.Player)
+	    );
+	    query.add(
+		self.db.getCreateTableStatement(self.db.tables.Player)
+	    );
+	}
+	
+	var sql = 'INSERT INTO '
+		    + self.db.tables.Player.name + ' '
+		    + self.db.getTableFields_String(self.db.tables.Player, false, false) + ' '
+		    + 'VALUES (NULL, ?, ?, ?, ?, ?)';
+	query.add(sql,
+		[name, nickname, image, isFavorite, displayNickname],
+		function (tx, result) {
+		    self.pID = result.insertId;
+		}
+	);
+	
+	query.execute();
+    }
+    
+    self.load = function (pID) {
+	// ToDo
+    }
+}
+
+/*
+ *  Query Class
+ */
+function dbFortuneQuery (database) {
+    var self = this;
+    
+    self.db	    = database;
+    self.statements = new Array();
+    
+    /*
+     *	Add SQL Statement to Query
+     *		Takes optional parameters
+     */
+    self.add = function (sql) {
+	var args      = arguments[1] || [],
+            cbSuccess = arguments[2] || DummyFalse,
+            cbError   = arguments[3] || DummyFalse;
+	
+	self.statements.push({
+	    sql       : sql,
+	    args      : args,
+	    cbSuccess : cbSuccess,
+	    cbError   : cbError,
+	});
+    }
+    
+    /*
+     *	Execute the Query
+     *		Takes optional parameters
+     */
+    self.execute = function () {
+	var cbSuccess = arguments[0] || DummyFalse,
+	    cbError   = arguments[1] || DummyFalse;
+	
+	self.db.transaction(function (tx) {
+	    for (var i = 0; i < self.statements.length; i++) {
+		tx.executeSql(
+		    self.statements[i].sql,
+		    self.statements[i].args,
+		    self.statements[i].cbSuccess,
+		    self.statements[i].cbError
+		);
+	    }
+        }, cbError, cbSuccess);
+    }
+}
+
+/*
  *  Wrapper class for database interactions
  */
 function dbFortune () {
@@ -7,10 +119,6 @@ function dbFortune () {
     self.dbName = 'Fortune';
     self.dbSize = 5 * 1024 * 1024;
     self.dbDesc = 'Fortune 14/1 Database';
-    
-    // Use localStorage to check for first run?
-    self.localStorage_useForCheck = false;
-    self.localStorage_hadFirstRun = "hadFirstRun";
     
     /*
      *  Definition of all WebSQL Tables created/used by the app
@@ -49,7 +157,8 @@ function dbFortune () {
      *          (optional)
      */
     self.open = function (cbFirstRun) {
-        var cbNotFirstRun = arguments[1] || function () { return true; };
+	// optional second argument
+        var cbNotFirstRun = arguments[1] || DummyTrue;
         
         // Open Database
         self.db = window.openDatabase(self.dbName,
@@ -62,9 +171,9 @@ function dbFortune () {
             function () {                 
                 // Create Tables if neccessary
                 self.createTable(self.tables.Player, function () {
-                    window.localStorage.setItem(self.localStorage_hadFirstRun, "true");  
+                    //
                 }, function (error) {
-                    // Error
+                    console.log('Error [dbFortune.checkForFirstRun]: ' + error.message + ' (Code: ' + error.code + ')');
                 });
                 
                 cbFirstRun();
@@ -80,33 +189,59 @@ function dbFortune () {
      *      - cbSuccess : Callback function on success
      *      - cbError   : Callback function on error
      */
-    self.query = function (query) {
-        var args      = arguments[1] || [],
-            cbSuccess = arguments[2] || function () { },
-            cbError   = arguments[3] || function () { };
-
-        self.db.transaction(function (tx) {
-            tx.executeSql(query, args, cbSuccess, cbError);
-        });
+    self.query = function (sql) {
+	var query = new dbFortuneQuery(self.db);
+	query.add(
+	    sql,
+	    arguments[1] || [],
+	    arguments[2] || DummyFalse,
+	    arguments[3] || DummyFalse
+	);
+	query.execute();
     }
     
+    /*
+     *	Returns all table fields in a string in the way it is used in queries
+     *		Example: "(id, name, third_field)"
+     */
+    self.getTableFields_String = function (table) {
+	var types    = (typeof arguments[1] !== 'undefined') ? arguments[1] : false,
+	    defaults = (typeof arguments[2] !== 'undefined') ? arguments[2] : false;
+	
+	var desc = '(';
+	for (var i = 0; i < table.fields.length; i++) {
+	    desc += table.fields[i]
+		 +  ((types) ? (' ' + table.types[i]) : '')
+		 +  ((defaults && typeof table.defaults[i] !== 'undefined') ? (' DEFAULT ' + table.defaults[i]) : '')
+		 +  ((i != table.fields.length-1) ? ', ' : '');
+	}
+	desc += ')';
+	
+	return desc;
+    }
+    
+    self.getCreateTableStatement = function (table) {	
+	var sql  = 'CREATE TABLE IF NOT EXISTS ' + table.name + ' ' + self.getTableFields_String(table, true, true);
+	return sql;
+    }
     
     self.createTable = function (table) {
         var cbSuccess = arguments[1] || undefined,
             cbError   = arguments[2] || undefined;
         
-        var sql  = 'CREATE TABLE IF NOT EXISTS ' + table.name + ' (';
-        for (var i = 0; i < table.fields.length; i++) {
-            sql += table.fields[i] + ' ' + table.types[i];
-            
-            if (typeof table.defaults[i] !== 'undefined') {
-                sql += ' DEFAULT ' + table.defaults[i];
-            }
-            
-            sql += (i == table.fields.length-1) ? '' : ', ';
-        }
-        sql += ')';
+	var sql = self.getCreateTableStatement(table);
+        self.query(sql, [], cbSuccess, cbError);
+    }
+    
+    self.getDropTableStatement = function (table) {
+	return 'DROP TABLE IF EXISTS ' + table.name;
+    }
+    
+    self.dropTable = function (table) {
+	var cbSuccess = arguments[1] || undefined,
+            cbError   = arguments[2] || undefined;
         
+        var sql  = self.getDropTableStatement(table);
         self.query(sql, [], cbSuccess, cbError);
     }
     
@@ -115,15 +250,7 @@ function dbFortune () {
      */
     self.checkForFirstRun = function (cbFirstRun, cbNotFirstRun) {
         var cbError = arguments[2];
-        
-        // For simplicity reasons, we first check the HTML5 LocalStorage
-        if (self.localStorage_useForCheck && window.localStorage.getItem(self.localStorage_hadFirstRun) === "true") {
-            cbNotFirstRun();
-            return false;
-        }
-        
-        // If it gets here, localStorage check wasn't successful, so let's get more nifty and
-        // see whether the Players table exists
+
         self.query('SELECT COUNT(*) AS firstRun FROM sqlite_master WHERE type="table" AND name="' + self.tables.Player.name + '"',
                     [],
                     
@@ -148,12 +275,7 @@ function dbFortune () {
                         return false;
                     }
         );
-    }
-    
-    /*
-     *  
-     */
-    self.queryMainUser = function () {
-        
+	
+	return true;
     }
 }

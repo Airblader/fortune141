@@ -23,7 +23,14 @@
             // Database
             $.getScript('js/database.js', function () {
                 dbFortune = new dbFortune();
-                dbFortune.open();
+                dbFortune.open(function () {
+                    
+                    // ToDo : This tests setting up a default user
+                    var mainUser = new Player(dbFortune);
+                    mainUser.create('Ingo Buerk', 'Airblader', 'img001.png', false, false, true);
+                    console.log(mainUser);
+                    
+                });
             });
         });
     </script>
