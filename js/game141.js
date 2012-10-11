@@ -163,7 +163,7 @@ function StraightPool () {
     var self = this;
     
     self.pageName = '#pageGame141';
-    self.ballRack = new BallRack(true);
+    self.ballRack = new BallRack(false);
     
     // true when current shot is a break shot (e.g. first shot of game or after severe fouls)
     self.firstShot = true;

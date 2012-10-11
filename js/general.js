@@ -6,10 +6,24 @@ function DummyFalse () { return false; }
 function DummyTrue  () { return true;  }
 
 
-function Player (database) {
+
+/*
+ *  MAIN APP CLASS
+ */
+function app () {
     var self = this;
     
-    self.db = database;
+    self.dbFortune = undefined;
+    self.Players   = {
+	main : undefined,
+    };
+}
+
+
+function Player () {
+    var self = this;
+    
+    self.db = app.dbFortune;
     
     /*
      *	Player information
@@ -63,13 +77,14 @@ function Player (database) {
     }
 }
 
+
 /*
  *  Query Class
  */
-function dbFortuneQuery (database) {
+function dbFortuneQuery () {
     var self = this;
     
-    self.db	    = database;
+    self.db	    = app.dbFortune.db;
     self.statements = new Array();
     
     /*
@@ -109,6 +124,7 @@ function dbFortuneQuery (database) {
         }, cbError, cbSuccess);
     }
 }
+
 
 /*
  *  Wrapper class for database interactions
@@ -168,14 +184,10 @@ function dbFortune () {
         
         // Check if app was opened for the first time
         self.checkForFirstRun(
-            function () {                 
-                // Create Tables if neccessary
-                self.createTable(self.tables.Player, function () {
-                    //
-                }, function (error) {
-                    console.log('Error [dbFortune.checkForFirstRun]: ' + error.message + ' (Code: ' + error.code + ')');
-                });
-                
+            function () {
+		// no tables should exist at this point anyway, but this makes sure we get a clean start
+		self.dropAllTables();
+		
                 cbFirstRun();
             },
             cbNotFirstRun
@@ -190,7 +202,7 @@ function dbFortune () {
      *      - cbError   : Callback function on error
      */
     self.query = function (sql) {
-	var query = new dbFortuneQuery(self.db);
+	var query = new dbFortuneQuery();
 	query.add(
 	    sql,
 	    arguments[1] || [],
@@ -226,11 +238,24 @@ function dbFortune () {
     }
     
     self.createTable = function (table) {
-        var cbSuccess = arguments[1] || undefined,
-            cbError   = arguments[2] || undefined;
+        var cbSuccess = arguments[1] || DummyFalse,
+            cbError   = arguments[2] || DummyFalse;
         
 	var sql = self.getCreateTableStatement(table);
         self.query(sql, [], cbSuccess, cbError);
+    }
+    
+    self.createAllTables = function () {
+	var cbSuccess = arguments[0] || DummyFalse,
+            cbError   = arguments[1] || DummyFalse;
+	    
+	var query = new dbFortuneQuery();
+	    
+	$.each(self.tables, function (name, obj) {
+	    query.add( self.getCreateTableStatement(self.tables[name]) );
+	});
+	
+	query.execute(cbSuccess, cbError);
     }
     
     self.getDropTableStatement = function (table) {
@@ -238,11 +263,24 @@ function dbFortune () {
     }
     
     self.dropTable = function (table) {
-	var cbSuccess = arguments[1] || undefined,
-            cbError   = arguments[2] || undefined;
+	var cbSuccess = arguments[1] || DummyFalse,
+            cbError   = arguments[2] || DummyFalse;
         
         var sql  = self.getDropTableStatement(table);
         self.query(sql, [], cbSuccess, cbError);
+    }
+    
+    self.dropAllTables = function () {
+	var cbSuccess = arguments[0] || DummyFalse,
+            cbError   = arguments[1] || DummyFalse;
+	
+	var query = new dbFortuneQuery();
+	    
+	$.each(self.tables, function (name, obj) {
+	    query.add( self.getDropTableStatement(self.tables[name]) );
+	});
+	
+	query.execute(cbSuccess, cbError);
     }
     
     /*
@@ -285,11 +323,27 @@ function dbFortune () {
  *  First Run -- Main User Configuration
  */
 $('#firstRunMainUser_Submit').on('click', function () {
-    var mainUser = new Player(dbFortune);
-    mainUser.create($('#firstRunMainUser_Name').val(),
-		    $('#firstRunMainUser_Nickname').val(),
-		    '',
-		    false,
-		    Boolean( $('#firstRunMainUser_DisplayNickname').val() ),
-		    true);    
+    var name            = $('#firstRunMainUser_Name').val(),
+	nickname        = $('#firstRunMainUser_Nickname').val(),
+	image           = '',
+	isFavorite      = false,
+	displayNickname = Boolean( $('#firstRunMainUser_DisplayNickname').val() );
+    
+    // Validation
+    name     = name.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    nickname = nickname.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    
+    if (name.length < 3 || (nickname.length != 0 && nickname.length < 3)) {
+	return false;
+    }
+    
+    // submit button was pressed, so let's create the tables, the main user and get started!
+    app.dbFortune.createAllTables(function () {
+        app.Players.main = new Player(app.dbFortune);
+        app.Players.main.create(name, nickname, image, isFavorite, displayNickname, true);
+	
+        $('#popupFirstRunMainUser').popup('close');
+    });
+    
+    return true;
 });
