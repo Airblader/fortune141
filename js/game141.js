@@ -496,7 +496,7 @@ function StraightPool () {
         /*
          *  This displays the change of points (if neccessary), e.g. "+3" or "-1".
          */
-        var tmpDisplay;  // ToDo
+        var tmpDisplay;
         tmpDisplay = (self.innings[ret.current].ptsToAdd[ret.currPlayer] == -1) ?
                 self.innings[ret.current].points[ret.currPlayer]
             :

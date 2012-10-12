@@ -26,7 +26,12 @@ function app () {
 	var name = self.Players.main.name.split(" ");
 	
 	$('#pageIndex .firstName').html(name.shift());
-	$('#pageIndex .lastName').html(name.join(" "));
+	$('#pageIndex .lastName') .html(name.join(" "));
+	
+	// Stats
+	$('#pageIndex #indexMainUserGD')   .html(parseFloat(self.Players.main.gd).toFixed(2));
+	$('#pageIndex #indexMainUserHS')   .html(self.Players.main.hs);
+	$('#pageIndex #indexMainUserQuota').html(self.Players.main.quota + '%');
     }
     
     self.validateName = function (name, required) {
@@ -65,6 +70,9 @@ function Player () {
     self.image 		 = '';
     self.isFavorite 	 = false;
     self.displayNickname = false;
+    self.hs		 = 0;
+    self.gd		 = 0;
+    self.quota		 = 0;
     
     /*
      *	Create a new player and add to database
@@ -94,10 +102,10 @@ function Player () {
 	var sql = 'INSERT INTO '
 		    + self.db.tables.Player.name + ' '
 		    + self.db.getTableFields_String(self.db.tables.Player, false, false) + ' '
-		    + 'VALUES (NULL, ?, ?, ?, ?, ?)';
+		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?)';
 	
 	query.add(sql,
-		[name, nickname, image, isFavorite, displayNickname],
+		[name, nickname, image, isFavorite, displayNickname, 0, "0", "0"],
 		function (tx, result) {
 		    self.pID = result.insertId;
 		}
@@ -124,6 +132,9 @@ function Player () {
 	    self.image           = row['Image'];
 	    self.isFavorite      = (row['isFavorite']      == "true") ? true : false;
 	    self.displayNickname = (row['displayNickname'] == "true") ? true : false;
+	    self.hs		 = parseInt(row['HS']);
+	    self.gd		 = row['GD'];
+	    self.quota		 = row['Quota'];
 	    
 	    cbSuccess();
 	    return true;
@@ -202,20 +213,29 @@ function dbFortune () {
                                 'Nickname',
                                 'Image',
                                 'isFavorite',
-                                'displayNickname'
+                                'displayNickname',
+				'HS',
+				'GD',
+				'Quota'
                              ),
                     types : new Array('INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
                                       'TEXT NOT NULL',
                                       'TEXT',
                                       'TEXT',
                                       'BIT',
-                                      'BIT'),
+                                      'BIT',
+				      'INTEGER',
+				      'TEXT',
+				      'TEXT'),
                     defaults : new Array(undefined,
                                          '""',
                                          undefined,
                                          undefined,
                                          0,
-                                         0),
+                                         0,
+					 0,
+					 '"0"',
+					 '"0"'),
                  },
     };
     
@@ -422,21 +442,21 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
 
 $(document).on('pageshow', '#pagePlayersList', function () {
     // Create List
-    // ToDo : enhance with pictures and stuff and make clickable
+    // ToDo : make clickable
     var html  = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">';
 	html += '<li data-role="list-divider">Favorites</li>';
-    app.dbFortune.query('SELECT * FROM ' + app.dbFortune.tables.Player.name + ' WHERE isFavorite = "true"',
+    app.dbFortune.query('SELECT pID, Name, Nickname, Image FROM ' + app.dbFortune.tables.Player.name + ' WHERE isFavorite = "true"',
 			[],
     function (tx, results1) {
 	for (var i = 0; i < results1.rows.length; i++) {
 	    var row   = results1.rows.item(i);
-	    var image = (row['Image'] !== '') ? '<img src="' + row['Image'] + '" class="userPictureSmall" />' : '';
+	    var image = (row['Image'] !== '') ? '<img src="' + row['Image'] + '" />' : '';
 	    
 	    html += '<li><a href="#">' + image + row['Name'] + '</a></li>';
 	}
 	
 	html += '<li data-role="list-divider">All</li>';
-	app.dbFortune.query('SELECT * FROM ' + app.dbFortune.tables.Player.name,
+	app.dbFortune.query('SELECT pID, Name, Nickname FROM ' + app.dbFortune.tables.Player.name,
 			    [],
 	function (tx, results2) {
 	    for (var i = 0; i < results2.rows.length; i++) {
