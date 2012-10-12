@@ -16,7 +16,7 @@
     
     <!-- Add Player Popup -->
     <div id="popupNewPlayer" data-role="popup" data-overlay-theme="a">
-        <div data-role="content" style="min-width: 200px;">  
+        <div data-role="content" style="min-width: 300px;">  
             <div data-role="fieldcontain">
                 <label for="addPlayer_Name">Full Name</label>
                 <input type="text" id="addPlayer_Name" name="addPlayer_Name" value="" />
@@ -45,6 +45,48 @@
             
             <div data-role="fieldcontain">
                 <input type="button" id="addPlayer_Submit" name="addPlayer_Submit" value="Submit" />
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit User Popup -->
+    <div id="popupEditPlayer" data-role="popup" data-overlay-theme="a">
+        <div data-role="content" style="min-width: 300px;">
+            <div data-role="fieldcontain">
+                <label for="editPlayer_Name">Full Name</label>
+                <input type="text" id="editPlayer_Name" name="editPlayer_Name" value="" />
+            </div>
+            
+            <div data-role="fieldcontain">
+                <label for="editPlayer_Nickname">Nickname (optional)</label>
+                <input type="text" id="editPlayer_Nickname" name="editPlayer_Nickname" value="" />
+            </div>
+            
+            <div data-role="fieldcontain">
+                <label for="editPlayer_DisplayNickname">Use Nickname</label>
+                <select name="editPlayer_DisplayNickname" id="editPlayer_DisplayNickname" data-role="slider">
+                    <option value="false">No</option>
+                    <option value="true">Yes</option>
+                </select>
+            </div>
+            
+            <div data-role="fieldcontain">
+                <label for="editPlayer_IsFavorite">Favorite</label>
+                <select name="editPlayer_IsFavorite" id="editPlayer_IsFavorite" data-role="slider">
+                    <option value="false">No</option>
+                    <option value="true">Yes</option>
+                </select>
+            </div>
+            
+            <div data-role="fieldcontain">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <input type="button" id="editPlayer_Cancel" name="addPlayer_Cancel" value="Cancel" onClick="javascript:$('#popupEditPlayer').popup('close');" />
+                    </div>
+                    <div class="ui-block-b">
+                        <input type="button" id="editPlayer_Submit" name="addPlayer_Submit" value="Submit" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>

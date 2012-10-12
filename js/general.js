@@ -15,7 +15,8 @@ function app () {
     
     self.dbFortune = undefined;
     self.Players   = {
-	main : undefined,
+	main : undefined,	// Main User
+	tmp  : undefined,	// Temporary used user (modifying users, ...)
     };
     
     self.updateMainUser = function () {
@@ -114,6 +115,17 @@ function Player () {
 	query.execute(cbSuccess, cbError);
     }
     
+    self.modify = function (fields, values) {
+	var cbSuccess = arguments[2] || DummyFalse,
+	    cbError   = arguments[3] || DummyFalse;
+	
+	var sql  = 'UPDATE ' + self.db.tables.Player.name + ' SET ';
+	    sql += fields.join('=?, ') + '=? ';
+	    sql += 'WHERE pID = "' + self.pID + '"';
+	
+	self.db.query(sql, values, cbSuccess, cbError);
+    }
+    
     self.load = function (pID) {
 	var cbSuccess = arguments[1] || DummyFalse,
 	    cbError   = arguments[2] || DummyFalse;
@@ -127,6 +139,7 @@ function Player () {
 	    
 	    var row = results.rows.item(0);
 	    
+	    self.pID	         = pID;
 	    self.name            = row['Name'];
 	    self.nickname        = row['Nickname'];
 	    self.image           = row['Image'];
@@ -447,22 +460,24 @@ $(document).on('pageshow', '#pagePlayersList', function () {
 	html += '<li data-role="list-divider">Favorites</li>';
     app.dbFortune.query('SELECT pID, Name, Nickname, Image FROM ' + app.dbFortune.tables.Player.name + ' WHERE isFavorite = "true"',
 			[],
-    function (tx, results1) {
-	for (var i = 0; i < results1.rows.length; i++) {
-	    var row   = results1.rows.item(i);
-	    var image = (row['Image'] !== '') ? '<img src="' + row['Image'] + '" />' : '';
+    function (tx, results) {
+	for (var i = 0; i < results.rows.length; i++) {
+	    var row     = results.rows.item(i),
+		image   = (row['Image'] !== '') ? '<img src="' + row['Image'] + '" />' : '',
+		onclick = 'onClick="javascript:$(\'#popupEditPlayer\').data(\'pID\',\'' + row['pID'] + '\'); $(\'#popupEditPlayer\').popup(\'open\');"'; 
 	    
-	    html += '<li><a href="#">' + image + row['Name'] + '</a></li>';
+	    html += '<li><a href="#" ' + onclick + '>' + image + row['Name'] + '</a></li>';
 	}
 	
 	html += '<li data-role="list-divider">All</li>';
 	app.dbFortune.query('SELECT pID, Name, Nickname FROM ' + app.dbFortune.tables.Player.name,
 			    [],
-	function (tx, results2) {
-	    for (var i = 0; i < results2.rows.length; i++) {
-		var row = results2.rows.item(i);
+	function (tx, results) {
+	    for (var i = 0; i < results.rows.length; i++) {
+		var row     = results.rows.item(i),
+		    onclick = 'onClick="javascript:$(\'#popupEditPlayer\').data(\'pID\',\'' + row['pID'] + '\'); $(\'#popupEditPlayer\').popup(\'open\');"'; 
 		
-		html += '<li><a href="#">' + row['Name'] + '</a></li>';
+		html += '<li><a href="#" ' + onclick + '>' + row['Name'] + '</a></li>';
 	    }
 	   
 	    html += '</ul>';
@@ -490,15 +505,54 @@ $(document).off('click', '#addPlayer_Submit').on('click', '#addPlayer_Submit', f
 
     var newPlayer = new Player(app.dbFortune);
     newPlayer.create(name.name, nickname.name, image, isFavorite, displayNickname, false, function () {
-        $('#popupNewPlayer').popup('close');
+        $('#popupNewPlayer') .popup('close');
         $('#pagePlayersList').trigger('pageshow');
     });
 });
 
 $(document).on('popupafterclose', '#popupNewPlayer', function () {
     // reset form
-    $('#addPlayer_Name').val('');
-    $('#addPlayer_Nickname').val('');
-    $('#addPlayer_IsFavorite').val('false').slider('refresh');
+    $('#addPlayer_Name')           .val('');
+    $('#addPlayer_Nickname')       .val('');
+    $('#addPlayer_IsFavorite')     .val('false').slider('refresh');
     $('#addPlayer_DisplayNickname').val('false').slider('refresh');
+});
+
+$(document).on('popupafteropen', '#popupEditPlayer', function () {
+    var pID = parseInt( $('#popupEditPlayer').data('pID') );
+    
+    app.Players.tmp = new Player();
+    app.Players.tmp.load(pID, function () {
+        $('#editPlayer_Name')           .val(app.Players.tmp.name           	    );
+        $('#editPlayer_Nickname')       .val(app.Players.tmp.nickname       	    );
+        $('#editPlayer_IsFavorite')     .val(String(app.Players.tmp.isFavorite)     ).slider('refresh');
+	$('#editPlayer_DisplayNickname').val(String(app.Players.tmp.displayNickname)).slider('refresh');
+    }, function () {
+	$('#popupEditPlayer').popup('close');
+    });
+});
+
+$(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', function (event) {
+    event.preventDefault();
+    
+    var name            = $('#editPlayer_Name').val(),
+	nickname        = $('#editPlayer_Nickname').val(),
+//	image           = 'img/players/playerDummy.jpg',
+	isFavorite      = ($('#editPlayer_IsFavorite').val()      == "true") ? true : false,
+	displayNickname = ($('#editPlayer_DisplayNickname').val() == "true") ? true : false;
+    
+    // Validation
+    name     = app.validateName(name,     true );
+    nickname = app.validateName(nickname, false);
+    
+    if (!name.valid || !nickname.valid) {
+	return false;
+    }
+    
+    app.Players.tmp.modify(['Name',     'Nickname',     'isFavorite', 'displayNickname'],
+			   [ name.name,  nickname.name,  isFavorite,   displayNickname ],
+    function () {
+	$('#popupEditPlayer').popup('close');
+        $('#pagePlayersList').trigger('pageshow');
+    });
 });
