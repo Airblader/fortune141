@@ -677,7 +677,7 @@ function StraightPool () {
             $('#player0gd').html('&#216;&thinsp;' + ((!isNaN(GDs[0])) ? GDs[0].toFixed(2) : '0.00'));
             $('#player1gd').html('&#216;&thinsp;' + ((!isNaN(GDs[1])) ? GDs[1].toFixed(2) : '0.00'));
             
-            $('#btnDetailsBack').on('click', self.closeDetailsPanel);
+            $('#btnDetailsBack').off('click').on('click', self.closeDetailsPanel);
             $('#panelLoading')  .hide();
         });
     }
@@ -762,39 +762,39 @@ function StraightPool () {
 	}
 	
 	// now we make the buttons work
-	$('#usrAccept').on('click', function (event) {
+	$('#usrAccept').off('click').on('click', function (event) {
 	    self.handleAcceptButton(event);    
 	});
 	
-	$('#usrFoulDisplay').on('click', function (event) {
+	$('#usrFoulDisplay').off('click').on('click', function (event) {
 	    self.handleFoulButtonTap(event);
 	});
 	
-	$('#usrFoulDisplay').on('taphold', function (event) {
+	$('#usrFoulDisplay').off('taphold').on('taphold', function (event) {
 	    self.handleFoulButtonHold(event);
 	});
 	
-	$('#usrSafeDisplay').on('click', function (event) {
+	$('#usrSafeDisplay').off('click').on('click', function (event) {
 	    self.handleSafetyButton(event);
 	});
 	
-	$('.minimizePanel').on('click', function (event) {
+	$('.minimizePanel').off('click').on('click', function (event) {
 	    self.handleMinimizeMainPanelButton(event);
 	});
 	
-	$('#playerSwitch').on('click', function (event) {
+	$('#playerSwitch').off('click').on('click', function (event) {
 	    self.handlePlayerSwitchButton(event); 
 	});
 	
-	$('#severeFoulMinusButton').on('click', function (event) {
+	$('#severeFoulMinusButton').off('click').on('click', function (event) {
 	    self.handleSevereFoulPlusMinusButton(event, false);
 	});
 	
-	$('#severeFoulPlusButton').on('click', function (event) {
+	$('#severeFoulPlusButton').off('click').on('click', function (event) {
 	    self.handleSevereFoulPlusMinusButton(event, true);
 	});
 	
-	$('#severeFoulSubmitButton').on('click', function (event) {
+	$('#severeFoulSubmitButton').off('click').on('click', function (event) {
 	    self.handleSevereFoulSubmitButton(event);
 	});
 	

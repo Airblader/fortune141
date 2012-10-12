@@ -25,7 +25,11 @@
                 
                 app.dbFortune = new dbFortune();
                 app.dbFortune.open(function () {
-                    $('#popupFirstRunMainUser').popup('open');
+                    setTimeout(function () {
+                        $('#popupFirstRunMainUser').popup('open');
+                    }, 500);
+                }, function() {
+                    app.updateMainUser();    
                 });
             });
         });
@@ -49,23 +53,23 @@
     <div data-role="content">
         <div class="ui-grid-a">
             <div class="ui-block-a">
-                <img src="img/players/player0.jpg" class="userPictureBig" />
+                <img src="" id="indexMainUserImg" class="userPictureBig" />
             </div>
             <div class="ui-block-b">
-                <h3 class="firstName">Ingo</h3>
-                <h3 class="lastName">Bürk</h3>
+                <h3 class="firstName"></h3>
+                <h3 class="lastName"></h3>
                 <div class="ui-grid-b">
                     <div class="ui-block-a">GD</div>
                     <div class="ui-block-b colonSeparator">:</div>
-                    <div class="ui-block-c">2.41</div>
+                    <div class="ui-block-c">0.00</div>
                     
-                    <div class="ui-block-a">HGD</div>
+                    <div class="ui-block-a">HS</div>
                     <div class="ui-block-b colonSeparator">:</div>
-                    <div class="ui-block-c">7.1</div>
+                    <div class="ui-block-c">0</div>
                     
                     <div class="ui-block-a">Quota</div>
                     <div class="ui-block-b colonSeparator">:</div>
-                    <div class="ui-block-c">49%</div>
+                    <div class="ui-block-c">0%</div>
                 </div>
             </div>    
         </div>    
@@ -82,7 +86,7 @@
             
             <li data-role="list-divider">Settings</li>
             
-            <li><a href="#">Player Profiles</a></li>
+            <li><a href="players_list.html">Player Profiles</a></li>
             <lI><a href="#">Game Profiles</a></lI>
             <li><a href="#">Preferences</a></li>
             <li><a href="#">About</a></li>
@@ -126,7 +130,7 @@
             </div>
             
             <div data-role="fieldcontain">
-                <input type="submit" id="firstRunMainUser_Submit" name="firstRunMainUser_Submit" value="Submit" />
+                <input type="button" id="firstRunMainUser_Submit" name="firstRunMainUser_Submit" value="Submit" />
             </div>
         </div>
     </div>

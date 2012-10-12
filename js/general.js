@@ -17,6 +17,37 @@ function app () {
     self.Players   = {
 	main : undefined,
     };
+    
+    self.updateMainUser = function () {
+	// Image
+	$('#indexMainUserImg').attr('src', self.Players.main.image);
+	
+	// Name
+	var name = self.Players.main.name.split(" ");
+	
+	$('#pageIndex .firstName').html(name.shift());
+	$('#pageIndex .lastName').html(name.join(" "));
+    }
+    
+    self.validateName = function (name, required) {
+	var validated = {
+	    name  : self.trim(name),
+	    valid : true,
+	};
+	
+	if (required && validated.name.length == 0) {
+	    validated.valid = false;
+	}
+	else if (validated.name.length != 0 && validated.name.length < 3) {
+	    validated.valid = false;
+	}
+	
+	return validated;
+    }
+    
+    self.trim = function (str) {
+	return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    }
 }
 
 
@@ -38,16 +69,18 @@ function Player () {
     /*
      *	Create a new player and add to database
      */
-    self.create = function (name, nickname, image, isFavorite, displayNickname) {
-	var mainUser = (typeof arguments[5] !== 'undefined') ? arguments[5] : false,
-	    query    = new dbFortuneQuery(self.db.db);
+    self.create = function (name, nickname, image, isFavorite, displayNickname, mainUser) {
+	var cbSuccess = arguments[6] || DummyFalse,
+	    cbError   = arguments[7] || DummyFalse;
+	
+	var query = new dbFortuneQuery();
 	    
 	self.name 	     = name;
 	self.nickname 	     = nickname;
 	self.image 	     = image;
 	self.isFavorite      = isFavorite;
 	self.displayNickname = displayNickname;
-	
+
 	// If the flag to create the main user is set, reinit the whole database
 	if (mainUser) {
 	    query.add(
@@ -62,18 +95,39 @@ function Player () {
 		    + self.db.tables.Player.name + ' '
 		    + self.db.getTableFields_String(self.db.tables.Player, false, false) + ' '
 		    + 'VALUES (NULL, ?, ?, ?, ?, ?)';
+	
 	query.add(sql,
 		[name, nickname, image, isFavorite, displayNickname],
 		function (tx, result) {
 		    self.pID = result.insertId;
 		}
 	);
-	
-	query.execute();
+
+	query.execute(cbSuccess, cbError);
     }
     
     self.load = function (pID) {
-	// ToDo
+	var cbSuccess = arguments[1] || DummyFalse,
+	    cbError   = arguments[2] || DummyFalse;
+	
+	self.db.query('SELECT * FROM ' + self.db.tables.Player.name + ' WHERE pID = "' + pID + '" LIMIT 1', [],
+	function (tx, results) {
+	    if (results.rows.length == 0) {
+		cbError();
+		return false;
+	    }
+	    
+	    var row = results.rows.item(0);
+	    
+	    self.name            = row['Name'];
+	    self.nickname        = row['Nickname'];
+	    self.image           = row['Image'];
+	    self.isFavorite      = (row['isFavorite']      == "true") ? true : false;
+	    self.displayNickname = (row['displayNickname'] == "true") ? true : false;
+	    
+	    cbSuccess();
+	    return true;
+	}, cbError);
     }
 }
 
@@ -190,7 +244,11 @@ function dbFortune () {
 		
                 cbFirstRun();
             },
-            cbNotFirstRun
+	    function () {
+		// load main user
+		app.Players.main = new Player();
+		app.Players.main.load(1, cbNotFirstRun);
+	    }
         );
     }
     
@@ -320,30 +378,107 @@ function dbFortune () {
 
 
 /*
+ *	INDEX
+ */
+
+
+/*
  *  First Run -- Main User Configuration
  */
-$('#firstRunMainUser_Submit').on('click', function () {
+$(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainUser_Submit', function (event) {
+    event.preventDefault();
+    
     var name            = $('#firstRunMainUser_Name').val(),
 	nickname        = $('#firstRunMainUser_Nickname').val(),
-	image           = '',
-	isFavorite      = false,
-	displayNickname = Boolean( $('#firstRunMainUser_DisplayNickname').val() );
+	image           = 'img/players/playerDummy.jpg',
+	isFavorite      = true,
+	displayNickname = ($('#firstRunMainUser_DisplayNickname').val() == "true") ? true : false;
     
     // Validation
-    name     = name.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-    nickname = nickname.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    name     = app.validateName(name,     true );
+    nickname = app.validateName(nickname, false);
     
-    if (name.length < 3 || (nickname.length != 0 && nickname.length < 3)) {
+    if (!name.valid || !nickname.valid) {
 	return false;
     }
     
     // submit button was pressed, so let's create the tables, the main user and get started!
     app.dbFortune.createAllTables(function () {
         app.Players.main = new Player(app.dbFortune);
-        app.Players.main.create(name, nickname, image, isFavorite, displayNickname, true);
-	
-        $('#popupFirstRunMainUser').popup('close');
+        app.Players.main.create(name.name, nickname.name, image, isFavorite, displayNickname, true, function () {
+	    app.updateMainUser();
+	    $('#popupFirstRunMainUser').popup('close');
+	});
     });
     
-    return true;
+    // kill this button to prevent any double-firing (we dont need it anymore anyway)
+    $(document).off('click', '#firstRunMainUser_Submit');
+});
+
+
+/*
+ *	PLAYER PROFILES
+ */
+
+$(document).on('pageshow', '#pagePlayersList', function () {
+    // Create List
+    // ToDo : enhance with pictures and stuff and make clickable
+    var html  = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">';
+	html += '<li data-role="list-divider">Favorites</li>';
+    app.dbFortune.query('SELECT * FROM ' + app.dbFortune.tables.Player.name + ' WHERE isFavorite = "true"',
+			[],
+    function (tx, results1) {
+	for (var i = 0; i < results1.rows.length; i++) {
+	    var row   = results1.rows.item(i);
+	    var image = (row['Image'] !== '') ? '<img src="' + row['Image'] + '" class="userPictureSmall" />' : '';
+	    
+	    html += '<li><a href="#">' + image + row['Name'] + '</a></li>';
+	}
+	
+	html += '<li data-role="list-divider">All</li>';
+	app.dbFortune.query('SELECT * FROM ' + app.dbFortune.tables.Player.name,
+			    [],
+	function (tx, results2) {
+	    for (var i = 0; i < results2.rows.length; i++) {
+		var row = results2.rows.item(i);
+		
+		html += '<li><a href="#">' + row['Name'] + '</a></li>';
+	    }
+	   
+	    html += '</ul>';
+	    $('#playerList').html(html).trigger('create'); 
+	});
+    });
+});
+
+$(document).off('click', '#addPlayer_Submit').on('click', '#addPlayer_Submit', function (event) {
+    event.preventDefault();
+    
+    var name            = $('#addPlayer_Name').val(),
+	nickname        = $('#addPlayer_Nickname').val(),
+	image           = 'img/players/playerDummy.jpg',
+	isFavorite      = ($('#addPlayer_IsFavorite').val()      == "true") ? true : false,
+	displayNickname = ($('#addPlayer_DisplayNickname').val() == "true") ? true : false;
+    
+    // Validation
+    name     = app.validateName(name,     true );
+    nickname = app.validateName(nickname, false);
+    
+    if (!name.valid || !nickname.valid) {
+	return false;
+    }
+
+    var newPlayer = new Player(app.dbFortune);
+    newPlayer.create(name.name, nickname.name, image, isFavorite, displayNickname, false, function () {
+        $('#popupNewPlayer').popup('close');
+        $('#pagePlayersList').trigger('pageshow');
+    });
+});
+
+$(document).on('popupafterclose', '#popupNewPlayer', function () {
+    // reset form
+    $('#addPlayer_Name').val('');
+    $('#addPlayer_Nickname').val('');
+    $('#addPlayer_IsFavorite').val('false').slider('refresh');
+    $('#addPlayer_DisplayNickname').val('false').slider('refresh');
 });

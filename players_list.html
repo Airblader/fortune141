@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+
+<div data-role="page" id="pagePlayersList" data-add-back-btn="true">
+    <div data-role="header">
+        <h1>Player Profiles</h1>
+        <a href="#popupNewPlayer" data-rel="popup" data-position-to="window" data-icon="plus" class="ui-btn-right">New</a>
+    </div>
+    
+    <div data-role="content" id="playerList">
+        <!-- Dynamically created -->
+    </div>
+    
+    <!-- Add Player Popup -->
+    <div id="popupNewPlayer" data-role="popup" data-overlay-theme="a">
+        <div data-role="content" style="min-width: 200px;">  
+            <div data-role="fieldcontain">
+                <label for="addPlayer_Name">Full Name</label>
+                <input type="text" id="addPlayer_Name" name="addPlayer_Name" value="" />
+            </div>
+            
+            <div data-role="fieldcontain">
+                <label for="addPlayer_Nickname">Nickname (optional)</label>
+                <input type="text" id="addPlayer_Nickname" name="addPlayer_Nickname" value="" />
+            </div>
+            
+            <div data-role="fieldcontain">
+                <label for="addPlayer_DisplayNickname">Use Nickname</label>
+                <select name="addPlayer_DisplayNickname" id="addPlayer_DisplayNickname" data-role="slider">
+                    <option value="false">No</option>
+                    <option value="true">Yes</option>
+                </select>
+            </div>
+            
+            <div data-role="fieldcontain">
+                <label for="addPlayer_IsFavorite">Favorite</label>
+                <select name="addPlayer_IsFavorite" id="addPlayer_IsFavorite" data-role="slider">
+                    <option value="false">No</option>
+                    <option value="true">Yes</option>
+                </select>
+            </div>
+            
+            <div data-role="fieldcontain">
+                <input type="button" id="addPlayer_Submit" name="addPlayer_Submit" value="Submit" />
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

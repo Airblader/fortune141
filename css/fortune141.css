@@ -181,6 +181,7 @@
 }
 
 #pageGame141 #ballRack div[id^="ball"] {
+    display: block;
     z-index: 10;
 }
 
