@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+
+<div data-role="page" id="pagePlayerDetails" data-add-back-btn="true">
+    <div data-role="header">
+        <h1>Details</h1>
+        <a href="#" class="ui-btn-right" data-icon="gear" onClick="javascript:$('#popupEditPlayer').popup('open');">Edit</a>
+    </div>
+    
+    <div data-role="content">
+        <div class="ui-grid-a">
+            <div class="ui-block-a">Name</div>
+            <div class="ui-block-b" id="playerDetails_Name"></div>
+            
+            <div class="ui-block-a">Nickname</div>
+            <div class="ui-block-b" id="playerDetails_Nickname"></div>
+        </div>
+        
+        <div class="ui-grid-solo">
+            <div class="ui-block-a">
+                <input type="button" id="playerDetailsDeleteButton" value="Delete Player" data-theme="e" data-icon="delete" onClick="javascript:$('#popupDeletePlayer').popup('open');" />
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Player Popup -->
+    <div id="popupEditPlayer" data-role="popup" data-overlay-theme="a">
+        <div data-role="content" style="min-width: 300px;">
+            <div data-role="fieldcontain">
+                <label for="editPlayer_Name">Full Name</label>
+                <input type="text" id="editPlayer_Name" name="editPlayer_Name" value="" />
+            </div>
+            
+            <div data-role="fieldcontain">
+                <label for="editPlayer_Nickname">Nickname (optional)</label>
+                <input type="text" id="editPlayer_Nickname" name="editPlayer_Nickname" value="" />
+            </div>
+            
+            <div data-role="fieldcontain">
+                <label for="editPlayer_DisplayNickname">Use Nickname</label>
+                <select name="editPlayer_DisplayNickname" id="editPlayer_DisplayNickname" data-role="slider">
+                    <option value="false">No</option>
+                    <option value="true">Yes</option>
+                </select>
+            </div>
+            
+            <div data-role="fieldcontain">
+                <label for="editPlayer_IsFavorite">Favorite</label>
+                <select name="editPlayer_IsFavorite" id="editPlayer_IsFavorite" data-role="slider">
+                    <option value="false">No</option>
+                    <option value="true">Yes</option>
+                </select>
+            </div>
+            
+            <div data-role="fieldcontain">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <input type="button" id="editPlayer_Cancel" name="addPlayer_Cancel" value="Cancel" onClick="javascript:$('#popupEditPlayer').popup('close');" />
+                    </div>
+                    <div class="ui-block-b">
+                        <input type="button" id="editPlayer_Submit" name="addPlayer_Submit" value="Submit" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Player Popup -->
+    <div data-role="popup" id="popupDeletePlayer" data-overlay-theme="a" data-theme="e">
+        <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+        
+        <div data-role="content">
+            <h2>Warning!</h2>
+            <p>You are about to delete this player.</p>
+            <p>Are you sure that you want to do this? This action can <strong>not</strong> be undone!</p>
+            
+            <input type="button" id="playerDetailsDeleteConfirm" data-theme="e" data-icon="check" value="Yes, delete" />
+            <input type="button" onClick="javascript:$('#popupDeletePlayer').popup('close');" data-theme="b" data-icon="delete" value="No, cancel" />
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

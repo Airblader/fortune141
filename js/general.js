@@ -126,6 +126,20 @@ function Player () {
 	self.db.query(sql, values, cbSuccess, cbError);
     }
     
+    self.remove = function () {
+	var cbSuccess = arguments[0] || DummyFalse,
+	    cbError   = arguments[1] || DummyFalse;
+	    
+	// We don't allow deleting the main user
+	if (self.pID == 1) {
+	    cbError();
+	    return false;
+	}
+	
+	var sql = 'DELETE FROM ' + self.db.tables.Player.name + ' WHERE pID = "' + self.pID + '"';
+	self.db.query(sql, [], cbSuccess, cbError);
+    }
+    
     self.load = function (pID) {
 	var cbSuccess = arguments[1] || DummyFalse,
 	    cbError   = arguments[2] || DummyFalse;
@@ -463,10 +477,10 @@ $(document).on('pageshow', '#pagePlayersList', function () {
     function (tx, results) {
 	for (var i = 0; i < results.rows.length; i++) {
 	    var row     = results.rows.item(i),
-		image   = (row['Image'] !== '') ? '<img src="' + row['Image'] + '" />' : '',
-		onclick = 'onClick="javascript:$(\'#popupEditPlayer\').data(\'pID\',\'' + row['pID'] + '\'); $(\'#popupEditPlayer\').popup(\'open\');"'; 
+		image   = (row['Image'] !== '') ? '<img src="' + row['Image'] + '" />' : '';
 	    
-	    html += '<li><a href="#" ' + onclick + '>' + image + row['Name'] + '</a></li>';
+	    //html += '<li><a href="#" ' + onclick + '>' + image + row['Name'] + '</a></li>';
+	    html += '<li><a href="player_details.html?pID=' + row['pID'] + '">' + image + row['Name'] + '</a></li>';
 	}
 	
 	html += '<li data-role="list-divider">All</li>';
@@ -474,14 +488,14 @@ $(document).on('pageshow', '#pagePlayersList', function () {
 			    [],
 	function (tx, results) {
 	    for (var i = 0; i < results.rows.length; i++) {
-		var row     = results.rows.item(i),
-		    onclick = 'onClick="javascript:$(\'#popupEditPlayer\').data(\'pID\',\'' + row['pID'] + '\'); $(\'#popupEditPlayer\').popup(\'open\');"'; 
+		var row     = results.rows.item(i);
 		
-		html += '<li><a href="#" ' + onclick + '>' + row['Name'] + '</a></li>';
+		//html += '<li><a href="#" ' + onclick + '>' + row['Name'] + '</a></li>';
+		html += '<li><a href="player_details.html?pID=' + row['pID'] + '">' + row['Name'] + '</a></li>';
 	    }
 	   
 	    html += '</ul>';
-	    $('#playerList').html(html).trigger('create'); 
+	    $('#playerList').html(html).trigger('create');
 	});
     });
 });
@@ -518,18 +532,43 @@ $(document).on('popupafterclose', '#popupNewPlayer', function () {
     $('#addPlayer_DisplayNickname').val('false').slider('refresh');
 });
 
-$(document).on('popupafteropen', '#popupEditPlayer', function () {
-    var pID = parseInt( $('#popupEditPlayer').data('pID') );
+$(document).on('pageshow', '#pagePlayerDetails', function () {
+    // This is a weird glitch-workaround for the url being passed in a rather strange way
+    var url = $.url( $.url().attr('fragment') ),
+	pID = parseInt(url.param('pID'));
+	
+    // Hide delete button if it's the main user profile
+    $('#playerDetailsDeleteButton').button('enable');
+    if (pID == 1) {
+	$('#playerDetailsDeleteButton').button('disable');
+    }
     
     app.Players.tmp = new Player();
     app.Players.tmp.load(pID, function () {
-        $('#editPlayer_Name')           .val(app.Players.tmp.name           	    );
-        $('#editPlayer_Nickname')       .val(app.Players.tmp.nickname       	    );
-        $('#editPlayer_IsFavorite')     .val(String(app.Players.tmp.isFavorite)     ).slider('refresh');
-	$('#editPlayer_DisplayNickname').val(String(app.Players.tmp.displayNickname)).slider('refresh');
-    }, function () {
-	$('#popupEditPlayer').popup('close');
+        $('#playerDetails_Name')           .html(app.Players.tmp.name           	    );
+        $('#playerDetails_Nickname')       .html(app.Players.tmp.nickname       	    );
+        //$('#editPlayer_IsFavorite')     .val(String(app.Players.tmp.isFavorite)     ).slider('refresh');
+	//$('#editPlayer_DisplayNickname').val(String(app.Players.tmp.displayNickname)).slider('refresh');
     });
+});
+
+$(document).off('click', '#playerDetailsDeleteConfirm').on('click', '#playerDetailsDeleteConfirm', function (event) {
+    event.preventDefault();
+    
+    app.Players.tmp.remove(function () {
+	$.mobile.changePage('players_list.html');
+    });
+});
+
+$(document).on('popupafteropen', '#popupEditPlayer', function () {
+    $('#editPlayer_Name')           .val(app.Players.tmp.name           	);
+    $('#editPlayer_Nickname')       .val(app.Players.tmp.nickname       	);
+    $('#editPlayer_IsFavorite')     .val(String(app.Players.tmp.isFavorite)     ).slider('refresh');
+    $('#editPlayer_DisplayNickname').val(String(app.Players.tmp.displayNickname)).slider('refresh');
+});
+
+$(document).on('popupafterclose', '#popupEditPlayer', function () {
+    $('#pagePlayerDetails').trigger('pageshow');
 });
 
 $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', function (event) {
@@ -553,6 +592,5 @@ $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', 
 			   [ name.name,  nickname.name,  isFavorite,   displayNickname ],
     function () {
 	$('#popupEditPlayer').popup('close');
-        $('#pagePlayersList').trigger('pageshow');
     });
 });
