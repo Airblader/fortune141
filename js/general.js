@@ -1,24 +1,23 @@
 /*
- *  Dummies function used to avoid creating too many
- *  anonymous functions
- */
-function DummyFalse () { return false; }
-function DummyTrue  () { return true;  }
-
-
-
-/*
  *  MAIN APP CLASS
  */
 function app () {
     var self = this;
     
     self.dbFortune = undefined;
+    
     self.Players   = {
 	main : undefined,	// Main User
 	tmp  : undefined,	// Temporary used user (modifying users, ...)
     };
     
+    // Dummy functions to avoid unneccessary anonymous functions
+    self.dummyFalse = function () { return false; }
+    self.dummyTrue  = function () { return true;  }
+    
+    /*
+     *	Updates information about main user on index page
+     */
     self.updateMainUser = function () {
 	// Image
 	$('#indexMainUserImg').attr('src', self.Players.main.image);
@@ -35,6 +34,15 @@ function app () {
 	$('#pageIndex #indexMainUserQuota').html(self.Players.main.quota + '%');
     }
     
+    /*
+     *	Validate a name
+     *		name     : string to be checked
+     *		required : whether the name can be empty
+     *
+     *	Returns an object with the properties
+     *		name  : name after validation
+     *		valid : whether the name is valid
+     */
     self.validateName = function (name, required) {
 	var validated = {
 	    name  : self.trim(name),
@@ -57,14 +65,15 @@ function app () {
 }
 
 
+/*
+ *  MAIN PLAYER CLASS
+ */
 function Player () {
     var self = this;
     
     self.db = app.dbFortune;
     
-    /*
-     *	Player information
-     */
+    // Player properties
     self.pID 		 = -1;
     self.name 		 = '';
     self.nickname 	 = '';
@@ -77,13 +86,21 @@ function Player () {
     
     /*
      *	Create a new player and add to database
+     *		name,
+     *		nickname,
+     *		image,
+     *		isFavorite,
+     *		displayNickname       : player properties
+     *		mainUser              : whether this is the main user account (reinitializes player table)
+     *		cbSuccess (optional),
+     *		cbError (optional)    : callback functions
      */
     self.create = function (name, nickname, image, isFavorite, displayNickname, mainUser) {
-	var cbSuccess = arguments[6] || DummyFalse,
-	    cbError   = arguments[7] || DummyFalse;
+	var cbSuccess = (typeof arguments[6] !== 'undefined') ? arguments[6] : app.dummyFalse,
+	    cbError   = (typeof arguments[7] !== 'undefined') ? arguments[7] : app.dummyFalse;
 	
 	var query = new dbFortuneQuery();
-	    
+	
 	self.name 	     = name;
 	self.nickname 	     = nickname;
 	self.image 	     = image;
@@ -108,6 +125,7 @@ function Player () {
 	query.add(sql,
 		[name, nickname, image, isFavorite, displayNickname, 0, "0", "0"],
 		function (tx, result) {
+		    // assign pID to object
 		    self.pID = result.insertId;
 		}
 	);
@@ -115,9 +133,16 @@ function Player () {
 	query.execute(cbSuccess, cbError);
     }
     
+    /*
+     *	Modify player information
+     *		fields                : array containing the table fields to be altered
+     *		values                : array containing the new values
+     *		cbSuccess (optional),
+     *		cbError (optional)    : callback functions
+     */
     self.modify = function (fields, values) {
-	var cbSuccess = arguments[2] || DummyFalse,
-	    cbError   = arguments[3] || DummyFalse;
+	var cbSuccess = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse,
+	    cbError   = (typeof arguments[3] !== 'undefined') ? arguments[3] : app.dummyFalse;
 	
 	var sql  = 'UPDATE ' + self.db.tables.Player.name + ' SET ';
 	    sql += fields.join('=?, ') + '=? ';
@@ -126,9 +151,14 @@ function Player () {
 	self.db.query(sql, values, cbSuccess, cbError);
     }
     
+    /*
+     *	Permanently deletes player from database
+     *		cbSuccess (optional),
+     *		cbError (optional)    : callback functions
+     */
     self.remove = function () {
-	var cbSuccess = arguments[0] || DummyFalse,
-	    cbError   = arguments[1] || DummyFalse;
+	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
+	    cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 	    
 	// We don't allow deleting the main user
 	if (self.pID == 1) {
@@ -140,17 +170,25 @@ function Player () {
 	self.db.query(sql, [], cbSuccess, cbError);
     }
     
+    /*
+     *	Load a player with given pID into the object
+     *		pID                   : pID of the player to be loaded
+     *		cbSuccess (optional),
+     *		cbError (optional)    : callback functions
+     */
     self.load = function (pID) {
-	var cbSuccess = arguments[1] || DummyFalse,
-	    cbError   = arguments[2] || DummyFalse;
+	var cbSuccess = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse,
+	    cbError   = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse;
 	
 	self.db.query('SELECT * FROM ' + self.db.tables.Player.name + ' WHERE pID = "' + pID + '" LIMIT 1', [],
 	function (tx, results) {
+	    // If the user doesn't exist, we call the error callback
 	    if (results.rows.length == 0) {
 		cbError();
 		return false;
 	    }
 	    
+	    // load information into the object
 	    var row = results.rows.item(0);
 	    
 	    self.pID	         = pID;
@@ -165,13 +203,15 @@ function Player () {
 	    
 	    cbSuccess();
 	    return true;
-	}, cbError);
+	},
+	cbError);
     }
 }
 
 
 /*
- *  Query Class
+ *  QUERY CLASS
+ *  	Represents a query wrapper that can handle several SQL statements
  */
 function dbFortuneQuery () {
     var self = this;
@@ -180,13 +220,16 @@ function dbFortuneQuery () {
     self.statements = new Array();
     
     /*
-     *	Add SQL Statement to Query
-     *		Takes optional parameters
+     *	Add an SQL statement to the query
+     *		sql                   : SQL string to be executed
+     *		args (optional)       : array containing values for '?'-placeholders 
+     *		cbSuccess (optional),
+     *		cbError (optional)    : callback functions
      */
     self.add = function (sql) {
-	var args      = arguments[1] || [],
-            cbSuccess = arguments[2] || DummyFalse,
-            cbError   = arguments[3] || DummyFalse;
+	var args      = (typeof arguments[1] !== 'undefined') ? arguments[1] : [],
+            cbSuccess = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse,
+            cbError   = (typeof arguments[3] !== 'undefined') ? arguments[3] : app.dummyFalse;
 	
 	self.statements.push({
 	    sql       : sql,
@@ -197,12 +240,13 @@ function dbFortuneQuery () {
     }
     
     /*
-     *	Execute the Query
-     *		Takes optional parameters
+     *	Execute the query
+     *		cbSuccess (optional),
+     *		cbError (optional)    : callback functions
      */
     self.execute = function () {
-	var cbSuccess = arguments[0] || DummyFalse,
-	    cbError   = arguments[1] || DummyFalse;
+	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
+	    cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 	
 	self.db.transaction(function (tx) {
 	    for (var i = 0; i < self.statements.length; i++) {
@@ -219,17 +263,18 @@ function dbFortuneQuery () {
 
 
 /*
- *  Wrapper class for database interactions
+ *  DATABASE CLASS
+ *  	Wraps database access into a new class for stability
  */
 function dbFortune () {
     var self = this;
     
     self.dbName = 'Fortune';
-    self.dbSize = 5 * 1024 * 1024;
+    self.dbSize = 5 * 1000 * 1000;
     self.dbDesc = 'Fortune 14/1 Database';
     
     /*
-     *  Definition of all WebSQL Tables created/used by the app
+     *  Definition of database tables
      */
     self.tables = {
         Player : {
@@ -267,32 +312,27 @@ function dbFortune () {
     };
     
     /*
-     *  Opens database connection and creates all tables
-     *  if they didn't exist yet
-     *      - cbFirstRun    : callback function to be executed if it was a first run
-     *      - cbNotFirstRun : callback function to be executed if it was NOT a first run
-     *          (optional)
+     *	Opens the database connection and checks whether this is the first time
+     *	the connection was made (e.g. the app was started). If this is not the
+     *	case, this function also loads the main player
+     *		cbFirstRun               : callback function if it was the first start
+     *		cbNotFirstRun (optional) : callback function if it was *not* the first start
      */
     self.open = function (cbFirstRun) {
-	// optional second argument
-        var cbNotFirstRun = arguments[1] || DummyTrue;
+        var cbNotFirstRun = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyTrue;
         
-        // Open Database
-        self.db = window.openDatabase(self.dbName,
-                                      '1.0',
-                                      self.dbDesc,
-                                      self.dbSize);
+        self.db = window.openDatabase(self.dbName, '1.0', self.dbDesc, self.dbSize);
         
-        // Check if app was opened for the first time
+        // Check if this is the first connection attempt
         self.checkForFirstRun(
             function () {
-		// no tables should exist at this point anyway, but this makes sure we get a clean start
+		// no tables should exist at this point anyway, but we make sure to get a clean start
 		self.dropAllTables();
 		
                 cbFirstRun();
             },
 	    function () {
-		// load main user
+		// load the main player
 		app.Players.main = new Player();
 		app.Players.main.load(1, cbNotFirstRun);
 	    }
@@ -300,30 +340,33 @@ function dbFortune () {
     }
     
     /*
-     *  Will perform a given string as a query
-     *  Optional parameters (in this order) are
-     *      - args      : Array of arguments
-     *      - cbSuccess : Callback function on success
-     *      - cbError   : Callback function on error
+     *	Performs a simple query directly
+     *		sql                   : SQL statement
+     *		args (optional)       : array containing values for '?'-placeholders
+     *		cbSuccess (optional),
+     *		cbError (optional)    : callback functions
      */
     self.query = function (sql) {
 	var query = new dbFortuneQuery();
 	query.add(
 	    sql,
-	    arguments[1] || [],
-	    arguments[2] || DummyFalse,
-	    arguments[3] || DummyFalse
+	    (typeof arguments[1] !== 'undefined') ? arguments[1] : [],
+	    (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse,
+	    (typeof arguments[3] !== 'undefined') ? arguments[3] : app.dummyFalse
 	);
 	query.execute();
     }
     
     /*
-     *	Returns all table fields in a string in the way it is used in queries
-     *		Example: "(id, name, third_field)"
+     *	Returns a string consisting of the complete field description of the given table
+     *	Examples: '(id, name, another_field)', '(id INTEGER NOT NULL, name TEXT DEFAULT "anonym", another_field TEXT)'
+     *		table               : table of which the string should be generated
+     *		types (optional)    : whether to include the field types (defaults to false)
+     *		defaults (optional) : whether to include the field defaults (requires 'types' to be true, defaults to false)
      */
     self.getTableFields_String = function (table) {
-	var types    = (typeof arguments[1] !== 'undefined') ? arguments[1] : false,
-	    defaults = (typeof arguments[2] !== 'undefined') ? arguments[2] : false;
+	var types    = (typeof arguments[1] !== 'undefined')          ? arguments[1] : false,
+	    defaults = (typeof arguments[2] !== 'undefined' && types) ? arguments[2] : false;
 	
 	var desc = '(';
 	for (var i = 0; i < table.fields.length; i++) {
@@ -337,22 +380,37 @@ function dbFortune () {
 	return desc;
     }
     
+    /*
+     *	Returns the SQL statement to create a table
+     *		table : table for which to create the statement
+     */
     self.getCreateTableStatement = function (table) {	
 	var sql  = 'CREATE TABLE IF NOT EXISTS ' + table.name + ' ' + self.getTableFields_String(table, true, true);
 	return sql;
     }
     
+    /*
+     *	Creates a table
+     *		table                 : table to create
+     *		cbSuccess (optional),
+     *		cbError (optional)    : callback functions
+     */
     self.createTable = function (table) {
-        var cbSuccess = arguments[1] || DummyFalse,
-            cbError   = arguments[2] || DummyFalse;
+        var cbSuccess = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse,
+            cbError   = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse;
         
 	var sql = self.getCreateTableStatement(table);
         self.query(sql, [], cbSuccess, cbError);
     }
     
+    /*
+     *	Creates all tables
+     *		cbSuccess (optional),
+     *		cbError (optional)    : callback functions
+     */
     self.createAllTables = function () {
-	var cbSuccess = arguments[0] || DummyFalse,
-            cbError   = arguments[1] || DummyFalse;
+	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
+            cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 	    
 	var query = new dbFortuneQuery();
 	    
@@ -363,21 +421,36 @@ function dbFortune () {
 	query.execute(cbSuccess, cbError);
     }
     
+    /*
+     * 	Returns the SQL statement to delete/drop a table
+     *  	table : table for which to create the statement
+     */
     self.getDropTableStatement = function (table) {
 	return 'DROP TABLE IF EXISTS ' + table.name;
     }
     
+    /*
+     *	Deletes a table from the database
+     *		table                 : table to drop
+     *		cbSuccess (optional),
+     *		cbError (optional)    : callback functions
+     */
     self.dropTable = function (table) {
-	var cbSuccess = arguments[1] || DummyFalse,
-            cbError   = arguments[2] || DummyFalse;
+	var cbSuccess = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse,
+            cbError   = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse;
         
         var sql  = self.getDropTableStatement(table);
         self.query(sql, [], cbSuccess, cbError);
     }
     
+    /*
+     *	Deletes all tables from the database
+     *		cbSuccess (optional),
+     *		cbError (optional)    : callback functions
+     */
     self.dropAllTables = function () {
-	var cbSuccess = arguments[0] || DummyFalse,
-            cbError   = arguments[1] || DummyFalse;
+	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
+            cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 	
 	var query = new dbFortuneQuery();
 	    
@@ -389,15 +462,19 @@ function dbFortune () {
     }
     
     /*
-     *  Checks whether the application is opened for the first time
+     *	Checks whether the app has been started for the first time
+     *		cbFirstRun,
+     *		cbNotFirstRun      : callback functions
+     *		cbError (optional) : callback function in case of an error
+     *				     (if not defined, cbFirstRun will be used instead)
      */
     self.checkForFirstRun = function (cbFirstRun, cbNotFirstRun) {
-        var cbError = arguments[2];
+        var cbError = (typeof arguments[2] !== 'undefined') ? arguments[2] : cbFirstRun;
 
         self.query('SELECT COUNT(*) AS firstRun FROM sqlite_master WHERE type="table" AND name="' + self.tables.Player.name + '"',
                     [],
                     
-                    function (tx, res) {                // Query Success
+                    function (tx, res) {
                         var row = res.rows.item(0);
                         
                         if (parseInt(row['firstRun']) != 0) {
@@ -408,13 +485,8 @@ function dbFortune () {
                         cbFirstRun();
                         return false;
                     },
-                    function (error) {                       // Query Failure
-                        if (typeof cbError !== 'undefined') {
-                            cbError();
-                            return false;
-                        }
-                        
-                        cbFirstRun();
+                    function (error) {
+                        cbError();
                         return false;
                     }
         );
@@ -425,7 +497,7 @@ function dbFortune () {
 
 
 /*
- *	INDEX
+ *	INDEX PAGE
  */
 
 
@@ -464,7 +536,7 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
 
 
 /*
- *	PLAYER PROFILES
+ *	PLAYER PROFILES PAGE
  */
 
 $(document).on('pageshow', '#pagePlayersList', function () {

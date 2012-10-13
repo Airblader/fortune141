@@ -4,7 +4,6 @@ function BallRack (debugMode) {
     // debugMode means you run it in a browser, not on a mobile phone
     self.debugMode = debugMode;
     
-    self.targetDiv = '#ballRack';
     self.imgPath   = 'img/rack/ball';
     self.imgSuffix = '.png';
     
@@ -68,7 +67,7 @@ function BallRack (debugMode) {
      *  Call calcBallPositions() first!
      */
     self.drawRack = function () {
-        $(self.targetDiv).css('width',  divWidth  + 'px')
+        $('#ballRack').css('width',  divWidth  + 'px')
                          .css('height', divHeight + 'px')
                          .css('left', '50%')
                          .css('margin-left', (-divWidth/2) + 'px');
@@ -122,11 +121,11 @@ function BallRack (debugMode) {
     }
     
     self.setHandler = function () {
-        $('body').on(touchCommands, self.targetDiv, function(e) { self.ballSelectHandler(e); });    
+        $('body').on(touchCommands, '#ballRack', function(e) { self.ballSelectHandler(e); });    
     }
 
     self.unsetHandler = function () {
-        $('body').off(touchCommands, self.targetDiv);
+        $('body').off(touchCommands, '#ballRack');
     }
     
     self.ballSelectHandler = function (event) {
