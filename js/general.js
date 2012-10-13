@@ -29,9 +29,9 @@ function app () {
 	$('#pageIndex .lastName') .html(name.join(" "));
 	
 	// Stats
-	$('#pageIndex #indexMainUserGD')   .html(parseFloat(self.Players.main.gd).toFixed(2));
-	$('#pageIndex #indexMainUserHS')   .html(self.Players.main.hs);
-	$('#pageIndex #indexMainUserQuota').html(self.Players.main.quota + '%');
+	$('#pageIndex #indexMainUserGD')   .html(parseFloat(self.Players.main.gd)   .toFixed(2)              );
+	$('#pageIndex #indexMainUserHS')   .html(self.Players.main.hs                                        );
+	$('#pageIndex #indexMainUserQuota').html(parseFloat(self.Players.main.quota).toFixed(0) + '&thinsp;%');
     }
     
     /*
@@ -617,10 +617,22 @@ $(document).on('pageshow', '#pagePlayerDetails', function () {
     
     app.Players.tmp = new Player();
     app.Players.tmp.load(pID, function () {
-        $('#playerDetails_Name')           .html(app.Players.tmp.name           	    );
-        $('#playerDetails_Nickname')       .html(app.Players.tmp.nickname       	    );
-        //$('#editPlayer_IsFavorite')     .val(String(app.Players.tmp.isFavorite)     ).slider('refresh');
-	//$('#editPlayer_DisplayNickname').val(String(app.Players.tmp.displayNickname)).slider('refresh');
+	if (app.Players.tmp.image !== '') {
+	    $('#playerDetails_Image').show()
+	                             .attr('src', app.Players.tmp.image);
+	}
+	else{
+	    $('#playerDetails_Image').hide();
+	}
+	
+	$('#playerDetails_Name')           .html(app.Players.tmp.name                            );
+        $('#playerDetails_Nickname')       .html(app.Players.tmp.nickname       	         );
+        $('#playerDetails_IsFavorite')     .html((app.Players.tmp.isFavorite)      ? "Yes" : "No");
+	$('#playerDetails_DisplayNickname').html((app.Players.tmp.displayNickname) ? "Yes" : "No");
+	
+	$('#playerDetails_HS')   .html(app.Players.tmp.hs                                        );
+	$('#playerDetails_GD')   .html(parseFloat(app.Players.tmp.gd)   .toFixed(2)              );
+	$('#playerDetails_Quota').html(parseFloat(app.Players.tmp.quota).toFixed(0) + '&thinsp;%');
     });
 });
 

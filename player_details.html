@@ -11,15 +11,39 @@
     </div>
     
     <div data-role="content">
-        <div class="ui-grid-a">
+        <div style="margin-bottom: 10px; text-align: center;">
+            <img src="#" id="playerDetails_Image" class="userPictureBig" />
+        </div>
+        
+        <div class="ui-grid-a ui-bar ui-bar-c">
             <div class="ui-block-a">Name</div>
             <div class="ui-block-b" id="playerDetails_Name"></div>
             
             <div class="ui-block-a">Nickname</div>
             <div class="ui-block-b" id="playerDetails_Nickname"></div>
+            
+            <div class="ui-block-a">&nbsp;</div>
+            <div class="ui-block-b">&nbsp;</div>
+            
+            <div class="ui-block-a">Favorite</div>
+            <div class="ui-block-b" id="playerDetails_IsFavorite"></div>
+            
+            <div class="ui-block-a">Use Nickname</div>
+            <div class="ui-block-b" id="playerDetails_DisplayNickname"></div>
         </div>
         
-        <div class="ui-grid-solo">
+        <div class="ui-grid-a ui-bar ui-bar-c" style="margin-top: 15px;">
+            <div class="ui-block-a">High Run (HS)</div>
+            <div class="ui-block-b" id="playerDetails_HS"></div>
+            
+            <div class="ui-block-a">&#216; / GD</div>
+            <div class="ui-block-b" id="playerDetails_GD"></div>
+            
+            <div class="ui-block-a">Quota</div>
+            <div class="ui-block-b" id="playerDetails_Quota"></div>
+        </div>
+        
+        <div class="ui-grid-solo" style="margin-top: 50px;">
             <div class="ui-block-a">
                 <input type="button" id="playerDetailsDeleteButton" value="Delete Player" data-theme="e" data-icon="delete" onClick="javascript:$('#popupDeletePlayer').popup('open');" />
             </div>
