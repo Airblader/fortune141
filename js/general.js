@@ -628,7 +628,10 @@ $(document).off('click', '#playerDetailsDeleteConfirm').on('click', '#playerDeta
     event.preventDefault();
     
     app.Players.tmp.remove(function () {
-	$.mobile.changePage('players_list.html');
+	// Bugfix: Changing the page screwed up the history stack, by going back in the history
+	//	   we can fix this.
+	history.go(-2);
+	//$.mobile.changePage('players_list.html');
     });
 });
 
