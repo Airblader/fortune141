@@ -83,7 +83,6 @@ function Player () {
     self.hs		 = 0;
     self.gd		 = 0;
     self.quota		 = 0;
-    self.gamesPlayed     = 0;
     
     /*
      *	Create a new player and add to database
@@ -121,10 +120,10 @@ function Player () {
 	var sql = 'INSERT INTO '
 		    + self.db.tables.Player.name + ' '
 		    + self.db.getTableFields_String(self.db.tables.Player, false, false) + ' '
-		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?)';
 	
 	query.add(sql,
-		[name, nickname, image, isFavorite, displayNickname, "0", "0", "0", "0"],
+		[name, nickname, image, isFavorite, displayNickname, 0, "0", "0"],
 		function (tx, result) {
 		    // assign pID to object
 		    self.pID = result.insertId;
@@ -169,8 +168,6 @@ function Player () {
 	
 	var sql = 'DELETE FROM ' + self.db.tables.Player.name + ' WHERE pID = "' + self.pID + '"';
 	self.db.query(sql, [], cbSuccess, cbError);
-	
-	return true;
     }
     
     /*
@@ -203,7 +200,6 @@ function Player () {
 	    self.hs		 = parseInt(row['HS']);
 	    self.gd		 = row['GD'];
 	    self.quota		 = row['Quota'];
-	    self.gamesPlayed     = row['GamesPlayed'];
 	    
 	    cbSuccess();
 	    return true;
@@ -292,8 +288,7 @@ function dbFortune () {
                                 'displayNickname',
 				'HS',
 				'GD',
-				'Quota',
-				'GamesPlayed'
+				'Quota'
                              ),
                     types : new Array('INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
                                       'TEXT NOT NULL',
@@ -303,18 +298,16 @@ function dbFortune () {
                                       'BIT',
 				      'INTEGER',
 				      'TEXT',
-				      'TEXT',
-				      'INTEGER'),
+				      'TEXT'),
                     defaults : new Array(undefined,
                                          '""',
                                          undefined,
                                          undefined,
-                                         '0',
-                                         '0',
-					 '0',
+                                         0,
+                                         0,
+					 0,
 					 '"0"',
-					 '"0"',
-					 '0'),
+					 '"0"'),
                  },
     };
     
@@ -637,10 +630,9 @@ $(document).on('pageshow', '#pagePlayerDetails', function () {
         $('#playerDetails_IsFavorite')     .html((app.Players.tmp.isFavorite)      ? "Yes" : "No");
 	$('#playerDetails_DisplayNickname').html((app.Players.tmp.displayNickname) ? "Yes" : "No");
 	
-	$('#playerDetails_GamesPlayed').html(app.Players.tmp.gamesPlayed                               );
-	$('#playerDetails_HS')         .html(app.Players.tmp.hs                                        );
-	$('#playerDetails_GD')         .html(parseFloat(app.Players.tmp.gd)   .toFixed(2)              );
-	$('#playerDetails_Quota')      .html(parseFloat(app.Players.tmp.quota).toFixed(0) + '&thinsp;%');
+	$('#playerDetails_HS')   .html(app.Players.tmp.hs                                        );
+	$('#playerDetails_GD')   .html(parseFloat(app.Players.tmp.gd)   .toFixed(2)              );
+	$('#playerDetails_Quota').html(parseFloat(app.Players.tmp.quota).toFixed(0) + '&thinsp;%');
     });
 });
 
