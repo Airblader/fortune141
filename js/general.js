@@ -547,25 +547,25 @@ $(document).on('pageshow', '#pagePlayersList', function () {
     // Create List
     var html  = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">';
 	html += '<li data-role="list-divider">Favorites</li>';
-    app.dbFortune.query('SELECT pID, Name, Nickname, Image FROM ' + app.dbFortune.tables.Player.name + ' WHERE isFavorite = "true"',
+    app.dbFortune.query('SELECT pID, Name, Nickname, Image, displayNickname FROM ' + app.dbFortune.tables.Player.name +
+			' WHERE isFavorite = "true" ORDER BY CASE pID WHEN "1" THEN pID END DESC, LOWER(Name)',
 			[],
     function (tx, results) {
 	for (var i = 0; i < results.rows.length; i++) {
-	    var row     = results.rows.item(i),
-		image   = (row['Image'] !== '') ? '<img src="' + row['Image'] + '" />' : '';
+	    var row   = results.rows.item(i),
+		image = (row['Image'] !== '') ? '<img src="' + row['Image'] + '" />' : '';
 	    
-	    //html += '<li><a href="#" ' + onclick + '>' + image + row['Name'] + '</a></li>';
-	    html += '<li><a href="player_details.html?pID=' + row['pID'] + '">' + image + row['Name'] + '</a></li>';
+	    html += '<li><a href="player_details.html?pID=' + row['pID'] + '">' + image + row['Name']
+	         +  ((row['displayNickname'] == 'true') ? ('<br />(' + row['Nickname'] + ')') : '') + '</a></li>';
 	}
 	
 	html += '<li data-role="list-divider">All</li>';
-	app.dbFortune.query('SELECT pID, Name, Nickname FROM ' + app.dbFortune.tables.Player.name,
+	app.dbFortune.query('SELECT pID, Name, Nickname, displayNickname FROM ' + app.dbFortune.tables.Player.name + ' ORDER BY LOWER(Name)',
 			    [],
 	function (tx, results) {
 	    for (var i = 0; i < results.rows.length; i++) {
-		var row     = results.rows.item(i);
+		var row = results.rows.item(i);
 		
-		//html += '<li><a href="#" ' + onclick + '>' + row['Name'] + '</a></li>';
 		html += '<li><a href="player_details.html?pID=' + row['pID'] + '">' + row['Name'] + '</a></li>';
 	    }
 	   
@@ -589,6 +589,7 @@ $(document).off('click', '#addPlayer_Submit').on('click', '#addPlayer_Submit', f
     nickname = app.validateName(nickname, false);
     
     if (!name.valid || !nickname.valid) {
+	alert('A name must be at least 3 characters long.');
 	return false;
     }
 
@@ -682,6 +683,7 @@ $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', 
     nickname = app.validateName(nickname, false);
     
     if (!name.valid || !nickname.valid) {
+	alert('A name must be at least 3 characters long.');
 	return false;
     }
     

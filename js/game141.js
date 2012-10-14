@@ -6,8 +6,8 @@ function BallRack (debugMode) {
     var self = this;
     
     // debugMode:
-    //	true : for usage on computers (mouse events)
-    // false : for usage on mobile devices (touch events)
+    //	true  : for usage on computers (mouse events)
+    //  false : for usage on mobile devices (touch events)
     self.debugMode = debugMode;
     
     self.imgPath   = 'img/rack/ball';
@@ -176,23 +176,15 @@ function BallRack (debugMode) {
 	var base = (self.debugMode) ? event : (event.originalEvent.touches[0] || event.originalEvent.changedTouches[0]),
 	    x    = base.pageX,
 	    y    = base.pageY;
-        /*if (self.debugMode) {
-            var x = event.pageX;
-            var y = event.pageY;
-        }
-        else {
-            var touch = event.originalEvent.touches[0] || event.originalEvent.changedTouches[0];
-            var x = touch.pageX;
-            var y = touch.pageY;
-        }*/
         
 	// figure out which ball was clicked
         var currElement = document.elementFromPoint(x, y),
 	    id          = $(currElement).attr('id');
 	
-        // if the ball is accessible for clicking, we can set it as the selected ball
-        if (typeof id !== 'undefined' && id.substr(0, 4) == 'ball' && parseInt(id.substr(4)) <= self.ballsOnTable) {
-            self.selectedBall = parseInt(id.substr(4));
+        // check if it was actually a ball that was clicked
+        if (typeof id !== 'undefined' && id.substr(0, 4) == 'ball') {
+	    // either use the selected ball (if accessible) or the highest accessible ball
+            self.selectedBall = (parseInt(id.substr(4)) <= self.ballsOnTable) ? parseInt(id.substr(4)) : self.ballsOnTable;
         }
         
         self.redraw();
@@ -636,6 +628,7 @@ function StraightPool () {
         self.ballRack.selectedBall = ret.ballsOnTable;
         
         self.ballRack.redraw();
+	return true;
     }
     
     /*
@@ -656,7 +649,9 @@ function StraightPool () {
         }, 250);
 
 	// toggle foul display
-        self.setFoulDisplay(1 + parseInt( $('#foulDisplay').html() ), self.firstShot);
+        self.setFoulDisplay(1 + parseInt( $('#foulDisplay').html() ),
+			    self.firstShot && (self.ballRack.selectedBall == self.ballRack.ballsOnTable));
+	return true;
     }
     
     /*
@@ -679,6 +674,7 @@ function StraightPool () {
 	// open manual entry popup
         self.setFoulDisplay(2, self.firstShot, true);
         $('#popupSevereFoul').popup('open');
+	return true;
     }
     
     /*
@@ -699,6 +695,7 @@ function StraightPool () {
         
 	// toggle safety display
         $('#safetyDisplay').html( yesno[ 1 - yesno.indexOf( $('#safetyDisplay').html() ) ] );
+	return true;
     }
     
     /*
