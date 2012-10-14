@@ -193,7 +193,7 @@ function Player () {
 	    // load information into the object
 	    var row = results.rows.item(0);
 	    
-	    self.pID	         = pID;
+	    self.pID	         = parseInt(pID);
 	    self.name            = row['Name'];
 	    self.nickname        = row['Nickname'];
 	    self.image           = row['Image'];
@@ -473,7 +473,8 @@ function dbFortune () {
     self.checkForFirstRun = function (cbFirstRun, cbNotFirstRun) {
         var cbError = (typeof arguments[2] !== 'undefined') ? arguments[2] : cbFirstRun;
 
-        self.query('SELECT COUNT(*) AS firstRun FROM sqlite_master WHERE type="table" AND name="' + self.tables.Player.name + '"',
+        //self.query('SELECT COUNT(*) AS firstRun FROM sqlite_master WHERE type="table" AND name="' + self.tables.Player.name + '"',
+	self.query('SELECT COUNT(*) AS firstRun FROM ' + self.tables.Player.name + ' WHERE pID="1"',
                     [],
                     
                     function (tx, res) {
@@ -655,6 +656,12 @@ $(document).on('popupafteropen', '#popupEditPlayer', function () {
     $('#editPlayer_Nickname')       .val(app.Players.tmp.nickname       	);
     $('#editPlayer_IsFavorite')     .val(String(app.Players.tmp.isFavorite)     ).slider('refresh');
     $('#editPlayer_DisplayNickname').val(String(app.Players.tmp.displayNickname)).slider('refresh');
+    
+    // Main player is always a favorite
+    $('#editPlayer_IsFavorite').slider('enable');
+    if (app.Players.tmp.pID == 1) {
+	$('#editPlayer_IsFavorite').slider('disable');
+    }
 });
 
 $(document).on('popupafterclose', '#popupEditPlayer', function () {
