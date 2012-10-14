@@ -1,12 +1,19 @@
+/*
+ *  BALLRACK CLASS
+ *  	This class handles the visual ball rack for straight pool games
+ */
 function BallRack (debugMode) {
     var self = this;
     
-    // debugMode means you run it in a browser, not on a mobile phone
+    // debugMode:
+    //	true : for usage on computers (mouse events)
+    // false : for usage on mobile devices (touch events)
     self.debugMode = debugMode;
     
     self.imgPath   = 'img/rack/ball';
     self.imgSuffix = '.png';
     
+    // size for the div containing the rack
     var divWidth,
         divHeight = 0;
     
@@ -25,13 +32,15 @@ function BallRack (debugMode) {
     }
     
     /*
-     * Needs to be called once to create ball positions
+     *	Calculate the ball positions.
      */
     self.calcBallPositions = function () {
+	// we only need to calculate these positions once
         if (ballPositions.length > 0) {
             return;
         }
         
+	// defines after which balls in a rack a new row begins
         var idxRowBreaks = new Array(2, 4, 7, 11);
     
         var ballRadiusSmall = self.ballSizeSmall/2;
@@ -42,8 +51,12 @@ function BallRack (debugMode) {
         var currX = 2 * stepX + ballRadiusSmall,
             currY = ballRadiusSmall;
             
-        ballPositions.push({x: 0, y: 0}); // dummy for empty ball/cue ball
+	// the 0-th ball will be the cue ball, but its position depends on other balls'
+	// positions, so we just create a dummy entry for it for now
+        ballPositions.push({x: 0, y: 0});
+	
         for (var i=1; i<=15; i++) {
+	    // check whether we have to begin a new row
             var idxOf = idxRowBreaks.indexOf(i);
             if (idxOf != -1) {
                 currX  = 2 * stepX - idxOf * ballRadiusSmall;
@@ -54,51 +67,59 @@ function BallRack (debugMode) {
             currX += stepX;
         }
         
-        // now we fill the empty ball/cue ball
+        // we can now position the 0-th ball
         ballPositions[0].x = ballPositions[11].x + ballRadiusSmall/2;
         ballPositions[0].y = (ballPositions[2].y + ballPositions[1].y)/2;
         
+	// size of the div containing the rack
         divWidth  = 4 * stepX + self.ballSizeSmall;
         divHeight = self.ballSizeSmall + 4 * stepY;
     }
     
     /*
-     *  Sets the rack into the correct position(s)
-     *  Call calcBallPositions() first!
+     *	Sets up the balls into the right positions
      */
     self.drawRack = function () {
-        $('#ballRack').css('width',  divWidth  + 'px')
-                         .css('height', divHeight + 'px')
-                         .css('left', '50%')
-                         .css('margin-left', (-divWidth/2) + 'px');
+	// first we set up the surrounding div element
+        $('#ballRack').css('width',       divWidth      + 'px')
+                      .css('height',      divHeight     + 'px')
+                      .css('left',        '50'          + '%' )
+                      .css('margin-left', (-divWidth/2) + 'px');
         
+	// this factor defines how much the shadow is spread around the balls
 	var shadowFactor = 1.35;
+	
         for (var i=0; i<=15; i++) {
-            $('#ball' + i).css('position', 'absolute')
-                          .css('width', self.ballSizeSmall + 'px')
-                          .css('height', self.ballSizeSmall + 'px')
+            $('#ball' + i).css('position',      'absolute'                  )
+                          .css('width',         self.ballSizeSmall    + 'px')
+                          .css('height',        self.ballSizeSmall    + 'px')
                           .css('margin-left', (-self.ballSizeSmall/2) + 'px')
-                          .css('margin-top', (-self.ballSizeSmall/2) + 'px')
-                          .css('left', ballPositions[i].x + 'px')
-                          .css('top', ballPositions[i].y + 'px'); 
+                          .css('margin-top',  (-self.ballSizeSmall/2) + 'px')
+                          .css('left',          ballPositions[i].x    + 'px')
+                          .css('top',           ballPositions[i].y    + 'px'); 
 
-            $('#shadow' + i).css('position', 'absolute')
-                            .css('width', shadowFactor*self.ballSizeSmall + 'px')
-                            .css('height', shadowFactor*self.ballSizeSmall + 'px')
+            $('#shadow' + i).css('position',      'absolute'                               )
+                            .css('width',         shadowFactor*self.ballSizeSmall    + 'px')
+                            .css('height',        shadowFactor*self.ballSizeSmall    + 'px')
                             .css('margin-left', (-shadowFactor*self.ballSizeSmall/2) + 'px')
-                            .css('margin-top', (-shadowFactor*self.ballSizeSmall/2) + 'px')
-                            .css('left', ballPositions[i].x + 'px')
-                            .css('top', ballPositions[i].y + 'px'); 
+                            .css('margin-top',  (-shadowFactor*self.ballSizeSmall/2) + 'px')
+                            .css('left',          ballPositions[i].x                 + 'px')
+                            .css('top',           ballPositions[i].y                 + 'px'); 
         }
     }
     
+    /*
+     *	Update a ball in the rack according to its state
+     *		idx               : index of the ball
+     *		active (optional) : whether the ball is active or inactive (defaults to true)
+     */
     self.setActiveBall = function (idx) {
         var active = true;
         if (typeof arguments[1] !== 'undefined') {
             active = arguments[1];
         }
+	
         var opacity = (active) ? '1.0' : '0.4';
-        
         $('#ball' + idx).css('opacity', opacity);
 		
 	if (active) {
@@ -109,6 +130,9 @@ function BallRack (debugMode) {
 	}
     }
     
+    /*
+     *	Update all balls
+     */
     self.redraw = function() {
         for (var i = 0; i <= 15; i++) {
             var isActive = false;
@@ -120,19 +144,39 @@ function BallRack (debugMode) {
         }
     }
     
+    /*
+     *	Activate touch events
+     */
     self.setHandler = function () {
-        $('body').on(touchCommands, '#ballRack', function(e) { self.ballSelectHandler(e); });    
+        //$('body').on(touchCommands, '#ballRack', function(e) { self.ballSelectHandler(e); });
+	$('body').on(touchCommands, '#ballRack', self.ballSelectHandler);
     }
 
+    /*
+     *	Deactivate touch events
+     */
     self.unsetHandler = function () {
         $('body').off(touchCommands, '#ballRack');
     }
     
+    /*
+     *	This function deals with the user clicking on any ball of the rack,
+     *	determines which ball was clicked and redraws the rack accordingly.
+     *	It also checks if the click was legal (clicked ball is accessible)
+     */
     self.ballSelectHandler = function (event) {
         event.preventDefault();
+	
+	// Bugfix : Android devices require us to unset the handler in order to allow
+	//          dragging the finger across the screen. Otherwise the touch coordinates
+	//          won't be updated during the movement.
         self.unsetHandler();
         
-        if (self.debugMode) {
+	// depending on mouse or touch events we need to access the coordinates differently
+	var base = (self.debugMode) ? event : (event.originalEvent.touches[0] || event.originalEvent.changedTouches[0]),
+	    x    = base.pageX,
+	    y    = base.pageY;
+        /*if (self.debugMode) {
             var x = event.pageX;
             var y = event.pageY;
         }
@@ -140,23 +184,27 @@ function BallRack (debugMode) {
             var touch = event.originalEvent.touches[0] || event.originalEvent.changedTouches[0];
             var x = touch.pageX;
             var y = touch.pageY;
-        }
+        }*/
         
-        var currElement = document.elementFromPoint(x, y);
-        var id = $(currElement).attr('id');
-        // only if it's a ball element and open for selection
+	// figure out which ball was clicked
+        var currElement = document.elementFromPoint(x, y),
+	    id          = $(currElement).attr('id');
+	
+        // if the ball is accessible for clicking, we can set it as the selected ball
         if (typeof id !== 'undefined' && id.substr(0, 4) == 'ball' && parseInt(id.substr(4)) <= self.ballsOnTable) {
             self.selectedBall = parseInt(id.substr(4));
         }
         
         self.redraw();
         
+	// Bugfix : Undo what we did above
         self.setHandler();
     }
 }
 
 /*
- *  Class for straight pool games
+ *  STRAIGHT POOL CLASS
+ *  	This class handles straight pool games
  */
 function StraightPool () {
     var self = this;
@@ -167,10 +215,12 @@ function StraightPool () {
     // true when current shot is a break shot (e.g. first shot of game or after severe fouls)
     self.firstShot = true;
     
-    // misc
     var btnAcceptPressed = false,
         yesno            = new Array("Yes", "No");
     
+    /*
+     *	Returns a dummy object for a player
+     */
     self.dummyPlayer = function () {
         return {
                     id    : 0,
@@ -179,31 +229,41 @@ function StraightPool () {
                };
     }
     
+    /*
+     *	Returns a dummy objects for an inning
+     */
     self.dummyInning = function () {
         return {
-                    number   : 1,
-                    points   : new Array(0, 0),
-                    foulPts  : new Array(0, 0),
-                    ptsToAdd : new Array(0, 0),
-                    safety   : new Array(false, false),
+                    number   : 1,				// number of the inning
+                    points   : new Array(0, 0),			// points made in this inning
+                    foulPts  : new Array(0, 0),			// foul points in this inning
+                    ptsToAdd : new Array(0, 0),			// unprocessed/non-final points
+                    safety   : new Array(false, false),		// whether this inning ended in a safety
                };
     }
     
+    /*
+     *	Initizalize a new game by resetting variables
+     */
     self.initNewGame = function () {
-        self.players         = new Array(self.dummyPlayer(), self.dummyPlayer());
+        self.players         = new Array(self.dummyPlayer(),
+					 self.dummyPlayer());
         self.currPlayer      = 0;
         self.firstShotOfRack = 0;
         self.innings          = new Array(self.dummyInning());
     }
     
+    /*
+     *	Add a new inning to the game and set it up right
+     */
     self.newInning = function () {
-        // if last inning wasn't processed correctly, throw error
+        // if last inning wasn't processed correctly, we throw an error
         var current = self.innings.length-1;
         if (self.innings[current].ptsToAdd[0] != -1 || self.innings[current].ptsToAdd[1] != -1) {
-            throw new Error('Cannot create new inning. Last inning has unprocessed points!');
+            throw new Error('StraightPool.newInning : Cannot create new inning. Last inning has unprocessed points!');
         }
         
-        var inning = self.dummyInning();
+        var inning    = self.dummyInning();
         inning.number = self.innings.length + 1;
         
         self.innings.push(inning);
@@ -213,12 +273,17 @@ function StraightPool () {
         // ToDo
     }
 	
+    /*
+     *	Defines what action to take when the current player already has two fouls and needs to be warned
+     */
     self.warnConsecutiveFouls = function () {
         $('#consecFoulsWarning').popup("open");
     }
     
     /*
-     *  Takes optional parameter "hardReset"
+     *	Switch the current player and check for potencially needed 3-foul-rule warning
+     *		hardReset (optional) : If true, all points, fouls etc. will be resetted for this inning
+     *				       (defaults to false)
      */
     self.switchPlayer = function () {
         self.currPlayer = (self.currPlayer == 0) ? 1 : 0;
@@ -233,7 +298,7 @@ function StraightPool () {
             self.innings[current].safety[self.currPlayer]   = false;
         }
 		
-	// check for consecutive fouls to warn
+	// trigger 3-foul-rule warning if needed
 	if (self.players[self.currPlayer].fouls == 2) {
 	    self.warnConsecutiveFouls();
 	}
@@ -249,6 +314,14 @@ function StraightPool () {
         return false;
     }
     
+    /*
+     *	Sets the foul display
+     *		fouls                : number of foul points the display should be set to
+     *		firstShot (optional) : whether the current inning started with a first shot situation
+     *		                       (defaults to false)
+     *		severe (optional)    : whether the foul is severe
+     *		                       (defaults to false)
+     */
     self.setFoulDisplay = function (fouls) {
 	var firstShot = (typeof arguments[1] !== 'undefined') ? arguments[1] : false,
 	    severe    = (typeof arguments[2] !== 'undefined') ? arguments[2] : false,
@@ -270,15 +343,24 @@ function StraightPool () {
 	
 	// check for valid number
 	if ($.isNumeric(foulCount)) {
-	    $('#foulDisplay').html(foulCount);
-	    $('#foulDisplayName').html(foulName);
+	    $('#foulDisplay')    .html(foulCount);
+	    $('#foulDisplayName').html(foulName );
 	}
     }
     
+    /*
+     *	Processes the user input and contains all the game logic
+     *		ballsOnTable : number of balls still on the table
+     *		selectedBall : number of the ball selected by the user
+     *		foulPts      : amount of foul points
+     *		safety       : whether the inning ended in a safety
+     *		rerack       : whether a rerack has to take place after this
+     *	Returns an object containing information before changes were made
+     */	
     self.processInput = function(ballsOnTable, selectedBall, foulPts, safety, rerack) {
-        var current = self.innings.length-1;
-        var switchPlayer = false;
-        var hasToRerack = rerack;
+        var current      = self.innings.length-1,
+	    switchPlayer = false,
+	    hasToRerack  = rerack;
         
         // create new inning if neccessary
         if (self.innings[current].ptsToAdd[0] == -1 && self.innings[current].ptsToAdd[1] == -1) {
@@ -377,7 +459,14 @@ function StraightPool () {
         
         return ret;
     }
+    
+    /*
+     *	UI FUNCTIONALITY
+     */
 
+    /*
+     *	Returns an object containing the heights for the main and details panel
+     */
     self.getPanelHeights = function () {
 	var viewPortHeight = $(window).height(),
 	    headerHeight   = $(self.pageName).find('[data-role="header"]') .height(),
@@ -389,6 +478,9 @@ function StraightPool () {
 	       }
     }
     
+    /*
+     *	Determine the best size for ball images
+     */
     self.getBestBallRadius = function () {
 	var maxHeight = self.getPanelHeights().mainPanel
 	 		   - parseInt($(self.pageName).find('#ballRack').css('bottom').replace('px', ''))   // margin from toolbar
@@ -404,7 +496,9 @@ function StraightPool () {
 	return Math.floor(bestRadius);
     }
     
-    // This function determines which set of sprites to use for the ball rack
+    /*
+     *	Determine which image set to use for the CSS Sprites
+     */
     self.getBallImageSize = function (bestRadius) {
 	// available sprite sets
 	var availableSizes = new Array(30, 60, 120);
@@ -419,36 +513,46 @@ function StraightPool () {
 	return nearestSize;
     }
     
+    /*
+     *	Close the details panel
+     */
     self.closeDetailsPanel = function () {
+	// stop listening to the hardware back button
 	document.removeEventListener('backbutton', self.closeDetailsPanel, false);
                 
-        // if button is still active, ignore
+        // if button is still active, ignore the click
         if($('#btnDetailsBack').hasClass('panelButtonDown')) {
             return false;
         }
 	
+	// animation
         $('#btnDetailsBack').addClass('panelButtonDown');
         setTimeout(function() {
             $('#btnDetailsBack').removeClass('panelButtonDown');
         }, 250);
         
         $('#panelLoading').show();
-        $(self.pageName).find('[data-role="header"]').show();
+        $(self.pageName)  .find('[data-role="header"]')
+	                  .show();
+			  
         $('#panelRackAndMenu').show(function () {
-	    // this fixes a bug that caused the panel to be moved to the right because of
-	    // the (not visible) scrollbars
+	    // Bugfix : Panel moved to the right because of the (even if invisible) scrollbars
             $('#panelRackAndMenu').css('left', '0');
 	    
-            $('#panelDetails')    .hide();
-            $('#btnDetailsBack')  .off('click');
-            $('#panelLoading')    .hide();
+            $('#panelDetails')  .hide();
+            $('#btnDetailsBack').off('click');
+            $('#panelLoading')  .hide();
         });
+	
+	return true;
     }
     
+    /*
+     *	Handles a click on the "Accept" button and triggers the game logic
+     */
     self.handleAcceptButton = function (event) {
 	event.preventDefault();
         
-        // hide initial player switch
         $('#playerSwitch').hide();
         
         // if button is still active from last click, abort
@@ -468,7 +572,7 @@ function StraightPool () {
             self.ballRack.setHandler();
         }, 500);
         
-        // rerack needed
+        // check if rerack is needed
         rerack = $('#foulDisplayName').data('rerack');
         
         // process the input
@@ -492,9 +596,7 @@ function StraightPool () {
         $('#foulDisplayName').data('rerack', false);
         $('#safetyDisplay')  .html(yesno[1]);
         
-        /*
-         *  This displays the change of points (if neccessary), e.g. "+3" or "-1".
-         */
+        // this displays the change of points (if neccessary), e.g. "+3" or "-1".
         var tmpDisplay;
         tmpDisplay = (self.innings[ret.current].ptsToAdd[ret.currPlayer] == -1) ?
                 self.innings[ret.current].points[ret.currPlayer]
@@ -512,10 +614,8 @@ function StraightPool () {
 			      .addClass   ('activePlayer' + (  self.currPlayer)); // ToDo
         }, 500);
         
-        /*
-         * Display consecutive fouls
-         */
-        for (var player = 0; player <= 1; player++) { // ToDo
+        // display consecutive fouls
+        for (var player = 0; player <= 1; player++) {
             for (var foul = 1; foul <= 2; foul++) {
                 if (foul <= self.players[player].fouls) {
                     $('#player' + player + 'foul' + foul).css('visibility', 'visible');
@@ -525,7 +625,7 @@ function StraightPool () {
             }
         }
         
-        // ToDo
+        // ToDo : Win logic
         if (self.players[0].points >= 100 || self.players[1].points >= 100) {
             alert('Game over!');
         }
@@ -538,6 +638,9 @@ function StraightPool () {
         self.ballRack.redraw();
     }
     
+    /*
+     *	Handle click on the foul button
+     */
     self.handleFoulButtonTap = function (event) {
 	event.preventDefault();
         
@@ -546,21 +649,41 @@ function StraightPool () {
             return false;
         }
 	
+	// animation
         $('#usrFoulDisplay').addClass('navbarButtonDown');
         setTimeout(function() {
             $('#usrFoulDisplay').removeClass('navbarButtonDown');
         }, 250);
 
+	// toggle foul display
         self.setFoulDisplay(1 + parseInt( $('#foulDisplay').html() ), self.firstShot);
     }
     
+    /*
+     *	Handles long click on foul button for manual foul entry
+     */
     self.handleFoulButtonHold = function (event) {
 	event.preventDefault();
+	
+	// if button is still active, ignore
+        if( $('#usrFoulDisplay').hasClass('navbarButtonDown') ) {
+            return false;
+        }
+	
+	// animation
+        $('#usrFoulDisplay').addClass('navbarButtonDown');
+        setTimeout(function() {
+            $('#usrFoulDisplay').removeClass('navbarButtonDown');
+        }, 250);
 
+	// open manual entry popup
         self.setFoulDisplay(2, self.firstShot, true);
         $('#popupSevereFoul').popup('open');
     }
     
+    /*
+     *	Handle click on safety button
+     */
     self.handleSafetyButton = function (event) {
 	event.preventDefault();
         
@@ -574,9 +697,14 @@ function StraightPool () {
             $('#usrSafeDisplay').removeClass('navbarButtonDown');
         }, 250);
         
+	// toggle safety display
         $('#safetyDisplay').html( yesno[ 1 - yesno.indexOf( $('#safetyDisplay').html() ) ] );
     }
     
+    /*
+     *	Handle click on the button to minimize the main panel, show the details panel
+     *	and display the scoreboard
+     */
     self.handleMinimizeMainPanelButton = function (event) {
 	event.preventDefault();
 	
@@ -681,6 +809,9 @@ function StraightPool () {
         });
     }
     
+    /*
+     *	Handle click on the button to switch players
+     */
     self.handlePlayerSwitchButton = function (event) {
 	// if there is unprocessed business, let's take care of it
         if (self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] != -1) {
@@ -697,6 +828,10 @@ function StraightPool () {
 			  .addClass   ('activePlayer' +    self.currPlayer);
     }
     
+    /*
+     *	Handle click on the +/- buttons in the popup for manual entry of severe fouls
+     *		plus : true for "+" button, false for "-" button
+     */
     self.handleSevereFoulPlusMinusButton = function (event, plus) {
 	event.preventDefault();
 	
@@ -704,6 +839,7 @@ function StraightPool () {
 	    currVal = parseInt( $('#popupSevereFoulPoints').val() ),
 	    newVal  = currVal + diff;
         
+	// we don't allow negative values
 	if (newVal < 0) {
 	    newVal = 0;
 	}
@@ -711,6 +847,9 @@ function StraightPool () {
 	$('#popupSevereFoulPoints').val(newVal);
     }
     
+    /*
+     *	Handle click on the submit button in the popup for manual entry of severe fouls
+     */
     self.handleSevereFoulSubmitButton = function (event) {
 	event.preventDefault();
 	
@@ -724,11 +863,15 @@ function StraightPool () {
 	
 	$('#popupSevereFoul').popup('close');
 	
+	// reset the popup form
 	$('#popupSevereFoulPoints').val('2');
 	$('#popupSevereFoulRerack').prop('checked', false)
 				   .checkboxradio("refresh");
     }
     
+    /*
+     *	Initializes the whole UI
+     */
     self.initUI = function () {
 	// enable loading screen
 	$('#panelLoading').show();
