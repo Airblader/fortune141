@@ -123,7 +123,7 @@ function Player () {
 		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?)';
 	
 	query.add(sql,
-		[name, nickname, image, isFavorite, displayNickname, 0, "0", "0"],
+		[name, nickname, image, isFavorite, displayNickname, "0", "0", "0"],
 		function (tx, result) {
 		    // assign pID to object
 		    self.pID = result.insertId;
@@ -168,6 +168,8 @@ function Player () {
 	
 	var sql = 'DELETE FROM ' + self.db.tables.Player.name + ' WHERE pID = "' + self.pID + '"';
 	self.db.query(sql, [], cbSuccess, cbError);
+	
+	return true;
     }
     
     /*
@@ -303,9 +305,9 @@ function dbFortune () {
                                          '""',
                                          undefined,
                                          undefined,
-                                         0,
-                                         0,
-					 0,
+                                         '0',
+                                         '0',
+					 '0',
 					 '"0"',
 					 '"0"'),
                  },
@@ -532,6 +534,7 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
     
     // kill this button to prevent any double-firing (we dont need it anymore anyway)
     $(document).off('click', '#firstRunMainUser_Submit');
+    return true;
 });
 
 
@@ -541,7 +544,6 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
 
 $(document).on('pageshow', '#pagePlayersList', function () {
     // Create List
-    // ToDo : make clickable
     var html  = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">';
 	html += '<li data-role="list-divider">Favorites</li>';
     app.dbFortune.query('SELECT pID, Name, Nickname, Image FROM ' + app.dbFortune.tables.Player.name + ' WHERE isFavorite = "true"',
@@ -594,6 +596,7 @@ $(document).off('click', '#addPlayer_Submit').on('click', '#addPlayer_Submit', f
         $('#popupNewPlayer') .popup('close');
         $('#pagePlayersList').trigger('pageshow');
     });
+    return true;
 });
 
 $(document).on('popupafterclose', '#popupNewPlayer', function () {
@@ -680,4 +683,5 @@ $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', 
     function () {
 	$('#popupEditPlayer').popup('close');
     });
+    return true;
 });
