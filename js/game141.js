@@ -10,9 +10,6 @@ function BallRack (debugMode) {
     //  false : for usage on mobile devices (touch events)
     self.debugMode = debugMode;
     
-    self.imgPath   = 'img/rack/ball';
-    self.imgSuffix = '.png';
-    
     // size for the div containing the rack
     var divWidth,
         divHeight = 0;
@@ -895,7 +892,7 @@ function StraightPool () {
 	// load images
 	// we use CSS3 sprites as this will reduce both file size and loading time
 	for (var i = 0; i <= 15; i++) {
-	    $('#ball' + i).css('background-image', 'url(img/rack/rack' + nearestSize + '.png)')
+	    $('#ball' + i).css('background-image', 'url(../../img/rack/rack' + nearestSize + '.png)')
 			  .css('background-size', (2*bestRadius) + 'px')
 			  .css('background-position', '0 -' + (2*i*bestRadius) + 'px');
 	}

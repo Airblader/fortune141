@@ -11,6 +11,10 @@ function app () {
 	tmp  : undefined,	// Temporary used user (modifying users, ...)
     };
     
+    self.imgPlayerPath = 'img/players/';
+    
+    self.currentGame = undefined;
+    
     // Dummy functions to avoid unneccessary anonymous functions
     self.dummyFalse = function () { return false; }
     self.dummyTrue  = function () { return true;  }
@@ -20,7 +24,7 @@ function app () {
      */
     self.updateMainUser = function () {
 	// Image
-	$('#indexMainUserImg').attr('src', self.Players.main.image);
+	$('#indexMainUserImg').attr('src', self.imgPlayerPath + self.Players.main.image);
 	
 	// Name
 	var name = self.Players.main.name.split(" ");
@@ -512,7 +516,7 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
     
     var name            = $('#firstRunMainUser_Name').val(),
 	nickname        = $('#firstRunMainUser_Nickname').val(),
-	image           = 'img/players/playerDummy.jpg',
+	image           = 'playerDummy.jpg',
 	isFavorite      = true,
 	displayNickname = ($('#firstRunMainUser_DisplayNickname').val() == "true") ? true : false;
     
@@ -553,7 +557,7 @@ $(document).on('pageshow', '#pagePlayersList', function () {
     function (tx, results) {
 	for (var i = 0; i < results.rows.length; i++) {
 	    var row   = results.rows.item(i),
-		image = (row['Image'] !== '') ? '<img src="' + row['Image'] + '" />' : '';
+		image = (row['Image'] !== '') ? '<img src="../../' + app.imgPlayerPath + row['Image'] + '" />' : '';
 	    
 	    html += '<li><a href="player_details.html?pID=' + row['pID'] + '">' + image + row['Name']
 	         +  ((row['displayNickname'] == 'true') ? ('<br />(' + row['Nickname'] + ')') : '') + '</a></li>';
@@ -580,7 +584,7 @@ $(document).off('click', '#addPlayer_Submit').on('click', '#addPlayer_Submit', f
     
     var name            = $('#addPlayer_Name').val(),
 	nickname        = $('#addPlayer_Nickname').val(),
-	image           = 'img/players/playerDummy.jpg',
+	image           = 'playerDummy.jpg',
 	isFavorite      = ($('#addPlayer_IsFavorite').val()      == "true") ? true : false,
 	displayNickname = ($('#addPlayer_DisplayNickname').val() == "true") ? true : false;
     
@@ -589,7 +593,8 @@ $(document).off('click', '#addPlayer_Submit').on('click', '#addPlayer_Submit', f
     nickname = app.validateName(nickname, false);
     
     if (!name.valid || !nickname.valid) {
-	alert('A name must be at least 3 characters long.');
+	//alert('A name must be at least 3 characters long.');
+	navigator.notification.confirm('A name must consist of at least 3 characters.', function () { return true; }, 'Invalid name', 'OK');
 	return false;
     }
 
@@ -624,7 +629,7 @@ $(document).on('pageshow', '#pagePlayerDetails', function () {
     app.Players.tmp.load(pID, function () {
 	if (app.Players.tmp.image !== '') {
 	    $('#playerDetails_Image').show()
-	                             .attr('src', app.Players.tmp.image);
+	                             .attr('src', '../../' + app.imgPlayerPath + app.Players.tmp.image);
 	}
 	else{
 	    $('#playerDetails_Image').hide();
@@ -648,7 +653,6 @@ $(document).off('click', '#playerDetailsDeleteConfirm').on('click', '#playerDeta
 	// Bugfix: Changing the page screwed up the history stack, by going back in the history
 	//	   we can fix this.
 	history.go(-2);
-	//$.mobile.changePage('players_list.html');
     });
 });
 
@@ -674,7 +678,7 @@ $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', 
     
     var name            = $('#editPlayer_Name').val(),
 	nickname        = $('#editPlayer_Nickname').val(),
-//	image           = 'img/players/playerDummy.jpg',
+//	image           = 'playerDummy.jpg',
 	isFavorite      = ($('#editPlayer_IsFavorite').val()      == "true") ? true : false,
 	displayNickname = ($('#editPlayer_DisplayNickname').val() == "true") ? true : false;
     

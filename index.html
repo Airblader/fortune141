@@ -18,9 +18,11 @@
         $(document).bind("mobileinit", function () {
             $.mobile.defaultPageTransition   = "none";
             $.mobile.defaultDialogTransition = "none";
-        });
+            
+            document.addEventListener('menubutton', function () {
+                $.mobile.changePage('index.html');    
+            }, false);
         
-        $(document).bind("mobileinit deviceready", function () {
             $.getScript('js/general.js', function () {
                 app = new app();
                 
@@ -37,13 +39,11 @@
     </script>
     <script type="text/javascript" src="js/jquery.mobile.min.js"></script>
     <script type="text/javascript">
-        var currGame;
-        
         $(document).on('pageshow', '#pageGame141', function () {
-            $.getScript('js/game141.js', function() {
-                currGame = new StraightPool();
-                currGame.initNewGame();
-                currGame.initUI();
+            $.getScript('../../js/game141.js', function() {
+                app.currentGame = new StraightPool();
+                app.currentGame.initNewGame();
+                app.currentGame.initUI();
             });
         });
     </script>
@@ -87,7 +87,7 @@
             
             <li data-role="list-divider">Settings</li>
             
-            <li><a href="players_list.html">Player Profiles</a></li>
+            <li><a href="pages/player/player_list.html">Player Profiles</a></li>
             <lI><a href="#">Game Profiles</a></lI>
             <li><a href="#">Preferences</a></li>
             <li><a href="#">About</a></li>
@@ -98,7 +98,7 @@
         <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
         <ul data-role="listview" data-inset="true" style="min-width: 250px;" data-theme="b">
             <li data-role="divider" data-theme="a">Game Type</li>
-            <li><a href="game141.html">Straight Pool</a></li>
+            <li><a href="pages/game141/game141.html">Straight Pool</a></li>
             <li><a href="#">8-/9-/10-Ball</a></li>
         </ul>
     </div>
