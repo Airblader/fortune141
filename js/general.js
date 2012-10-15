@@ -544,6 +544,19 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
 
 
 /*
+ *	GAME STRAIGHT POOL PAGE
+ */
+
+$(document).on('pageshow', '#pageGame141', function () {
+    $.getScript('../../js/game141.js', function() {
+	app.currentGame = new StraightPool();
+	app.currentGame.initNewGame();
+	app.currentGame.initUI();
+    });
+});
+
+
+/*
  *	PLAYER PROFILES PAGE
  */
 
@@ -593,7 +606,6 @@ $(document).off('click', '#addPlayer_Submit').on('click', '#addPlayer_Submit', f
     nickname = app.validateName(nickname, false);
     
     if (!name.valid || !nickname.valid) {
-	//alert('A name must be at least 3 characters long.');
 	navigator.notification.confirm('A name must consist of at least 3 characters.', function () { return true; }, 'Invalid name', 'OK');
 	return false;
     }
@@ -687,7 +699,7 @@ $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', 
     nickname = app.validateName(nickname, false);
     
     if (!name.valid || !nickname.valid) {
-	alert('A name must be at least 3 characters long.');
+	navigator.notification.confirm('A name must consist of at least 3 characters.', function () { return true; }, 'Invalid name', 'OK');
 	return false;
     }
     

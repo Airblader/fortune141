@@ -18,10 +18,6 @@
         $(document).bind("mobileinit", function () {
             $.mobile.defaultPageTransition   = "none";
             $.mobile.defaultDialogTransition = "none";
-            
-            document.addEventListener('menubutton', function () {
-                $.mobile.changePage('index.html');    
-            }, false);
         
             $.getScript('js/general.js', function () {
                 app = new app();
@@ -38,15 +34,6 @@
         });
     </script>
     <script type="text/javascript" src="js/jquery.mobile.min.js"></script>
-    <script type="text/javascript">
-        $(document).on('pageshow', '#pageGame141', function () {
-            $.getScript('../../js/game141.js', function() {
-                app.currentGame = new StraightPool();
-                app.currentGame.initNewGame();
-                app.currentGame.initUI();
-            });
-        });
-    </script>
 </head>
 <body>
 
