@@ -204,6 +204,12 @@ function StraightPool () {
     // true when current shot is a break shot (e.g. first shot of game or after severe fouls)
     self.firstShot = true;
     
+    // how many points needed for winning
+    self.scoreGoal  = 100;
+    
+    // maximum number of innings (set 0 for none)
+    self.maxInnings = 0;
+    
     var btnAcceptPressed = false,
         yesno            = new Array("Yes", "No");
     
@@ -215,6 +221,7 @@ function StraightPool () {
                     id    : 0,
                     fouls : 0,
                     points: 0,
+		    obj   : undefined,	// holds the Player object
                };
     }
     
@@ -234,12 +241,17 @@ function StraightPool () {
     /*
      *	Initizalize a new game by resetting variables
      */
-    self.initNewGame = function () {
+    self.initNewGame = function (scoreGoal) {
+	var maxInnings = (typeof arguments[1] !== 'undefined') ? arguments[1] : 0;
+	
         self.players         = new Array(self.dummyPlayer(),
 					 self.dummyPlayer());
         self.currPlayer      = 0;
         self.firstShotOfRack = 0;
         self.innings          = new Array(self.dummyInning());
+	
+	self.scoreGoal  = scoreGoal;
+	self.maxInnings = maxInnings;
     }
     
     /*
@@ -258,8 +270,21 @@ function StraightPool () {
         self.innings.push(inning);
     }
     
-    self.setPlayer = function (idx) {
-        // ToDo
+    /*
+     *	Loads a player into the game
+     *		idx : Player 0 or 1
+     *		pID : pID of the player
+     */
+    self.setPlayers = function (pID1, pID2) {
+        var cbSuccess = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse,
+	    cbError   = (typeof arguments[3] !== 'undefined') ? arguments[3] : app.dummyFalse;
+	    
+	self.players[0].obj = new Player();
+	self.players[1].obj = new Player();
+	
+	self.players[0].obj.load(pID1, function () {
+	    self.players[1].obj.load(pID2, cbSuccess, cbError);
+	}, cbError);
     }
 	
     /*
@@ -615,7 +640,7 @@ function StraightPool () {
         }
         
         // ToDo : Win logic
-        if (self.players[0].points >= 100 || self.players[1].points >= 100) {
+        if (self.players[0].points >= 100 || self.players[1].points >= 100 || self.innings[self.innings.length-1].number >= self.maxInnings) {
             alert('Game over!');
         }
         
@@ -869,6 +894,15 @@ function StraightPool () {
     self.initUI = function () {
 	// enable loading screen
 	$('#panelLoading').show();
+	
+	// set score goal and player names
+	$('#game141ScoreGoal').html(self.scoreGoal);
+	$('#game141Player0Name').html(
+	    (self.players[0].obj.displayNickname) ? self.players[0].obj.nickname : self.players[0].obj.name
+	);
+	$('#game141Player1Name').html(
+	    (self.players[1].obj.displayNickname) ? self.players[1].obj.nickname : self.players[1].obj.name
+	);
 	
 	// set panel sizes
 	var panelHeights = self.getPanelHeights();

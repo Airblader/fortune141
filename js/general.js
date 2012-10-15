@@ -9,6 +9,7 @@ function app () {
     self.Players   = {
 	main : undefined,	// Main User
 	tmp  : undefined,	// Temporary used user (modifying users, ...)
+	ingame : new Array(),	// for games
     };
     
     self.imgPlayerPath = 'img/players/';
@@ -544,14 +545,101 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
 
 
 /*
- *	GAME STRAIGHT POOL PAGE
+ *	GAME STRAIGHT POOL
  */
 
+function game141SetPlayer (idx, pID) {
+    app.Players.ingame[idx] = new Player();
+    app.Players.ingame[idx].load(pID, function () {
+	$('#game141SetupPlayer' + idx + 'Name').html(app.Players.ingame[idx].name)
+                                               .data('pid', app.Players.ingame[idx].pID);
+	$('#game141SetupPlayer' + idx + 'Img') .attr('src', '../../' + app.imgPlayerPath + app.Players.ingame[idx].image);
+	
+	if ($('#game141SetupPlayer0Name').data('pid') != '-1' && $('#game141SetupPlayer1Name').data('pid') != '-1') {
+	    $('#game141SetupStartButton').button('enable'); 
+	}
+    });
+}
+
+$(document).on('pageshow', '#pageGame141Setup', function () {
+    $('#game141SetupStartButton').button('disable');
+    
+    // Set up the main player per default
+    game141SetPlayer(0, app.Players.main.pID);
+});
+
+$(document).off('click', '#game141SetupStartButton')
+	   .on ('click', '#game141SetupStartButton', function (event) {
+    event.preventDefault();
+    
+    $.mobile.changePage('game141.html', {
+	data : {
+	    player0    : $('#game141SetupPlayer0Name').data('pid'),
+	    player1    : $('#game141SetupPlayer1Name').data('pid'),
+	    scoreGoal  : $('#game141SetupScoreGoal')  .val()      ,
+	    maxInnings : $('game141SetupMaxInnings')  .val()      ,
+	}	
+    });
+});
+
+$(document).off('click', '#game141SetupPlayerGrid div')
+	   .on ('click', '#game141SetupPlayerGrid div', function (event) {
+    event.preventDefault();
+    
+    var element_id = $(this).attr('id'),
+	idx	   = element_id.substr(element_id.length-1, 1);
+    
+    $('#popupGame141SelectPlayer').data('player', idx)
+				  .popup('open', {y : 0});
+});
+	   
+$(document).on('popupbeforeposition', '#popupGame141SelectPlayer', function () {
+    var player = parseInt( $('#popupGame141SelectPlayer').data('player') );
+    
+    var html  = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">';
+	html += '<li data-role="list-divider">Favorites</li>';
+    app.dbFortune.query('SELECT pID, Name, Nickname, Image, displayNickname FROM ' + app.dbFortune.tables.Player.name +
+			' WHERE isFavorite = "true" ORDER BY CASE pID WHEN "1" THEN pID END DESC, LOWER(Name)',
+			[],
+    function (tx, results) {
+	for (var i = 0; i < results.rows.length; i++) {
+	    var row    = results.rows.item(i),
+		filter = row['Name'] + ' ' + row['Nickname'],
+		image  = (row['Image'] !== '') ? '<img src="../../' + app.imgPlayerPath + row['Image'] + '" />' : '';
+	    
+	    html += '<li data-filtertext="' + filter + '"><a href="#" onClick="javascript:game141SetPlayer(' + player + ', ' + row['pID'] + '); $(\'#popupGame141SelectPlayer\').popup(\'close\');">' + image
+	         +  ((row['displayNickname'] == 'true') ? row['Nickname'] : row['Name']) + '</a></li>';
+	}
+	
+	html += '<li data-role="list-divider">All</li>';
+	app.dbFortune.query('SELECT pID, Name, Nickname, displayNickname FROM ' + app.dbFortune.tables.Player.name + ' ORDER BY LOWER(Name)',
+			    [],
+	function (tx, results) {
+	    for (var i = 0; i < results.rows.length; i++) {
+		var row    = results.rows.item(i),
+		    filter = row['Name'] + ' ' + row['Nickname'];
+		
+		html += '<li data-filtertext="' + filter + '"><a href="#" onClick="javascript:game141SetPlayer(' + player + ', ' + row['pID'] + '); $(\'#popupGame141SelectPlayer\').popup(\'close\');">'
+		     +  ((row['displayNickname'] == 'true') ? row['Nickname'] : row['Name']) + '</a></li>';
+	    }
+	   
+	    html += '</ul>';
+	    $('#game141PlayerList').html(html).trigger('create');
+	});
+    });
+});
+
 $(document).on('pageshow', '#pageGame141', function () {
+    var url        = $.url( $.url().attr('fragment') ),
+	pID0       = parseInt(url.param('player0')),
+	pID1       = parseInt(url.param('player1')),
+	scoreGoal  = parseInt(url.param('scoreGoal')),
+	maxInnings = parseInt(url.param('maxInnings'));
+    
     $.getScript('../../js/game141.js', function() {
 	app.currentGame = new StraightPool();
-	app.currentGame.initNewGame();
-	app.currentGame.initUI();
+	app.currentGame.initNewGame(scoreGoal, maxInnings);
+	app.currentGame.setPlayers(pID0, pID1, app.currentGame.initUI);
     });
 });
 
@@ -569,11 +657,12 @@ $(document).on('pageshow', '#pagePlayersList', function () {
 			[],
     function (tx, results) {
 	for (var i = 0; i < results.rows.length; i++) {
-	    var row   = results.rows.item(i),
-		image = (row['Image'] !== '') ? '<img src="../../' + app.imgPlayerPath + row['Image'] + '" />' : '';
+	    var row    = results.rows.item(i),
+		filter = row['Name'] + ' ' + row['Nickname'],
+		image  = (row['Image'] !== '') ? '<img src="../../' + app.imgPlayerPath + row['Image'] + '" />' : '';
 	    
-	    html += '<li><a href="player_details.html?pID=' + row['pID'] + '">' + image + row['Name']
-	         +  ((row['displayNickname'] == 'true') ? ('<br />(' + row['Nickname'] + ')') : '') + '</a></li>';
+	    html += '<li data-filtertext="' + filter + '"><a href="player_details.html?pID=' + row['pID'] + '">' + image
+	         +  ((row['displayNickname'] == 'true') ? row['Nickname'] : row['Name']) + '</a></li>';
 	}
 	
 	html += '<li data-role="list-divider">All</li>';
@@ -581,9 +670,11 @@ $(document).on('pageshow', '#pagePlayersList', function () {
 			    [],
 	function (tx, results) {
 	    for (var i = 0; i < results.rows.length; i++) {
-		var row = results.rows.item(i);
+		var row    = results.rows.item(i),
+		    filter = row['Name'] + ' ' + row['Nickname'];
 		
-		html += '<li><a href="player_details.html?pID=' + row['pID'] + '">' + row['Name'] + '</a></li>';
+		html += '<li data-filtertext="' + filter + '"><a href="player_details.html?pID=' + row['pID'] + '">'
+		     +  ((row['displayNickname'] == 'true') ? row['Nickname'] : row['Name']) + '</a></li>';
 	    }
 	   
 	    html += '</ul>';
