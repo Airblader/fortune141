@@ -201,6 +201,11 @@ function StraightPool () {
     self.pageName = '#pageGame141';
     self.ballRack = new BallRack(false);
     
+    self.gameID          = -1;
+    self.isFinished      = false;
+    self.isTrainingsGame = false;
+    self.winner          = -1;
+    
     // true when current shot is a break shot (e.g. first shot of game or after severe fouls)
     self.firstShot = true;
     
@@ -242,7 +247,8 @@ function StraightPool () {
      *	Initizalize a new game by resetting variables
      */
     self.initNewGame = function (scoreGoal) {
-	var maxInnings = (typeof arguments[1] !== 'undefined') ? arguments[1] : 0;
+	var maxInnings      = (typeof arguments[1] !== 'undefined') ? arguments[1] : 0,
+	    isTrainingsGame = (typeof arguments[2] !== 'undefined') ? arguments[2] : self.isTrainingsGame;
 	
         self.players         = new Array(self.dummyPlayer(),
 					 self.dummyPlayer());
@@ -250,8 +256,9 @@ function StraightPool () {
         self.firstShotOfRack = 0;
         self.innings          = new Array(self.dummyInning());
 	
-	self.scoreGoal  = scoreGoal;
-	self.maxInnings = maxInnings;
+	self.scoreGoal       = scoreGoal;
+	self.maxInnings      = maxInnings;
+	self.isTrainingsGame = isTrainingsGame;
     }
     
     /*
@@ -318,14 +325,88 @@ function StraightPool () {
 	}
     }
     
+    /*
+     *	Converts innings into a string used in the database.
+     *	The format is X,X,X;X,X,X;X,X,X;... -- the numbers, in this order,
+     *	stand for points, fouls and whether the inning ended in a safety.
+     */
+    self.inningsToString = function () {
+	var inning = new Array('', '');
+	
+	for (var i = 0; i < self.innings.length; i++) {
+	    inning[0] +=   self.innings[i].points[0]               + ','
+	              +    self.innings[i].foulPts[0]              + ','
+		      +  ((self.innings[i].safety[0]) ? '1' : '0') + ';';
+		      
+	    inning[1] +=   self.innings[i].points[1]               + ','
+	              +    self.innings[i].foulPts[1]              + ','
+		      +  ((self.innings[i].safety[1]) ? '1' : '0') + ';';
+	}
+	
+	return inning;
+    }
+    
     self.loadGame = function () {
         // ToDo
         return false;
     }
     
-    self.saveGame = function () {
-        // ToDo
-        return false;
+    /*
+     *	Saves game to database. If the game already exists, the database entry is modified,
+     *	otherwise a new entry will be created.
+     */
+    self.saveGame = function () {	
+	// no entry exists yet
+	if (self.gameID == -1) {
+	    var sql = 'INSERT INTO '
+		    + app.dbFortune.tables.Game141.name + ' '
+		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141, false, false) + ' '
+		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		    
+	    var timestamp  = Math.floor(Date.now() / 1000).toFixed(0),
+		strInnings = self.inningsToString();
+		    
+	    app.dbFortune.query(sql,
+				[timestamp,
+				 self.players[0].obj.pID,
+				 self.players[1].obj.pID,
+				 self.scoreGoal,
+				 self.maxInnings,
+				 strInnings[0],
+				 strInnings[1],
+				(self.isTrainingsGame) ? '1' : '0',
+				(self.isFinished) ? '1' : '0',
+				 self.winner,
+				 '',
+				 '0',
+				 '0'
+				],
+		function (tx, result) {
+		    self.gameID = result.insertId;    
+		},
+		app.dummyFalse
+	    );
+	    
+	    return true;
+	}
+	
+	// modify existing entry
+	var sql = 'UPDATE ' + app.dbFortune.tables.Game141.name + ' SET '
+	        + 'InningsPlayer1=?, InningsPlayer2=?, isFinished=?, Winner=? '
+		+ 'WHERE gID="' + self.gameID + '"';
+		
+	var strInnings = self.inningsToString();
+		
+	app.dbFortune.query(sql,
+			    [strInnings[0],
+			     strInnings[1],
+			    (self.isFinished) ? '1' : '0',
+			     self.winner
+			    ],
+	    app.dummyFalse,
+	    app.dummyFalse
+	);
+	return true;
     }
     
     /*
@@ -640,8 +721,22 @@ function StraightPool () {
         }
         
         // ToDo : Win logic
-        if (self.players[0].points >= self.scoreGoal || self.players[1].points >= self.scoreGoal || self.innings[self.innings.length-1].number >= self.maxInnings) {
-            alert('Game over!');
+        if ((self.players[0].points >= self.scoreGoal || self.players[1].points >= self.scoreGoal) ||
+	    (self.maxInnings > 0 && self.innings[self.innings.length-1].number >= self.maxInnings)) {
+	    self.isFinished = true;
+	    self.winner     = self.players[ret.currPlayer].obj.pID;
+            
+	    //alert('Game over!');
+	    navigator.notification.confirm(self.players[ret.currPlayer].obj.name + ' has won the game!',
+		function () {
+		    self.saveGame();
+		    $.mobile.changePage('../../index.html');
+		},
+		'Game over!',
+		'OK'
+	    );
+	    
+	    return true;
         }
         
         // communicate the new settings to the rack
@@ -650,6 +745,7 @@ function StraightPool () {
         self.ballRack.selectedBall = ret.ballsOnTable;
         
         self.ballRack.redraw();
+	self.saveGame();
 	return true;
     }
     
@@ -903,6 +999,9 @@ function StraightPool () {
 	$('#game141Player1Name').html(
 	    (self.players[1].obj.displayNickname && self.players[1].obj.nickname.length != 0) ? self.players[1].obj.nickname : self.players[1].obj.name
 	);
+	
+	// save game
+	self.saveGame();
 	
 	// set panel sizes
 	var panelHeights = self.getPanelHeights();

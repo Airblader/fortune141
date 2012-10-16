@@ -8,13 +8,20 @@ function app () {
     
     self.Players   = {
 	main : undefined,	// Main User
-	tmp  : undefined,	// Temporary used user (modifying users, ...)
+	tmp  : undefined,	// Temporarily used user (modifying users, ...)
 	ingame : new Array(),	// for games
     };
     
     self.imgPlayerPath = 'img/players/';
     
+    // holds the currently running game
     self.currentGame = undefined;
+    
+    // key names for running games
+    self.keyActiveGame = {
+	id   : 'activeGame',
+	type : 'activeGameType', 
+    };
     
     // Dummy functions to avoid unneccessary anonymous functions
     self.dummyFalse = function () { return false; }
@@ -323,7 +330,7 @@ function dbFortune () {
 	Game141 : {
 	    name : 'Game141',
 	    fields : new Array(
-		'ID',
+		'gID',
 		'Timestamp',
 		'Player1',
 		'Player2',
@@ -695,10 +702,11 @@ $(document).off('click', '#game141SetupSubmitButton')
     
     $.mobile.changePage('game141.html', {
 	data : {
-	    player0    : $('#game141SetupPlayer0Name').data('pid'),
-	    player1    : $('#game141SetupPlayer1Name').data('pid'),
-	    scoreGoal  : $('#game141SetupScoreGoal')  .val()      ,
-	    maxInnings : $('game141SetupMaxInnings')  .val()      ,
+	    player0         : $('#game141SetupPlayer0Name')    .data('pid'),
+	    player1         : $('#game141SetupPlayer1Name')    .data('pid'),
+	    scoreGoal       : $('#game141SetupScoreGoal')      .val()      ,
+	    maxInnings      : $('#game141SetupMaxInnings')     .val()      ,
+	    isTrainingsGame : $('#game141SetupIsTrainingsGame').val()      ,
 	}	
     });
 });
@@ -716,15 +724,16 @@ $(document).off('click', '#game141SetupPlayerGrid div')
 });
 
 $(document).on('pageshow', '#pageGame141', function () {
-    var url        = $.url( $.url().attr('fragment') ),
-	pID0       = parseInt(url.param('player0')),
-	pID1       = parseInt(url.param('player1')),
-	scoreGoal  = parseInt(url.param('scoreGoal')),
-	maxInnings = parseInt(url.param('maxInnings'));
+    var url             = $.url( $.url().attr('fragment') ),
+	pID0            = parseInt(url.param('player0')),
+	pID1            = parseInt(url.param('player1')),
+	scoreGoal       = parseInt(url.param('scoreGoal')),
+	maxInnings      = parseInt(url.param('maxInnings')),
+	isTrainingsGame = parseInt(url.param('isTrainingsGame'));
     
     $.getScript('../../js/game141.js', function() {
 	app.currentGame = new StraightPool();
-	app.currentGame.initNewGame(scoreGoal, maxInnings);
+	app.currentGame.initNewGame(scoreGoal, maxInnings, isTrainingsGame);
 	app.currentGame.setPlayers(pID0, pID1, app.currentGame.initUI);
     });
 });
