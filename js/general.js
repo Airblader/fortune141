@@ -285,37 +285,116 @@ function dbFortune () {
      */
     self.tables = {
         Player : {
-                    name   : 'Player',
-                    fields : new Array(
-                                'pID',
-                                'Name',
-                                'Nickname',
-                                'Image',
-                                'isFavorite',
-                                'displayNickname',
-				'HS',
-				'GD',
-				'Quota'
-                             ),
-                    types : new Array('INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
-                                      'TEXT NOT NULL',
-                                      'TEXT',
-                                      'TEXT',
-                                      'BIT',
-                                      'BIT',
-				      'INTEGER',
-				      'TEXT',
-				      'TEXT'),
-                    defaults : new Array(undefined,
-                                         '""',
-                                         undefined,
-                                         undefined,
-                                         '0',
-                                         '0',
-					 '0',
-					 '"0"',
-					 '"0"'),
-                 },
+            name : 'Player',
+            fields : new Array(
+                'pID',
+                'Name',
+                'Nickname',
+                'Image',
+                'isFavorite',
+                'displayNickname',
+		'HS',
+		'GD',
+		'Quota'
+            ),
+            types : new Array(
+		'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
+                'TEXT NOT NULL',
+                'TEXT',
+                'TEXT',
+                'BIT',
+                'BIT',
+		'INTEGER',
+		'TEXT',
+		'TEXT'
+	    ),
+            defaults : new Array(
+		undefined,
+                '""',
+                undefined,
+                undefined,
+                '0',
+                '0',
+		'0',
+		'"0"',
+		'"0"'
+	    ),
+        },
+	Game141 : {
+	    name : 'Game141',
+	    fields : new Array(
+		'ID',
+		'Timestamp',
+		'Player1',
+		'Player2',
+		'ScoreGoal',
+		'MaxInnings',
+		'InningsPlayer1',
+		'InningsPlayer2',
+		'isTrainingGame',
+		'isFinished',
+		'Winner',
+		'Comment',
+		'isUploaded',
+		'isReadyForDeletion'
+	    ),
+	    types : new Array(
+		'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
+		'TEXT',
+		'INTEGER NOT NULL',
+		'INTEGER NOT NULL',
+		'INTEGER',
+		'INTEGER',
+		'TEXT',
+		'TEXT',
+		'BIT',
+		'BIT',
+		'INTEGER',
+		'TEXT',
+		'BIT',
+		'BIT'
+	    ),
+	    defaults : new Array(
+		undefined,
+		undefined,
+		'-1',
+		'-1',
+		undefined,
+		'0',
+		undefined,
+		undefined,
+		'0',
+		'0',
+		'-1',
+		undefined,
+		'0',
+		'0'
+	    ),
+	},
+	Game141Profile : {
+	    name : 'Game141Profile',
+	    fields : new Array(
+		'ID',
+		'ScoreGoal',
+		'MaxInnings',
+		'isTrainingsGame',
+		'Usage'
+	    ),
+	    types : new Array(
+		'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
+		'INTEGER',
+		'INTEGER',
+		'BIT',
+		'INTEGER'
+	    ),
+	    defaults : new Array(
+		undefined,
+		undefined,
+		'0',
+		'0',
+		'0'
+	    ),
+	},
     };
     
     /*
@@ -551,25 +630,67 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
 function game141SetPlayer (idx, pID) {
     app.Players.ingame[idx] = new Player();
     app.Players.ingame[idx].load(pID, function () {
-	$('#game141SetupPlayer' + idx + 'Name').html(app.Players.ingame[idx].name)
+	var dispName = (app.Players.ingame[idx].displayNickname && app.Players.ingame[idx].nickname.length != 0) ? app.Players.ingame[idx].nickname : app.Players.ingame[idx].name;
+	
+	$('#game141SetupPlayer' + idx + 'Name').html(dispName)
                                                .data('pid', app.Players.ingame[idx].pID);
 	$('#game141SetupPlayer' + idx + 'Img') .attr('src', '../../' + app.imgPlayerPath + app.Players.ingame[idx].image);
 	
 	if ($('#game141SetupPlayer0Name').data('pid') != '-1' && $('#game141SetupPlayer1Name').data('pid') != '-1') {
-	    $('#game141SetupStartButton').button('enable'); 
+	    $('#game141SetupSubmitButton').button('enable'); 
 	}
     });
 }
 
 $(document).on('pageshow', '#pageGame141Setup', function () {
-    $('#game141SetupStartButton').button('disable');
+    $('#game141Setup2')           .hide();
+    $('#game141SetupSubmitButton').button('disable');
     
     // Set up the main player per default
     game141SetPlayer(0, app.Players.main.pID);
+    
+    // create player list
+    var html  = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">';
+	html += '<li data-role="list-divider">Favorites</li>';
+    app.dbFortune.query('SELECT pID, Name, Nickname, Image, displayNickname FROM ' + app.dbFortune.tables.Player.name +
+			' WHERE isFavorite = "true" ORDER BY CASE pID WHEN "1" THEN pID END DESC, LOWER(Name)',
+			[],
+    function (tx, results) {
+	for (var i = 0; i < results.rows.length; i++) {
+	    var row      = results.rows.item(i),
+		filter   = row['Name'] + ' ' + row['Nickname'],
+		dispName = ((row['displayNickname'] == 'true' && row['Nickname'].length != 0) ? row['Nickname'] : row['Name']),
+		image    = (row['Image'] !== '') ? '<img src="../../' + app.imgPlayerPath + row['Image'] + '" />' : '';
+	    
+	    html += '<li data-filtertext="' + filter + '">'
+	         +  '<a href="#" onClick="javascript:game141SetPlayer($(\'#game141Setup2\').data(\'player\'), ' + row['pID'] + '); '
+		 +  '$(\'#game141Setup2\').hide(); $(\'#game141Setup1\').show();">' + image
+	         +  dispName + '</a></li>';
+	}
+	
+	html += '<li data-role="list-divider">All</li>';
+	app.dbFortune.query('SELECT pID, Name, Nickname, displayNickname FROM ' + app.dbFortune.tables.Player.name + ' ORDER BY LOWER(Name)',
+			    [],
+	function (tx, results) {
+	    for (var i = 0; i < results.rows.length; i++) {
+		var row      = results.rows.item(i),
+		    dispName = ((row['displayNickname'] == 'true' && row['Nickname'].length != 0) ? row['Nickname'] : row['Name']),
+		    filter   = row['Name'] + ' ' + row['Nickname'];
+		
+		html += '<li data-filtertext="' + filter + '">'
+		     +  '<a href="#" onClick="javascript:game141SetPlayer($(\'#game141Setup2\').data(\'player\'), ' + row['pID'] + '); '
+		     +  '$(\'#game141Setup2\').hide(); $(\'#game141Setup1\').show();">'
+		     +  dispName + '</a></li>';
+	    }
+	   
+	    html += '</ul>';
+	    $('#game141Setup2').html(html).trigger('create');
+	});
+    });
 });
 
-$(document).off('click', '#game141SetupStartButton')
-	   .on ('click', '#game141SetupStartButton', function (event) {
+$(document).off('click', '#game141SetupSubmitButton')
+	   .on ('click', '#game141SetupSubmitButton', function (event) {
     event.preventDefault();
     
     $.mobile.changePage('game141.html', {
@@ -588,45 +709,10 @@ $(document).off('click', '#game141SetupPlayerGrid div')
     
     var element_id = $(this).attr('id'),
 	idx	   = element_id.substr(element_id.length-1, 1);
-    
-    $('#popupGame141SelectPlayer').data('player', idx)
-				  .popup('open', {y : 0});
-});
-	   
-$(document).on('popupbeforeposition', '#popupGame141SelectPlayer', function () {
-    var player = parseInt( $('#popupGame141SelectPlayer').data('player') );
-    
-    var html  = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">';
-	html += '<li data-role="list-divider">Favorites</li>';
-    app.dbFortune.query('SELECT pID, Name, Nickname, Image, displayNickname FROM ' + app.dbFortune.tables.Player.name +
-			' WHERE isFavorite = "true" ORDER BY CASE pID WHEN "1" THEN pID END DESC, LOWER(Name)',
-			[],
-    function (tx, results) {
-	for (var i = 0; i < results.rows.length; i++) {
-	    var row    = results.rows.item(i),
-		filter = row['Name'] + ' ' + row['Nickname'],
-		image  = (row['Image'] !== '') ? '<img src="../../' + app.imgPlayerPath + row['Image'] + '" />' : '';
-	    
-	    html += '<li data-filtertext="' + filter + '"><a href="#" onClick="javascript:game141SetPlayer(' + player + ', ' + row['pID'] + '); $(\'#popupGame141SelectPlayer\').popup(\'close\');">' + image
-	         +  ((row['displayNickname'] == 'true') ? row['Nickname'] : row['Name']) + '</a></li>';
-	}
 	
-	html += '<li data-role="list-divider">All</li>';
-	app.dbFortune.query('SELECT pID, Name, Nickname, displayNickname FROM ' + app.dbFortune.tables.Player.name + ' ORDER BY LOWER(Name)',
-			    [],
-	function (tx, results) {
-	    for (var i = 0; i < results.rows.length; i++) {
-		var row    = results.rows.item(i),
-		    filter = row['Name'] + ' ' + row['Nickname'];
-		
-		html += '<li data-filtertext="' + filter + '"><a href="#" onClick="javascript:game141SetPlayer(' + player + ', ' + row['pID'] + '); $(\'#popupGame141SelectPlayer\').popup(\'close\');">'
-		     +  ((row['displayNickname'] == 'true') ? row['Nickname'] : row['Name']) + '</a></li>';
-	    }
-	   
-	    html += '</ul>';
-	    $('#game141PlayerList').html(html).trigger('create');
-	});
-    });
+    $('#game141Setup1').hide();
+    $('#game141Setup2').data('player', idx)
+		       .show();
 });
 
 $(document).on('pageshow', '#pageGame141', function () {
@@ -657,12 +743,13 @@ $(document).on('pageshow', '#pagePlayersList', function () {
 			[],
     function (tx, results) {
 	for (var i = 0; i < results.rows.length; i++) {
-	    var row    = results.rows.item(i),
-		filter = row['Name'] + ' ' + row['Nickname'],
-		image  = (row['Image'] !== '') ? '<img src="../../' + app.imgPlayerPath + row['Image'] + '" />' : '';
+	    var row      = results.rows.item(i),
+		filter   = row['Name'] + ' ' + row['Nickname'],
+		dispName = ((row['displayNickname'] == 'true' && row['Nickname'].length != 0) ? row['Nickname'] : row['Name']),
+		image    = (row['Image'] !== '') ? '<img src="../../' + app.imgPlayerPath + row['Image'] + '" />' : '';
 	    
 	    html += '<li data-filtertext="' + filter + '"><a href="player_details.html?pID=' + row['pID'] + '">' + image
-	         +  ((row['displayNickname'] == 'true') ? row['Nickname'] : row['Name']) + '</a></li>';
+	         +  dispName + '</a></li>';
 	}
 	
 	html += '<li data-role="list-divider">All</li>';
@@ -670,11 +757,12 @@ $(document).on('pageshow', '#pagePlayersList', function () {
 			    [],
 	function (tx, results) {
 	    for (var i = 0; i < results.rows.length; i++) {
-		var row    = results.rows.item(i),
-		    filter = row['Name'] + ' ' + row['Nickname'];
+		var row      = results.rows.item(i),
+		    dispName = ((row['displayNickname'] == 'true' && row['Nickname'].length != 0) ? row['Nickname'] : row['Name']),
+		    filter   = row['Name'] + ' ' + row['Nickname'];
 		
 		html += '<li data-filtertext="' + filter + '"><a href="player_details.html?pID=' + row['pID'] + '">'
-		     +  ((row['displayNickname'] == 'true') ? row['Nickname'] : row['Name']) + '</a></li>';
+		     +  dispName + '</a></li>';
 	    }
 	   
 	    html += '</ul>';

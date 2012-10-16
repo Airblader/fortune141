@@ -4,13 +4,14 @@
 </head>
 <body>
 
-<div data-role="page" id="pageGame141Setup" data-add-back-btn="true">
+<div data-role="page" id="pageGame141Setup">
     <div data-role="header">
-        <h1>Settings</h1>
+        <a href="../../index.html" onClick="" data-icon="arrow-l">Back</a>
+        <h1>Select Players</h1>
     </div>
     
-    <div data-role="content">
-        <input type="button" id="game141SetupStartButton" value="Start Game" data-theme="e" />
+    <div data-role="content" id="game141Setup1">
+        <input type="button" id="game141SetupSubmitButton" value="Start Game" data-theme="e" />
         
         <div class="ui-grid-a ui-bar" id="game141SetupPlayerGrid" style="text-align: center; cursor: pointer;">
             <div class="ui-block-a" id="game141SetupPlayer0">
@@ -42,15 +43,8 @@
         </div>
     </div>
     
-    <!-- Player Select Popup -->
-    <div id="popupGame141SelectPlayer" data-role="popup" data-corners="false">
-        <div data-role="content" id="game141PlayerList">
-            <!-- Dynamically created -->
-            <ul data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">
-                <li data-role="list-divider">Favorites</li>
-                <li><a href="#"><img src="#" /></a></li>
-            </ul>
-        </div>
+    <div data-role="content" id="game141Setup2">
+        
     </div>
 </div>
 

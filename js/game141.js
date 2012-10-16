@@ -640,7 +640,7 @@ function StraightPool () {
         }
         
         // ToDo : Win logic
-        if (self.players[0].points >= 100 || self.players[1].points >= 100 || self.innings[self.innings.length-1].number >= self.maxInnings) {
+        if (self.players[0].points >= self.scoreGoal || self.players[1].points >= self.scoreGoal || self.innings[self.innings.length-1].number >= self.maxInnings) {
             alert('Game over!');
         }
         
@@ -898,10 +898,10 @@ function StraightPool () {
 	// set score goal and player names
 	$('#game141ScoreGoal').html(self.scoreGoal);
 	$('#game141Player0Name').html(
-	    (self.players[0].obj.displayNickname) ? self.players[0].obj.nickname : self.players[0].obj.name
+	    (self.players[0].obj.displayNickname && self.players[0].obj.nickname.length != 0) ? self.players[0].obj.nickname : self.players[0].obj.name
 	);
 	$('#game141Player1Name').html(
-	    (self.players[1].obj.displayNickname) ? self.players[1].obj.nickname : self.players[1].obj.name
+	    (self.players[1].obj.displayNickname && self.players[1].obj.nickname.length != 0) ? self.players[1].obj.nickname : self.players[1].obj.name
 	);
 	
 	// set panel sizes
