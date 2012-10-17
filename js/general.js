@@ -220,6 +220,14 @@ function Player () {
 	},
 	cbError);
     }
+    
+    /*
+     *	Returns either name or nickname depending on whether the nickname should
+     *	be used and is not empty
+     */
+    self.getDisplayName = function () {
+	return (self.displayNickname && self.nickname.length != 0) ? self.nickname : self.name;
+    }
 }
 
 
@@ -334,6 +342,8 @@ function dbFortune () {
 		'Timestamp',
 		'Player1',
 		'Player2',
+		'PointsPlayer1',
+		'PointsPlayer2',
 		'ScoreGoal',
 		'MaxInnings',
 		'InningsPlayer1',
@@ -356,6 +366,8 @@ function dbFortune () {
 		'INTEGER NOT NULL',
 		'INTEGER',
 		'INTEGER',
+		'INTEGER',
+		'INTEGER',
 		'TEXT',
 		'TEXT',
 		'INTEGER',
@@ -374,6 +386,8 @@ function dbFortune () {
 		undefined,
 		'-1',
 		'-1',
+		'0',
+		'0',
 		undefined,
 		'0',
 		undefined,
@@ -641,6 +655,73 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
     return true;
 });
 
+/*
+ *	RESUME GAME
+ */
+
+$(document).on('pageshow', '#pageResumeGame', function () {
+    function output141 (rows, idx) {
+	var row = rows.item(idx);
+	
+	var date  = new Date(1000 * parseInt(row['Timestamp'])),
+	    year  = date.getFullYear(),
+	    month = date.getMonth(),
+	    day   = date.getDate();
+	    
+	app.Players.tmp = new Player();
+	
+	app.Players.tmp.load(parseInt(row['Player1']), function () {
+	    var name1 = app.Players.tmp.getDisplayName();
+	    
+	    app.Players.tmp.load(parseInt(row['Player2']), function () {
+		var name2 = app.Players.tmp.getDisplayName();
+		
+		var html  = '<li><a href="#" onClick="javascript:$(\'#resumeGamePopup\').data(\'gID\', ' + row['gID'] + ').popup(\'open\');">';
+			
+		html += '<p><strong>' + name1 + ' vs. ' + name2 + '</strong></p>';
+		html += '<p>Score: ' + row['PointsPlayer1'] + ' &ndash; ' + row['PointsPlayer2'] + '</p>';
+		html += '<p>Straight Pool to ' + row['ScoreGoal'] + '</p>';
+		html += '<p class="ui-li-aside">' + (month+'/'+day+'/'+year) + '</p>';
+		    
+		html += '</a></li>';
+			
+		$('#resumeGameList').append(html).listview('refresh');
+		if (idx < rows.length-1) {
+		    output141(rows, idx+1);
+		}
+	    });
+	});
+    }
+    
+    
+    app.dbFortune.query('SELECT '
+			+ 'gID, Timestamp, Player1, Player2, PointsPlayer1, PointsPlayer2, ScoreGoal FROM '
+			+ app.dbFortune.tables.Game141.name
+			+ ' WHERE isFinished="0" ORDER BY Timestamp DESC',
+			[],
+	function (tx, result) {
+	    var rows = result.rows;
+	    if (rows.length == 0) {
+		return false;
+	    }
+
+	    output141(rows, 0);	    
+	    return true;
+	}
+    );
+});
+
+$(document).off('click', '#resumeGameResumeButton')
+           .on ('click', '#resumeGameResumeButton', function (event) {
+    event.preventDefault();
+    
+    $.mobile.changePage('game141/game141.html', {
+	data : {
+	    gID : parseInt( $('#resumeGamePopup').data('gID') ),
+	}	
+    });
+});
+
 
 /*
  *	GAME STRAIGHT POOL
@@ -738,17 +819,29 @@ $(document).off('click', '#game141SetupPlayerGrid div')
 });
 
 $(document).on('pageshow', '#pageGame141', function () {
-    var url             = $.url( $.url().attr('fragment') ),
-	pID0            = parseInt(url.param('player0')),
-	pID1            = parseInt(url.param('player1')),
-	scoreGoal       = parseInt(url.param('scoreGoal')),
-	maxInnings      = parseInt(url.param('maxInnings')),
-	isTrainingsGame = parseInt(url.param('isTrainingsGame'));
+    var url = $.url( $.url().attr('fragment') );
+    
+    var gID  = parseInt(url.param('gID')),
+	load = true;
+    if (typeof gID === 'undefined' || isNaN(gID)) {
+	load = false;
+	
+	var pID0            = parseInt(url.param('player0')),
+	    pID1            = parseInt(url.param('player1')),
+	    scoreGoal       = parseInt(url.param('scoreGoal')),
+	    maxInnings      = parseInt(url.param('maxInnings')),
+	    isTrainingsGame = parseInt(url.param('isTrainingsGame'));
+    }
     
     $.getScript('../../js/game141.js', function() {
 	app.currentGame = new StraightPool();
-	app.currentGame.initNewGame(scoreGoal, maxInnings, isTrainingsGame);
-	app.currentGame.setPlayers(pID0, pID1, app.currentGame.initUI);
+	if (load) {
+	    app.currentGame.loadGame(gID, app.currentGame.initUI);
+	}
+	else {
+	    app.currentGame.initNewGame(scoreGoal, maxInnings, isTrainingsGame);
+	    app.currentGame.setPlayers(pID0, pID1, app.currentGame.initUI);
+	}
     });
 });
 

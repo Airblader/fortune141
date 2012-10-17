@@ -419,29 +419,24 @@ function StraightPool () {
 		self.players = new Array(self.dummyPlayer(),
 					 self.dummyPlayer());
 		
-		self.players[0].fouls = parseInt(row['FoulsPlayer1']);
-		self.players[0].obj   = new Player();
-		self.players[0].obj.load(parseInt(row['Player1']));
+		self.players[0].points = parseInt(row['PointsPlayer1']);
+		self.players[0].fouls  = parseInt(row['FoulsPlayer1']);
 		
-		self.players[1].fouls = parseInt(row['FoulsPlayer2']);
-		self.players[1].obj   = new Player();
-		self.players[1].obj.load(parseInt(row['Player2']));
+		self.players[1].points = parseInt(row['PointsPlayer2']);
+		self.players[1].fouls  = parseInt(row['FoulsPlayer2']);
 		
 		self.currPlayer = parseInt(row['CurrPlayer']);
 		self.innings    = self.stringToInnings(row['InningsPlayer1'],
 						       row['InningsPlayer2']);
 		
-		// recalculate total points
-		for (var i = 0; i < self.innings.length; i++) {
-		    self.players[0].points += (self.innings[i].ptsToAdd[0] == -1) ? self.innings[i].points[0] : 0;
-		    self.players[1].points += (self.innings[i].ptsToAdd[1] == -1) ? self.innings[i].points[1] : 0;
-		}
-		
 		self.ballRack              = new BallRack(self.debugMode);
 		self.ballRack.ballsOnTable = parseInt(row['BallsOnTable']);
 		self.ballRack.selectedBall = parseInt(row['BallsOnTable']);
 		
-		cbSuccess();
+		self.setPlayers(parseInt(row['Player1']),
+				parseInt(row['Player2']),
+				cbSuccess);
+		
 		return true;
 	    },
 	    cbError
@@ -458,7 +453,7 @@ function StraightPool () {
 	    var sql = 'INSERT INTO '
 		    + app.dbFortune.tables.Game141.name + ' '
 		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141, false, false) + ' '
-		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 		    
 	    var timestamp  = Math.floor(Date.now() / 1000).toFixed(0),
 		strInnings = self.inningsToString();
@@ -467,6 +462,8 @@ function StraightPool () {
 				[timestamp,
 				 self.players[0].obj.pID,
 				 self.players[1].obj.pID,
+				 self.players[0].points,
+				 self.players[1].points,
 				 self.scoreGoal,
 				 self.maxInnings,
 				 strInnings[0],
@@ -493,7 +490,8 @@ function StraightPool () {
 	
 	// modify existing entry
 	var sql = 'UPDATE ' + app.dbFortune.tables.Game141.name + ' SET '
-	        + 'InningsPlayer1=?, InningsPlayer2=?, FoulsPlayer1=?, FoulsPlayer2=?, BallsOnTable=?, CurrPlayer=?, isFinished=?, Winner=? '
+	        + 'InningsPlayer1=?, InningsPlayer2=?, PointsPlayer1=?, PointsPlayer2=?, '
+		+ 'FoulsPlayer1=?, FoulsPlayer2=?, BallsOnTable=?, CurrPlayer=?, isFinished=?, Winner=? '
 		+ 'WHERE gID="' + self.gameID + '"';
 		
 	var strInnings = self.inningsToString();
@@ -501,6 +499,8 @@ function StraightPool () {
 	app.dbFortune.query(sql,
 			    [strInnings[0],
 			     strInnings[1],
+			     self.players[0].points,
+			     self.players[1].points,
 			     self.players[0].fouls,
 			     self.players[1].fouls,
 			     self.ballRack.ballsOnTable,
@@ -617,6 +617,9 @@ function StraightPool () {
                 ret.rerack  = true;
             }
         }
+	else {
+	    self.players[currPlayer].fouls = 0;
+	}
         
         // inning ended with safety
         if (safety) {
@@ -748,6 +751,37 @@ function StraightPool () {
     }
     
     /*
+     *	Updates display for consecutive fouls
+     */
+    self.updateConsecutiveFoulsDisplay = function () {
+        for (var player = 0; player <= 1; player++) {
+            for (var foul = 1; foul <= 2; foul++) {
+                if (foul <= self.players[player].fouls) {
+                    $('#player' + player + 'foul' + foul).css('visibility', 'visible');
+		    continue;
+                }
+		$('#player' + player + 'foul' + foul).css('visibility', 'hidden');
+            }
+        }
+    }
+    
+    /*
+     *	Updates score display
+     */
+    self.updateScoreDisplay = function () {
+	$('#ptsPlayer0').html(self.players[0].points);
+        $('#ptsPlayer1').html(self.players[1].points);
+    }
+    
+    /*
+     *	Sets the marker for which player's turn it is
+     */
+    self.setActivePlayerMarker = function (activePlayer) {
+	$('#activePlayer').removeClass('activePlayer' + (1-activePlayer ))
+		          .addClass   ('activePlayer' + (self.currPlayer));
+    }
+    
+    /*
      *	Handles a click on the "Accept" button and triggers the game logic
      */
     self.handleAcceptButton = function (event) {
@@ -807,23 +841,11 @@ function StraightPool () {
         $('#ptsPlayer' + ret.currPlayer).html(tmpDisplay);
 	
         setTimeout(function() {
-            $('#ptsPlayer0').html(self.players[0].points);
-            $('#ptsPlayer1').html(self.players[1].points);
-            
-	    $('#activePlayer').removeClass('activePlayer' + (1-self.currPlayer))
-			      .addClass   ('activePlayer' + (  self.currPlayer)); // ToDo
+            self.updateScoreDisplay();
+	    self.setActivePlayerMarker(self.currPlayer);
         }, 500);
         
-        // display consecutive fouls
-        for (var player = 0; player <= 1; player++) {
-            for (var foul = 1; foul <= 2; foul++) {
-                if (foul <= self.players[player].fouls) {
-                    $('#player' + player + 'foul' + foul).css('visibility', 'visible');
-		    continue;
-                }
-		$('#player' + player + 'foul' + foul).css('visibility', 'hidden');
-            }
-        }
+        self.updateConsecutiveFoulsDisplay();
         
         // ToDo : Win logic
         if ((self.players[0].points >= self.scoreGoal || self.players[1].points >= self.scoreGoal) ||
@@ -835,7 +857,6 @@ function StraightPool () {
 		function () {
 		    self.saveGame();
 		    self.handleMinimizeMainPanelButton(null);
-		    //$.mobile.changePage('../../index.html');
 		},
 		'Game over!',
 		'OK'
@@ -1044,8 +1065,7 @@ function StraightPool () {
             self.switchPlayer();
         }
         
-        $('#activePlayer').removeClass('activePlayer' + (1-self.currPlayer)) // ToDo
-			  .addClass   ('activePlayer' +    self.currPlayer);
+        self.setActivePlayerMarker(self.currPlayer);
     }
     
     /*
@@ -1096,8 +1116,13 @@ function StraightPool () {
 	// enable loading screen
 	$('#panelLoading').show();
 	
-	// set score goal and player names
+	// set score goal, points and player names
 	$('#game141ScoreGoal').html(self.scoreGoal);
+	
+	self.updateScoreDisplay();
+	self.updateConsecutiveFoulsDisplay();
+	self.setActivePlayerMarker(self.currPlayer);
+	
 	$('#game141Player0Name').html(
 	    (self.players[0].obj.displayNickname && self.players[0].obj.nickname.length != 0) ? self.players[0].obj.nickname : self.players[0].obj.name
 	);
