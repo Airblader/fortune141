@@ -198,8 +198,8 @@ function BallRack (debugMode) {
 function StraightPool () {
     var self = this;
     
-    self.pageName = '#pageGame141';
-    self.debugMode = true;
+    self.pageName  = '#pageGame141';
+    self.debugMode = false;
     
     self.gameID          = -1;
     self.isFinished      = false;
@@ -831,11 +831,11 @@ function StraightPool () {
 	    self.isFinished = true;
 	    self.winner     = self.players[ret.currPlayer].obj.pID;
             
-	    //alert('Game over!');
 	    navigator.notification.confirm(self.players[ret.currPlayer].obj.name + ' has won the game!',
 		function () {
 		    self.saveGame();
-		    $.mobile.changePage('../../index.html');
+		    self.handleMinimizeMainPanelButton(null);
+		    //$.mobile.changePage('../../index.html');
 		},
 		'Game over!',
 		'OK'

@@ -655,7 +655,9 @@ function game141SetPlayer (idx, pID) {
                                                .data('pid', app.Players.ingame[idx].pID);
 	$('#game141SetupPlayer' + idx + 'Img') .attr('src', '../../' + app.imgPlayerPath + app.Players.ingame[idx].image);
 	
-	if ($('#game141SetupPlayer0Name').data('pid') != '-1' && $('#game141SetupPlayer1Name').data('pid') != '-1') {
+	$('#game141SetupSubmitButton').button('disable');
+	if (($('#game141SetupPlayer0Name').data('pid') != '-1' && $('#game141SetupPlayer1Name').data('pid') != '-1') &&
+	    (app.Players.ingame[1-idx].pID != pID)) {
 	    $('#game141SetupSubmitButton').button('enable'); 
 	}
     });
