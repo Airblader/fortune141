@@ -839,21 +839,36 @@ function StraightPool () {
 
         tmpDisplay = (tmpDisplay >= 0) ? "+"+tmpDisplay : tmpDisplay;
         $('#ptsPlayer' + ret.currPlayer).html(tmpDisplay);
-	
-        setTimeout(function() {
-            self.updateScoreDisplay();
-	    self.setActivePlayerMarker(self.currPlayer);
-        }, 500);
         
-        self.updateConsecutiveFoulsDisplay();
-        
-        // ToDo : Win logic
+        // check for end of game
         if ((self.players[0].points >= self.scoreGoal || self.players[1].points >= self.scoreGoal) ||
-	    (self.maxInnings > 0 && self.innings[self.innings.length-1].number >= self.maxInnings)) {
+	    (self.maxInnings > 0 && self.innings.length >= self.maxInnings && self.innings[self.innings.length-1].ptsToAdd[1-ret.currPlayer] == -1)) {
+	    // block all inputs
+	    setTimeout(
+		function () {
+		    self.ballRack.unsetHandler();
+		    self.updateScoreDisplay();
+		},
+		500
+	    );
+	    $('#usrAccept')     .off('click');
+	    $('#usrFoulDisplay').off('click').off('taphold');
+	    $('#usrSafeDisplay').off('click');
+	    
+	    // unset the current player marker
+	    $('#activePlayer').removeClass('activePlayer0')
+			      .removeClass('activePlayer1');
+	    
+	    // important for saving the game
 	    self.isFinished = true;
 	    self.winner     = self.players[ret.currPlayer].obj.pID;
             
-	    navigator.notification.confirm(self.players[ret.currPlayer].obj.name + ' has won the game!',
+	    // cap off last inning and total points to be no larger than the score goal
+	    self.innings[self.innings.length-1].points[ret.currPlayer] -= Math.max(0, self.players[ret.currPlayer].points - self.scoreGoal); 
+	    self.players[ret.currPlayer].points = Math.min(self.players[ret.currPlayer].points, self.scoreGoal);
+	    
+	    navigator.notification.confirm(
+		self.players[ret.currPlayer].obj.getDisplayName() + ' has won the game!',
 		function () {
 		    self.saveGame();
 		    self.handleMinimizeMainPanelButton(null);
@@ -864,6 +879,13 @@ function StraightPool () {
 	    
 	    return true;
         }
+	
+	setTimeout(function() {
+            self.updateScoreDisplay();
+	    self.setActivePlayerMarker(self.currPlayer);
+        }, 500);
+        
+        self.updateConsecutiveFoulsDisplay();
         
         // communicate the new settings to the rack
         self.firstShot             = ret.firstShot;
@@ -1055,7 +1077,7 @@ function StraightPool () {
      */
     self.handlePlayerSwitchButton = function (event) {
 	// if there is unprocessed business, let's take care of it
-        if (self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] != -1) {
+        if (self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] != -1 && self.innings[self.innings.length-1].foulPts[self.currPlayer] != 0) {
             self.processInput(15, 15, 0, false, false);
             
             $('#ptsPlayer0').html(self.players[0].points);
