@@ -3,7 +3,7 @@
         xmlns:gap   = "http://phonegap.com/ns/1.0"
         id          = "de.airblader.fortune"
         versionCode = "1" 
-        version     = "0.0.6">
+        version     = "0.0.7">
 
     <name>Fortune 14/1</name>
 

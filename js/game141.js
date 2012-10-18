@@ -651,7 +651,7 @@ function StraightPool () {
                 // if fouls were made or inning ended with a safety, the turn switches to the other player,
                 // unless a rerack takes place
                 if (switchPlayer && !hasToRerack) {
-                    self.innings[current].points[currPlayer] += self.multiplicator[currPlayer] * (self.innings[current].ptsToAdd[currPlayer] - self.innings[current].foulPts[currPlayer]);
+                    self.innings[current].points[currPlayer] += self.multiplicator[currPlayer] * (self.innings[current].ptsToAdd[currPlayer]) - self.innings[current].foulPts[currPlayer];
                     
                     self.innings[current].ptsToAdd[currPlayer] = -1;
                 }
@@ -662,7 +662,7 @@ function StraightPool () {
             
             default:
                 if (!hasToRerack) {
-                    self.innings[current].points[currPlayer] += self.multiplicator[currPlayer] * (self.innings[current].ptsToAdd[currPlayer] - self.innings[current].foulPts[currPlayer]);
+                    self.innings[current].points[currPlayer] += self.multiplicator[currPlayer] * (self.innings[current].ptsToAdd[currPlayer]) - self.innings[current].foulPts[currPlayer];
                 
                     self.innings[current].ptsToAdd[currPlayer] = -1;
                     switchPlayer = true;
@@ -853,7 +853,7 @@ function StraightPool () {
         tmpDisplay = (self.innings[ret.current].ptsToAdd[ret.currPlayer] == -1) ?
                 self.innings[ret.current].points[ret.currPlayer]
             :
-                self.multiplicator[ret.currPlayer] * (self.innings[ret.current].ptsToAdd[ret.currPlayer] - self.innings[ret.current].foulPts[ret.currPlayer]);
+                self.multiplicator[ret.currPlayer] * (self.innings[ret.current].ptsToAdd[ret.currPlayer]) - self.innings[ret.current].foulPts[ret.currPlayer];
 
         tmpDisplay = (tmpDisplay >= 0) ? "+"+tmpDisplay : tmpDisplay;
         $('#ptsPlayer' + ret.currPlayer).html(tmpDisplay);

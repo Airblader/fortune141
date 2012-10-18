@@ -13,24 +13,6 @@
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/purl.js"></script>
     <script type="text/javascript" src="js/general.js"></script>
-    <script type="text/javascript">
-        var app;
-
-        $(document).bind("mobileinit", function () {
-            $.mobile.defaultPageTransition   = "none";
-            $.mobile.defaultDialogTransition = "none";
-
-            app = new app();
-            app.dbFortune = new dbFortune();
-            app.dbFortune.open(function () {
-                setTimeout(function () {
-                    $('#popupFirstRunMainUser').popup('open');
-                }, 500);
-            }, function() {
-                app.updateMainUser();    
-            });
-        });
-    </script>
     <script type="text/javascript" src="js/jquery.mobile.min.js"></script>
 </head>
 <body>
@@ -73,13 +55,13 @@
             <li data-role="list-divider">Settings</li>
             
             <li><a href="pages/player/player_list.html">Player Profiles</a></li>
-            <lI><a href="#">Game Profiles</a></lI>
+            <li><a href="#selectGameProfileList" data-rel="popup">Game Profiles</a></li>
             <li><a href="#">Preferences</a></li>
         </ul>
     </div>
     
     <!-- Select Game Type Popup -->
-    <div id="selectNewGame" data-role="popup" data-overlay-theme="a" data-corners="false" style="min-width: 300px;">
+    <div id="selectNewGame" data-role="popup" data-overlay-theme="a" data-position-to="window" data-corners="false" style="min-width: 300px;">
         <div data-role="header">
             <h2>Game Type</h2>
         </div>
@@ -93,8 +75,21 @@
         </div>
     </div>
     
+    <!-- Select Game Profiles List -->
+    <div id="selectGameProfileList" data-role="popup" data-overlay-theme="a" data-position-to="window" data-corners="false" style="min-width: 300px;">
+        <div data-role="header">
+            <h2>Game Type</h2>
+        </div>
+        <div data-role="content">
+            <ul data-role="listview">
+                <li><a href="pages/gameprofiles/profiles141_list.html">Straight Pool</a></li>
+                <li><a href="#">8-9/10-Ball</a></li>
+            </ul>
+        </div>
+    </div>
+    
     <!-- First Run Main User Configuration -->
-    <div id="popupFirstRunMainUser" data-role="popup" data-overlay-theme="a" data-dismissable="false">
+    <div id="popupFirstRunMainUser" data-role="popup" data-position-to="window" data-overlay-theme="a" data-dismissable="false">
         <div data-role="header">
             <h2>Welcome!</h2>
         </div>

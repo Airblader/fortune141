@@ -1,7 +1,9 @@
+var app;
+
 /*
  *  MAIN APP CLASS
  */
-function app () {
+function FortuneApp () {
     var self = this;
     
     self.dbFortune = undefined;
@@ -423,13 +425,23 @@ function dbFortune () {
 	    name : 'Game141Profile',
 	    fields : new Array(
 		'ID',
+		'Name',
 		'ScoreGoal',
 		'MaxInnings',
+		'HandicapPlayer1',
+		'HandicapPlayer2',
+		'MultiplicatorPlayer1',
+		'MultiplicatorPlayer2',
 		'isTrainingsGame',
 		'Usage'
 	    ),
 	    types : new Array(
 		'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
+		'TEXT NOT NULL',
+		'INTEGER',
+		'INTEGER',
+		'INTEGER',
+		'INTEGER',
 		'INTEGER',
 		'INTEGER',
 		'BIT',
@@ -437,8 +449,13 @@ function dbFortune () {
 	    ),
 	    defaults : new Array(
 		undefined,
+		'"PROFILE"',
 		undefined,
 		'0',
+		'0',
+		'0',
+		'1',
+		'1',
 		'0',
 		'0'
 	    ),
@@ -635,10 +652,21 @@ function dbFortune () {
  *	INDEX PAGE
  */
 
+$(document).bind("mobileinit", function () {
+    $.mobile.defaultPageTransition   = "none";
+    $.mobile.defaultDialogTransition = "none";
 
-/*
- *  First Run -- Main User Configuration
- */
+    app = new FortuneApp();
+    app.dbFortune = new dbFortune();
+    app.dbFortune.open(function () {
+	setTimeout(function () {
+	    $('#popupFirstRunMainUser').popup('open');
+	}, 500);
+    }, function() {
+	app.updateMainUser();    
+    });
+});
+
 
 $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainUser_Submit', function (event) {
     event.preventDefault();
@@ -659,11 +687,22 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
     
     // submit button was pressed, so let's create the tables, the main user and get started!
     app.dbFortune.createAllTables(function () {
-        app.Players.main = new Player(app.dbFortune);
+        app.Players.main = new Player();
         app.Players.main.create(name.name, nickname.name, image, isFavorite, displayNickname, true, function () {
 	    app.updateMainUser();
 	    $('#popupFirstRunMainUser').popup('close');
 	});
+	
+	// Fill with default game profiles
+	var query = new dbFortuneQuery();
+	query.add('INSERT INTO '
+		    + app.dbFortune.tables.Game141Profile.name + ' '
+		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141Profile)
+		    + ' VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		  ['Default', 60, 0, 0, 0, 1, 1, 0, 0]
+	);
+	
+	query.execute();
     });
     
     // kill this button to prevent any double-firing (we dont need it anymore anyway)
@@ -818,6 +857,29 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
     // Set up the main player per default
     game141SetPlayer(0, app.Players.main.pID);
     
+    // create profile list
+    app.dbFortune.query('SELECT * FROM ' + app.dbFortune.tables.Game141Profile.name + ' ORDER BY Usage DESC', [],
+	function (tx, results) {
+	    if (results.rows.length == 0) {
+		$('#game141SetupLoadProfileSelect').append(
+		    '<option value="-1">None</option>'
+		).trigger('change');
+		
+		return false;
+	    }
+	    
+	    for (var i = 0; i < results.rows.length; i++) {
+		var row = results.rows.item(i);
+		
+		$('#game141SetupLoadProfileSelect').append(
+		    '<option value="' + row['ID'] + '">' + row['Name'] + '</option>'
+		).trigger('change');
+	    }
+	    
+	    return true;
+	}
+    );
+    
     // create player list
     var html  = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">';
 	html += '<li data-role="list-divider">Favorites</li>';
@@ -856,6 +918,37 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
 	    $('#game141Setup2').html(html).trigger('create');
 	});
     });
+});
+
+$(document).off('click', '#game141SetupLoadProfileButton')
+	   .on ('click', '#game141SetupLoadProfileButton', function (event) {
+    event.preventDefault();
+    
+    var profileID = parseInt( $('#game141SetupLoadProfileSelect').val() );
+    app.dbFortune.query(
+	'SELECT * FROM ' + app.dbFortune.tables.Game141Profile.name + ' WHERE ID="' + profileID + '" LIMIT 1', [],
+	function (tx, result) {
+	    if (result.rows.length == 0) {
+		return false;
+	    }
+	    
+	    var row = result.rows.item(0);
+	    $('#game141SetupScoreGoal')      .val(row['ScoreGoal']           ).slider('refresh');
+	    $('#game141SetupMaxInnings')     .val(row['MaxInnings']          ).slider('refresh');
+	    $('#game141SetupIsTrainingsGame').val(row['isTrainingsGame']     ).slider('refresh');
+	    $('#game141SetupHandicap1')      .val(row['HandicapPlayer1']     ).slider('refresh');
+	    $('#game141SetupHandicap2')      .val(row['HandicapPlayer2']     ).slider('refresh');
+	    $('#game141SetupMultiplicator1') .val(row['MultiplicatorPlayer1']).slider('refresh');
+	    $('#game141SetupMultiplicator2') .val(row['MultiplicatorPlayer2']).slider('refresh');
+	    
+	    // increase usage counter
+	    app.dbFortune.query(
+		'UPDATE ' + app.dbFortune.tables.Game141Profile.name + ' SET Usage="' + (parseInt(row['Usage'])+1) + '" WHERE ID="' + profileID + '"'
+	    );
+	    
+	    return true;
+	}
+    );
 });
 
 $(document).off('click', '#game141SetupSubmitButton')
