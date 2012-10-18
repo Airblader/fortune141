@@ -851,7 +851,7 @@ function StraightPool () {
         tmpDisplay = (self.innings[ret.current].ptsToAdd[ret.currPlayer] == -1) ?
                 self.innings[ret.current].points[ret.currPlayer]
             :
-                tmpDisplay = self.innings[ret.current].ptsToAdd[ret.currPlayer] - self.innings[ret.current].foulPts[ret.currPlayer];
+                self.multiplicator[ret.currPlayer] * (self.innings[ret.current].ptsToAdd[ret.currPlayer] - self.innings[ret.current].foulPts[ret.currPlayer]);
 
         tmpDisplay = (tmpDisplay >= 0) ? "+"+tmpDisplay : tmpDisplay;
         $('#ptsPlayer' + ret.currPlayer).html(tmpDisplay);
