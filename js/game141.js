@@ -1089,8 +1089,8 @@ function StraightPool () {
             $('#detailsScoreBoard').html(details);
             
             var GDs = new Array(
-                                Math.round(100 * totalPts[0] / totalInnings[0]) / 100,
-                                Math.round(100 * totalPts[1] / totalInnings[1]) / 100
+                                Math.round(100 * (totalPts[0] - self.handicap[0]) / totalInnings[0]) / 100,
+                                Math.round(100 * (totalPts[1] - self.handicap[1]) / totalInnings[1]) / 100
                                 );
             $('#player0gd').html('&#216;&thinsp;' + ((!isNaN(GDs[0])) ? GDs[0].toFixed(2) : '0.00'));
             $('#player1gd').html('&#216;&thinsp;' + ((!isNaN(GDs[1])) ? GDs[1].toFixed(2) : '0.00'));
