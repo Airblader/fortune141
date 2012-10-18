@@ -346,12 +346,17 @@ function dbFortune () {
 		'PointsPlayer2',
 		'ScoreGoal',
 		'MaxInnings',
+		'HandicapPlayer1',
+		'HandicapPlayer2',
+		'MultiplicatorPlayer1',
+		'MultiplicatorPlayer2',
 		'InningsPlayer1',
 		'InningsPlayer2',
 		'FoulsPlayer1',
 		'FoulsPlayer2',
 		'BallsOnTable',
 		'CurrPlayer',
+		'FirstShot',
 		'isTrainingGame',
 		'isFinished',
 		'Winner',
@@ -368,11 +373,16 @@ function dbFortune () {
 		'INTEGER',
 		'INTEGER',
 		'INTEGER',
+		'INTEGER',
+		'INTEGER',
+		'REAL',
+		'REAL',
 		'TEXT',
 		'TEXT',
 		'INTEGER',
 		'INTEGER',
 		'INTEGER',
+		'BIT',
 		'BIT',
 		'BIT',
 		'BIT',
@@ -390,8 +400,13 @@ function dbFortune () {
 		'0',
 		undefined,
 		'0',
+		'0',
+		'0',
+		'1',
+		'1',
 		undefined,
 		undefined,
+		'0',
 		'0',
 		'0',
 		'0',
@@ -676,7 +691,7 @@ $(document).on('pageshow', '#pageResumeGame', function () {
 	    app.Players.tmp.load(parseInt(row['Player2']), function () {
 		var name2 = app.Players.tmp.getDisplayName();
 		
-		var html  = '<li><a href="#" onClick="javascript:$(\'#resumeGamePopup\').data(\'gID\', ' + row['gID'] + ').popup(\'open\');">';
+		var html  = '<li><a href="#" onClick="javascript:$(\'#resumeGamePopup\').data(\'gType\', \'141\').data(\'gID\', ' + row['gID'] + ').popup(\'open\');">';
 			
 		html += '<p><strong>' + name1 + ' vs. ' + name2 + '</strong></p>';
 		html += '<p>Score: ' + row['PointsPlayer1'] + ' &ndash; ' + row['PointsPlayer2'] + '</p>';
@@ -715,11 +730,58 @@ $(document).off('click', '#resumeGameResumeButton')
            .on ('click', '#resumeGameResumeButton', function (event) {
     event.preventDefault();
     
-    $.mobile.changePage('game141/game141.html', {
+    var redirect;
+    switch ($('#resumeGamePopup').data('gType')) {
+	case '141':
+	    redirect = 'game141/game141.html';
+	    break;
+	default:
+	    return false;
+    }
+    
+    $.mobile.changePage(redirect, {
 	data : {
 	    gID : parseInt( $('#resumeGamePopup').data('gID') ),
 	}	
     });
+    
+    return true;
+});
+	   
+$(document).off('click', '#resumeGameDeleteButton')
+	   .on ('click', '#resumeGameDeleteButton', function (event) {
+    event.preventDefault();
+    
+    var table;
+    switch ($('#resumeGamePopup').data('gType')) {
+	case '141':
+	    table = app.dbFortune.tables.Game141;
+	    break;
+	default:
+	    return false;
+    }
+    
+    var gID = parseInt( $('#resumeGamePopup').data('gID') );
+    
+    navigator.notification.confirm(
+	'Are you sure that you want to delete this game?',
+	function (button) {
+	    if (button == 1) {
+		app.dbFortune.query(
+		    'DELETE FROM ' + table.name + ' WHERE gID="' + gID + '"',
+		    [],
+		    app.dummyFalse,
+		    app.dummyFalse
+		);
+	    }
+	    
+	    $('#resumeGamePopup').popup('close');    
+	},
+	'Delete Game',
+	'Delete, Cancel'
+    );
+    
+    return true;
 });
 
 
@@ -730,7 +792,7 @@ $(document).off('click', '#resumeGameResumeButton')
 function game141SetPlayer (idx, pID) {
     app.Players.ingame[idx] = new Player();
     app.Players.ingame[idx].load(pID, function () {
-	var dispName = (app.Players.ingame[idx].displayNickname && app.Players.ingame[idx].nickname.length != 0) ? app.Players.ingame[idx].nickname : app.Players.ingame[idx].name;
+	var dispName = app.Players.ingame[idx].getDisplayName();//(app.Players.ingame[idx].displayNickname && app.Players.ingame[idx].nickname.length != 0) ? app.Players.ingame[idx].nickname : app.Players.ingame[idx].name;
 	
 	$('#game141SetupPlayer' + idx + 'Name').html(dispName)
                                                .data('pid', app.Players.ingame[idx].pID);
@@ -802,6 +864,10 @@ $(document).off('click', '#game141SetupSubmitButton')
 	    scoreGoal       : $('#game141SetupScoreGoal')      .val()      ,
 	    maxInnings      : $('#game141SetupMaxInnings')     .val()      ,
 	    isTrainingsGame : $('#game141SetupIsTrainingsGame').val()      ,
+	    handicap0	    : $('#game141SetupHandicap1')      .val()      ,
+	    handicap1       : $('#game141SetupHandicap2')      .val()      ,
+	    multiplicator0  : $('#game141SetupMultiplicator1') .val()      ,
+	    multiplicator1  : $('#game141SetupMultiplicator2') .val()      ,
 	}	
     });
 });
@@ -826,11 +892,15 @@ $(document).on('pageshow', '#pageGame141', function () {
     if (typeof gID === 'undefined' || isNaN(gID)) {
 	load = false;
 	
-	var pID0            = parseInt(url.param('player0')),
-	    pID1            = parseInt(url.param('player1')),
-	    scoreGoal       = parseInt(url.param('scoreGoal')),
-	    maxInnings      = parseInt(url.param('maxInnings')),
-	    isTrainingsGame = parseInt(url.param('isTrainingsGame'));
+	var pID0            = parseInt(url.param('player0'        )),
+	    pID1            = parseInt(url.param('player1'        )),
+	    scoreGoal       = parseInt(url.param('scoreGoal'      )),
+	    maxInnings      = parseInt(url.param('maxInnings'     )),
+	    isTrainingsGame = parseInt(url.param('isTrainingsGame')),
+	    handicap0       = parseInt(url.param('handicap0'      )),
+	    handicap1       = parseInt(url.param('handicap1'      )),
+	    multiplicator0  = parseInt(url.param('multiplicator0' )),
+	    multiplicator1  = parseInt(url.param('multiplicator1' ));
     }
     
     $.getScript('../../js/game141.js', function() {
@@ -839,7 +909,7 @@ $(document).on('pageshow', '#pageGame141', function () {
 	    app.currentGame.loadGame(gID, app.currentGame.initUI);
 	}
 	else {
-	    app.currentGame.initNewGame(scoreGoal, maxInnings, isTrainingsGame);
+	    app.currentGame.initNewGame(scoreGoal, maxInnings, isTrainingsGame, [handicap0, handicap1], [multiplicator0, multiplicator1]);
 	    app.currentGame.setPlayers(pID0, pID1, app.currentGame.initUI);
 	}
     });

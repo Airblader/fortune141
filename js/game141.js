@@ -199,21 +199,9 @@ function StraightPool () {
     var self = this;
     
     self.pageName  = '#pageGame141';
-    self.debugMode = false;
+    self.debugMode = true;
     
-    self.gameID          = -1;
-    self.isFinished      = false;
-    self.isTrainingsGame = false;
-    self.winner          = -1;
-    
-    // true when current shot is a break shot (e.g. first shot of game or after severe fouls)
-    self.firstShot = true;
-    
-    // how many points needed for winning
-    self.scoreGoal  = 100;
-    
-    // maximum number of innings (set 0 for none)
-    self.maxInnings = 0;
+    self.gameID    = -1;
     
     var btnAcceptPressed = false,
         yesno            = new Array("Yes", "No");
@@ -246,18 +234,24 @@ function StraightPool () {
     /*
      *	Initizalize a new game by resetting variables
      */
-    self.initNewGame = function (scoreGoal) {
-	var maxInnings      = (typeof arguments[1] !== 'undefined') ? arguments[1] : 0,
-	    isTrainingsGame = (typeof arguments[2] !== 'undefined') ? arguments[2] : self.isTrainingsGame;
-	
+    self.initNewGame = function (scoreGoal, maxInnings, isTrainingsGame, handicap, multiplicator) {	
         self.players         = new Array(self.dummyPlayer(),
 					 self.dummyPlayer());
         self.currPlayer      = 0;
         self.innings         = new Array(self.dummyInning());
 	
+	self.innings[0].points[0] = handicap[0];
+	self.innings[0].points[1] = handicap[1];
+	
 	self.scoreGoal       = scoreGoal;
 	self.maxInnings      = maxInnings;
+	self.handicap        = handicap;
+	self.multiplicator   = multiplicator;
 	self.isTrainingsGame = isTrainingsGame;
+	self.isFinished      = false;
+	self.winner          = -1;
+	
+	self.firstShot       = true;
 	
 	self.ballRack        = new BallRack(self.debugMode);
     }
@@ -409,10 +403,19 @@ function StraightPool () {
 		
 		var row = result.rows.item(0);
 		
-		self.scoreGoal  = parseInt(row['ScoreGoal']);
-		self.maxInnings = parseInt(row['MaxInnings']);
+		self.scoreGoal     = parseInt(row['ScoreGoal']);
+		self.maxInnings    = parseInt(row['MaxInnings']);
+		self.handicap      = new Array(
+					parseInt(row['HandicapPlayer1']),
+					parseInt(row['HandicapPlayer2'])
+				     );
+		self.multiplicator = new Array(
+					parseInt(row['MultiplicatorPlayer1']),
+					parseInt(row['MultiplicatorPlayer2'])
+				     );
 		
-		self.isFinished      = (parseInt(row['isFinished']) == 1) ? true : false;
+		self.firstShot       = (parseInt(row['FirstShot'])       == 1) ? true : false;
+		self.isFinished      = (parseInt(row['isFinished'])      == 1) ? true : false;
 		self.isTrainingsGame = (parseInt(row['isTrainingsGame']) == 1) ? true : false;
 		self.winner          =  parseInt(row['Winner']);
 		
@@ -437,6 +440,8 @@ function StraightPool () {
 				parseInt(row['Player2']),
 				cbSuccess);
 		
+		self.ballRack.redraw();
+		
 		return true;
 	    },
 	    cbError
@@ -453,7 +458,7 @@ function StraightPool () {
 	    var sql = 'INSERT INTO '
 		    + app.dbFortune.tables.Game141.name + ' '
 		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141, false, false) + ' '
-		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 		    
 	    var timestamp  = Math.floor(Date.now() / 1000).toFixed(0),
 		strInnings = self.inningsToString();
@@ -466,12 +471,17 @@ function StraightPool () {
 				 self.players[1].points,
 				 self.scoreGoal,
 				 self.maxInnings,
+				 self.handicap[0],
+				 self.handicap[1],
+				 self.multiplicator[0],
+				 self.multiplicator[1],
 				 strInnings[0],
 				 strInnings[1],
 				 self.players[0].fouls,
 				 self.players[1].fouls,
 				 self.ballRack.ballsOnTable,
 				 self.currPlayer,
+				 self.firstShot,
 				(self.isTrainingsGame) ? '1' : '0',
 				(self.isFinished) ? '1' : '0',
 				 self.winner,
@@ -490,14 +500,19 @@ function StraightPool () {
 	
 	// modify existing entry
 	var sql = 'UPDATE ' + app.dbFortune.tables.Game141.name + ' SET '
+		+ 'HandicapPlayer1=?, HandicapPlayer2=?, MultiplicatorPlayer1=?, MultiplicatorPlayer2=?, '
 	        + 'InningsPlayer1=?, InningsPlayer2=?, PointsPlayer1=?, PointsPlayer2=?, '
-		+ 'FoulsPlayer1=?, FoulsPlayer2=?, BallsOnTable=?, CurrPlayer=?, isFinished=?, Winner=? '
+		+ 'FoulsPlayer1=?, FoulsPlayer2=?, BallsOnTable=?, CurrPlayer=?, FirstShot=?, isFinished=?, Winner=? '
 		+ 'WHERE gID="' + self.gameID + '"';
 		
 	var strInnings = self.inningsToString();
 		
 	app.dbFortune.query(sql,
-			    [strInnings[0],
+			    [self.handicap[0],
+			     self.handicap[1],
+			     self.multiplicator[0],
+			     self.multiplicator[1],
+			     strInnings[0],
 			     strInnings[1],
 			     self.players[0].points,
 			     self.players[1].points,
@@ -505,6 +520,7 @@ function StraightPool () {
 			     self.players[1].fouls,
 			     self.ballRack.ballsOnTable,
 			     self.currPlayer,
+			     self.firstShot,
 			    (self.isFinished) ? '1' : '0',
 			     self.winner
 			    ],
@@ -572,12 +588,12 @@ function StraightPool () {
         
         // we will return this value to provide information on the processed inning
         var ret = {
-                    ballsOnTable: parseInt(selectedBall),
-                    firstShot   : false,
-                    currPlayer  : currPlayer,
-                    current     : current,
-                    safety      : safety,
-                    rerack      : hasToRerack,
+                    ballsOnTable : parseInt(selectedBall),
+                    firstShot    : false,
+                    currPlayer   : currPlayer,
+                    current      : current,
+                    safety       : safety,
+                    rerack       : hasToRerack,
                   };
         
         // points that were made and need to be added or saved
@@ -633,7 +649,7 @@ function StraightPool () {
                 // if fouls were made or inning ended with a safety, the turn switches to the other player,
                 // unless a rerack takes place
                 if (switchPlayer && !hasToRerack) {
-                    self.innings[current].points[currPlayer] = self.innings[current].ptsToAdd[currPlayer] - self.innings[current].foulPts[currPlayer];
+                    self.innings[current].points[currPlayer] += self.multiplicator[currPlayer] * (self.innings[current].ptsToAdd[currPlayer] - self.innings[current].foulPts[currPlayer]);
                     
                     self.innings[current].ptsToAdd[currPlayer] = -1;
                 }
@@ -644,7 +660,7 @@ function StraightPool () {
             
             default:
                 if (!hasToRerack) {
-                    self.innings[current].points[currPlayer] = self.innings[current].ptsToAdd[currPlayer] - self.innings[current].foulPts[currPlayer];
+                    self.innings[current].points[currPlayer] += self.multiplicator[currPlayer] * (self.innings[current].ptsToAdd[currPlayer] - self.innings[current].foulPts[currPlayer]);
                 
                     self.innings[current].ptsToAdd[currPlayer] = -1;
                     switchPlayer = true;
@@ -1146,10 +1162,10 @@ function StraightPool () {
 	self.setActivePlayerMarker(self.currPlayer);
 	
 	$('#game141Player0Name').html(
-	    (self.players[0].obj.displayNickname && self.players[0].obj.nickname.length != 0) ? self.players[0].obj.nickname : self.players[0].obj.name
+	    self.players[0].obj.getDisplayName()//(self.players[0].obj.displayNickname && self.players[0].obj.nickname.length != 0) ? self.players[0].obj.nickname : self.players[0].obj.name
 	);
 	$('#game141Player1Name').html(
-	    (self.players[1].obj.displayNickname && self.players[1].obj.nickname.length != 0) ? self.players[1].obj.nickname : self.players[1].obj.name
+	    self.players[1].obj.getDisplayName()//(self.players[1].obj.displayNickname && self.players[1].obj.nickname.length != 0) ? self.players[1].obj.nickname : self.players[1].obj.name
 	);
 	
 	// save game
