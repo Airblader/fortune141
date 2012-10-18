@@ -1249,9 +1249,5 @@ function StraightPool () {
 	
 	// disable loading panel
 	$('#panelLoading').hide();
-	
-	// Bugfix: Main Panel won't show up immediately sometimes
-	$('#panelRackAndMenu').show();
-	self.ballRack.redraw();
     }
 }
