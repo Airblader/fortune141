@@ -1252,5 +1252,6 @@ function StraightPool () {
 	
 	// Bugfix: Main Panel won't show up immediately sometimes
 	$('#panelRackAndMenu').show();
+	self.ballRack.redraw();
     }
 }
