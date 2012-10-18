@@ -12,24 +12,22 @@
     
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/purl.js"></script>
+    <script type="text/javascript" src="js/general.js"></script>
     <script type="text/javascript">
         var app;
 
         $(document).bind("mobileinit", function () {
             $.mobile.defaultPageTransition   = "none";
             $.mobile.defaultDialogTransition = "none";
-        
-            $.getScript('js/general.js', function () {
-                app = new app();
-                
-                app.dbFortune = new dbFortune();
-                app.dbFortune.open(function () {
-                    setTimeout(function () {
-                        $('#popupFirstRunMainUser').popup('open');
-                    }, 500);
-                }, function() {
-                    app.updateMainUser();    
-                });
+
+            app = new app();
+            app.dbFortune = new dbFortune();
+            app.dbFortune.open(function () {
+                setTimeout(function () {
+                    $('#popupFirstRunMainUser').popup('open');
+                }, 500);
+            }, function() {
+                app.updateMainUser();    
             });
         });
     </script>

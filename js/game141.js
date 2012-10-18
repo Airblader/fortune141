@@ -240,10 +240,8 @@ function StraightPool () {
         self.currPlayer      = 0;
         self.innings         = new Array(self.dummyInning());
 	
-	self.innings[0].points[0] = handicap[0];
-	self.innings[0].points[1] = handicap[1];
-	self.players[0].points    = handicap[0];
-	self.players[1].points    = handicap[1];
+	self.players[0].points = handicap[0];
+	self.players[1].points = handicap[1];
 	
 	self.scoreGoal       = scoreGoal;
 	self.maxInnings      = maxInnings;
@@ -256,6 +254,7 @@ function StraightPool () {
 	self.firstShot       = true;
 	
 	self.ballRack        = new BallRack(self.debugMode);
+	self.ballRack.redraw();
     }
     
     /*
@@ -437,12 +436,13 @@ function StraightPool () {
 		self.ballRack              = new BallRack(self.debugMode);
 		self.ballRack.ballsOnTable = parseInt(row['BallsOnTable']);
 		self.ballRack.selectedBall = parseInt(row['BallsOnTable']);
+
+		self.ballRack.redraw();
 		
 		self.setPlayers(parseInt(row['Player1']),
 				parseInt(row['Player2']),
-				cbSuccess);
-		
-		self.ballRack.redraw();
+				cbSuccess
+		);
 		
 		return true;
 	    },

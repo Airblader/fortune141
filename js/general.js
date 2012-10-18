@@ -639,6 +639,7 @@ function dbFortune () {
 /*
  *  First Run -- Main User Configuration
  */
+
 $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainUser_Submit', function (event) {
     event.preventDefault();
     
@@ -910,11 +911,19 @@ $(document).on('pageshow', '#pageGame141', function () {
     $.getScript('../../js/game141.js', function() {
 	app.currentGame = new StraightPool();
 	if (load) {
-	    app.currentGame.loadGame(gID, app.currentGame.initUI);
+	    app.currentGame.loadGame(gID,
+		function () {
+		    setTimeout(app.currentGame.initUI, 500);
+		}
+	    );
 	}
 	else {
 	    app.currentGame.initNewGame(scoreGoal, maxInnings, isTrainingsGame, [handicap0, handicap1], [multiplicator0, multiplicator1]);
-	    app.currentGame.setPlayers(pID0, pID1, app.currentGame.initUI);
+	    app.currentGame.setPlayers(pID0, pID1,
+		function () {
+		    setTimeout(app.currentGame.initUI, 500);
+		}
+	    );
 	}
     });
 });
