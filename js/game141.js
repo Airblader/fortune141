@@ -1031,7 +1031,7 @@ function StraightPool () {
                 details += '</tr>';
             details += '</thead>';
             
-            var totalPts     = new Array(0, 0),
+            var totalPts     = new Array(self.handicap[0], self.handicap[1]),
                 totalInnings = new Array(0, 0);
             for (var i = 0; i < self.innings.length; i++) {
                 totalPts[0] += self.innings[i].points[0];
