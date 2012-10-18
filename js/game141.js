@@ -199,7 +199,7 @@ function StraightPool () {
     var self = this;
     
     self.pageName  = '#pageGame141';
-    self.debugMode = true;
+    self.debugMode = false;
     
     self.gameID    = -1;
     
@@ -242,6 +242,8 @@ function StraightPool () {
 	
 	self.innings[0].points[0] = handicap[0];
 	self.innings[0].points[1] = handicap[1];
+	self.players[0].points    = handicap[0];
+	self.players[1].points    = handicap[1];
 	
 	self.scoreGoal       = scoreGoal;
 	self.maxInnings      = maxInnings;
@@ -863,6 +865,16 @@ function StraightPool () {
 		&& self.innings[self.innings.length-1].ptsToAdd[1-ret.currPlayer] == -1)
 		&& self.players[0].points != self.players[1].points) {
 	    
+	    // safe way to determine winner
+	    var winner = 0;
+	    if (self.players[1].points > self.players[0].points) {
+		winner = 1;
+	    }
+	    
+	    // important for saving the game
+	    self.isFinished = true;
+	    self.winner = self.players[winner].obj.pID;
+	    
 	    // block all inputs
 	    setTimeout(
 		function () {
@@ -879,19 +891,15 @@ function StraightPool () {
 	    $('#activePlayer').removeClass('activePlayer0')
 			      .removeClass('activePlayer1');
 	    
-	    // important for saving the game
-	    self.isFinished = true;
-	    self.winner     = self.players[ret.currPlayer].obj.pID;
-            
 	    // cap off last inning and total points to be no larger than the score goal
-	    self.innings[self.innings.length-1].points[ret.currPlayer] -= Math.max(0, self.players[ret.currPlayer].points - self.scoreGoal); 
-	    self.players[ret.currPlayer].points = Math.min(self.players[ret.currPlayer].points, self.scoreGoal);
+	    self.innings[self.innings.length-1].points[winner] -= Math.max(0, self.players[winner].points - self.scoreGoal); 
+	    self.players[winner].points = Math.min(self.players[winner].points, self.scoreGoal);
 	    
 	    navigator.notification.confirm(
-		self.players[ret.currPlayer].obj.getDisplayName() + ' has won the game!',
+		self.players[winner].obj.getDisplayName() + ' has won the game!',
 		function () {
 		    self.saveGame();
-		    self.handleMinimizeMainPanelButton(null);
+		    self.handleMinimizeMainPanelButton(event);
 		},
 		'Game over!',
 		'OK'
@@ -1166,10 +1174,10 @@ function StraightPool () {
 	self.setActivePlayerMarker(self.currPlayer);
 	
 	$('#game141Player0Name').html(
-	    self.players[0].obj.getDisplayName()//(self.players[0].obj.displayNickname && self.players[0].obj.nickname.length != 0) ? self.players[0].obj.nickname : self.players[0].obj.name
+	    self.players[0].obj.getDisplayName()
 	);
 	$('#game141Player1Name').html(
-	    self.players[1].obj.getDisplayName()//(self.players[1].obj.displayNickname && self.players[1].obj.nickname.length != 0) ? self.players[1].obj.nickname : self.players[1].obj.name
+	    self.players[1].obj.getDisplayName()
 	);
 	
 	// save game
@@ -1241,5 +1249,8 @@ function StraightPool () {
 	
 	// disable loading panel
 	$('#panelLoading').hide();
+	
+	// Bugfix: Main Panel won't show up immediately sometimes
+	$('#panelRackAndMenu').show();
     }
 }

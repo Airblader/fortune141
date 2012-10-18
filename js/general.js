@@ -675,6 +675,9 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
  */
 
 $(document).on('pageshow', '#pageResumeGame', function () {
+    // empty list
+    $('#resumeGameList').html('');
+    
     function output141 (rows, idx) {
 	var row = rows.item(idx);
 	
@@ -775,7 +778,8 @@ $(document).off('click', '#resumeGameDeleteButton')
 		);
 	    }
 	    
-	    $('#resumeGamePopup').popup('close');    
+	    $('#resumeGamePopup').popup('close');
+	    $('#pageResumeGame') .trigger('pageshow');
 	},
 	'Delete Game',
 	'Delete, Cancel'
