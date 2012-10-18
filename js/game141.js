@@ -857,8 +857,12 @@ function StraightPool () {
         $('#ptsPlayer' + ret.currPlayer).html(tmpDisplay);
         
         // check for end of game
-        if ((self.players[0].points >= self.scoreGoal || self.players[1].points >= self.scoreGoal) ||
-	    (self.maxInnings > 0 && self.innings.length >= self.maxInnings && self.innings[self.innings.length-1].ptsToAdd[1-ret.currPlayer] == -1)) {
+        if ((self.players[0].points >= self.scoreGoal || self.players[1].points >= self.scoreGoal)
+	    || (self.maxInnings > 0
+		&& self.innings.length >= self.maxInnings
+		&& self.innings[self.innings.length-1].ptsToAdd[1-ret.currPlayer] == -1)
+		&& self.players[0].points != self.players[1].points) {
+	    
 	    // block all inputs
 	    setTimeout(
 		function () {
