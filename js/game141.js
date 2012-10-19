@@ -453,18 +453,21 @@ function StraightPool () {
     /*
      *	Saves game to database. If the game already exists, the database entry is modified,
      *	otherwise a new entry will be created.
+     *		cbSuccess (optional) : callback function
      */
-    self.saveGame = function () {	
+    self.saveGame = function () {
+	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse;
+	
 	// no entry exists yet
 	if (self.gameID == -1) {
 	    var sql = 'INSERT INTO '
 		    + app.dbFortune.tables.Game141.name + ' '
 		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141, false, false) + ' '
 		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-		    
+	    
 	    var timestamp  = Math.floor(Date.now() / 1000).toFixed(0),
 		strInnings = self.inningsToString();
-		    
+	        
 	    app.dbFortune.query(sql,
 				[timestamp,
 				 self.players[0].obj.pID,
@@ -483,16 +486,17 @@ function StraightPool () {
 				 self.players[1].fouls,
 				 self.ballRack.ballsOnTable,
 				 self.currPlayer,
-				(self.firstShot)       ? '1' : '0',
-				(self.isTrainingsGame) ? '1' : '0',
-				(self.isFinished)      ? '1' : '0',
+				(self.firstShot)       ? 1 : 0,
+				(self.isTrainingsGame) ? 1 : 0,
+				(self.isFinished)      ? 1 : 0,
 				 self.winner,
 				 '',
-				 '0',
-				 '0'
+				 0,
+				 0
 				],
 		function (tx, result) {
-		    self.gameID = result.insertId;    
+		    self.gameID = result.insertId;
+		    cbSuccess();
 		},
 		app.dummyFalse
 	    );
@@ -522,11 +526,11 @@ function StraightPool () {
 			     self.players[1].fouls,
 			     self.ballRack.ballsOnTable,
 			     self.currPlayer,
-			    (self.firstShot)  ? '1' : '0',
-			    (self.isFinished) ? '1' : '0',
+			    (self.firstShot)  ? 1 : 0,
+			    (self.isFinished) ? 1 : 0,
 			     self.winner
 			    ],
-	    app.dummyFalse,
+	    cbSuccess,
 	    app.dummyFalse
 	);
 	return true;
@@ -894,20 +898,15 @@ function StraightPool () {
 	    // cap off last inning and total points to be no larger than the score goal
 	    self.innings[self.innings.length-1].points[winner] -= Math.max(0, self.players[winner].points - self.scoreGoal); 
 	    self.players[winner].points = Math.min(self.players[winner].points, self.scoreGoal);
-	    
-	    /*navigator.notification.confirm(
-		self.players[winner].obj.getDisplayName() + ' has won the game!',
-		function () {
-		    self.saveGame();
-		    self.handleMinimizeMainPanelButton(event);
-		},
-		'Game over!',
-		'OK'
-	    );*/
+
 	    app.alertDlg(
 		self.players[winner].obj.getDisplayName() + ' has won the game!',
 		function () {
-		    self.saveGame();
+		    self.saveGame(function () {
+			// update statistics
+			self.players[0].obj.updateStatistics();
+			self.players[1].obj.updateStatistics();	
+		    });
 		    self.handleMinimizeMainPanelButton(event);
 		},
 		'Game over!',

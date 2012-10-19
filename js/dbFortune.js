@@ -24,6 +24,7 @@ function dbFortune () {
                 'displayNickname',
 		'HS',
 		'GD',
+		'HGD',
 		'Quota'
             ),
             types : new Array(
@@ -34,8 +35,9 @@ function dbFortune () {
                 'BIT',
                 'BIT',
 		'INTEGER',
-		'TEXT',
-		'TEXT'
+		'REAL',
+		'REAL',
+		'REAL'
 	    ),
             defaults : new Array(
 		undefined,
@@ -45,8 +47,9 @@ function dbFortune () {
                 '0',
                 '0',
 		'0',
-		'"0"',
-		'"0"'
+		'0',
+		'0',
+		'0'
 	    ),
         },
 	Game141 : {
@@ -213,9 +216,9 @@ function dbFortune () {
 	var query = new dbFortuneQuery();
 	query.add(
 	    sql,
-	    (typeof arguments[1] !== 'undefined') ? arguments[1] : [],
-	    (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse,
-	    (typeof arguments[3] !== 'undefined') ? arguments[3] : app.dummyFalse
+	    ((typeof arguments[1] !== 'undefined') ? arguments[1] : []),
+	    ((typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse),
+	    ((typeof arguments[3] !== 'undefined') ? arguments[3] : app.dummyFalse)
 	);
 	query.execute();
     }

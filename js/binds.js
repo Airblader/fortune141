@@ -17,6 +17,15 @@ $(document).bind("mobileinit", function () {
     });
 });
 
+$(document).on('pageshow', '#pageIndex', function () {
+    try {
+        app.updateMainUserStatistics();
+    }
+    catch (e) {
+	// do nothing
+    }
+});
+
 
 $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainUser_Submit', function (event) {
     event.preventDefault();
@@ -155,25 +164,7 @@ $(document).off('click', '#resumeGameDeleteButton')
     }
     
     var gID = parseInt( $('#resumeGamePopup').data('gID') );
-    
-    /*navigator.notification.confirm(
-	'Are you sure that you want to delete this game?',
-	function (button) {
-	    if (button == 1) {
-		app.dbFortune.query(
-		    'DELETE FROM ' + table.name + ' WHERE gID="' + gID + '"',
-		    [],
-		    app.dummyFalse,
-		    app.dummyFalse
-		);
-	    }
-	    
-	    $('#resumeGamePopup').popup('close');
-	    $('#pageResumeGame') .trigger('pageshow');
-	},
-	'Delete Game',
-	'Delete, Cancel'
-    );*/
+
     app.confirmDlg(
 	'Are you sure that you want to delete this game?',
 	function () {
@@ -447,7 +438,6 @@ $(document).off('click', '#addPlayer_Submit').on('click', '#addPlayer_Submit', f
     nickname = app.validateName(nickname, false);
     
     if (!name.valid || !nickname.valid) {
-	//navigator.notification.confirm('A name must consist of at least 3 characters.', function () { return true; }, 'Invalid name', 'OK');
 	app.alertDlg('A name must consist of at least 3 characters.', app.dummyTrue, 'Invalid name', 'OK');
 	return false;
     }
@@ -494,9 +484,10 @@ $(document).on('pageshow', '#pagePlayerDetails', function () {
         $('#playerDetails_IsFavorite')     .html((app.Players.tmp.isFavorite)      ? "Yes" : "No");
 	$('#playerDetails_DisplayNickname').html((app.Players.tmp.displayNickname) ? "Yes" : "No");
 	
-	$('#playerDetails_HS')   .html(app.Players.tmp.hs                                        );
-	$('#playerDetails_GD')   .html(parseFloat(app.Players.tmp.gd)   .toFixed(2)              );
-	$('#playerDetails_Quota').html(parseFloat(app.Players.tmp.quota).toFixed(0) + '&thinsp;%');
+	$('#playerDetails_HS')   .html(app.Players.tmp.hs                                            );
+	$('#playerDetails_GD')   .html(parseFloat(app.Players.tmp.gd)       .toFixed(2)              );
+	$('#playerDetails_HGD')  .html(parseFloat(app.Players.tmp.hgd)      .toFixed(2)              );
+	$('#playerDetails_Quota').html(parseFloat(100*app.Players.tmp.quota).toFixed(0) + '&thinsp;%');
     });
 });
 
@@ -541,7 +532,6 @@ $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', 
     nickname = app.validateName(nickname, false);
     
     if (!name.valid || !nickname.valid) {
-	//navigator.notification.confirm('A name must consist of at least 3 characters.', function () { return true; }, 'Invalid name', 'OK');
 	app.alertDlg('A name must consist of at least 3 characters.', app.dummyTrue, 'Invalid name', 'OK');
 	return false;
     }
