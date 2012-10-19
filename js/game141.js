@@ -2,13 +2,13 @@
  *  BALLRACK CLASS
  *  	This class handles the visual ball rack for straight pool games
  */
-function BallRack (debugMode) {
+function BallRack () {
     var self = this;
     
     // debugMode:
     //	true  : for usage on computers (mouse events)
     //  false : for usage on mobile devices (touch events)
-    self.debugMode = debugMode;
+    self.debugMode = app.debugMode;
     
     // size for the div containing the rack
     var divWidth,
@@ -199,7 +199,7 @@ function StraightPool () {
     var self = this;
     
     self.pageName  = '#pageGame141';
-    self.debugMode = false;
+    self.debugMode = app.debugMode;
     
     self.gameID    = -1;
     
@@ -253,7 +253,7 @@ function StraightPool () {
 	
 	self.firstShot       = true;
 	
-	self.ballRack        = new BallRack(self.debugMode);
+	self.ballRack        = new BallRack();
 	self.ballRack.redraw();
     }
     
@@ -433,7 +433,7 @@ function StraightPool () {
 		self.innings    = self.stringToInnings(row['InningsPlayer1'],
 						       row['InningsPlayer2']);
 		
-		self.ballRack              = new BallRack(self.debugMode);
+		self.ballRack              = new BallRack();
 		self.ballRack.ballsOnTable = parseInt(row['BallsOnTable']);
 		self.ballRack.selectedBall = parseInt(row['BallsOnTable']);
 
@@ -895,7 +895,16 @@ function StraightPool () {
 	    self.innings[self.innings.length-1].points[winner] -= Math.max(0, self.players[winner].points - self.scoreGoal); 
 	    self.players[winner].points = Math.min(self.players[winner].points, self.scoreGoal);
 	    
-	    navigator.notification.confirm(
+	    /*navigator.notification.confirm(
+		self.players[winner].obj.getDisplayName() + ' has won the game!',
+		function () {
+		    self.saveGame();
+		    self.handleMinimizeMainPanelButton(event);
+		},
+		'Game over!',
+		'OK'
+	    );*/
+	    app.alertDlg(
 		self.players[winner].obj.getDisplayName() + ' has won the game!',
 		function () {
 		    self.saveGame();
