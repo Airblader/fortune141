@@ -201,7 +201,8 @@ function StraightPool () {
     self.pageName  = '#pageGame141';
     self.debugMode = app.debugMode;
     
-    self.gameID    = -1;
+    self.gameID        = -1;
+    self.oldCurrPlayer = -1;
     
     var btnAcceptPressed = false,
         yesno            = new Array("Yes", "No");
@@ -319,6 +320,43 @@ function StraightPool () {
 	if (self.players[self.currPlayer].fouls == 2) {
 	    self.warnConsecutiveFouls();
 	}
+    }
+    
+    /*
+     *	Undo last action
+     */
+    self.undo = function () {
+	self.currPlayer = self.oldCurrPlayer;
+	
+	// reset score
+	self.players[self.currPlayer].points -= self.innings[self.innings.length-1].points[self.currPlayer];
+	
+	// reset foul counter
+	if (self.innings[self.innings.length-1].foulPts[self.currPlayer] > 0) {
+	    self.players[self.currPlayer].fouls--;
+	    if (self.players[self.currPlayer].fouls < 0) {
+		self.players[self.currPlayer].fouls += 3;
+	    }
+	}
+	
+	// reset ballrack
+	var foulBall = (self.innings[self.innings.length-1].foulPts[self.currPlayer] > 0) ? 1 : 0;
+	self.ballRack.ballsOnTable += (self.innings[self.innings.length-1].points[self.currPlayer] / self.multiplicator[self.currPlayer]) + foulBall;
+	self.ballRack.selectedBall  = self.ballRack.ballsOnTable;
+	
+	// nullify inning
+	self.innings[self.innings.length-1].points[self.currPlayer]   = 0;
+	self.innings[self.innings.length-1].foulPts[self.currPlayer]  = 0;
+	self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] = 0;
+	self.innings[self.innings.length-1].safety[self.currPlayer]   = 0;
+	
+	self.firstShot = true;
+	
+	self.ballRack.redraw();
+	self.updateConsecutiveFoulsDisplay();
+	
+	// ToDo: what about player switch?
+	// ToDo: special case: after 3f rule -> player switch -> undo | selects wrong number of balls! catch in if
     }
     
     /*
@@ -553,6 +591,7 @@ function StraightPool () {
 	var foulName = "None";
 	if (foulCount == 1 && !severe) {
 	    foulName = "Normal";
+	    $('#foulDisplayName').data('rerack', false);
 	}
 	else if (foulCount > 1 || severe) {
 	    foulName = "Severe";
@@ -561,6 +600,9 @@ function StraightPool () {
 	    // a first shot foul has a choice. However, there will be 15 balls on the table anyway,
 	    // so this won't have an effect on that situation
 	    $('#foulDisplayName').data('rerack', true);
+	}
+	else {
+	    $('#foulDisplayName').data('rerack', false);
 	}
 	
 	// check for valid number
@@ -590,7 +632,8 @@ function StraightPool () {
             current++;
         }
         
-        var currPlayer = self.currPlayer;
+	self.oldCurrPlayer = self.currPlayer;
+        var currPlayer     = self.currPlayer;
         
         // we will return this value to provide information on the processed inning
         var ret = {
@@ -765,7 +808,6 @@ function StraightPool () {
             $('#panelRackAndMenu').css('left', '0');
 	    
             $('#panelDetails')  .hide();
-            $('#btnDetailsBack').off('click');
             $('#panelLoading')  .hide();
         });
 	
@@ -1103,7 +1145,6 @@ function StraightPool () {
             $('#player0gd').html('&#216;&thinsp;' + ((!isNaN(GDs[0])) ? GDs[0].toFixed(2) : '0.00'));
             $('#player1gd').html('&#216;&thinsp;' + ((!isNaN(GDs[1])) ? GDs[1].toFixed(2) : '0.00'));
             
-            $('#btnDetailsBack').off('click').on('click', self.closeDetailsPanel);
             $('#panelLoading')  .hide();
         });
     }
@@ -1253,6 +1294,15 @@ function StraightPool () {
 	
 	$('#severeFoulSubmitButton').off('click').on('click', function (event) {
 	    self.handleSevereFoulSubmitButton(event);
+	});
+	
+	$('#btnDetailsBack').off('click').on('click', self.closeDetailsPanel);
+	$('#btnDetailsUndo').off('click').on('click', function (event) {
+	    event.preventDefault();
+	    self.undo();
+	    self.closeDetailsPanel();
+	    self.updateScoreDisplay();
+	    self.setActivePlayerMarker(self.currPlayer);
 	});
 	
 	// disable loading panel
