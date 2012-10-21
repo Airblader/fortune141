@@ -253,9 +253,11 @@ function StraightPool () {
 	self.winner          = -1;
 	
 	self.firstShot       = true;
-	self.switchButton    = true;
 	
-	self.ballRack        = new BallRack();
+	self.switchButton = true;
+	$('#playerSwitch').show();
+	
+	self.ballRack = new BallRack();
 	self.ballRack.redraw();
     }
     
@@ -503,6 +505,11 @@ function StraightPool () {
 		self.ballRack.selectedBall = parseInt(row['BallsOnTable']);
 
 		self.ballRack.redraw();
+		
+		$('#playerSwitch').hide();
+		if (self.switchButton) {
+		    $('#playerSwitch').show();
+		}
 		
 		self.setPlayers(parseInt(row['Player1']),
 				parseInt(row['Player2']),
@@ -879,6 +886,7 @@ function StraightPool () {
     self.handleAcceptButton = function (event) {
 	event.preventDefault();
         
+	self.switchButton = false;
         $('#playerSwitch').hide();
         
         // if button is still active from last click, abort
@@ -914,6 +922,7 @@ function StraightPool () {
             ret.ballsOnTable = 15;
             ret.selectedBall = 15;
             
+	    self.switchButton = true;
             $('#playerSwitch').show();
         }
         
