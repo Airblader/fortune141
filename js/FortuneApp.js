@@ -132,6 +132,19 @@ function FortuneApp () {
 	}
     }
     
+    /*
+     *	Normalize vibrate function
+     *		duration : duration of vibration
+     */
+    self.vibrate = function () {
+	if (self.debugMode) {
+	    //
+	}
+	else {
+	    navigator.notification.vibrate(duration);
+	}
+    }
+    
     self.trim = function (str) {
 	return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     }

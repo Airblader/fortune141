@@ -164,6 +164,7 @@ $(document).off('click', '#resumeGameDeleteButton')
     
     var gID = parseInt( $('#resumeGamePopup').data('gID') );
 
+    app.vibrate(300);
     app.confirmDlg(
 	'Are you sure that you want to delete this game?',
 	function () {
