@@ -253,6 +253,7 @@ function StraightPool () {
 	self.winner          = -1;
 	
 	self.firstShot       = true;
+	self.switchButton    = true;
 	
 	self.ballRack        = new BallRack();
 	self.ballRack.redraw();
@@ -479,8 +480,9 @@ function StraightPool () {
 				     );
 		
 		self.firstShot       = (parseInt(row['FirstShot'])       == 1) ? true : false;
+		self.switchButton    = (parseInt(row['SwitchButton'])    == 1) ? true : false;
 		self.isFinished      = (parseInt(row['isFinished'])      == 1) ? true : false;
-		self.mode            = (parseInt(row['Mode'])            == 1) ? true : false;
+		self.mode            =  parseInt(row['Mode']);
 		self.winner          =  parseInt(row['Winner']);
 		
 		self.players = new Array(self.dummyPlayer(),
@@ -526,7 +528,7 @@ function StraightPool () {
 	    var sql = 'INSERT INTO '
 		    + app.dbFortune.tables.Game141.name + ' '
 		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141, false, false) + ' '
-		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 	    
 	    var timestamp  = Math.floor(Date.now() / 1000).toFixed(0),
 		strInnings = self.inningsToString();
@@ -550,6 +552,7 @@ function StraightPool () {
 				 self.ballRack.ballsOnTable,
 				 self.currPlayer,
 				(self.firstShot)       ? 1 : 0,
+				(self.switchButton)    ? 1 : 0,
 				 Number(self.mode),
 				(self.isFinished)      ? 1 : 0,
 				 self.winner,
@@ -571,7 +574,7 @@ function StraightPool () {
 	var sql = 'UPDATE ' + app.dbFortune.tables.Game141.name + ' SET '
 		+ 'HandicapPlayer1=?, HandicapPlayer2=?, MultiplicatorPlayer1=?, MultiplicatorPlayer2=?, '
 	        + 'InningsPlayer1=?, InningsPlayer2=?, PointsPlayer1=?, PointsPlayer2=?, '
-		+ 'FoulsPlayer1=?, FoulsPlayer2=?, BallsOnTable=?, CurrPlayer=?, FirstShot=?, isFinished=?, Winner=? '
+		+ 'FoulsPlayer1=?, FoulsPlayer2=?, BallsOnTable=?, CurrPlayer=?, FirstShot=?, SwitchButton=?, isFinished=?, Winner=? '
 		+ 'WHERE gID="' + self.gameID + '"';
 		
 	var strInnings = self.inningsToString();
@@ -589,8 +592,9 @@ function StraightPool () {
 			     self.players[1].fouls,
 			     self.ballRack.ballsOnTable,
 			     self.currPlayer,
-			    (self.firstShot)  ? 1 : 0,
-			    (self.isFinished) ? 1 : 0,
+			    (self.firstShot)    ? 1 : 0,
+			    (self.switchButton) ? 1 : 0,
+			    (self.isFinished)   ? 1 : 0,
 			     self.winner
 			    ],
 	    cbSuccess,
