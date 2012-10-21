@@ -9,11 +9,9 @@ $(document).bind("mobileinit", function () {
     app = new FortuneApp();
     app.dbFortune = new dbFortune();
     app.dbFortune.open(function () {
-	setTimeout(function () {
-	    $('#pageIndexHead').hide();
-	    $('#pageIndexBody').hide();
-	    $('#pageIndexFirstRunMainUser').show();
-	}, 500);
+	$('#pageIndexHead').hide();
+        $('#pageIndexBody').hide();
+        $('#pageIndexFirstRunMainUser').show();
     }, function() {
 	app.updateMainUser();    
     });
