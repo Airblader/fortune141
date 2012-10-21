@@ -402,6 +402,9 @@ $(document).on('pageshow', '#pageGame141', function () {
  */
 
 $(document).on('pageshow', '#pagePlayersList', function () {
+    $('#pagePlayersListNewPlayerHead').hide();
+    $('#pagePlayersListNewPlayer')    .hide();
+    
     // Create List
     var html  = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">';
 	html += '<li data-role="list-divider">Favorites</li>';
@@ -438,6 +441,34 @@ $(document).on('pageshow', '#pagePlayersList', function () {
     });
 });
 
+$(document).off('click', '#pagePlayersListNewPlayerLink')
+           .on ('click', '#pagePlayersListNewPlayerLink', function (event) {
+    event.preventDefault();
+
+    $('#playerListHead').hide();
+    $('#playerList')    .hide();
+    
+    $('#pagePlayersListNewPlayerHead').show();
+    $('#pagePlayersListNewPlayer')    .show();
+});
+	   
+$(document).off('click', '#pagePlayersListNewPlayerBackLink')
+           .on ('click', '#pagePlayersListNewPlayerBackLink', function (event) {
+    event.preventDefault();
+    
+    $('#playerListHead').show();
+    $('#playerList')    .show();
+    
+    $('#pagePlayersListNewPlayerHead').hide();
+    $('#pagePlayersListNewPlayer')    .hide();
+    
+    // reset form
+    $('#addPlayer_Name')           .val('');
+    $('#addPlayer_Nickname')       .val('');
+    $('#addPlayer_IsFavorite')     .val('false').slider('refresh');
+    $('#addPlayer_DisplayNickname').val('false').slider('refresh');
+});
+
 $(document).off('click', '#addPlayer_Submit').on('click', '#addPlayer_Submit', function (event) {
     event.preventDefault();
     
@@ -458,21 +489,27 @@ $(document).off('click', '#addPlayer_Submit').on('click', '#addPlayer_Submit', f
 
     var newPlayer = new Player(app.dbFortune);
     newPlayer.create(name.name, nickname.name, image, isFavorite, displayNickname, false, function () {
-        $('#popupNewPlayer') .popup('close');
-        $('#pagePlayersList').trigger('pageshow');
+        $('#pagePlayersListNewPlayerHead').hide();
+	$('#pagePlayersListNewPlayer')    .hide();
+	
+	$('#playerListHead').show();
+	$('#playerList')    .show();
+	
+	// reset form
+	$('#addPlayer_Name')           .val('');
+        $('#addPlayer_Nickname')       .val('');
+        $('#addPlayer_IsFavorite')     .val('false').slider('refresh');
+        $('#addPlayer_DisplayNickname').val('false').slider('refresh');
+	
+	$('#pagePlayersList').trigger('pageshow');
     });
     return true;
 });
 
-$(document).on('popupafterclose', '#popupNewPlayer', function () {
-    // reset form
-    $('#addPlayer_Name')           .val('');
-    $('#addPlayer_Nickname')       .val('');
-    $('#addPlayer_IsFavorite')     .val('false').slider('refresh');
-    $('#addPlayer_DisplayNickname').val('false').slider('refresh');
-});
-
 $(document).on('pageshow', '#pagePlayerDetails', function () {
+    $('#pagePlayerDetailsEditPlayerHead').hide();
+    $('#pagePlayerDetailsEditPlayer')    .hide();
+    
     // This is a weird glitch-workaround for the url being passed in a rather strange way
     var url = $.url( $.url().attr('fragment') ),
 	pID = parseInt(url.param('pID'));
@@ -515,7 +552,16 @@ $(document).off('click', '#playerDetailsDeleteConfirm').on('click', '#playerDeta
     });
 });
 
-$(document).on('popupafteropen', '#popupEditPlayer', function () {
+$(document).off('click', '#pagePlayerDetailsEditLink')
+           .on ('click', '#pagePlayerDetailsEditLink', function (event) {
+    event.preventDefault();
+	
+    $('#pagePlayerDetailsOverviewHead').hide();
+    $('#pagePlayerDetailsOverview')    .hide();
+    
+    $('#pagePlayerDetailsEditPlayerHead').show();
+    $('#pagePlayerDetailsEditPlayer')    .show();
+    
     $('#editPlayer_Name')           .val(app.Players.tmp.name           	);
     $('#editPlayer_Nickname')       .val(app.Players.tmp.nickname       	);
     $('#editPlayer_IsFavorite')     .val(String(app.Players.tmp.isFavorite)     ).slider('refresh');
@@ -527,9 +573,16 @@ $(document).on('popupafteropen', '#popupEditPlayer', function () {
 	$('#editPlayer_IsFavorite').slider('disable');
     }
 });
-
-$(document).on('popupafterclose', '#popupEditPlayer', function () {
-    $('#pagePlayerDetails').trigger('pageshow');
+ 
+$(document).off('click', '#pagePlayerDetailsEditPlayerBackLink')
+           .on ('click', '#pagePlayerDetailsEditPlayerBackLink', function (event) {
+    event.preventDefault();
+    
+    $('#pagePlayerDetailsEditPlayerHead').hide();
+    $('#pagePlayerDetailsEditPlayer')    .hide();
+	
+    $('#pagePlayerDetailsOverviewHead').show();
+    $('#pagePlayerDetailsOverview')    .show();
 });
 
 $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', function (event) {
@@ -553,7 +606,13 @@ $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', 
     app.Players.tmp.modify(['Name',     'Nickname',     'isFavorite', 'displayNickname'],
 			   [ name.name,  nickname.name,  isFavorite,   displayNickname ],
     function () {
-	$('#popupEditPlayer').popup('close');
+	$('#pagePlayerDetailsEditPlayerHead').hide();
+        $('#pagePlayerDetailsEditPlayer')    .hide();
+	
+	$('#pagePlayerDetailsOverviewHead').show();
+	$('#pagePlayerDetailsOverview')    .show();
+	
+	$('#pagePlayerDetails').trigger('pageshow');
     });
     return true;
 });

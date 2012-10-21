@@ -4,13 +4,14 @@
 </head>
 <body>
 
-<div data-role="page" id="pagePlayerDetails" data-add-back-btn="true">
-    <div data-role="header">
+<div data-role="page" id="pagePlayerDetails">
+    <div id="pagePlayerDetailsOverviewHead" data-role="header">
+        <a href="#" data-rel="back" data-icon="arrow-l">Back</a>
         <h1>Details</h1>
-        <a href="#" class="ui-btn-right" data-icon="gear" onClick="javascript:$('#popupEditPlayer').popup('open');">Edit</a>
+        <a href="#" id="pagePlayerDetailsEditLink" class="ui-btn-right" data-icon="gear">Edit</a>
     </div>
     
-    <div data-role="content">
+    <div id="pagePlayerDetailsOverview" data-role="content">
         <div style="margin-bottom: 10px; text-align: center;">
             <img src="#" id="playerDetails_Image" class="userPictureBig" />
         </div>
@@ -53,45 +54,41 @@
         </div>
     </div>
     
-    <!-- Edit Player Popup -->
-    <div id="popupEditPlayer" data-role="popup" data-overlay-theme="a">
-        <div data-role="content" style="min-width: 300px;">
-            <div data-role="fieldcontain">
-                <label for="editPlayer_Name">Full Name</label>
-                <input type="text" id="editPlayer_Name" name="editPlayer_Name" value="" />
-            </div>
-            
-            <div data-role="fieldcontain">
-                <label for="editPlayer_Nickname">Nickname (optional)</label>
-                <input type="text" id="editPlayer_Nickname" name="editPlayer_Nickname" value="" />
-            </div>
-            
-            <div data-role="fieldcontain">
-                <label for="editPlayer_DisplayNickname">Use Nickname</label>
-                <select name="editPlayer_DisplayNickname" id="editPlayer_DisplayNickname" data-role="slider">
-                    <option value="false">No</option>
-                    <option value="true">Yes</option>
-                </select>
-            </div>
-            
-            <div data-role="fieldcontain">
-                <label for="editPlayer_IsFavorite">Favorite</label>
-                <select name="editPlayer_IsFavorite" id="editPlayer_IsFavorite" data-role="slider">
-                    <option value="false">No</option>
-                    <option value="true">Yes</option>
-                </select>
-            </div>
-            
-            <div data-role="fieldcontain">
-                <div class="ui-grid-a">
-                    <div class="ui-block-a">
-                        <input type="button" id="editPlayer_Cancel" name="addPlayer_Cancel" value="Cancel" onClick="javascript:$('#popupEditPlayer').popup('close');" />
-                    </div>
-                    <div class="ui-block-b">
-                        <input type="button" id="editPlayer_Submit" name="addPlayer_Submit" value="Submit" />
-                    </div>
-                </div>
-            </div>
+    <!-- Edit Player -->
+    <div id="pagePlayerDetailsEditPlayerHead" data-role="header">
+        <a href="#" id="pagePlayerDetailsEditPlayerBackLink" data-icon="arrow-l">Back</a>
+        <h1>Edit Player</h1>
+    </div>
+    
+    <div id="pagePlayerDetailsEditPlayer" data-role="content">
+        <div data-role="fieldcontain">
+            <label for="editPlayer_Name">Full Name</label>
+            <input type="text" id="editPlayer_Name" name="editPlayer_Name" value="" />
+        </div>
+        
+        <div data-role="fieldcontain">
+            <label for="editPlayer_Nickname">Nickname (optional)</label>
+            <input type="text" id="editPlayer_Nickname" name="editPlayer_Nickname" value="" />
+        </div>
+        
+        <div data-role="fieldcontain">
+            <label for="editPlayer_DisplayNickname">Use Nickname</label>
+            <select name="editPlayer_DisplayNickname" id="editPlayer_DisplayNickname" data-role="slider">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+            </select>
+        </div>
+        
+        <div data-role="fieldcontain">
+            <label for="editPlayer_IsFavorite">Favorite</label>
+            <select name="editPlayer_IsFavorite" id="editPlayer_IsFavorite" data-role="slider">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+            </select>
+        </div>
+        
+        <div data-role="fieldcontain">
+            <input type="button" id="editPlayer_Submit" name="addPlayer_Submit" value="Submit" />
         </div>
     </div>
     
