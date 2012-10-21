@@ -235,7 +235,7 @@ function StraightPool () {
     /*
      *	Initizalize a new game by resetting variables
      */
-    self.initNewGame = function (scoreGoal, maxInnings, isTrainingsGame, handicap, multiplicator) {	
+    self.initNewGame = function (scoreGoal, maxInnings, mode, handicap, multiplicator) {	
         self.players         = new Array(self.dummyPlayer(),
 					 self.dummyPlayer());
         self.currPlayer      = 0;
@@ -248,7 +248,7 @@ function StraightPool () {
 	self.maxInnings      = maxInnings;
 	self.handicap        = handicap;
 	self.multiplicator   = multiplicator;
-	self.isTrainingsGame = isTrainingsGame;
+	self.mode	     = mode;
 	self.isFinished      = false;
 	self.winner          = -1;
 	
@@ -480,7 +480,7 @@ function StraightPool () {
 		
 		self.firstShot       = (parseInt(row['FirstShot'])       == 1) ? true : false;
 		self.isFinished      = (parseInt(row['isFinished'])      == 1) ? true : false;
-		self.isTrainingsGame = (parseInt(row['isTrainingsGame']) == 1) ? true : false;
+		self.mode            = (parseInt(row['Mode'])            == 1) ? true : false;
 		self.winner          =  parseInt(row['Winner']);
 		
 		self.players = new Array(self.dummyPlayer(),
@@ -550,7 +550,7 @@ function StraightPool () {
 				 self.ballRack.ballsOnTable,
 				 self.currPlayer,
 				(self.firstShot)       ? 1 : 0,
-				(self.isTrainingsGame) ? 1 : 0,
+				 Number(self.mode),
 				(self.isFinished)      ? 1 : 0,
 				 self.winner,
 				 '',
@@ -1194,6 +1194,7 @@ function StraightPool () {
 		    self.switchPlayer();
 		}
 		
+		self.updateScoreDisplay();
 		self.setActivePlayerMarker(self.currPlayer);
 	 ////   },
 	 //   app.dummyFalse,
