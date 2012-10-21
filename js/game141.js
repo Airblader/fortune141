@@ -202,7 +202,7 @@ function StraightPool () {
     self.debugMode = app.debugMode;
     
     self.gameID        = -1;
-    self.oldCurrPlayer = -1;
+//    self.oldCurrPlayer = new Array();
     
     var btnAcceptPressed = false,
         yesno            = new Array("Yes", "No");
@@ -300,21 +300,9 @@ function StraightPool () {
     
     /*
      *	Switch the current player and check for potencially needed 3-foul-rule warning
-     *		hardReset (optional) : If true, all points, fouls etc. will be resetted for this inning
-     *				       (defaults to false)
      */
     self.switchPlayer = function () {
         self.currPlayer = (self.currPlayer == 0) ? 1 : 0;
-        
-        var hardReset = (typeof arguments[0] !== 'undefined') ? arguments[0] : false;
-
-        if (hardReset) {        
-            var current = self.innings.length-1;
-            self.innings[current].ptsToAdd[self.currPlayer] = 0;
-            self.innings[current].points[self.currPlayer]   = 0;
-            self.innings[current].foulPts[self.currPlayer]  = 0;
-            self.innings[current].safety[self.currPlayer]   = false;
-        }
 		
 	// trigger 3-foul-rule warning if needed
 	if (self.players[self.currPlayer].fouls == 2) {
@@ -326,7 +314,24 @@ function StraightPool () {
      *	Undo last action
      */
     self.undo = function () {
-	self.currPlayer = self.oldCurrPlayer;
+	return false;
+	
+	/*if (self.oldCurrPlayer.length == 0) {
+	    app.alertDlg(
+		'Sorry, the last action cannot be undone!',
+		app.dummyFalse,
+		'Undo',
+		'OK'
+	    );
+	    return false;
+	}
+	self.currPlayer = self.oldCurrPlayer.pop();
+	
+	// see if this emptied the inning
+	if (self.innings[self.innings.length-1].ptsToAdd[0] == 0 && self.innings[self.innings.length-1].ptsToAdd[1] == 0) {
+	    // remove inning
+	    self.innings.pop();
+	}
 	
 	// reset score
 	self.players[self.currPlayer].points -= self.innings[self.innings.length-1].points[self.currPlayer];
@@ -341,22 +346,42 @@ function StraightPool () {
 	
 	// reset ballrack
 	var foulBall = (self.innings[self.innings.length-1].foulPts[self.currPlayer] > 0) ? 1 : 0;
+	var ptsToAdd = 0;
+	var currentBallsOnTable = self.ballRack.ballsOnTable;
 	self.ballRack.ballsOnTable += (self.innings[self.innings.length-1].points[self.currPlayer] / self.multiplicator[self.currPlayer]) + foulBall;
-	self.ballRack.selectedBall  = self.ballRack.ballsOnTable;
 	
+	if (self.ballRack.ballsOnTable > 15) {
+	    ptsToAdd = self.innings[self.innings.length-1].points[self.currPlayer] - (15 - currentBallsOnTable);
+	    
+	    self.ballRack.ballsOnTable = 15;
+	}
+	else {
+	    if (self.ballRack.ballsOnTable == 15 && self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] > 0) {
+		self.ballRack.ballsOnTable = self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] + 1; // ToDo: 0 or 1?
+	    }
+	    
+	    ptsToAdd = Math.max(0, self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] - 14); // ToDo : 14 or 15?
+	}
+	self.ballRack.selectedBall  = self.ballRack.ballsOnTable;
+	*/
+	/*
+	 * ToDo:
+	 *	- Checken ob 14 oder 15 Bälle gemacht wurden (2 Stellen einbauen, s.o.)
+	 * 	- Überprüfen ob Fouls überhaupt gezählt werden
+	 */
+	/*
 	// nullify inning
-	self.innings[self.innings.length-1].points[self.currPlayer]   = 0;
+	self.innings[self.innings.length-1].points[self.currPlayer] = 0;
 	self.innings[self.innings.length-1].foulPts[self.currPlayer]  = 0;
-	self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] = 0;
+	self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] = ptsToAdd;
 	self.innings[self.innings.length-1].safety[self.currPlayer]   = 0;
 	
 	self.firstShot = true;
 	
 	self.ballRack.redraw();
 	self.updateConsecutiveFoulsDisplay();
-	
-	// ToDo: what about player switch?
-	// ToDo: special case: after 3f rule -> player switch -> undo | selects wrong number of balls! catch in if
+
+	return true;*/
     }
     
     /*
@@ -632,8 +657,8 @@ function StraightPool () {
             current++;
         }
         
-	self.oldCurrPlayer = self.currPlayer;
-        var currPlayer     = self.currPlayer;
+	//self.oldCurrPlayer.push(self.currPlayer);
+	var currPlayer = self.currPlayer;
         
         // we will return this value to provide information on the processed inning
         var ret = {
@@ -769,8 +794,7 @@ function StraightPool () {
      */
     self.getBallImageSize = function (bestRadius) {
 	// available sprite sets
-	var availableSizes = new Array(30, 60, 120);
-	
+	var availableSizes = new Array(30, 60, 80, 100, 120);
         var nearestSize    = availableSizes[availableSizes.length-1];
         for (var i = availableSizes.length-1; i >= 0; i--) {
 	    if (2*bestRadius <= availableSizes[i]) {
@@ -1153,18 +1177,29 @@ function StraightPool () {
      *	Handle click on the button to switch players
      */
     self.handlePlayerSwitchButton = function (event) {
-	// if there is unprocessed business, let's take care of it
-        if (self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] != -1 && self.innings[self.innings.length-1].foulPts[self.currPlayer] != 0) {
-            self.processInput(15, 15, 0, false, false);
-            
-            $('#ptsPlayer0').html(self.players[0].points);
-            $('#ptsPlayer1').html(self.players[1].points);
-        }
-        else {
-            self.switchPlayer();
-        }
-        
-        self.setActivePlayerMarker(self.currPlayer);
+	// make sure user wants this
+	//app.confirmDlg(
+	////    'If you switch players, you cannot undo any previous actions. Are you sure you want to switch players?',
+	////    function () {
+	//	self.oldCurrPlayer = new Array();
+		
+		// if there is unprocessed business, let's take care of it
+		if (self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] != -1 && self.innings[self.innings.length-1].foulPts[self.currPlayer] != 0) {
+		    self.processInput(15, 15, 0, false, false);
+		    
+		    $('#ptsPlayer0').html(self.players[0].points);
+		    $('#ptsPlayer1').html(self.players[1].points);
+		}
+		else {
+		    self.switchPlayer();
+		}
+		
+		self.setActivePlayerMarker(self.currPlayer);
+	 ////   },
+	 //   app.dummyFalse,
+	 //   'Switch Players',
+	  //  'Yes, Cancel'
+	//);
     }
     
     /*
@@ -1255,7 +1290,9 @@ function StraightPool () {
 	// we use CSS3 sprites as this will reduce both file size and loading time
 	for (var i = 0; i <= 15; i++) {
 	    $('#ball' + i).css('background-image', 'url(../../img/rack/rack' + nearestSize + '.png)')
-			  .css('background-size', (2*bestRadius) + 'px')
+			  .css('background-size', (2*bestRadius) + 'px auto')
+			  .css('-webkit-background-size', (2*bestRadius) + 'px auto') // Bugfix : Android earlier than 2.1
+			  .css('background-repeat', 'no-repeat')
 			  .css('background-position', '0 -' + (2*i*bestRadius) + 'px');
 	}
 	

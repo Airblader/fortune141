@@ -215,6 +215,11 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
     $('#game141Setup2')           .hide();
     $('#game141SetupSubmitButton').button('disable');
     
+    // set locally saved score goal if available
+    var scoreGoal = window.localStorage.getItem('game141_ScoreGoal') || 60;
+    $('#game141SetupScoreGoal').val(scoreGoal).slider('refresh');
+    
+    
     // Set up the main player per default
     game141SetPlayer(0, app.Players.main.pID);
     
@@ -315,6 +320,9 @@ $(document).off('click', '#game141SetupLoadProfileButton')
 $(document).off('click', '#game141SetupSubmitButton')
 	   .on ('click', '#game141SetupSubmitButton', function (event) {
     event.preventDefault();
+    
+    // save score goal locally
+    window.localStorage.setItem('game141_ScoreGoal', $('#game141SetupScoreGoal').val());
     
     $.mobile.changePage('game141.html', {
 	data : {
