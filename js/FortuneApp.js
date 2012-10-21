@@ -43,17 +43,6 @@ function FortuneApp () {
 	
 	$('#pageIndex .firstName').html(name.shift());
 	$('#pageIndex .lastName') .html(name.join(" "));
-	
-	self.updateMainUserStatistics();
-    }
-
-    self.updateMainUserStatistics = function () {
-	self.Players.main.load(1, function () {
-	    $('#pageIndex #indexMainUserGD')   .html(parseFloat(self.Players.main.gd)       .toFixed(2)              );
-	    //$('#pageIndex #indexMainUserHGD')  .html(parseFloat(self.Players.main.hgd)      .toFixed(2)              );
-	    $('#pageIndex #indexMainUserHS')   .html(self.Players.main.hs                                            );
-	    $('#pageIndex #indexMainUserQuota').html(parseFloat(100*self.Players.main.quota).toFixed(0) + '&thinsp;%');
-	});
     }
     
     /*

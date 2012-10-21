@@ -21,13 +21,6 @@ $(document).bind("mobileinit", function () {
 
 $(document).on('pageshow', '#pageIndex', function () {
     $('#pageIndexFirstRunMainUser').hide();
-    
-    try {
-        app.updateMainUserStatistics();
-    }
-    catch (e) {
-	// do nothing
-    }
 });
 
 
