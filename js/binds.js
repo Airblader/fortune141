@@ -10,7 +10,9 @@ $(document).bind("mobileinit", function () {
     app.dbFortune = new dbFortune();
     app.dbFortune.open(function () {
 	setTimeout(function () {
-	    $('#popupFirstRunMainUser').popup('open');
+	    $('#pageIndexHead').hide();
+	    $('#pageIndexBody').hide();
+	    $('#pageIndexFirstRunMainUser').show();
 	}, 500);
     }, function() {
 	app.updateMainUser();    
@@ -18,6 +20,8 @@ $(document).bind("mobileinit", function () {
 });
 
 $(document).on('pageshow', '#pageIndex', function () {
+    $('#pageIndexFirstRunMainUser').hide();
+    
     try {
         app.updateMainUserStatistics();
     }
@@ -49,7 +53,9 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
         app.Players.main = new Player();
         app.Players.main.create(name.name, nickname.name, image, isFavorite, displayNickname, true, function () {
 	    app.updateMainUser();
-	    $('#popupFirstRunMainUser').popup('close');
+	    $('#pageIndexHead').show();
+	    $('#pageIndexBody').show();
+	    $('#pageIndexFirstRunMainUser').hide();
 	});
 	
 	// Fill with default game profiles

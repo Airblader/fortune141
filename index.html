@@ -24,7 +24,7 @@
 <body>
 
 <div data-role="page" id="pageIndex" data-dom-cache="true">
-    <div data-role="content">
+    <div id="pageIndexHead" data-role="content">
         <div class="ui-grid-a">
             <div class="ui-block-a">
                 <img src="" id="indexMainUserImg" class="userPictureBig" />
@@ -49,7 +49,7 @@
         </div>    
     </div>
     
-    <div data-role="content">
+    <div id="pageIndexBody" data-role="content">
         <ul data-role="listview" data-dividertheme="a">
             <li data-role="list-divider">General</li>
             
@@ -113,35 +113,30 @@
     </div>
     
     <!-- First Run Main User Configuration -->
-    <div id="popupFirstRunMainUser" data-role="popup" data-position-to="window" data-overlay-theme="a" data-dismissable="false">
-        <div data-role="header">
-            <h2>Welcome!</h2>
+    <div id="pageIndexFirstRunMainUser" data-role="content">
+        <h2>Welcome!</h2>
+        <p>Seems like you're using Fortune 14/1 for the first time. In order to get started, you need to fill out your profile.</p>
+        
+        <div data-role="fieldcontain">
+            <label for="firstRunMainUser_Name">Full Name</label>
+            <input type="text" id="firstRunMainUser_Name" name="firstRunMainUser_Name" value="" />
         </div>
         
-        <div data-role="content">  
-            <p>Seems like you're using Fortune 14/1 for the first time. In order to get started, you need to fill out your profile.</p>
-            
-            <div data-role="fieldcontain">
-                <label for="firstRunMainUser_Name">Full Name</label>
-                <input type="text" id="firstRunMainUser_Name" name="firstRunMainUser_Name" value="" />
-            </div>
-            
-            <div data-role="fieldcontain">
-                <label for="firstRunMainUser_Nickname">Nickname (optional)</label>
-                <input type="text" id="firstRunMainUser_Nickname" name="firstRunMainUser_Nickname" value="" />
-            </div>
-            
-            <div data-role="fieldcontain">
-                <label for="firstRunMainUser_DisplayNickname">Use Nickname</label>
-                <select name="firstRunMainUser_DisplayNickname" id="firstRunMainUser_DisplayNickname" data-role="slider">
-                    <option value="false">No</option>
-                    <option value="true">Yes</option>
-                </select>
-            </div>
-            
-            <div data-role="fieldcontain">
-                <input type="button" id="firstRunMainUser_Submit" name="firstRunMainUser_Submit" value="Submit" />
-            </div>
+        <div data-role="fieldcontain">
+            <label for="firstRunMainUser_Nickname">Nickname (optional)</label>
+            <input type="text" id="firstRunMainUser_Nickname" name="firstRunMainUser_Nickname" value="" />
+        </div>
+        
+        <div data-role="fieldcontain">
+            <label for="firstRunMainUser_DisplayNickname">Use Nickname</label>
+            <select name="firstRunMainUser_DisplayNickname" id="firstRunMainUser_DisplayNickname" data-role="slider">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+            </select>
+        </div>
+        
+        <div data-role="fieldcontain">
+            <input type="button" id="firstRunMainUser_Submit" name="firstRunMainUser_Submit" value="Submit" />
         </div>
     </div>
 </div>
