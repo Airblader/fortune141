@@ -202,7 +202,7 @@ function StraightPool () {
     self.debugMode = app.debugMode;
     
     self.gameID        = -1;
-//    self.oldCurrPlayer = new Array();
+    self.historyStack  = new Array();
     
     var btnAcceptPressed = false,
         yesno            = new Array("Yes", "No");
@@ -321,74 +321,18 @@ function StraightPool () {
      *	Undo last action
      */
     self.undo = function () {
-	return false;
-	
-	/*if (self.oldCurrPlayer.length == 0) {
-	    app.alertDlg(
-		'Sorry, the last action cannot be undone!',
-		app.dummyFalse,
-		'Undo',
-		'OK'
-	    );
-	    return false;
-	}
-	self.currPlayer = self.oldCurrPlayer.pop();
-	
-	// see if this emptied the inning
-	if (self.innings[self.innings.length-1].ptsToAdd[0] == 0 && self.innings[self.innings.length-1].ptsToAdd[1] == 0) {
-	    // remove inning
-	    self.innings.pop();
-	}
-	
-	// reset score
-	self.players[self.currPlayer].points -= self.innings[self.innings.length-1].points[self.currPlayer];
-	
-	// reset foul counter
-	if (self.innings[self.innings.length-1].foulPts[self.currPlayer] > 0) {
-	    self.players[self.currPlayer].fouls--;
-	    if (self.players[self.currPlayer].fouls < 0) {
-		self.players[self.currPlayer].fouls += 3;
+	self.loadHistory(
+	    self.innings.length - 1,
+	    app.dummyFalse,
+	    function () {
+		app.alertDlg(
+		    'Sorry, the last action couldn\'t be undone!',
+		    app.dummyFalse,
+		    'Error',
+		    'OK'
+		);
 	    }
-	}
-	
-	// reset ballrack
-	var foulBall = (self.innings[self.innings.length-1].foulPts[self.currPlayer] > 0) ? 1 : 0;
-	var ptsToAdd = 0;
-	var currentBallsOnTable = self.ballRack.ballsOnTable;
-	self.ballRack.ballsOnTable += (self.innings[self.innings.length-1].points[self.currPlayer] / self.multiplicator[self.currPlayer]) + foulBall;
-	
-	if (self.ballRack.ballsOnTable > 15) {
-	    ptsToAdd = self.innings[self.innings.length-1].points[self.currPlayer] - (15 - currentBallsOnTable);
-	    
-	    self.ballRack.ballsOnTable = 15;
-	}
-	else {
-	    if (self.ballRack.ballsOnTable == 15 && self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] > 0) {
-		self.ballRack.ballsOnTable = self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] + 1; // ToDo: 0 or 1?
-	    }
-	    
-	    ptsToAdd = Math.max(0, self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] - 14); // ToDo : 14 or 15?
-	}
-	self.ballRack.selectedBall  = self.ballRack.ballsOnTable;
-	*/
-	/*
-	 * ToDo:
-	 *	- Checken ob 14 oder 15 Bälle gemacht wurden (2 Stellen einbauen, s.o.)
-	 * 	- Überprüfen ob Fouls überhaupt gezählt werden
-	 */
-	/*
-	// nullify inning
-	self.innings[self.innings.length-1].points[self.currPlayer] = 0;
-	self.innings[self.innings.length-1].foulPts[self.currPlayer]  = 0;
-	self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] = ptsToAdd;
-	self.innings[self.innings.length-1].safety[self.currPlayer]   = 0;
-	
-	self.firstShot = true;
-	
-	self.ballRack.redraw();
-	self.updateConsecutiveFoulsDisplay();
-
-	return true;*/
+	);
     }
     
     /*
@@ -642,18 +586,22 @@ function StraightPool () {
     
     /*
      *	Restore game state from temporary database
-     *		iID (optional)        : ID of inning to restore
-     *			                (defaults to self.innings.length-1)
+     *		steps (optional)      : steps to go back (defaults to 1)
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
     self.loadHistory = function () {
-	var iID       = (typeof arguments[0] !== 'undefined') ? arguments[0] : (self.innings.length - 1),
+	var steps     = (typeof arguments[0] !== 'undefined') ? arguments[0] : 1,
 	    cbSuccess = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse,
 	    cbError   = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse;
+	    
+	while (steps-- >= 0) {
+	    self.historyStack.pop();
+	}
+	var id = self.historyStack[self.historyStack.length-1];
 	
 	app.dbFortune.query(
-	    'SELECT * FROM ' + app.dbFortune.tables.Game141History.name + ' WHERE Inning="' + iID + '" LIMIT 1',
+	    'SELECT * FROM ' + app.dbFortune.tables.Game141History.name + ' WHERE ID="' + id + '" LIMIT 1',
 	    [],
 	    function (tx, result) {
 		if (result.rows.length == 0) {
@@ -687,14 +635,6 @@ function StraightPool () {
 		self.updateConsecutiveFoulsDisplay();
 		self.setActivePlayerMarker(self.currPlayer);
 		
-		// Delete any entries with higher or equal iID
-		app.dbFortune.query(
-		    'DELETE FROM ' + app.dbFortune.tables.Game141History.name + ' WHERE Inning >= "' + iID + '"',
-		    [],
-		    cbSuccess,
-		    cbError
-		);
-		
 		return true;
 	    },
 	    cbError
@@ -708,14 +648,13 @@ function StraightPool () {
 	var sql = 'INSERT INTO '
 		    + app.dbFortune.tables.Game141History.name + ' '
 		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141History, false, false) + ' '
-		    + 'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 	
 	var strInnings = self.inningsToString();	    
 	    
 	app.dbFortune.query(
 	    sql,
-	    [self.innings.length-1,
-	     self.players[0].points,
+	    [self.players[0].points,
 	     self.players[1].points,
 	     strInnings[0],
 	     strInnings[1],
@@ -726,7 +665,9 @@ function StraightPool () {
 	     Number(self.firstShot),
 	     Number(self.switchButton)
 	    ],
-	    app.dummyFalse,
+	    function (tx, result) {
+		self.historyStack.push(result.insertId);
+	    },
 	    app.dummyFalse
 	);
     }
@@ -1313,30 +1254,19 @@ function StraightPool () {
      *	Handle click on the button to switch players
      */
     self.handlePlayerSwitchButton = function (event) {
-	// make sure user wants this
-	//app.confirmDlg(
-	////    'If you switch players, you cannot undo any previous actions. Are you sure you want to switch players?',
-	////    function () {
-	//	self.oldCurrPlayer = new Array();
-		
-		// if there is unprocessed business, let's take care of it
-		if (self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] != -1 && self.innings[self.innings.length-1].foulPts[self.currPlayer] != 0) {
-		    self.processInput(15, 15, 0, false, false);
-		    
-		    $('#ptsPlayer0').html(self.players[0].points);
-		    $('#ptsPlayer1').html(self.players[1].points);
-		}
-		else {
-		    self.switchPlayer();
-		}
-		
-		self.updateScoreDisplay();
-		self.setActivePlayerMarker(self.currPlayer);
-	 ////   },
-	 //   app.dummyFalse,
-	 //   'Switch Players',
-	  //  'Yes, Cancel'
-	//);
+	// if there is unprocessed business, let's take care of it
+	if (self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] != -1 && self.innings[self.innings.length-1].foulPts[self.currPlayer] != 0) {
+	    self.processInput(15, 15, 0, false, false);
+	    
+	    $('#ptsPlayer0').html(self.players[0].points);
+	    $('#ptsPlayer1').html(self.players[1].points);
+	}
+	else {
+	    self.switchPlayer();
+	}
+	
+	self.updateScoreDisplay();
+	self.setActivePlayerMarker(self.currPlayer);
     }
     
     /*

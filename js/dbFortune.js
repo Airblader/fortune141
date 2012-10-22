@@ -142,7 +142,7 @@ function dbFortune () {
 	Game141History : {
 	    name : 'Game141History',
 	    fields : new Array(
-		'Inning',
+		'ID',
 		'PointsPlayer1',
 		'PointsPlayer2',
 		'InningsPlayer1',
@@ -155,7 +155,7 @@ function dbFortune () {
 		'SwitchButton'
 	    ),
 	    types : new Array(
-		'INTEGER NOT NULL',
+		'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
 		'INTEGER',
 		'INTEGER',
 		'TEXT',
@@ -168,7 +168,7 @@ function dbFortune () {
 		'BIT'
 	    ),
 	    defaults : new Array(
-		'1',
+		undefined,
 		undefined,
 		undefined,
 		undefined,
