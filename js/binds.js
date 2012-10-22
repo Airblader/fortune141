@@ -482,7 +482,8 @@ $(document).off('click', '#pagePlayersListNewPlayerBackLink')
     $('#addPlayer_DisplayNickname').val('false').slider('refresh');
 });
 
-$(document).off('click', '#addPlayer_Submit').on('click', '#addPlayer_Submit', function (event) {
+$(document).off('click', '#addPlayer_Submit')
+           .on('click', '#addPlayer_Submit', function (event) {
     event.preventDefault();
     
     var name            = $('#addPlayer_Name').val(),
@@ -555,14 +556,36 @@ $(document).on('pageshow', '#pagePlayerDetails', function () {
     });
 });
 
-$(document).off('click', '#playerDetailsDeleteConfirm').on('click', '#playerDetailsDeleteConfirm', function (event) {
+$(document).off('click', '#playerDetailsDeleteConfirm')
+           .on('click', '#playerDetailsDeleteConfirm', function (event) {
     event.preventDefault();
     
-    app.Players.tmp.remove(function () {
-	// Bugfix: Changing the page screwed up the history stack, by going back in the history
-	//	   we can fix this.
-	history.go(-2);
-    });
+    var pID = app.Players.tmp.pID;
+    app.dbFortune.query(
+	'SELECT COUNT(*) AS ctr FROM ' + app.dbFortune.tables.Game141.name + ' WHERE Player1="' + pID + '" OR Player2="' + pID + '"',
+	[],
+	function (tx, results) {
+	    var ctr = results.rows.item(0)['ctr'];
+	    
+	    if (ctr == 0) {
+		app.Players.tmp.remove(function () {
+		    // Bugfix: Changing the page screwed up the history stack, by going back in the history
+		    //	       we can fix this.
+		    history.go(-2);
+		});
+	    }
+	    else {
+		app.alertDlg(
+		    'Player cannot be deleted as long as there are games stored on your phone that person played!',
+		    function () {
+			$('#popupDeletePlayer').popup('close');
+		    },
+		    'Error',
+		    'OK'
+		);
+	    }
+	}
+    );
 });
 
 $(document).off('click', '#pagePlayerDetailsEditLink')
