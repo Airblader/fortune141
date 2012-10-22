@@ -389,15 +389,20 @@ $(document).on('pageshow', '#pageGame141', function () {
 	if (load) {
 	    app.currentGame.loadGame(gID,
 		function () {
-		    setTimeout(app.currentGame.initUI, 500);
+		    app.currentGame.initUI();
+		    //setTimeout(app.currentGame.initUI, 500);
 		}
 	    );
 	}
 	else {
-	    app.currentGame.initNewGame(scoreGoal, maxInnings, isTrainingsGame, [handicap0, handicap1], [multiplicator0, multiplicator1]);
-	    app.currentGame.setPlayers(pID0, pID1,
+	    app.currentGame.initNewGame(scoreGoal, maxInnings, isTrainingsGame, [handicap0, handicap1], [multiplicator0, multiplicator1],
 		function () {
-		    setTimeout(app.currentGame.initUI, 500);
+		    app.currentGame.setPlayers(pID0, pID1,
+			function () {
+			    app.currentGame.initUI();
+			    //setTimeout(app.currentGame.initUI, 500);
+			}
+		    );
 		}
 	    );
 	}

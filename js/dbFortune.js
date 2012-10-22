@@ -139,6 +139,48 @@ function dbFortune () {
 		'0'
 	    ),
 	},
+	Game141History : {
+	    name : 'Game141History',
+	    fields : new Array(
+		'Inning',
+		'PointsPlayer1',
+		'PointsPlayer2',
+		'InningsPlayer1',
+		'InningsPlayer2',
+		'FoulsPlayer1',
+		'FoulsPlayer2',
+		'BallsOnTable',
+		'CurrPlayer',
+		'FirstShot',
+		'SwitchButton'
+	    ),
+	    types : new Array(
+		'INTEGER NOT NULL',
+		'INTEGER',
+		'INTEGER',
+		'TEXT',
+		'TEXT',
+		'INTEGER',
+		'INTEGER',
+		'INTEGER',
+		'BIT',
+		'BIT',
+		'BIT'
+	    ),
+	    defaults : new Array(
+		'1',
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined
+	    ),
+	},
 	Game141Profile : {
 	    name : 'Game141Profile',
 	    fields : new Array(

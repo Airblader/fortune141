@@ -235,7 +235,9 @@ function StraightPool () {
     /*
      *	Initizalize a new game by resetting variables
      */
-    self.initNewGame = function (scoreGoal, maxInnings, mode, handicap, multiplicator) {	
+    self.initNewGame = function (scoreGoal, maxInnings, mode, handicap, multiplicator) {
+	var cbSuccess = (typeof arguments[5] !== 'undefined') ? arguments[5] : app.dummyFalse;
+	
         self.players         = new Array(self.dummyPlayer(),
 					 self.dummyPlayer());
         self.currPlayer      = 0;
@@ -259,6 +261,8 @@ function StraightPool () {
 	
 	self.ballRack = new BallRack();
 	self.ballRack.redraw();
+	
+	self.initHistory(cbSuccess);
     }
     
     /*
@@ -513,7 +517,10 @@ function StraightPool () {
 		
 		self.setPlayers(parseInt(row['Player1']),
 				parseInt(row['Player2']),
-				cbSuccess
+				function () {
+				    // initialize temporary history table and pass callback
+				    self.initHistory(cbSuccess);
+				}
 		);
 		
 		return true;
@@ -608,6 +615,45 @@ function StraightPool () {
 	    app.dummyFalse
 	);
 	return true;
+    }
+    
+    /*
+     *	Initialize table for history
+     *		cbSuccess (optional),
+     *		cbError (optional)    : callback functions
+     */
+    self.initHistory = function () {
+	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
+	    cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
+	    
+	// simply drop and recreate table
+	app.dbFortune.dropTable(
+	    app.dbFortune.tables.Game141History,
+	    function () {
+		app.dbFortune.createTable(
+		    app.dbFortune.tables.Game141History,
+		    cbSuccess,
+		    cbError
+		);
+	    },
+	    cbError
+	);
+    }
+    
+    /*
+     *	Restore game state from temporary database
+     *		iID (optional) : ID of inning to restore
+     *			         (defaults to self.innings.length-1)
+     */
+    self.loadHistory = function () {
+	var iID = (typeof arguments[0] !== 'undefined') ? arguments[0] : (self.innings.length - 1);
+    }
+    
+    /*
+     *	Save current game state to temporary database
+     */
+    self.saveHistory = function () {
+	
     }
     
     /*
@@ -1280,6 +1326,9 @@ function StraightPool () {
 	
 	// save game
 	self.saveGame();
+	
+	// save history
+	self.saveHistory();
 	
 	// set panel sizes
 	var panelHeights = self.getPanelHeights();
