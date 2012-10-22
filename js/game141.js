@@ -506,7 +506,7 @@ function StraightPool () {
 		
 		self.ballRack              = new BallRack();
 		self.ballRack.ballsOnTable = parseInt(row['BallsOnTable']);
-		self.ballRack.selectedBall = parseInt(row['BallsOnTable']);
+		self.ballRack.selectedBall = self.ballRack.ballsOnTable;
 
 		self.ballRack.redraw();
 		
@@ -642,18 +642,93 @@ function StraightPool () {
     
     /*
      *	Restore game state from temporary database
-     *		iID (optional) : ID of inning to restore
-     *			         (defaults to self.innings.length-1)
+     *		iID (optional)        : ID of inning to restore
+     *			                (defaults to self.innings.length-1)
+     *		cbSuccess (optional),
+     *		cbError (optional)    : callback functions
      */
     self.loadHistory = function () {
-	var iID = (typeof arguments[0] !== 'undefined') ? arguments[0] : (self.innings.length - 1);
+	var iID       = (typeof arguments[0] !== 'undefined') ? arguments[0] : (self.innings.length - 1),
+	    cbSuccess = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse,
+	    cbError   = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse;
+	
+	app.dbFortune.query(
+	    'SELECT * FROM ' + app.dbFortune.tables.Game141History.name + ' WHERE Inning="' + iID + '" LIMIT 1',
+	    [],
+	    function (tx, result) {
+		if (result.rows.length == 0) {
+		    return false;
+		}
+		var row = result.rows.item(0);
+		
+		self.players[0].points = parseInt(row['PointsPlayer1']);
+		self.players[1].points = parseInt(row['PointsPlayer2']);
+		
+		self.players[0].fouls = parseInt(row['FoulsPlayer1']);
+		self.players[1].fouls = parseInt(row['FoulsPlayer2']);
+		
+		self.innings = self.stringToInnings(row['InningsPlayer1'],
+						    row['InningsPlayer2']);
+		
+		self.currPlayer   =  parseInt(row['CurrPlayer']);
+		self.firstShot    = (parseInt(row['FirstShot'])    == 1) ? true : false;
+		self.switchButton = (parseInt(row['SwitchButton']) == 1) ? true : false;
+		
+		$('#playerSwitch').hide();
+		if (self.switchButton) {
+		    $('#playerSwitch').show();
+		}
+		
+		self.ballRack.ballsOnTable = parseInt(row['BallsOnTable']);
+		self.ballRack.selectedBall = self.ballRack.ballsOnTable;
+		self.ballRack.redraw();
+		
+		self.updateScoreDisplay();
+		self.updateConsecutiveFoulsDisplay();
+		self.setActivePlayerMarker(self.currPlayer);
+		
+		// Delete any entries with higher or equal iID
+		app.dbFortune.query(
+		    'DELETE FROM ' + app.dbFortune.tables.Game141History.name + ' WHERE Inning >= "' + iID + '"',
+		    [],
+		    cbSuccess,
+		    cbError
+		);
+		
+		return true;
+	    },
+	    cbError
+	);
     }
     
     /*
      *	Save current game state to temporary database
      */
     self.saveHistory = function () {
+	var sql = 'INSERT INTO '
+		    + app.dbFortune.tables.Game141History.name + ' '
+		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141History, false, false) + ' '
+		    + 'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 	
+	var strInnings = self.inningsToString();	    
+	    
+	app.dbFortune.query(
+	    sql,
+	    [self.innings.length-1,
+	     self.players[0].points,
+	     self.players[1].points,
+	     strInnings[0],
+	     strInnings[1],
+	     self.players[0].fouls,
+	     self.players[1].fouls,
+	     self.ballRack.ballsOnTable,
+	     self.currPlayer,
+	     Number(self.firstShot),
+	     Number(self.switchButton)
+	    ],
+	    app.dummyFalse,
+	    app.dummyFalse
+	);
     }
     
     /*
@@ -1027,6 +1102,7 @@ function StraightPool () {
 	    app.alertDlg(
 		self.players[winner].obj.getDisplayName() + ' has won the game!',
 		function () {
+		    self.saveHistory();
 		    self.saveGame(function () {
 			// update statistics
 			self.players[0].obj.updateStatistics();
@@ -1054,6 +1130,7 @@ function StraightPool () {
         self.ballRack.selectedBall = ret.ballsOnTable;
         
         self.ballRack.redraw();
+	self.saveHistory();
 	self.saveGame();
 	return true;
     }
