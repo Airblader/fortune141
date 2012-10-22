@@ -284,6 +284,22 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
     });
 });
 
+$(document).off('click', '#pageGame141MainBackLink')
+           .on ('click', '#pageGame141MainBackLink', function (event) {
+    event.preventDefault();
+    
+    app.confirmDlg(
+	'If you leave this game, you will be able to resume it, but any actions prior to this point cannot be undone anymore. Are you sure you want to leave?',
+	function () {
+	    $.mobile.changePage('../../index.html');
+	    return true;
+	},
+	app.dummyFalse,
+	'Leave Game',
+	'Yes, No'
+    );
+});
+
 $(document).off('click', '#game141SetupLoadProfileButton')
 	   .on ('click', '#game141SetupLoadProfileButton', function (event) {
     event.preventDefault();
