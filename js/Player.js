@@ -115,6 +115,24 @@ function Player () {
     self.load = function (pID) {
 	var cbSuccess = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse,
 	    cbError   = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse;
+	    
+	// anonymous player
+	if (pID == app.ANONYMOUSPLAYERPID) {
+	    self.pID = app.ANONYMOUSPLAYERPID;
+	    
+	    self.name            = 'Anonymous';
+	    self.nickname        = '';
+	    self.image           = '';
+	    self.isFavorite      = false;
+	    self.displayNickname = false;
+	    self.hs              = 0;
+	    self.gd              = 0;
+	    self.hgd             = 0;
+	    self.quota           = 0;
+	    
+	    cbSuccess();
+	    return true;
+	}
 	
 	self.db.query('SELECT * FROM ' + self.db.tables.Player.name + ' WHERE pID = "' + pID + '" LIMIT 1', [],
 	function (tx, results) {
@@ -142,6 +160,7 @@ function Player () {
 	    return true;
 	},
 	cbError);
+	return true;
     }
     
     /*

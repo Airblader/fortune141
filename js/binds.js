@@ -193,17 +193,25 @@ $(document).off('click', '#resumeGameDeleteButton')
  */
 
 function game141SetPlayer (idx, pID) {
+    var anonName = (typeof arguments[2] !== 'undefined') ? arguments[2] : '';
+    
     app.Players.ingame[idx] = new Player();
     app.Players.ingame[idx].load(pID, function () {
 	var dispName = app.Players.ingame[idx].getDisplayName(),
 	    image    = (app.Players.ingame[idx].image.length > 0) ? app.Players.ingame[idx].image : ('../../' + app.imgPlayerPath + 'playerDummy.jpg');
+	
+	if (pID == app.ANONYMOUSPLAYERPID) {
+	    app.Players.ingame[idx].name = anonName;
+	    dispName                     = anonName;
+	}
+	    
 	$('#game141SetupPlayer' + idx + 'Name').html(dispName)
                                                .data('pid', app.Players.ingame[idx].pID);
 	$('#game141SetupPlayer' + idx + 'Img') .attr('src', image);
 	
 	$('#game141SetupSubmitButton').button('disable');
 	if (($('#game141SetupPlayer0Name').data('pid') != '-1' && $('#game141SetupPlayer1Name').data('pid') != '-1') &&
-	    (app.Players.ingame[1-idx].pID != pID)) {
+	   ((app.Players.ingame[1-idx].pID != pID) || (app.Players.ingame[idx].pID == app.ANONYMOUSPLAYERPID))) {
 	    $('#game141SetupSubmitButton').button('enable'); 
 	}
     });
@@ -211,12 +219,12 @@ function game141SetPlayer (idx, pID) {
 
 $(document).on('pageshow', '#pageGame141Setup', function () {
     $('#game141Setup2')           .hide();
+    $('#game141SetupAnonPlayer')  .hide();
     $('#game141SetupSubmitButton').button('disable');
     
     // set locally saved score goal if available
     var scoreGoal = window.localStorage.getItem('game141_ScoreGoal') || 60;
     $('#game141SetupScoreGoal').val(scoreGoal).slider('refresh');
-    
     
     // Set up the main player per default
     game141SetPlayer(0, app.Players.main.pID);
@@ -259,7 +267,7 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
 	    
 	    html += '<li data-filtertext="' + filter + '">'
 	         +  '<a href="#" onClick="javascript:game141SetPlayer($(\'#game141Setup2\').data(\'player\'), ' + row['pID'] + '); '
-		 +  '$(\'#game141Setup2\').hide(); $(\'#game141Setup1\').show();">' + image
+		 +  '$(\'#game141Setup2\').hide(); $(\'#game141Setup1\').show(); $(\'#game141SetupHead\').show();">' + image
 	         +  dispName + '</a></li>';
 	}
 	
@@ -274,7 +282,7 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
 		
 		html += '<li data-filtertext="' + filter + '">'
 		     +  '<a href="#" onClick="javascript:game141SetPlayer($(\'#game141Setup2\').data(\'player\'), ' + row['pID'] + '); '
-		     +  '$(\'#game141Setup2\').hide(); $(\'#game141Setup1\').show();">'
+		     +  '$(\'#game141Setup2\').hide(); $(\'#game141Setup1\').show(); $(\'#game141SetupHead\').show();">'
 		     +  dispName + '</a></li>';
 	    }
 	   
@@ -291,6 +299,7 @@ $(document).off('click', '#pageGame141MainBackLink')
     app.confirmDlg(
 	'If you leave this game, you will be able to resume it, but any actions prior to this point cannot be undone anymore. Are you sure you want to leave?',
 	function () {
+	    app.dbFortune.dropTable(app.dbFortune.tables.Game141History);
 	    $.mobile.changePage('../../index.html');
 	    return true;
 	},
@@ -360,9 +369,52 @@ $(document).off('click', '#game141SetupPlayerGrid div')
     var element_id = $(this).attr('id'),
 	idx	   = element_id.substr(element_id.length-1, 1);
 	
-    $('#game141Setup1').hide();
+    $('#game141Setup1')   .hide();
+    $('#game141SetupHead').hide();
     $('#game141Setup2').data('player', idx)
 		       .show();
+});
+	   
+$(document).off('taphold', '#game141SetupPlayerGrid div')
+	   .on ('taphold', '#game141SetupPlayerGrid div', function (event) {
+    event.preventDefault();
+    
+    var element_id = $(this).attr('id'),
+	idx	   = element_id.substr(element_id.length-1, 1);
+	
+    $('#game141Setup1')   .hide();
+    $('#game141SetupHead').hide();
+    $('#game141SetupAnonPlayer').data('player', idx)
+                                .show();
+});
+	   
+$(document).off('click', '#game141AnonPlayer_Submit')
+           .on ('click', '#game141AnonPlayer_Submit', function (event) {
+    event.preventDefault();
+    
+    var name = app.validateName($('#game141AnonPlayer_Name').val(), true);
+    
+    if (name.valid) {
+	$('#game141AnonPlayer_Name').val('');
+	$('#game141SetupAnonPlayer').hide();
+	$('#game141Setup1')         .show();
+	$('#game141SetupHead')      .show();
+	
+	var idx = parseInt( $('#game141SetupAnonPlayer').data('player') );
+	game141SetPlayer(
+	    idx,
+	    app.ANONYMOUSPLAYERPID,
+	    name.name
+	);
+    }
+    else {
+	app.alertDlg(
+	    'The name you entered is invalid. A valid name consists of at least three characters.',
+	    app.dummyFalse,
+	    'Error',
+	    'OK'
+	);
+    }
 });
 
 $(document).on('pageshow', '#pageGame141', function () {
@@ -576,7 +628,7 @@ $(document).off('click', '#playerDetailsDeleteConfirm')
 	    }
 	    else {
 		app.alertDlg(
-		    'Player cannot be deleted as long as there are games stored on your phone that person played!',
+		    'Sorry, you cannot delete this player as long as you have games stored on your phone in which this person played!',
 		    function () {
 			$('#popupDeletePlayer').popup('close');
 		    },

@@ -5,7 +5,7 @@
 <body>
 
 <div data-role="page" id="pageGame141Setup">
-    <div data-role="header">
+    <div id="game141SetupHead" data-role="header">
         <a href="../../index.html" data-icon="arrow-l">Back</a>
         <h1>Select Players</h1>
     </div>
@@ -29,54 +29,54 @@
             <input type="range" name="game141SetupScoreGoal" id="game141SetupScoreGoal" value="60" min="10" max="500" step="5" />
         </div>
         <div data-role="fieldcontain">
-        <div data-role="collapsible">
-            <h3>More Settings</h3>
-            
-            <div data-role="fieldcontain">
-                <label for="game141SetupMaxInnings">Innings Limit</label>
-                <input type="range" name="game141SetupMaxInnings" id="game141SetupMaxInnings" value="0" min="0" max="100" step="5" />
-            </div>
-            
-            <div data-role="fieldcontain">
-                <label for="game141SetupIsTrainingsGame">Practice Game</label>
-                <select name="game141SetupIsTrainingsGame" id="game141SetupIsTrainingsGame" data-role="slider">
-                    <option value="1">Yes</option>
-                    <option value="0">No</option>
-                </select>
-            </div>
-        </div>
-        
-        <div data-role="collapsible">
-            <h3>Handicap</h3>
-            
             <div data-role="collapsible">
-                <h3>Player 1</h3>
+                <h3>More Settings</h3>
                 
                 <div data-role="fieldcontain">
-                    <label for="game141SetupHandicap1">Handicap</label>
-                    <input type="range" name="game141SetupHandicap1" id="game141SetupHandicap1" value="0" min="0" max="50" step="5" />
+                    <label for="game141SetupMaxInnings">Innings Limit</label>
+                    <input type="range" name="game141SetupMaxInnings" id="game141SetupMaxInnings" value="0" min="0" max="100" step="5" />
                 </div>
                 
                 <div data-role="fieldcontain">
-                    <label for="game141SetupMultiplicator1">Points Multiplicator</label>
-                    <input type="range" name="game141SetupMultiplicator1" id="game141SetupMultiplicator1" value="1" min="1" max="5" step="1" />
+                    <label for="game141SetupIsTrainingsGame">Practice Game</label>
+                    <select name="game141SetupIsTrainingsGame" id="game141SetupIsTrainingsGame" data-role="slider">
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
                 </div>
             </div>
             
             <div data-role="collapsible">
-                <h3>Player 2</h3>
+                <h3>Handicap</h3>
                 
-                <div data-role="fieldcontain">
-                    <label for="game141SetupHandicap2">Handicap</label>
-                    <input type="range" name="game141SetupHandicap2" id="game141SetupHandicap2" value="0" min="0" max="50" step="5" />
+                <div data-role="collapsible">
+                    <h3>Player 1</h3>
+                    
+                    <div data-role="fieldcontain">
+                        <label for="game141SetupHandicap1">Handicap</label>
+                        <input type="range" name="game141SetupHandicap1" id="game141SetupHandicap1" value="0" min="0" max="50" step="5" />
+                    </div>
+                    
+                    <div data-role="fieldcontain">
+                        <label for="game141SetupMultiplicator1">Points Multiplicator</label>
+                        <input type="range" name="game141SetupMultiplicator1" id="game141SetupMultiplicator1" value="1" min="1" max="5" step="1" />
+                    </div>
                 </div>
                 
-                <div data-role="fieldcontain">
-                    <label for="game141SetupMultiplicator2">Points Multiplicator</label>
-                    <input type="range" name="game141SetupMultiplicator2" id="game141SetupMultiplicator2" value="1" min="1" max="5" step="1" />
+                <div data-role="collapsible">
+                    <h3>Player 2</h3>
+                    
+                    <div data-role="fieldcontain">
+                        <label for="game141SetupHandicap2">Handicap</label>
+                        <input type="range" name="game141SetupHandicap2" id="game141SetupHandicap2" value="0" min="0" max="50" step="5" />
+                    </div>
+                    
+                    <div data-role="fieldcontain">
+                        <label for="game141SetupMultiplicator2">Points Multiplicator</label>
+                        <input type="range" name="game141SetupMultiplicator2" id="game141SetupMultiplicator2" value="1" min="1" max="5" step="1" />
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
         <div data-role="fieldcontain">
             <select name="game141SetupLoadProfileSelect" id="game141SetupLoadProfileSelect">
@@ -86,8 +86,24 @@
         </div>
     </div>
     
+    <!-- Player List -->
     <div data-role="content" id="game141Setup2">
         
+    </div>
+    
+    <!-- Anonymous Player -->
+    <div data-role="content" id="game141SetupAnonPlayer">
+        <h2>Anonymous Player</h2>
+        <p>You can enter a name manually here to play against someone who you don't want to create a player profile for.</p>
+        
+        <div data-role="fieldcontain">
+            <label for="game141AnonPlayer_Name">Full Name</label>
+            <input type="text" id="game141AnonPlayer_Name" name="game141AnonPlayer_Name" value="" />
+        </div>
+        
+        <div data-role="fieldcontain">
+            <input type="button" id="game141AnonPlayer_Submit" name="game141AnonPlayer_Submit" value="Submit" />
+        </div>
     </div>
 </div>
 

@@ -17,6 +17,9 @@ function FortuneApp () {
     
     self.imgPlayerPath = 'img/players/';
     
+    // pID for anonymous player
+    self.ANONYMOUSPLAYERPID = -10;
+    
     // holds the currently running game
     self.currentGame = undefined;
     
@@ -134,6 +137,7 @@ function FortuneApp () {
     
     /*
      *	Normalize vibrate function
+     *	DEPRECATED -- NO EFFECT
      *		duration : duration of vibration
      */
     self.vibrate = function () {
@@ -141,7 +145,7 @@ function FortuneApp () {
 	    //
 	}
 	else {
-	    navigator.notification.vibrate(duration);
+	    //navigator.notification.vibrate(duration);
 	}
     }
     

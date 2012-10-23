@@ -595,8 +595,12 @@ function StraightPool () {
 	    cbSuccess = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse,
 	    cbError   = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse;
 	    
-	while (steps-- >= 0) {
+	while (steps-- >= 0 && self.historyStack.length > 0) {
 	    self.historyStack.pop();
+	}
+	
+	if (self.historyStack.length == 0) {
+	    cbError();
 	}
 	var id = self.historyStack[self.historyStack.length-1];
 	
@@ -1311,6 +1315,31 @@ function StraightPool () {
     }
     
     /*
+     *	Handle undo button click
+     */
+    self.handleUndoButton = function (event) {
+	event.preventDefault();
+	
+	// if button is still active, ignore
+        if( $('#btnDetailsUndo').hasClass('panelButtonDown') ) {
+            return false;
+        }
+	
+	// animation
+        $('#btnDetailsUndo').addClass('panelButtonDown');
+        setTimeout(function() {
+            $('#btnDetailsUndo').removeClass('panelButtonDown');
+        }, 250);
+	
+	self.undo();
+	self.closeDetailsPanel();
+	self.updateScoreDisplay();
+	self.setActivePlayerMarker(self.currPlayer);
+	
+	return true;
+    }
+    
+    /*
      *	Initializes the whole UI
      */
     self.initUI = function () {
@@ -1403,14 +1432,9 @@ function StraightPool () {
 	    self.handleSevereFoulSubmitButton(event);
 	});
 	
-	$('#btnDetailsBack').off('click').on('click', self.closeDetailsPanel);
-	$('#btnDetailsUndo').off('click').on('click', function (event) {
-	    event.preventDefault();
-	    self.undo();
-	    self.closeDetailsPanel();
-	    self.updateScoreDisplay();
-	    self.setActivePlayerMarker(self.currPlayer);
-	});
+	//$('#btnDetailsBack').off('click').on('click', self.closeDetailsPanel);
+	$('#panelDetails').off('click').on('click', self.closeDetailsPanel);
+	$('#btnDetailsUndo').off('click').on('click', self.handleUndoButton);
 	
 	// disable loading panel
 	$('#panelLoading').hide();
