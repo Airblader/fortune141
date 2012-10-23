@@ -218,8 +218,9 @@ function game141SetPlayer (idx, pID) {
 }
 
 $(document).on('pageshow', '#pageGame141Setup', function () {
-    $('#game141Setup2')           .hide();
-    $('#game141SetupAnonPlayer')  .hide();
+    $('#game141Setup2')               .hide();
+    $('#game141SetupAnonPlayer')      .hide();
+    $('#game141SetupChoosePlayerHead').hide();
     $('#game141SetupSubmitButton').button('disable');
     
     // set locally saved score goal if available
@@ -228,6 +229,10 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
     
     // Set up the main player per default
     game141SetPlayer(0, app.Players.main.pID);
+    
+    // Bugfix: Binding this the usual way somehow doesn't work
+    $('#game141SetupPlayerGrid div').off('taphold')
+                                    .on ('taphold', game141TapHoldSelectPlayer);
     
     // create profile list
     app.dbFortune.query('SELECT * FROM ' + app.dbFortune.tables.Game141Profile.name + ' ORDER BY Usage DESC', [],
@@ -267,8 +272,8 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
 	    
 	    html += '<li data-filtertext="' + filter + '">'
 	         +  '<a href="#" onClick="javascript:game141SetPlayer($(\'#game141Setup2\').data(\'player\'), ' + row['pID'] + '); '
-		 +  '$(\'#game141Setup2\').hide(); $(\'#game141Setup1\').show(); $(\'#game141SetupHead\').show();">' + image
-	         +  dispName + '</a></li>';
+		 +  '$(\'#game141Setup2\').hide(); $(\'#game141SetupChoosePlayerHead\').hide(); $(\'#game141Setup1\').show(); $(\'#game141SetupHead\').show();">'
+	         +  image + dispName + '</a></li>';
 	}
 	
 	html += '<li data-role="list-divider">All</li>';
@@ -282,7 +287,7 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
 		
 		html += '<li data-filtertext="' + filter + '">'
 		     +  '<a href="#" onClick="javascript:game141SetPlayer($(\'#game141Setup2\').data(\'player\'), ' + row['pID'] + '); '
-		     +  '$(\'#game141Setup2\').hide(); $(\'#game141Setup1\').show(); $(\'#game141SetupHead\').show();">'
+		     +  '$(\'#game141Setup2\').hide(); $(\'#game141SetupChoosePlayerHead\').hide(); $(\'#game141Setup1\').show(); $(\'#game141SetupHead\').show();">'
 		     +  dispName + '</a></li>';
 	    }
 	   
@@ -290,6 +295,18 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
 	    $('#game141Setup2').html(html).trigger('create');
 	});
     });
+});
+
+$(document).off('click', '#game141SetupChoosePlayerHeadBackLink')
+           .on ('click', '#game141SetupChoosePlayerHeadBackLink', function (event) {
+    event.preventDefault();
+    
+    $('#game141SetupChoosePlayerHead').hide();
+    $('#game141Setup2')               .hide();
+    $('#game141SetupAnonPlayer')      .hide();
+    
+    $('#game141SetupHead').show();
+    $('#game141Setup1')   .show();
 });
 
 $(document).off('click', '#pageGame141MainBackLink')
@@ -373,10 +390,15 @@ $(document).off('click', '#game141SetupPlayerGrid div')
     $('#game141SetupHead').hide();
     $('#game141Setup2').data('player', idx)
 		       .show();
+    $('#game141SetupChoosePlayerHead').show();
 });
 	   
-$(document).off('taphold', '#game141SetupPlayerGrid div')
-	   .on ('taphold', '#game141SetupPlayerGrid div', function (event) {
+
+/*
+ *  Will be bound to taphold on pageshow
+ *  For some reason doesn't work the usual way
+ */
+function game141TapHoldSelectPlayer (event) {
     event.preventDefault();
     
     var element_id = $(this).attr('id'),
@@ -386,7 +408,8 @@ $(document).off('taphold', '#game141SetupPlayerGrid div')
     $('#game141SetupHead').hide();
     $('#game141SetupAnonPlayer').data('player', idx)
                                 .show();
-});
+    $('#game141SetupChoosePlayerHead').show();
+}
 	   
 $(document).off('click', '#game141AnonPlayer_Submit')
            .on ('click', '#game141AnonPlayer_Submit', function (event) {
@@ -396,9 +419,10 @@ $(document).off('click', '#game141AnonPlayer_Submit')
     
     if (name.valid) {
 	$('#game141AnonPlayer_Name').val('');
-	$('#game141SetupAnonPlayer').hide();
-	$('#game141Setup1')         .show();
-	$('#game141SetupHead')      .show();
+	$('#game141SetupAnonPlayer')      .hide();
+	$('#game141SetupChoosePlayerHead').hide();
+	$('#game141Setup1')   .show();
+	$('#game141SetupHead').show();
 	
 	var idx = parseInt( $('#game141SetupAnonPlayer').data('player') );
 	game141SetPlayer(
