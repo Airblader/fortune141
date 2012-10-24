@@ -319,11 +319,13 @@ function StraightPool () {
     
     /*
      *	Undo last action
+     *		callback (optional) : callback function
      */
     self.undo = function () {
+	var callback = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse;
+	
 	self.loadHistory(
-	    self.innings.length - 1,
-	    app.dummyFalse,
+	    callback,
 	    function () {
 		app.alertDlg(
 		    'Sorry, the last action couldn\'t be undone!',
@@ -586,23 +588,23 @@ function StraightPool () {
     
     /*
      *	Restore game state from temporary database
-     *		steps (optional)      : steps to go back (defaults to 1)
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
     self.loadHistory = function () {
-	var steps     = (typeof arguments[0] !== 'undefined') ? arguments[0] : 1,
-	    cbSuccess = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse,
-	    cbError   = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse;
+	var //steps     = (typeof arguments[0] !== 'undefined') ? arguments[0] : 1,
+	    cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
+	    cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 	    
-	while (steps-- >= 0 && self.historyStack.length > 0) {
+	/*while (steps-- >= 0 && self.historyStack.length > 0) {
 	    self.historyStack.pop();
-	}
+	}*/
 	
-	if (self.historyStack.length == 0) {
+	if (self.historyStack.length <= 1) {
 	    cbError();
 	}
-	var id = self.historyStack[self.historyStack.length-1];
+	var id = self.historyStack.pop();
+	    id = self.historyStack[self.historyStack.length-1];
 	
 	app.dbFortune.query(
 	    'SELECT * FROM ' + app.dbFortune.tables.Game141History.name + ' WHERE ID="' + id + '" LIMIT 1',
@@ -639,6 +641,8 @@ function StraightPool () {
 		self.updateConsecutiveFoulsDisplay();
 		self.setActivePlayerMarker(self.currPlayer);
 		
+		self.saveGame();
+		cbSuccess();
 		return true;
 	    },
 	    cbError
@@ -1331,10 +1335,21 @@ function StraightPool () {
             $('#btnDetailsUndo').removeClass('panelButtonDown');
         }, 250);
 	
-	self.undo();
-	self.closeDetailsPanel();
-	self.updateScoreDisplay();
-	self.setActivePlayerMarker(self.currPlayer);
+	app.confirmDlg(
+	    'Are you sure you want to revert the last action?',
+	    function () {
+		self.undo(
+		    function () {
+		        self.closeDetailsPanel();
+		        self.updateScoreDisplay();
+		        self.setActivePlayerMarker(self.currPlayer);
+		    }
+		);
+	    },
+	    app.dummyFalse,
+	    'Undo',
+	    'Revert, Cancel'
+	);
 	
 	return true;
     }
@@ -1388,53 +1403,33 @@ function StraightPool () {
 	// load images
 	// we use CSS3 sprites as this will reduce both file size and loading time
 	for (var i = 0; i <= 15; i++) {
-	    $('#ball' + i).css('background-image', 'url(../../img/rack/rack' + nearestSize + '.png)')
-			  .css('background-size', (2*bestRadius) + 'px auto')
-			  .css('-webkit-background-size', (2*bestRadius) + 'px auto') // Bugfix : Android earlier than 2.1
-			  .css('background-repeat', 'no-repeat')
-			  .css('background-position', '0 -' + (2*i*bestRadius) + 'px');
+	    $('#ball' + i).css('background-image',        'url(../../img/rack/rack' + nearestSize + '.png)')
+			  .css('background-size',         (2*bestRadius) + 'px auto'                       )
+			  .css('-webkit-background-size', (2*bestRadius) + 'px auto'                       ) // Bugfix : Android earlier than 2.1
+			  .css('background-repeat',       'no-repeat'                                      )
+			  .css('background-position',     '0 -' + (2*i*bestRadius) + 'px'                  );
 	}
 	
 	// now we make the buttons work
-	$('#usrAccept').off('click').on('click', function (event) {
-	    self.handleAcceptButton(event);    
-	});
+	$('#usrAccept')             .off('click')  .on('click',   self.handleAcceptButton           );
+	$('#usrFoulDisplay')        .off('click')  .on('click',   self.handleFoulButtonTap          );
+	$('#usrFoulDisplay')        .off('taphold').on('taphold', self.handleFoulButtonHold         );
+	$('#usrSafeDisplay')        .off('click')  .on('click',   self.handleSafetyButton           );
+	$('.minimizePanel')         .off('click')  .on('click',   self.handleMinimizeMainPanelButton);
+	$('#playerSwitch')          .off('click')  .on('click',   self.handlePlayerSwitchButton     );
+	$('#severeFoulSubmitButton').off('click')  .on('click',   self.handleSevereFoulSubmitButton );
+	$('#detailsScoreBoard')     .off('click')  .on('click',   self.closeDetailsPanel            );
+	$('#btnDetailsUndo')        .off('click')  .on('click',   self.handleUndoButton             );
 	
-	$('#usrFoulDisplay').off('click').on('click', function (event) {
-	    self.handleFoulButtonTap(event);
-	});
-	
-	$('#usrFoulDisplay').off('taphold').on('taphold', function (event) {
-	    self.handleFoulButtonHold(event);
-	});
-	
-	$('#usrSafeDisplay').off('click').on('click', function (event) {
-	    self.handleSafetyButton(event);
-	});
-	
-	$('.minimizePanel').off('click').on('click', function (event) {
-	    self.handleMinimizeMainPanelButton(event);
-	});
-	
-	$('#playerSwitch').off('click').on('click', function (event) {
-	    self.handlePlayerSwitchButton(event); 
-	});
-	
-	$('#severeFoulMinusButton').off('click').on('click', function (event) {
+	$('#severeFoulMinusButton').off('click')
+				   .on ('click', function (event) {
 	    self.handleSevereFoulPlusMinusButton(event, false);
 	});
 	
-	$('#severeFoulPlusButton').off('click').on('click', function (event) {
+	$('#severeFoulPlusButton').off('click')
+				  .on ('click', function (event) {
 	    self.handleSevereFoulPlusMinusButton(event, true);
 	});
-	
-	$('#severeFoulSubmitButton').off('click').on('click', function (event) {
-	    self.handleSevereFoulSubmitButton(event);
-	});
-	
-	//$('#btnDetailsBack').off('click').on('click', self.closeDetailsPanel);
-	$('#panelDetails').off('click').on('click', self.closeDetailsPanel);
-	$('#btnDetailsUndo').off('click').on('click', self.handleUndoButton);
 	
 	// disable loading panel
 	$('#panelLoading').hide();
