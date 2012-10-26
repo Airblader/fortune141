@@ -84,7 +84,9 @@ function FortuneApp () {
 	}
 	
 	if (typeof func === 'undefined') {
-	    func = document.history.go(-1);
+	    func = function () {
+		document.history.go(-1);
+	    }
 	}
 	
 	self.currBackButtonFunc = func;
