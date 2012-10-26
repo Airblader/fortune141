@@ -1043,15 +1043,17 @@ function StraightPool () {
 		&& (self.players[0].points != self.players[1].points							// game not tied ...
 		    || self.inningsExtension == 0)) {									// ... except no innings extension is set
 	    
-	    // safe way to determine winner
-	    var winner = 0;
-	    if (self.players[1].points > self.players[0].points) {
-		winner = 1;
-	    }
-	    
-	    // important for saving the game
 	    self.isFinished = true;
-	    self.winner = self.players[winner].obj.pID;
+	    
+	    // determine winner
+	    var ptsDiff = self.players[1].points - self.players[0].points;
+	    if (ptsDiff != 0) {
+		var idxWinner = ptsDiff && (ptsDiff / Math.abs(ptsDiff));
+		self.winner = self.players[idxWinner].obj.pID;
+	    }
+	    else {	// game ended tied
+		self.winner = 0;
+	    }
 	    
 	    // block all inputs
 	    setTimeout(
@@ -1071,11 +1073,17 @@ function StraightPool () {
 			      .removeClass('activePlayer1');
 	    
 	    // cap off last inning and total points to be no larger than the score goal
-	    self.innings[self.innings.length-1].points[winner] -= Math.max(0, self.players[winner].points - self.scoreGoal); 
-	    self.players[winner].points = Math.min(self.players[winner].points, self.scoreGoal);
-
+	    if (self.winner != 0) {
+		self.innings[self.innings.length-1].points[winner] -= Math.max(0, self.players[winner].points - self.scoreGoal); 
+		self.players[winner].points = Math.min(self.players[winner].points, self.scoreGoal);
+	    }
+	    
+	    var msg = (self.winner != 0)
+			? (self.players[winner].obj.getDisplayName() + ' has won the game!')
+			: 'The game ended in a tie!';
+		
 	    app.alertDlg(
-		self.players[winner].obj.getDisplayName() + ' has won the game!',
+		msg,
 		function () {
 		    self.saveHistory();
 		    self.saveGame(function () {
