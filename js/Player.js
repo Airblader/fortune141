@@ -164,6 +164,47 @@ function Player () {
     }
     
     /*
+     *	Load a player by his pID, but if it's an anonymous player, get his name
+     *	from a 14/1 game.
+     *		pID                   : pID of player to load
+     *		idx                   : whether player is player 1 or 2 in the game
+     *		gID                   : ID of game
+     *		cbSuccess (optional),
+     *		cbError (optional)    : callback functions
+     */
+    self.loadBy141Game = function (pID, idx, gID) {
+	var cbSuccess = (typeof arguments[3] !== 'undefined') ? arguments[3] : app.dummyFalse,
+	    cbError   = (typeof arguments[4] !== 'undefined') ? arguments[4] : app.dummyFalse;
+	    
+	self.load(
+	    pID,
+	    function () {
+		// if anonymous player, load name from game
+		if (self.pID == app.ANONYMOUSPLAYERPID) {
+		    app.dbFortune.query(
+			'SELECT Player' + idx + 'Name AS name FROM ' + app.dbFortune.tables.Game141.name + ' WHERE gID="' + gID + '" LIMIT 1',
+			[],
+			function (tx, result) {
+			    if (result.rows.length == 0) {
+				cbError();
+			    }
+			    
+			    var row = result.rows.item(0);
+			    self.name = row['name'];
+			    cbSuccess();    
+			},
+			cbError
+		    );    
+		}
+		else {
+		    cbSuccess();
+		}
+	    },
+	    cbError
+	);
+    }
+    
+    /*
      *	Returns either name or nickname depending on whether the nickname should
      *	be used and is not empty
      */

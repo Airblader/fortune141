@@ -77,6 +77,7 @@ $(document).on('pageshow', '#pageResumeGame', function () {
     function output141 (rows, idx) {
 	var row = rows.item(idx);
 	
+	var gID   = parseInt(row['gID']);
 	var date  = new Date(1000 * parseInt(row['Timestamp'])),
 	    year  = date.getFullYear(),
 	    month = date.getMonth(),
@@ -84,13 +85,13 @@ $(document).on('pageshow', '#pageResumeGame', function () {
 	    
 	app.Players.tmp = new Player();
 	
-	app.Players.tmp.load(parseInt(row['Player1']), function () {
+	app.Players.tmp.loadBy141Game(parseInt(row['Player1']), 1, gID, function () {
 	    var name1 = app.Players.tmp.getDisplayName();
 	    
-	    app.Players.tmp.load(parseInt(row['Player2']), function () {
+	    app.Players.tmp.loadBy141Game(parseInt(row['Player2']), 2, gID, function () {
 		var name2 = app.Players.tmp.getDisplayName();
 		
-		var html  = '<li><a href="#" onClick="javascript:$(\'#resumeGamePopup\').data(\'gType\', \'141\').data(\'gID\', ' + row['gID'] + ').popup(\'open\');">';
+		var html  = '<li><a href="#" onClick="javascript:$(\'#resumeGamePopup\').data(\'gType\', \'141\').data(\'gID\', ' + gID + ').popup(\'open\');">';
 			
 		html += '<p><strong>' + name1 + ' vs. ' + name2 + '</strong></p>';
 		html += '<p>Score: ' + row['PointsPlayer1'] + ' &ndash; ' + row['PointsPlayer2'] + '</p>';
