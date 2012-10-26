@@ -212,7 +212,7 @@ function StraightPool () {
      */
     self.dummyPlayer = function () {
         return {
-                    //id    : 0,
+                    //name  : '',
                     fouls : 0,
                     points: 0,
 		    obj   : undefined,	// holds the Player object
@@ -235,8 +235,8 @@ function StraightPool () {
     /*
      *	Initizalize a new game by resetting variables
      */
-    self.initNewGame = function (scoreGoal, maxInnings, mode, handicap, multiplicator) {
-	var cbSuccess = (typeof arguments[5] !== 'undefined') ? arguments[5] : app.dummyFalse;
+    self.initNewGame = function (scoreGoal, maxInnings, inningsExtension, mode, handicap, multiplicator) {
+	var cbSuccess = (typeof arguments[6] !== 'undefined') ? arguments[6] : app.dummyFalse;
 	
         self.players         = new Array(self.dummyPlayer(),
 					 self.dummyPlayer());
@@ -246,15 +246,16 @@ function StraightPool () {
 	self.players[0].points = handicap[0];
 	self.players[1].points = handicap[1];
 	
-	self.scoreGoal       = scoreGoal;
-	self.maxInnings      = maxInnings;
-	self.handicap        = handicap;
-	self.multiplicator   = multiplicator;
-	self.mode	     = mode;
-	self.isFinished      = false;
-	self.winner          = -1;
+	self.scoreGoal        = scoreGoal;
+	self.maxInnings       = maxInnings;
+	self.inningsExtension = inningsExtension;
+	self.handicap         = handicap;
+	self.multiplicator    = multiplicator;
+	self.mode	      = mode;
+	self.isFinished       = false;
+	self.winner           = -1;
 	
-	self.firstShot       = true;
+	self.firstShot        = true;
 	
 	self.switchButton = true;
 	$('#playerSwitch').show();
@@ -282,22 +283,19 @@ function StraightPool () {
     }
     
     /*
-     *	Loads a player into the game
-     *		idx : Player 0 or 1
-     *		pID : pID of the player
+     *	Loads players from app.currentGame into the game
      */
-    self.setPlayers = function (pID1, pID2) {
-        var cbSuccess = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse,
-	    cbError   = (typeof arguments[3] !== 'undefined') ? arguments[3] : app.dummyFalse;
-	    
+    self.setPlayers = function () {
+	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse;
+	  
 	self.players[0].obj = new Player();
 	self.players[1].obj = new Player();
+	    
+	self.players[0].obj = app.Players.ingame[0];
+	self.players[1].obj = app.Players.ingame[1];
 	
-	self.players[0].obj.load(pID1, function () {
-	    self.players[1].obj.load(pID2, cbSuccess, cbError);
-	}, cbError);
+	cbSuccess();
     }
-	
     /*
      *	Defines what action to take when the current player already has two fouls and needs to be warned
      */
@@ -426,16 +424,17 @@ function StraightPool () {
 		
 		var row = result.rows.item(0);
 		
-		self.scoreGoal     = parseInt(row['ScoreGoal']);
-		self.maxInnings    = parseInt(row['MaxInnings']);
-		self.handicap      = new Array(
-					parseInt(row['HandicapPlayer1']),
-					parseInt(row['HandicapPlayer2'])
-				     );
-		self.multiplicator = new Array(
-					parseInt(row['MultiplicatorPlayer1']),
-					parseInt(row['MultiplicatorPlayer2'])
-				     );
+		self.scoreGoal        = parseInt(row['ScoreGoal']);
+		self.maxInnings       = parseInt(row['MaxInnings']);
+		self.inningsExtension = parseInt(row['InningsExtension']);
+		self.handicap         = new Array(
+					    parseInt(row['HandicapPlayer1']),
+					    parseInt(row['HandicapPlayer2'])
+				        );
+		self.multiplicator    = new Array(
+					    parseInt(row['MultiplicatorPlayer1']),
+					    parseInt(row['MultiplicatorPlayer2'])
+				        );
 		
 		self.firstShot       = (parseInt(row['FirstShot'])       == 1) ? true : false;
 		self.switchButton    = (parseInt(row['SwitchButton'])    == 1) ? true : false;
@@ -467,12 +466,29 @@ function StraightPool () {
 		    $('#playerSwitch').show();
 		}
 		
-		self.setPlayers(parseInt(row['Player1']),
-				parseInt(row['Player2']),
-				function () {
-				    // initialize temporary history table and pass callback
-				    self.initHistory(cbSuccess);
+		app.Players.ingame[0] = new Player();
+		app.Players.ingame[1] = new Player();
+		
+		app.Players.ingame[0].load(
+		    parseInt(row['Player1']),
+		    function () {
+			if (app.Players.ingame[0].pID == app.ANONYMOUSPLAYERPID) {
+			    app.Players.ingame[0].name = row['Player1Name'];
+			}
+			app.Players.ingame[1].load(
+			    parseInt(row['Player2']),
+			    function () {
+				if (app.Players.ingame[1].pID == app.ANONYMOUSPLAYERPID) {
+				    app.Players.ingame[1].name = row['Player2Name'];
 				}
+				self.setPlayers(
+				    function () {
+					self.initHistory(cbSuccess);
+				    }
+				);
+			    }
+			);
+		    }
 		);
 		
 		return true;
@@ -494,7 +510,7 @@ function StraightPool () {
 	    var sql = 'INSERT INTO '
 		    + app.dbFortune.tables.Game141.name + ' '
 		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141, false, false) + ' '
-		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 	    
 	    var timestamp  = Math.floor(Date.now() / 1000).toFixed(0),
 		strInnings = self.inningsToString();
@@ -502,11 +518,14 @@ function StraightPool () {
 	    app.dbFortune.query(sql,
 				[timestamp,
 				 self.players[0].obj.pID,
+				 self.players[0].obj.getDisplayName(),
 				 self.players[1].obj.pID,
+				 self.players[1].obj.getDisplayName(),
 				 self.players[0].points,
 				 self.players[1].points,
 				 self.scoreGoal,
 				 self.maxInnings,
+				 self.inningsExtension,
 				 self.handicap[0],
 				 self.handicap[1],
 				 self.multiplicator[0],
@@ -601,10 +620,6 @@ function StraightPool () {
 	var //steps     = (typeof arguments[0] !== 'undefined') ? arguments[0] : 1,
 	    cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
 	    cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
-	    
-	/*while (steps-- >= 0 && self.historyStack.length > 0) {
-	    self.historyStack.pop();
-	}*/
 	
 	if (self.historyStack.length <= 1) {
 	    cbError();
@@ -897,7 +912,8 @@ function StraightPool () {
      */
     self.closeDetailsPanel = function () {
 	// stop listening to the hardware back button
-	document.removeEventListener('backbutton', self.closeDetailsPanel, false);
+	//document.removeEventListener('backbutton', self.closeDetailsPanel, false);
+	app.setBackButton();
                 
         // if button is still active, ignore the click
         if($('#btnDetailsBack').hasClass('panelButtonDown')) {
@@ -1045,6 +1061,7 @@ function StraightPool () {
 	    $('#usrAccept')     .off('click');
 	    $('#usrFoulDisplay').off('click').off('taphold');
 	    $('#usrSafeDisplay').off('click');
+	    $('#btnDetailsUndo').off('click');
 	    
 	    // unset the current player marker
 	    $('#activePlayer').removeClass('activePlayer0')
@@ -1167,8 +1184,9 @@ function StraightPool () {
 	$('#panelLoading')			     .show();
         $(self.pageName).find('[data-role="header"]').hide();
         $('#panelDetails')                           .show(function () {
-            document.addEventListener('backbutton', self.closeDetailsPanel, false);
-            
+            //document.addEventListener('backbutton', self.closeDetailsPanel, false);
+            app.setBackButton(self.closeDetailsPanel);
+	    
             $('#panelRackAndMenu').hide();
             
             var details  ='';

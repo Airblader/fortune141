@@ -74,6 +74,24 @@ function FortuneApp () {
     }
     
     /*
+     *	Set the phone's back button to execute a certain function
+     *		func (optional) : function to execute
+     */
+    self.currBackButtonFunc = undefined;
+    self.setBackButton = function (func) {
+	if (typeof self.currBackButtonFunc !== 'undefined') {
+	    document.removeEventListener('backbutton', self.currBackButtonFunc, false);
+	}
+	
+	if (typeof func === 'undefined') {
+	    func = document.history.go(-1);
+	}
+	
+	self.currBackButtonFunc = func;
+	document.addEventListener('backbutton', self.currBackButtonFunc, false);
+    }
+    
+    /*
      *	Normalize confirm dialogs for desktop and mobile usage.
      *		message            : dialog content
      *		cbSuccess,

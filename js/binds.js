@@ -418,11 +418,11 @@ $(document).off('click', '#game141AnonPlayer_Submit')
     var name = app.validateName($('#game141AnonPlayer_Name').val(), true);
     
     if (name.valid) {
-	$('#game141AnonPlayer_Name').val('');
+	$('#game141AnonPlayer_Name')      .val('');
 	$('#game141SetupAnonPlayer')      .hide();
 	$('#game141SetupChoosePlayerHead').hide();
-	$('#game141Setup1')   .show();
-	$('#game141SetupHead').show();
+	$('#game141Setup1')               .show();
+	$('#game141SetupHead')            .show();
 	
 	var idx = parseInt( $('#game141SetupAnonPlayer').data('player') );
 	game141SetPlayer(
@@ -466,17 +466,15 @@ $(document).on('pageshow', '#pageGame141', function () {
 	    app.currentGame.loadGame(gID,
 		function () {
 		    app.currentGame.initUI();
-		    //setTimeout(app.currentGame.initUI, 500);
 		}
 	    );
 	}
 	else {
-	    app.currentGame.initNewGame(scoreGoal, maxInnings, isTrainingsGame, [handicap0, handicap1], [multiplicator0, multiplicator1],
+	    app.currentGame.initNewGame(scoreGoal, maxInnings, 1, isTrainingsGame, [handicap0, handicap1], [multiplicator0, multiplicator1],
 		function () {
-		    app.currentGame.setPlayers(pID0, pID1,
+		    app.currentGame.setPlayers(
 			function () {
 			    app.currentGame.initUI();
-			    //setTimeout(app.currentGame.initUI, 500);
 			}
 		    );
 		}

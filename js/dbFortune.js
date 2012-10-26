@@ -58,11 +58,14 @@ function dbFortune () {
 		'gID',
 		'Timestamp',
 		'Player1',
+		'Player1Name',
 		'Player2',
+		'Player2Name',
 		'PointsPlayer1',
 		'PointsPlayer2',
 		'ScoreGoal',
 		'MaxInnings',
+		'InningsExtension',
 		'HandicapPlayer1',
 		'HandicapPlayer2',
 		'MultiplicatorPlayer1',
@@ -86,7 +89,10 @@ function dbFortune () {
 		'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
 		'TEXT',
 		'INTEGER NOT NULL',
+		'TEXT',
 		'INTEGER NOT NULL',
+		'TEXT',
+		'INTEGER',
 		'INTEGER',
 		'INTEGER',
 		'INTEGER',
@@ -114,11 +120,14 @@ function dbFortune () {
 		undefined,
 		undefined,
 		'-1',
+		undefined,
 		'-1',
+		undefined,
 		'0',
 		'0',
 		undefined,
 		'0',
+		'1',
 		'0',
 		'0',
 		'1',
@@ -220,6 +229,21 @@ function dbFortune () {
 		'0'
 	    ),
 	},
+	GameModes : {
+	    name : 'GameModes',
+	    fields : new Array(
+		'ID',
+		'Name'
+	    ),
+	    types : new Array(
+		'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
+		'TEXT'
+	    ),
+	    defaults : new Array(
+		undefined,
+		'""'
+	    ),
+	}
     };
     
     /*
