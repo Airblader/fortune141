@@ -1051,7 +1051,8 @@ function StraightPool () {
 		var idxWinner = ptsDiff && (ptsDiff / Math.abs(ptsDiff));
 		self.winner = self.players[idxWinner].obj.pID;
 	    }
-	    else {	// game ended tied
+	    // game ended tied
+	    else {
 		self.winner = 0;
 	    }
 	    
@@ -1074,12 +1075,12 @@ function StraightPool () {
 	    
 	    // cap off last inning and total points to be no larger than the score goal
 	    if (self.winner != 0) {
-		self.innings[self.innings.length-1].points[winner] -= Math.max(0, self.players[winner].points - self.scoreGoal); 
-		self.players[winner].points = Math.min(self.players[winner].points, self.scoreGoal);
+		self.innings[self.innings.length-1].points[idxWinner] -= Math.max(0, self.players[idxWinner].points - self.scoreGoal); 
+		self.players[idxWinner].points                         = Math.min(self.players[idxWinner].points, self.scoreGoal);
 	    }
 	    
 	    var msg = (self.winner != 0)
-			? (self.players[winner].obj.getDisplayName() + ' has won the game!')
+			? (self.players[idxWinner].obj.getDisplayName() + ' has won the game!')
 			: 'The game ended in a tie!';
 		
 	    app.alertDlg(
