@@ -302,7 +302,13 @@ function StraightPool () {
      *	Defines what action to take when the current player already has two fouls and needs to be warned
      */
     self.warnConsecutiveFouls = function () {
-        $('#consecFoulsWarning').popup("open");
+	app.alertDlg(
+	    'You\'re already up to two consecutive fouls. If you foul on this inning, you will get an additional 15 points penalty.\r\n\r\n' +
+            'If this applies to your opponent and not to you, you should now inform him about this.',
+	    app.dummyFalse,
+	    'Warning!',
+	    'OK'
+	);
     }
     
     /*
