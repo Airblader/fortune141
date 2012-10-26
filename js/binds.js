@@ -54,8 +54,8 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
 	query.add('INSERT INTO '
 		    + app.dbFortune.tables.Game141Profile.name + ' '
 		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141Profile)
-		    + ' VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-		  ['Default', 60, 0, 0, 0, 1, 1, 0, 0]
+		    + ' VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		  ['Default', 60, 0, 1, 0, 0, 1, 1, 0, 0]
 	);
 	
 	query.execute();
@@ -339,13 +339,14 @@ $(document).off('click', '#game141SetupLoadProfileButton')
 	    }
 	    
 	    var row = result.rows.item(0);
-	    $('#game141SetupScoreGoal')      .val(row['ScoreGoal']           ).slider('refresh');
-	    $('#game141SetupMaxInnings')     .val(row['MaxInnings']          ).slider('refresh');
-	    $('#game141SetupIsTrainingsGame').val(row['isTrainingsGame']     ).slider('refresh');
-	    $('#game141SetupHandicap1')      .val(row['HandicapPlayer1']     ).slider('refresh');
-	    $('#game141SetupHandicap2')      .val(row['HandicapPlayer2']     ).slider('refresh');
-	    $('#game141SetupMultiplicator1') .val(row['MultiplicatorPlayer1']).slider('refresh');
-	    $('#game141SetupMultiplicator2') .val(row['MultiplicatorPlayer2']).slider('refresh');
+	    $('#game141SetupScoreGoal')       .val(row['ScoreGoal']           ).slider('refresh');
+	    $('#game141SetupMaxInnings')      .val(row['MaxInnings']          ).slider('refresh');
+	    $('#game141SetupInningsExtension').val(row['InningsExtension']    ).slider('refresh');
+	    $('#game141SetupIsTrainingsGame') .val(row['isTrainingsGame']     ).slider('refresh');
+	    $('#game141SetupHandicap1')       .val(row['HandicapPlayer1']     ).slider('refresh');
+	    $('#game141SetupHandicap2')       .val(row['HandicapPlayer2']     ).slider('refresh');
+	    $('#game141SetupMultiplicator1')  .val(row['MultiplicatorPlayer1']).slider('refresh');
+	    $('#game141SetupMultiplicator2')  .val(row['MultiplicatorPlayer2']).slider('refresh');
 	    
 	    // increase usage counter
 	    app.dbFortune.query(
@@ -366,15 +367,16 @@ $(document).off('click', '#game141SetupSubmitButton')
     
     $.mobile.changePage('game141.html', {
 	data : {
-	    player0         : $('#game141SetupPlayer0Name')    .data('pid'),
-	    player1         : $('#game141SetupPlayer1Name')    .data('pid'),
-	    scoreGoal       : $('#game141SetupScoreGoal')      .val()      ,
-	    maxInnings      : $('#game141SetupMaxInnings')     .val()      ,
-	    isTrainingsGame : $('#game141SetupIsTrainingsGame').val()      ,
-	    handicap0	    : $('#game141SetupHandicap1')      .val()      ,
-	    handicap1       : $('#game141SetupHandicap2')      .val()      ,
-	    multiplicator0  : $('#game141SetupMultiplicator1') .val()      ,
-	    multiplicator1  : $('#game141SetupMultiplicator2') .val()      ,
+	    player0          : $('#game141SetupPlayer0Name')     .data('pid'),
+	    player1          : $('#game141SetupPlayer1Name')     .data('pid'),
+	    scoreGoal        : $('#game141SetupScoreGoal')       .val()      ,
+	    maxInnings       : $('#game141SetupMaxInnings')      .val()      ,
+	    inningsExtension : $('#game141SetupInningsExtension').val()      ,
+	    isTrainingsGame  : $('#game141SetupIsTrainingsGame') .val()      ,
+	    handicap0	     : $('#game141SetupHandicap1')       .val()      ,
+	    handicap1        : $('#game141SetupHandicap2')       .val()      ,
+	    multiplicator0   : $('#game141SetupMultiplicator1')  .val()      ,
+	    multiplicator1   : $('#game141SetupMultiplicator2')  .val()      ,
 	}	
     });
 });
@@ -449,15 +451,16 @@ $(document).on('pageshow', '#pageGame141', function () {
     if (typeof gID === 'undefined' || isNaN(gID)) {
 	load = false;
 	
-	var pID0            = parseInt(url.param('player0'        )),
-	    pID1            = parseInt(url.param('player1'        )),
-	    scoreGoal       = parseInt(url.param('scoreGoal'      )),
-	    maxInnings      = parseInt(url.param('maxInnings'     )),
-	    isTrainingsGame = parseInt(url.param('isTrainingsGame')),
-	    handicap0       = parseInt(url.param('handicap0'      )),
-	    handicap1       = parseInt(url.param('handicap1'      )),
-	    multiplicator0  = parseInt(url.param('multiplicator0' )),
-	    multiplicator1  = parseInt(url.param('multiplicator1' ));
+	var pID0             = parseInt(url.param('player0'         )),
+	    pID1             = parseInt(url.param('player1'         )),
+	    scoreGoal        = parseInt(url.param('scoreGoal'       )),
+	    maxInnings       = parseInt(url.param('maxInnings'      )),
+	    inningsExtension = parseInt(url.param('inningsExtension')),
+	    isTrainingsGame  = parseInt(url.param('isTrainingsGame' )),
+	    handicap0        = parseInt(url.param('handicap0'       )),
+	    handicap1        = parseInt(url.param('handicap1'       )),
+	    multiplicator0   = parseInt(url.param('multiplicator0'  )),
+	    multiplicator1   = parseInt(url.param('multiplicator1'  ));
     }
     
     $.getScript('../../js/game141.js', function() {
@@ -470,7 +473,7 @@ $(document).on('pageshow', '#pageGame141', function () {
 	    );
 	}
 	else {
-	    app.currentGame.initNewGame(scoreGoal, maxInnings, 1, isTrainingsGame, [handicap0, handicap1], [multiplicator0, multiplicator1],
+	    app.currentGame.initNewGame(scoreGoal, maxInnings, inningsExtension, isTrainingsGame, [handicap0, handicap1], [multiplicator0, multiplicator1],
 		function () {
 		    app.currentGame.setPlayers(
 			function () {

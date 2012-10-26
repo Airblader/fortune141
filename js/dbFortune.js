@@ -197,6 +197,7 @@ function dbFortune () {
 		'Name',
 		'ScoreGoal',
 		'MaxInnings',
+		'InningsExtension',
 		'HandicapPlayer1',
 		'HandicapPlayer2',
 		'MultiplicatorPlayer1',
@@ -213,6 +214,7 @@ function dbFortune () {
 		'INTEGER',
 		'INTEGER',
 		'INTEGER',
+		'INTEGER',
 		'BIT',
 		'INTEGER'
 	    ),
@@ -221,6 +223,7 @@ function dbFortune () {
 		'"PROFILE"',
 		undefined,
 		'0',
+		'1',
 		'0',
 		'0',
 		'1',

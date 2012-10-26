@@ -1034,11 +1034,14 @@ function StraightPool () {
         $('#ptsPlayer' + ret.currPlayer).html(tmpDisplay);
         
         // check for end of game
-        if ((self.players[0].points >= self.scoreGoal || self.players[1].points >= self.scoreGoal)
-	    || (self.maxInnings > 0
-		&& self.innings.length >= self.maxInnings
-		&& self.innings[self.innings.length-1].ptsToAdd[1-ret.currPlayer] == -1)
-		&& self.players[0].points != self.players[1].points) {
+        if ((self.players[0].points >= self.scoreGoal || self.players[1].points >= self.scoreGoal)			// won by points
+	    || (self.maxInnings > 0											// innings limit is set
+		&& self.innings.length >= self.maxInnings								// innings limit is reached
+		&& (self.inningsExtension == 0										// either no innings extension is set or ...
+		    || (self.innings[self.innings.length-1].number - self.maxInnings) % self.inningsExtension == 0)	// ... minimum number of extension innings have been played
+		&& self.innings[self.innings.length-1].ptsToAdd[1-ret.currPlayer] == -1)				// both players had their chance
+		&& (self.players[0].points != self.players[1].points							// game not tied ...
+		    || self.inningsExtension == 0)) {									// ... except no innings extension is set
 	    
 	    // safe way to determine winner
 	    var winner = 0;
