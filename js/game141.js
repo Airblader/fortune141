@@ -799,7 +799,8 @@ function StraightPool () {
             
             // 3 foul rule
             if (self.players[currPlayer].fouls == 3) {
-                self.innings[current].foulPts[currPlayer] += 15;
+		// divide by multiplicator because it should always only be -15
+		self.innings[current].foulPts[currPlayer] += 15 / self.multiplicator[currPlayer];
                 self.players[currPlayer].fouls = 0;
                 
                 /*
@@ -825,7 +826,7 @@ function StraightPool () {
                 // if fouls were made or inning ended with a safety, the turn switches to the other player,
                 // unless a rerack takes place
                 if (switchPlayer && !hasToRerack) {
-                    self.innings[current].points[currPlayer] += self.multiplicator[currPlayer] * (self.innings[current].ptsToAdd[currPlayer]) - self.innings[current].foulPts[currPlayer];
+                    self.innings[current].points[currPlayer] += self.multiplicator[currPlayer] * (self.innings[current].ptsToAdd[currPlayer] - self.innings[current].foulPts[currPlayer]);
                     
                     self.innings[current].ptsToAdd[currPlayer] = -1;
                 }
@@ -836,7 +837,7 @@ function StraightPool () {
             
             default:
                 if (!hasToRerack) {
-                    self.innings[current].points[currPlayer] += self.multiplicator[currPlayer] * (self.innings[current].ptsToAdd[currPlayer]) - self.innings[current].foulPts[currPlayer];
+                    self.innings[current].points[currPlayer] += self.multiplicator[currPlayer] * (self.innings[current].ptsToAdd[currPlayer] - self.innings[current].foulPts[currPlayer]);
                 
                     self.innings[current].ptsToAdd[currPlayer] = -1;
                     switchPlayer = true;
@@ -1028,7 +1029,7 @@ function StraightPool () {
         tmpDisplay = (self.innings[ret.current].ptsToAdd[ret.currPlayer] == -1) ?
                 self.innings[ret.current].points[ret.currPlayer]
             :
-                self.multiplicator[ret.currPlayer] * (self.innings[ret.current].ptsToAdd[ret.currPlayer]) - self.innings[ret.current].foulPts[ret.currPlayer];
+                self.multiplicator[ret.currPlayer] * (self.innings[ret.current].ptsToAdd[ret.currPlayer] - self.innings[ret.current].foulPts[ret.currPlayer]);
 
         tmpDisplay = (tmpDisplay >= 0) ? "+"+tmpDisplay : tmpDisplay;
         $('#ptsPlayer' + ret.currPlayer).html(tmpDisplay);
@@ -1284,8 +1285,8 @@ function StraightPool () {
             $('#detailsScoreBoard').html(details);
             
             var GDs = new Array(
-                                Math.round(100 * (totalPts[0] - self.handicap[0]) / totalInnings[0]) / 100,
-                                Math.round(100 * (totalPts[1] - self.handicap[1]) / totalInnings[1]) / 100
+                                Math.round(100 * (totalPts[0] - self.handicap[0]) / (totalInnings[0] * self.multiplicator[0])) / 100,
+                                Math.round(100 * (totalPts[1] - self.handicap[1]) / (totalInnings[1] * self.multiplicator[1])) / 100
                                 );
             $('#player0gd').html('&#216;&thinsp;' + ((!isNaN(GDs[0])) ? GDs[0].toFixed(2) : '0.00'));
             $('#player1gd').html('&#216;&thinsp;' + ((!isNaN(GDs[1])) ? GDs[1].toFixed(2) : '0.00'));
