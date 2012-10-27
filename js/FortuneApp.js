@@ -78,7 +78,9 @@ function FortuneApp () {
      *		func (optional) : function to execute
      */
     self.currBackButtonFunc = undefined;
-    self.setBackButton = function (func) {
+    self.setBackButton = function () {
+	var func = arguments[0];
+	
 	if (typeof self.currBackButtonFunc !== 'undefined') {
 	    document.removeEventListener('backbutton', self.currBackButtonFunc, false);
 	}

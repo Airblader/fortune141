@@ -222,7 +222,7 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
     $('#game141Setup2')               .hide();
     $('#game141SetupAnonPlayer')      .hide();
     $('#game141SetupChoosePlayerHead').hide();
-    $('#game141SetupSubmitButton').button('disable');
+    $('#game141SetupSubmitButton')    .button('disable');
     
     // set locally saved score goal if available
     var scoreGoal = window.localStorage.getItem('game141_ScoreGoal') || 60;
@@ -445,6 +445,12 @@ $(document).off('click', '#game141AnonPlayer_Submit')
 });
 
 $(document).on('pageshow', '#pageGame141', function () {
+    app.setBackButton(
+	function () {
+	    $('#pageGame141MainBackLink').trigger('click');
+	}
+    );
+    
     var url = $.url( $.url().attr('fragment') );
     
     var gID  = parseInt(url.param('gID')),
@@ -467,19 +473,16 @@ $(document).on('pageshow', '#pageGame141', function () {
     $.getScript('../../js/game141.js', function() {
 	app.currentGame = new StraightPool();
 	if (load) {
-	    app.currentGame.loadGame(gID,
-		function () {
-		    app.currentGame.initUI();
-		}
+	    app.currentGame.loadGame(
+		gID,
+		app.currentGame.initUI
 	    );
 	}
 	else {
 	    app.currentGame.initNewGame(scoreGoal, maxInnings, inningsExtension, isTrainingsGame, [handicap0, handicap1], [multiplicator0, multiplicator1],
 		function () {
 		    app.currentGame.setPlayers(
-			function () {
-			    app.currentGame.initUI();
-			}
+			app.currentGame.initUI
 		    );
 		}
 	    );

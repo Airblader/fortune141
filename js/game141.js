@@ -911,22 +911,15 @@ function StraightPool () {
     /*
      *	Close the details panel
      */
-    self.closeDetailsPanel = function () {
+    self.closeDetailsPanel = function () {	
 	// stop listening to the hardware back button
 	//document.removeEventListener('backbutton', self.closeDetailsPanel, false);
-	app.setBackButton();
-                
-        // if button is still active, ignore the click
-        if($('#btnDetailsBack').hasClass('panelButtonDown')) {
-            return false;
-        }
+	app.setBackButton(
+	    function () {
+	        $('#pageGame141MainBackLink').trigger('click');
+	    }
+	);
 	
-	// animation
-        $('#btnDetailsBack').addClass('panelButtonDown');
-        setTimeout(function() {
-            $('#btnDetailsBack').removeClass('panelButtonDown');
-        }, 250);
-        
         $('#panelLoading').show();
         $(self.pageName)  .find('[data-role="header"]')
 	                  .show();
