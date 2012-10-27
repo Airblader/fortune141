@@ -913,12 +913,7 @@ function StraightPool () {
      */
     self.closeDetailsPanel = function () {	
 	// stop listening to the hardware back button
-	//document.removeEventListener('backbutton', self.closeDetailsPanel, false);
-	app.setBackButton(
-	    function () {
-	        $('#pageGame141MainBackLink').trigger('click');
-	    }
-	);
+	document.removeEventListener('backbutton', self.closeDetailsPanel, false);
 	
         $('#panelLoading').show();
         $(self.pageName)  .find('[data-role="header"]')
@@ -1190,8 +1185,7 @@ function StraightPool () {
 	$('#panelLoading')			     .show();
         $(self.pageName).find('[data-role="header"]').hide();
         $('#panelDetails')                           .show(function () {
-            //document.addEventListener('backbutton', self.closeDetailsPanel, false);
-            app.setBackButton(self.closeDetailsPanel);
+            document.addEventListener('backbutton', self.closeDetailsPanel, false);
 	    
             $('#panelRackAndMenu').hide();
             

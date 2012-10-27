@@ -445,12 +445,6 @@ $(document).off('click', '#game141AnonPlayer_Submit')
 });
 
 $(document).on('pageshow', '#pageGame141', function () {
-    app.setBackButton(
-	function () {
-	    $('#pageGame141MainBackLink').trigger('click');
-	}
-    );
-    
     var url = $.url( $.url().attr('fragment') );
     
     var gID  = parseInt(url.param('gID')),
