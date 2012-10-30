@@ -896,11 +896,16 @@ function StraightPool () {
      *	Determine which image set to use for the CSS Sprites
      */
     self.getBallImageSize = function (bestRadius) {
+	var devicePixelRatio = 1;
+	if (typeof window.devicePixelRatio !== 'undefined') {
+	    devicePixelRatio = Math.max(1, Math.min(2, window.devicePixelRatio));
+	}
+	
 	// available sprite sets
 	var availableSizes = new Array(30, 60, 80, 100, 120);
         var nearestSize    = availableSizes[availableSizes.length-1];
         for (var i = availableSizes.length-1; i >= 0; i--) {
-	    if (2*bestRadius <= availableSizes[i]) {
+	    if (2*devicePixelRatio*bestRadius <= availableSizes[i]) {
 	        nearestSize = availableSizes[i];
 	    }
         }
