@@ -50,15 +50,35 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
 	});
 	
 	// Fill with default game profiles
-	var query = new dbFortuneQuery();
-	query.add('INSERT INTO '
-		    + app.dbFortune.tables.Game141Profile.name + ' '
-		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141Profile)
-		    + ' VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-		  ['Default', 60, 0, 1, 0, 0, 1, 1, 0, 0]
+	var query1 = new dbFortuneQuery();
+	query1.add(
+	    'INSERT INTO '
+		+ app.dbFortune.tables.Game141Profile.name + ' '
+		+ app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141Profile)
+		+ ' VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+	    ['Default', 60, 0, 1, 0, 0, 1, 1, 0, 0]
 	);
 	
-	query.execute();
+	query1.execute();
+	
+	// Fill with default game modes
+	var query2 = new dbFortuneQuery();
+	query2.add(
+	    'INSERT INTO '
+		+ app.dbFortune.tables.GameModes.name + ' '
+		+ app.dbFortune.getTableFields_String(app.dbFortune.tables.GameModes)
+		+ ' VALUES (NULL, ?)',
+	    ['Practice Game']
+	);
+	query2.add(
+	    'INSERT INTO '
+		+ app.dbFortune.tables.GameModes.name + ' '
+		+ app.dbFortune.getTableFields_String(app.dbFortune.tables.GameModes)
+		+ ' VALUES (NULL, ?)',
+	    ['League Game']
+	);
+	
+	query2.execute();
     });
     
     // kill this button to prevent any double-firing (we dont need it anymore anyway)
@@ -251,8 +271,35 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
 		
 		$('#game141SetupLoadProfileSelect').append(
 		    '<option value="' + row['ID'] + '">' + row['Name'] + '</option>'
-		).trigger('change');
+		);
 	    }
+	    $('#game141SetupLoadProfileSelect').trigger('change');
+	    
+	    return true;
+	}
+    );
+    
+    // create game modes list
+    app.dbFortune.query(
+	'SELECT * FROM ' + app.dbFortune.tables.GameModes.name + ' ORDER BY ID ASC',
+	[],
+	function (tx, results) {
+	    if (results.rows.length == 0) {
+		$('#game141SetupGameMode').append(
+		    '<option value="-1">None</option>'
+		).trigger('change');
+		
+		return false;
+	    }
+	    
+	    for (var i = 0; i < results.rows.length; i++) {
+		var row = results.rows.item(i);
+		
+		$('#game141SetupGameMode').append(
+		    '<option value="' + row['ID'] + '">' + row['Name'] + '</option>'
+		);
+	    }
+	    $('#game141SetupGameMode').trigger('change');
 	    
 	    return true;
 	}
@@ -343,7 +390,7 @@ $(document).off('click', '#game141SetupLoadProfileButton')
 	    $('#game141SetupScoreGoal')       .val(row['ScoreGoal']           ).slider('refresh');
 	    $('#game141SetupMaxInnings')      .val(row['MaxInnings']          ).slider('refresh');
 	    $('#game141SetupInningsExtension').val(row['InningsExtension']    ).slider('refresh');
-	    $('#game141SetupIsTrainingsGame') .val(row['isTrainingsGame']     ).slider('refresh');
+	    $('#game141SetupGameMode')        .val(row['GameMode']     )       .trigger('change');
 	    $('#game141SetupHandicap1')       .val(row['HandicapPlayer1']     ).slider('refresh');
 	    $('#game141SetupHandicap2')       .val(row['HandicapPlayer2']     ).slider('refresh');
 	    $('#game141SetupMultiplicator1')  .val(row['MultiplicatorPlayer1']).slider('refresh');
@@ -373,7 +420,7 @@ $(document).off('click', '#game141SetupSubmitButton')
 	    scoreGoal        : $('#game141SetupScoreGoal')       .val()      ,
 	    maxInnings       : $('#game141SetupMaxInnings')      .val()      ,
 	    inningsExtension : $('#game141SetupInningsExtension').val()      ,
-	    isTrainingsGame  : $('#game141SetupIsTrainingsGame') .val()      ,
+	    gameMode         : $('#game141SetupGameMode')        .val()      ,
 	    handicap0	     : $('#game141SetupHandicap1')       .val()      ,
 	    handicap1        : $('#game141SetupHandicap2')       .val()      ,
 	    multiplicator0   : $('#game141SetupMultiplicator1')  .val()      ,
@@ -457,7 +504,7 @@ $(document).on('pageshow', '#pageGame141', function () {
 	    scoreGoal        = parseInt(url.param('scoreGoal'       )),
 	    maxInnings       = parseInt(url.param('maxInnings'      )),
 	    inningsExtension = parseInt(url.param('inningsExtension')),
-	    isTrainingsGame  = parseInt(url.param('isTrainingsGame' )),
+	    gameMode         = parseInt(url.param('gameMode'        )),
 	    handicap0        = parseInt(url.param('handicap0'       )),
 	    handicap1        = parseInt(url.param('handicap1'       )),
 	    multiplicator0   = parseInt(url.param('multiplicator0'  )),
@@ -473,7 +520,7 @@ $(document).on('pageshow', '#pageGame141', function () {
 	    );
 	}
 	else {
-	    app.currentGame.initNewGame(scoreGoal, maxInnings, inningsExtension, isTrainingsGame, [handicap0, handicap1], [multiplicator0, multiplicator1],
+	    app.currentGame.initNewGame(scoreGoal, maxInnings, inningsExtension, gameMode, [handicap0, handicap1], [multiplicator0, multiplicator1],
 		function () {
 		    app.currentGame.setPlayers(
 			app.currentGame.initUI

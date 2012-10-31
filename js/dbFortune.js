@@ -202,7 +202,7 @@ function dbFortune () {
 		'HandicapPlayer2',
 		'MultiplicatorPlayer1',
 		'MultiplicatorPlayer2',
-		'isTrainingsGame',
+		'GameMode',
 		'Usage'
 	    ),
 	    types : new Array(
@@ -215,7 +215,7 @@ function dbFortune () {
 		'INTEGER',
 		'INTEGER',
 		'INTEGER',
-		'BIT',
+		'INTEGER',
 		'INTEGER'
 	    ),
 	    defaults : new Array(
@@ -228,7 +228,7 @@ function dbFortune () {
 		'0',
 		'1',
 		'1',
-		'0',
+		undefined,
 		'0'
 	    ),
 	},
