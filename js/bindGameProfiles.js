@@ -38,9 +38,10 @@ $(document).on('pageshow', '#pageProfiles141Details', function () {
     var url = $.url( $.url().attr('fragment') ),
 	ID  = parseInt(url.param('id'));
     
-    $('#edit141Profile_Submit')//.button('disable')
+    $('#edit141Profile_Submit').button('disable')
                                .data('ID', ID);
-    $('#edit141Profile_Delete').button('disable');    
+    $('#edit141Profile_Delete').button('disable')
+                               .data('ID', ID);    
     if (ID > 1) {
         $('#edit141Profile_Submit').button('enable')
         $('#edit141Profile_Delete').button('enable');
@@ -135,6 +136,56 @@ $(document).off('click', '#edit141Profile_Submit')
                 'Error',
                 'OK'
             );
+        }
+    );
+});
+           
+$(document).off('click', '#edit141Profile_Delete')
+           .on ('click', '#edit141Profile_Delete', function (event) {
+    event.preventDefault();
+           
+    var ID = $('#edit141Profile_Delete').data('ID');
+    
+    app.dbFortune.query(
+        'DELETE FROM ' + app.dbFortune.tables.Game141Profile.name + ' WHERE ID="' + ID + '"',
+        [],
+        function () {
+            $.mobile.changePage('profiles141_list.html');
+        },
+        function () {
+            app.alertDlg(
+                'Oops! Something went wrong :( Deleting failed!',
+                app.dummyFalse,
+                'Error',
+                'OK'
+            );
+        }
+    );
+});
+           
+$(document).on('pageshow', '#pageProfiles141Add', function () {
+    app.dbFortune.query(
+        'SELECT * FROM ' + app.dbFortune.tables.GameModes.name + ' ORDER BY ID ASC',
+        [],
+        function (tx, results) {
+            if (results.rows.length == 0) {
+                $('#add141Profile_GameMode').append(
+                    '<option value="-1">None</option>'
+                ).trigger('change');
+                
+                return false;
+            }
+            
+            for (var i = 0; i < results.rows.length; i++) {
+                var row = results.rows.item(i);
+                
+                $('#add141Profile_GameMode').append(
+                    '<option value="' + row['ID'] + '">' + row['Name'] + '</option>'
+                );
+            }
+            
+            $('#add141Profile_GameMode').trigger('change');
+            return true;
         }
     );
 });
