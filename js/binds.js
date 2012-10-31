@@ -511,7 +511,7 @@ $(document).on('pageshow', '#pageGame141', function () {
 	    multiplicator1   = parseInt(url.param('multiplicator1'  ));
     }
     
-    $.getScript('../../js/game141.js', function() {
+    //$.getScript('../../js/game141.js', function() {
 	app.currentGame = new StraightPool();
 	if (load) {
 	    app.currentGame.loadGame(
@@ -528,7 +528,7 @@ $(document).on('pageshow', '#pageGame141', function () {
 		}
 	    );
 	}
-    });
+    //});
 });
 
 
