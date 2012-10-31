@@ -33,3 +33,66 @@ $(document).on('pageshow', '#pageProfiles141List', function () {
         }
     );
 });
+
+$(document).on('pageshow', '#pageProfiles141Details', function () {
+    var url = $.url( $.url().attr('fragment') ),
+	ID  = parseInt(url.param('id'));
+        
+    app.dbFortune.query(
+        'SELECT * FROM ' + app.dbFortune.tables.Game141Profile.name + ' WHERE ID="' + ID + '" LIMIT 1',
+        [],
+        function (tx, result) {
+            if (result.rows.length == 0) {
+                app.alertDlg(
+                    'Invalid Profile ID',
+                    app.dummyFalse,
+                    'Error',
+                    'OK'
+                );
+                return false;
+            }
+            
+            var row = result.rows.item(0);
+            $('#edit141Profile_Name')            .val(row['Name']);
+            $('#edit141Profile_ScoreGoal')       .val(row['ScoreGoal'])           .slider('refresh');
+            $('#edit141Profile_InningsLimit')    .val(row['InningsLimit'])        .slider('refresh');
+            $('#edit141Profile_InningsExtension').val(row['InningsExtension'])    .slider('refresh');
+            $('#edit141Profile_Handicap1')       .val(row['HandicapPlayer1'])     .slider('refresh');
+            $('#edit141Profile_Handicap2')       .val(row['HandicapPlayer2'])     .slider('refresh');
+            $('#edit141Profile_Multiplicator1')  .val(row['MultiplicatorPlayer1']).slider('refresh');
+            $('#edit141Profile_Multiplicator2')  .val(row['MultiplicatorPlayer2']).slider('refresh');
+            
+            // create game modes list and select entry
+            var gameModeIDs = new Array();
+            app.dbFortune.query(
+                'SELECT * FROM ' + app.dbFortune.tables.GameModes.name + ' ORDER BY ID ASC',
+                [],
+                function (tx, results) {
+                    if (results.rows.length == 0) {
+                        $('#edit141Profile_GameMode').append(
+                            '<option value="-1">None</option>'
+                        ).trigger('change');
+                        
+                        return false;
+                    }
+                    
+                    for (var i = 0; i < results.rows.length; i++) {
+                        var row = results.rows.item(i);
+                        gameModeIDs.push(parseInt(row['ID']));
+                        
+                        $('#edit141Profile_GameMode').append(
+                            '<option value="' + row['ID'] + '">' + row['Name'] + '</option>'
+                        );
+                    }
+                    var selectedID = (gameModeIDs.indexOf(ID) > -1) ? ID : 1;
+                    $('#edit141Profile_GameMode').val(selectedID)
+                                                 .trigger('change');
+                    
+                    return true;
+                }
+            );
+            
+            return true;
+        }
+    );
+});
