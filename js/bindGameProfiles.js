@@ -37,7 +37,15 @@ $(document).on('pageshow', '#pageProfiles141List', function () {
 $(document).on('pageshow', '#pageProfiles141Details', function () {
     var url = $.url( $.url().attr('fragment') ),
 	ID  = parseInt(url.param('id'));
-        
+    
+    $('#edit141Profile_Submit')//.button('disable')
+                               .data('ID', ID);
+    $('#edit141Profile_Delete').button('disable');    
+    if (ID > 1) {
+        $('#edit141Profile_Submit').button('enable')
+        $('#edit141Profile_Delete').button('enable');
+    }
+    
     app.dbFortune.query(
         'SELECT * FROM ' + app.dbFortune.tables.Game141Profile.name + ' WHERE ID="' + ID + '" LIMIT 1',
         [],
@@ -55,7 +63,7 @@ $(document).on('pageshow', '#pageProfiles141Details', function () {
             var row = result.rows.item(0);
             $('#edit141Profile_Name')            .val(row['Name']);
             $('#edit141Profile_ScoreGoal')       .val(row['ScoreGoal'])           .slider('refresh');
-            $('#edit141Profile_InningsLimit')    .val(row['InningsLimit'])        .slider('refresh');
+            $('#edit141Profile_InningsLimit')    .val(row['MaxInnings'])          .slider('refresh');
             $('#edit141Profile_InningsExtension').val(row['InningsExtension'])    .slider('refresh');
             $('#edit141Profile_Handicap1')       .val(row['HandicapPlayer1'])     .slider('refresh');
             $('#edit141Profile_Handicap2')       .val(row['HandicapPlayer2'])     .slider('refresh');
@@ -63,7 +71,8 @@ $(document).on('pageshow', '#pageProfiles141Details', function () {
             $('#edit141Profile_Multiplicator2')  .val(row['MultiplicatorPlayer2']).slider('refresh');
             
             // create game modes list and select entry
-            var gameModeIDs = new Array();
+            var gameModeIDs = new Array(),
+                mode        = parseInt(row['GameMode']);;
             app.dbFortune.query(
                 'SELECT * FROM ' + app.dbFortune.tables.GameModes.name + ' ORDER BY ID ASC',
                 [],
@@ -84,7 +93,7 @@ $(document).on('pageshow', '#pageProfiles141Details', function () {
                             '<option value="' + row['ID'] + '">' + row['Name'] + '</option>'
                         );
                     }
-                    var selectedID = (gameModeIDs.indexOf(ID) > -1) ? ID : 1;
+                    var selectedID = (gameModeIDs.indexOf(mode) > -1) ? mode : 1;
                     $('#edit141Profile_GameMode').val(selectedID)
                                                  .trigger('change');
                     
@@ -93,6 +102,39 @@ $(document).on('pageshow', '#pageProfiles141Details', function () {
             );
             
             return true;
+        }
+    );
+});
+
+$(document).off('click', '#edit141Profile_Submit')
+           .on ('click', '#edit141Profile_Submit', function (event) {
+    event.preventDefault();
+    
+    var ID = $('#edit141Profile_Submit').data('ID');
+    
+    app.dbFortune.query(
+        'UPDATE ' + app.dbFortune.tables.Game141Profile.name + ' SET '
+            + 'Name=?, ScoreGoal=?, MaxInnings=?, InningsExtension=?, HandicapPlayer1=?, HandicapPlayer2=?, MultiplicatorPlayer1=?, MultiplicatorPlayer2=?, GameMode=? '
+            + 'WHERE ID="' + ID + '"',
+        [$('#edit141Profile_Name')            .val(),
+         $('#edit141Profile_ScoreGoal')       .val(),
+         $('#edit141Profile_InningsLimit')    .val(),
+         $('#edit141Profile_InningsExtension').val(),
+         $('#edit141Profile_Handicap1')       .val(),
+         $('#edit141Profile_Handicap2')       .val(),
+         $('#edit141Profile_Multiplicator1')  .val(),
+         $('#edit141Profile_Multiplicator2')  .val(),
+         $('#edit141Profile_GameMode')        .val()],
+        function () {
+            $.mobile.changePage('profiles141_list.html');
+        },
+        function () {
+            app.alertDlg(
+                'Oops! Something went wrong :( Saving failed!',
+                app.dummyFalse,
+                'Error',
+                'OK'
+            );
         }
     );
 });
