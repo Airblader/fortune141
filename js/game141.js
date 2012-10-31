@@ -1440,15 +1440,15 @@ function StraightPool () {
 	}
 	
 	// now we make the buttons work
-	$('#usrAccept')             .off('click')  .on('click',   self.handleAcceptButton           );
-	$('#usrFoulDisplay')        .off('click')  .on('click',   self.handleFoulButtonTap          );
+	$('#usrAccept')             .off('tap')    .on('tap',     self.handleAcceptButton           );
+	$('#usrFoulDisplay')        .off('tap')    .on('tap',     self.handleFoulButtonTap          );
 	$('#usrFoulDisplay')        .off('taphold').on('taphold', self.handleFoulButtonHold         );
-	$('#usrSafeDisplay')        .off('click')  .on('click',   self.handleSafetyButton           );
+	$('#usrSafeDisplay')        .off('tap')    .on('tap',     self.handleSafetyButton           );
 	$('.minimizePanel')         .off('click')  .on('click',   self.handleMinimizeMainPanelButton);
 	$('#playerSwitch')          .off('click')  .on('click',   self.handlePlayerSwitchButton     );
 	$('#severeFoulSubmitButton').off('click')  .on('click',   self.handleSevereFoulSubmitButton );
 	$('#detailsScoreBoard')     .off('click')  .on('click',   self.closeDetailsPanel            );
-	$('#btnDetailsUndo')        .off('click')  .on('click',   self.handleUndoButton             );
+	$('#btnDetailsUndo')        .off('tap')    .on('tap',     self.handleUndoButton             );
 	
 	$('#severeFoulMinusButton').off('click')
 				   .on ('click', function (event) {
