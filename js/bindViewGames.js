@@ -12,7 +12,7 @@ $(document).on('pageshow', '#pageView141Games', function () {
                     
                 var date  = new Date(1000 * parseInt(row['Timestamp'])),
                     year  = date.getFullYear(),
-                    month = date.getMonth(),
+                    month = date.getMonth() + 1,
                     day   = date.getDate();
                     
                 entry = entry.replace('[href]',    'view141Games_details.html?gID=' + row['gID'])

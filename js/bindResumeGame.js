@@ -8,7 +8,7 @@ $(document).on('pageshow', '#pageResumeGame', function () {
 	var gID   = parseInt(row['gID']);
 	var date  = new Date(1000 * parseInt(row['Timestamp'])),
 	    year  = date.getFullYear(),
-	    month = date.getMonth(),
+	    month = date.getMonth() + 1,
 	    day   = date.getDate();
 	    
 	app.Players.tmp = new Player();
