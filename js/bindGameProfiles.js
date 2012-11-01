@@ -27,9 +27,9 @@ $(document).on('pageshow', '#pageProfiles141List', function () {
                                  .replace('[details1]', details1)
                                  .replace('[details2]', details2);
                  
-                    $('#game141ProfilesList').append(entry)
-                                             .listview('refresh');
+                    $('#game141ProfilesList').append(entry);
                }
+               $('#game141ProfilesList').listview('refresh');
           }
      );
 });

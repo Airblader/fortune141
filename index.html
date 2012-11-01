@@ -21,6 +21,7 @@
         <script type="text/javascript" src="js/bindIndex.js"></script>
         <script type="text/javascript" src="js/bindPlayerProfiles.js"></script>
         <script type="text/javascript" src="js/bindGameProfiles.js"></script>
+        <script type="text/javascript" src="js/bindViewGames.js"></script>
         <script type="text/javascript" src="js/bindResumeGame.js"></script>
         <script type="text/javascript" src="js/bindStraightPool.js"></script>
     <script type="text/javascript" src="js/game141.js"></script>
@@ -49,6 +50,7 @@
             
             <li><a href="#selectNewGame" data-rel="popup">New Game</a></li>
             <li><a href="pages/resumeGame.html">Resume Game</a></li>
+            <li><a href="#selectViewGamesList" data-rel="popup">View Games</a></li>
             <li><a href="pages/player/player_details.html?pID=1">My Profile</a></li>
             
             
@@ -92,6 +94,29 @@
             <ul data-role="listview">
                 <li>
                     <a href="pages/gameprofiles/profiles141_list.html">
+                        <img src="img/gameicons/game141.png" />
+                        Straight Pool
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <img src="img/gameicons/game8910.png" />
+                        8-/9-/10-Ball
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Select View Games List -->
+    <div id="selectViewGamesList" data-role="popup" data-overlay-theme="a" data-position-to="window" data-corners="false" style="min-width: 300px;">
+        <div data-role="header">
+            <h2>View Games</h2>
+        </div>
+        <div data-role="content">
+            <ul data-role="listview">
+                <li>
+                    <a href="pages/viewGames/view141Games_list.html">
                         <img src="img/gameicons/game141.png" />
                         Straight Pool
                     </a>

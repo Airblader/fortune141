@@ -1042,7 +1042,8 @@ function StraightPool () {
 	    // determine winner
 	    var ptsDiff = self.players[1].points - self.players[0].points;
 	    if (ptsDiff != 0) {
-		var idxWinner = ptsDiff && (ptsDiff / Math.abs(ptsDiff));
+		var idxWinner = (1 + (ptsDiff && (ptsDiff / Math.abs(ptsDiff)))) / 2;
+		console.log(idxWinner);
 		self.winner = self.players[idxWinner].obj.pID;
 	    }
 	    // game ended tied
@@ -1058,10 +1059,10 @@ function StraightPool () {
 		},
 		500
 	    );
-	    $('#usrAccept')     .off('click');
-	    $('#usrFoulDisplay').off('click').off('taphold');
-	    $('#usrSafeDisplay').off('click');
-	    $('#btnDetailsUndo').off('click');
+	    $('#usrAccept')     .off('click').off('tap');
+	    $('#usrFoulDisplay').off('click').off('tap').off('taphold');
+	    $('#usrSafeDisplay').off('click').off('tap');
+	    $('#btnDetailsUndo').off('click').off('tap');
 	    
 	    // unset the current player marker
 	    $('#activePlayer').removeClass('activePlayer0')
