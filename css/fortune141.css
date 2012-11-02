@@ -160,6 +160,10 @@ input {
     border-bottom-width: 2px;
 }
 
+#pageView141GamesDetails #view141GamesDetailsScoreTable {
+    background: transparent;
+}
+
 #pageGame141 #panelDetails #detailScoreTable thead,
 #pageView141GamesDetails #view141GamesDetailsScoreTable thead {
     background: rgba(100, 200, 100, 0.2);
