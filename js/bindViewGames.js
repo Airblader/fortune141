@@ -57,6 +57,16 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
         $('#view141GamesDetailsName1').html(tmpGame.players[0].obj.name);
         $('#view141GamesDetailsName2').html(tmpGame.players[1].obj.name);
         
+        $('#view141GamesDetailsName1').off('click')
+                                      .on ('click', function (event) {
+            $.mobile.changePage('../player/player_details.html?pID' + tmpGame.players[0].obj.pID);
+        });
+        
+        $('#view141GamesDetailsName2').off('click')
+                                      .on ('click', function (event) {
+            $.mobile.changePage('../player/player_details.html?pID=' + tmpGame.players[1].obj.pID);
+        });
+        
         $('#view141GamesDetailsScore1').html(tmpGame.players[0].points);
         $('#view141GamesDetailsScore2').html(tmpGame.players[1].points);
         
