@@ -272,13 +272,13 @@ function FortuneApp () {
 		onSuccess,
 		onError,
 		{
-		    quality: 50,
+		    quality: 90,
 		    destinationType: Camera.DestinationType.FILE_URI,
 		    sourceType: Camera.PictureSourceType.CAMERA,
 		    allowEdit: true,
 		    encodingType: Camera.EncodingType.JPEG,
-		    targetWidth: 100,
-		    targeHeight: 100,
+		    targetWidth: 120,
+		    targeHeight: 120,
 		}
 	    );
 	}
