@@ -34,6 +34,11 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
         gID      = parseInt(url.param('gID')),
         fromGame = parseInt(url.param('from_game'));
     
+    $('#view141GamesHandicapTitle').hide();
+    $('#view141GamesHandicapTable').hide();
+    $('#view141GamesMultiplicatorTitle').hide();
+    $('#view141GamesMultiplicatorTable').hide();
+    
     $('#view141GamesDetailsScoreTableContainer').hide();
     if (fromGame == 1) {
         $('#view141GamesDetailsViewTable').trigger('click');
@@ -77,6 +82,21 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
         else { // tie game
             $('#view141GamesDetailsName1').addClass('winner');
             $('#view141GamesDetailsName2').addClass('winner');
+        }
+        
+        if (tmpGame.handicap[0] != 0 || tmpGame.handicap[1] != 0) {
+            $('#view141GamesHandicapTitle').show();
+            $('#view141GamesHandicapTable').show();
+            
+            $('#view141GamesHandicap1').html(tmpGame.handicap[0]);
+            $('#view141GamesHandicap2').html(tmpGame.handicap[1]);
+        }
+        if (tmpGame.multiplicator[0] != 1 || tmpGame.multiplicator[1] != 1) {
+            $('#view141GamesMultiplicatorTitle').show();
+            $('#view141GamesMultiplicatorTable').show();
+            
+            $('#view141GamesMultiplicator1').html(tmpGame.multiplicator[0]);
+            $('#view141GamesMultiplicator2').html(tmpGame.multiplicator[1]);
         }
         
         // Draw graph
