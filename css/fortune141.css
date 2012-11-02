@@ -386,3 +386,12 @@ input {
     width:  120px;
     height: 120px;
 }
+
+
+#pageView141GamesDetails .winner {
+    color: #008a00;
+}
+
+#pageView141GamesDetails .loser {
+    color: #cc0000;
+}

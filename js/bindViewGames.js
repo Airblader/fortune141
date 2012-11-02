@@ -64,7 +64,28 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
 	    day   = date.getDate();
         $('#view141GamesDetailsDate').html(month + '/' + day + '/' + year);
         
-        // Draw Canvas
+        $('#view141GamesDetailsName1').removeClass('winner').removeClass('loser');
+        $('#view141GamesDetailsName2').removeClass('winner').removeClass('loser');
+        
+        var idxWinner = 0;
+        if (tmpGame.winner == tmpGame.players[0].obj.pID) {
+            idxWinner = 0;
+            
+            $('#view141GamesDetailsName1').addClass('winner');
+            $('#view141GamesDetailsName2').addClass('loser');
+        }
+        else if (tmpGame.winner == tmpGame.players[1].obj.pID) {
+            idxWinner = 1;
+            
+            $('#view141GamesDetailsName1').addClass('loser');
+            $('#view141GamesDetailsName2').addClass('winner');
+        }
+        else { // tie game
+            $('#view141GamesDetailsName1').addClass('winner');
+            $('#view141GamesDetailsName2').addClass('winner');
+        }
+        
+        // Prepare canvas
         if (canvasSupport) {
             $('#view141GamesDetailsCanvasContainer').html('<h2>Graph</h2>');
             $('<canvas>').attr({
@@ -78,15 +99,51 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
             var canvas  = document.getElementById('view141GamesDetailsCanvas'),
                 context = canvas.getContext('2d');
                 
-            // TODO
+            function convertToCanvasPoint (inning, points) {
+                return {
+                    x : Math.round(canvas.width * inning / tmpGame.innings.length) + 0.5,
+                    y : canvas.height - Math.round(canvas.height * points / tmpGame.scoreGoal) + 0.5,
+                };
+            }
             context.fillStyle = 'white';
             context.fillRect(0, 0, canvas.width, canvas.height);
-            context.fillStyle = 'black';
-            context.font = '12px Arial';
-            context.fillText('Coming soon!', 5, 20);
+            
+            context.lineWidth = 1;
+            
+            // draw vertical line to show max innings
+            if (tmpGame.maxInnings > 0 && tmpGame.maxInnings < tmpGame.innings.length) {
+                context.save();
+                
+                context.strokeStyle = '#ff9900';
+                var maxInningsLine = convertToCanvasPoint(tmpGame.maxInnings, 0);
+                
+                context.moveTo(maxInningsLine.x + 0.5, -0.5);
+                context.lineTo(maxInningsLine.x + 0.5, canvas.height + 0.5);
+                context.stroke();
+                
+                context.restore();
+            }
+                
+            // draw lines representing the players' points
+            for (var j = 0; j <= 1; j++) {
+                context.beginPath();
+                context.strokeStyle = (idxWinner == j) ? '#008a00' : '#cc0000';
+                
+                var pts = tmpGame.handicap[j];
+                
+                context.moveTo(pts, canvas.height - 0.5);
+                for (var i = 0; i <= tmpGame.innings.length; i++) {
+                    var point = convertToCanvasPoint(i, pts);
+                    
+                    context.lineTo(point.x, point.y);
+                    
+                    pts += (i < tmpGame.innings.length) ? tmpGame.innings[i].points[j] : 0;
+                }
+                context.stroke();
+            }
         }
         
-        // Draw ScoreTable
+        // Draw Canvas and Scoreboard
         var totalPts     = new Array(tmpGame.handicap[0], tmpGame.handicap[1]),
             totalInnings = new Array(0, 0);
         for (var i = 0; i < tmpGame.innings.length; i++) {
@@ -142,14 +199,14 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
             
             $('#view141GamesDetailsScoreTable').append(row)
                                                .trigger('refresh');
-            
-            var GDs = new Array(
-                Math.round(100 * (totalPts[0] - tmpGame.handicap[0]) / (totalInnings[0] * tmpGame.multiplicator[0])) / 100,
-                Math.round(100 * (totalPts[1] - tmpGame.handicap[1]) / (totalInnings[1] * tmpGame.multiplicator[1])) / 100
-            );
-            $('#player0gd').html('&#216;&thinsp;' + ((!isNaN(GDs[0])) ? GDs[0].toFixed(2) : '0.00'));
-            $('#player1gd').html('&#216;&thinsp;' + ((!isNaN(GDs[1])) ? GDs[1].toFixed(2) : '0.00'));
         }
+        
+        var GDs = new Array(
+            Math.round(100 * (totalPts[0] - tmpGame.handicap[0]) / (totalInnings[0] * tmpGame.multiplicator[0])) / 100,
+            Math.round(100 * (totalPts[1] - tmpGame.handicap[1]) / (totalInnings[1] * tmpGame.multiplicator[1])) / 100
+        );
+        $('#player0gd').html('&#216;&thinsp;' + ((!isNaN(GDs[0])) ? GDs[0].toFixed(2) : '0.00'));
+        $('#player1gd').html('&#216;&thinsp;' + ((!isNaN(GDs[1])) ? GDs[1].toFixed(2) : '0.00'));
     });
 });
 
