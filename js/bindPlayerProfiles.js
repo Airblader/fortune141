@@ -122,7 +122,7 @@ $(document).on('pageshow', '#pagePlayerDetails', function () {
     app.Players.tmp.load(pID, function () {
 	if (app.Players.tmp.image !== '') {
 	    $('#playerDetails_Image').show()
-	                             .attr('src', '../../' + app.imgPlayerPath + app.Players.tmp.image);
+	                             .attr('src', app.Players.tmp.image);
 	}
 	else{
 	    $('#playerDetails_Image').hide();
@@ -235,4 +235,29 @@ $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', 
 	$('#pagePlayerDetails').trigger('pageshow');
     });
     return true;
+});
+
+$(document).off('click', '#editPlayer_Picture')
+           .on ('click', '#editPlayer_Picture', function (event) {
+    event.preventDefault();
+    
+    app.getPicture(
+	function (imgURI) {
+	    app.Players.tmp.modify(
+		['Image'],
+		[imgURI],
+		function () {
+		    $.mobile.changePage('player_details.html?pID=' + app.Players.tmp.pID);
+		}
+	    );
+	},
+	function (message) {
+	    app.alertDlg(
+		'Oops! Something went wrong :( The message is: ' + message,
+		app.dummyFalse,
+		'Error',
+		'OK'
+	    );
+	}
+    );
 });

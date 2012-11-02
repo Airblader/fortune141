@@ -252,6 +252,38 @@ function FortuneApp () {
 	}
     }
     
+    /*
+     *	Normalize getPicture function
+     */
+    self.getPicture = function () {
+	var onSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
+	    onError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
+	    
+	if (self.debugMode) {
+	    self.alertDlg(
+		'Sorry, pictures cannot be taken on a computer!',
+		app.dummyFalse,
+		'Error',
+		'OK'
+	    );
+	}
+	else {
+	    navigator.camera.getPicture(
+		onSuccess,
+		onError,
+		{
+		    quality: 50,
+		    destinationType: Camera.DestinationType.FILE_URI,
+		    sourceType: Camera.PictureSourceType.CAMERA,
+		    allowEdit: true,
+		    encodingType: Camera.EncodingType.JPEG,
+		    targetWidth: 100,
+		    targeHeight: 100,
+		}
+	    );
+	}
+    }
+    
     self.trim = function (str) {
 	return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     }

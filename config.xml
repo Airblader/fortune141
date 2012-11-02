@@ -33,6 +33,9 @@
     <preference name="permissions" value="none" />
     <!-- Storage -->
     <plugin name="Storage" value="org.apache.cordova.Storage" />
+    <!-- Camera -->
+    <feature name="http://api.phonegap.com/1.0/file" /> 
+    <feature name="http://api.phonegap.com/1.0/camera" />
 	
     <!-- Icon -->
     <icon src="icon.png" />
