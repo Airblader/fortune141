@@ -79,13 +79,21 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
             $('#view141GamesDetailsName2').addClass('winner');
         }
         
-        // Prepare canvas
+        // Draw graph
         if (canvasSupport) {
+            var pixelRatio  = 1,
+                windowWidth = $('#view141GamesDetailsCanvasContainer').width();
+            if (typeof window.devicePixelRatio !== 'undefined') {
+                pixelRatio = Math.min(2, Math.max(0, window.devicePixelRatio));
+            }
+            
             $('#view141GamesDetailsCanvasContainer').html('<h2>Graph</h2>');
             $('<canvas>').attr({
-                id: 'view141GamesDetailsCanvas'
+                id:     'view141GamesDetailsCanvas',
+                width:  Math.round(0.975 * pixelRatio * windowWidth),
+                height: Math.round(pixelRatio * 150),
             }).css({
-                width:  '97.5%',
+                width:  Math.round(0.975 * windowWidth) + 'px',
                 height: '150px',
                 border: '1px solid black'
             }).appendTo('#view141GamesDetailsCanvasContainer');
@@ -99,10 +107,44 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
                     y : canvas.height - Math.round(canvas.height * points / tmpGame.scoreGoal) + 0.5,
                 };
             }
-            context.fillStyle = 'white';
+            
+            // background gradient
+            var bgGradient = context.createLinearGradient(0, 0, 0, canvas.height);
+            bgGradient.addColorStop(0, '#dddddd');
+            bgGradient.addColorStop(1, '#ffffff');
+            context.fillStyle = bgGradient;
             context.fillRect(0, 0, canvas.width, canvas.height);
             
+            // background vertical lines
+            context.save();
+            context.fillStyle = '#efefef';
             context.lineWidth = 1;
+            context.globalAlpha = 0.1;
+            context.beginPath();
+            for (var k = canvas.height - 30; k > 0; k = k - 30) {
+                context.moveTo(20 - 0.5, k + 0.5);
+                context.lineTo(canvas.width - 20 + 0.5, k + 0.5);
+            }
+            context.stroke();
+            context.restore();
+            
+            // "Points" / "Innings"
+            context.save();
+            
+            context.fillStyle = 'black';
+            context.font = '12px Lucida Console';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            
+            context.fillText('Innings', Math.round(canvas.width/2) + 0.5, canvas.height - 13 + 0.5);
+
+            context.translate(0, Math.round(canvas.height/2) + 0.5);
+            context.rotate(-Math.PI / 2);
+            context.fillText('Points', 0.5, 7 + 0.5);   
+            
+            context.restore();
+            
+            context.lineWidth = 2;
             
             // draw vertical line to show max innings
             if (tmpGame.maxInnings > 0 && tmpGame.maxInnings < tmpGame.innings.length) {
