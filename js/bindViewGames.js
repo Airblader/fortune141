@@ -9,20 +9,17 @@ $(document).on('pageshow', '#pageView141Games', function () {
             for (var i = 0; i < results.rows.length; i++) {
                 var row   = results.rows.item(i),
                     entry = entryDummy;
-                    
-                var date  = new Date(1000 * parseInt(row['Timestamp'])),
-                    year  = date.getFullYear(),
-                    month = date.getMonth() + 1,
-                    day   = date.getDate();
+                
+                var date = app.convertTimestamp(row['Timestamp']);
                     
                 entry = entry.replace('[href]',    'view141Games_details.html?gID=' + row['gID'])
                              .replace('[name1]',   row['Player1Name'])
                              .replace('[name2]',   row['Player2Name'])
                              .replace('[points1]', row['PointsPlayer1'])
                              .replace('[points2]', row['PointsPlayer2'])
-                             .replace('[month]',   month)
-                             .replace('[day]',     day)
-                             .replace('[year]',    year);
+                             .replace('[month]',   date.month)
+                             .replace('[day]',     date.day)
+                             .replace('[year]',    date.year);
                     
                 $('#view141GamesList').append(entry);
             }
@@ -58,11 +55,8 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
         $('#view141GamesDetailsScore1').html(tmpGame.players[0].points);
         $('#view141GamesDetailsScore2').html(tmpGame.players[1].points);
         
-        var date  = new Date(1000 * parseInt(tmpGame.timestamp)),
-	    year  = date.getFullYear(),
-	    month = date.getMonth() + 1,
-	    day   = date.getDate();
-        $('#view141GamesDetailsDate').html(month + '/' + day + '/' + year);
+        var date = app.convertTimestamp(tmpGame.timestamp);
+        $('#view141GamesDetailsDate').html(date.month + '/' + date.day + '/' + date.year);
         
         $('#view141GamesDetailsName1').removeClass('winner').removeClass('loser');
         $('#view141GamesDetailsName2').removeClass('winner').removeClass('loser');

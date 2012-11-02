@@ -5,12 +5,9 @@ $(document).on('pageshow', '#pageResumeGame', function () {
     function output141 (rows, idx) {
 	var row = rows.item(idx);
 	
-	var gID   = parseInt(row['gID']);
-	var date  = new Date(1000 * parseInt(row['Timestamp'])),
-	    year  = date.getFullYear(),
-	    month = date.getMonth() + 1,
-	    day   = date.getDate();
-	    
+	var gID   = parseInt(row['gID']),
+	    date  = app.convertTimestamp(row['Timestamp']);
+	
 	app.Players.tmp = new Player();
 	
 	app.Players.tmp.loadBy141Game(parseInt(row['Player1']), 1, gID, function () {
@@ -24,7 +21,7 @@ $(document).on('pageshow', '#pageResumeGame', function () {
 		html += '<p><strong>' + name1 + ' vs. ' + name2 + '</strong></p>';
 		html += '<p>Score: ' + row['PointsPlayer1'] + ' &ndash; ' + row['PointsPlayer2'] + '</p>';
 		html += '<p>Straight Pool to ' + row['ScoreGoal'] + '</p>';
-		html += '<p class="ui-li-aside">' + (month+'/'+day+'/'+year) + '</p>';
+		html += '<p class="ui-li-aside">' + (date.month+'/'+date.day+'/'+date.year) + '</p>';
 		    
 		html += '</a></li>';
 			

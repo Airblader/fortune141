@@ -132,6 +132,26 @@ function FortuneApp () {
     }
     
     /*
+     *	Converts a timestamp
+     */
+    self.convertTimestamp = function (timestamp) {
+	var date = new Date(1000 * parseInt(timestamp));
+	
+	function addZeros (val) {
+	    return (String(val).length < 2) ? ('0' + val) : val;
+	}
+	
+	return {
+	    year    : date.getFullYear(),
+	    month   : addZeros(date.getMonth() + 1),
+	    day     : addZeros(date.getDate()),
+	    hours   : addZeros(date.getHours()),
+	    minutes : addZeros(date.getMinutes()),
+	    seconds : addZeros(date.getSeconds()),
+	};
+    }
+    
+    /*
      *	Validate a name
      *		name     : string to be checked
      *		required : whether the name can be empty
