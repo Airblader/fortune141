@@ -118,28 +118,51 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
                 border: '1px solid black'
             }).appendTo('#view141GamesDetailsCanvasContainer');
             
+            // for scaling, look for potentially negative scores
+            var tmpPts = new Array(0, 0);
+            var minPoints = 0;
+            for (var i = 0; i < tmpGame.innings.length; i++) {
+                tmpPts[0] += tmpGame.innings[i].points[0];
+                tmpPts[0] += tmpGame.innings[i].points[1];
+                
+                minPoints = Math.min(minPoints, tmpPts[0], tmpPts[1]);
+            }
+            
             var canvas  = document.getElementById('view141GamesDetailsCanvas'),
                 context = canvas.getContext('2d');
                 
             function convertToCanvasPoint (inning, points) {
                 return {
                     x : Math.round(canvas.width * inning / tmpGame.innings.length) + 0.5,
-                    y : canvas.height - Math.round(canvas.height * points / tmpGame.scoreGoal) + 0.5,
+                    y : canvas.height - Math.round(canvas.height * (points - minPoints) / (tmpGame.scoreGoal - minPoints)) + 0.5,
                 };
             }
             
             // background gradient
             var bgGradient = context.createLinearGradient(0, 0, 0, canvas.height);
-            bgGradient.addColorStop(0, '#dddddd');
-            bgGradient.addColorStop(1, '#ffffff');
+            bgGradient.addColorStop(0, '#ededed');
+            bgGradient.addColorStop(1, '#efefef');
             context.fillStyle = bgGradient;
             context.fillRect(0, 0, canvas.width, canvas.height);
             
+            // zero line
+            if (minPoints < 0) {
+                var point = convertToCanvasPoint(0, 0);
+                context.save();
+                context.strokeStyle = 'black';
+                context.lineWidth = 1;
+                context.beginPath();
+                context.moveTo(-0.5,               point.y);
+                context.lineTo(canvas.width + 0.5, point.y);
+                context.stroke();
+                context.restore();
+            }
+            
             // background vertical lines
             context.save();
-            context.fillStyle = '#efefef';
+            context.strokeStyle = '#cccccc';
             context.lineWidth = 1;
-            context.globalAlpha = 0.1;
+            context.globalAlpha = 0.5;
             context.beginPath();
             for (var k = canvas.height - 30; k > 0; k = k - 30) {
                 context.moveTo(20 - 0.5, k + 0.5);
@@ -185,9 +208,10 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
                 context.beginPath();
                 context.strokeStyle = (idxWinner == j) ? '#008a00' : '#cc0000';
                 
-                var pts = tmpGame.handicap[j];
+                var ptStart = convertToCanvasPoint(0, tmpGame.handicap[j]),
+                    pts     = tmpGame.handicap[j];
                 
-                context.moveTo(pts, canvas.height - 0.5);
+                context.moveTo(-0.5, ptStart.y);
                 for (var i = 0; i <= tmpGame.innings.length; i++) {
                     var point = convertToCanvasPoint(i, pts);
                     

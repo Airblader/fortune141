@@ -1045,7 +1045,6 @@ function StraightPool () {
 	    var ptsDiff = self.players[1].points - self.players[0].points;
 	    if (ptsDiff != 0) {
 		var idxWinner = (1 + (ptsDiff && (ptsDiff / Math.abs(ptsDiff)))) / 2;
-		console.log(idxWinner);
 		self.winner = self.players[idxWinner].obj.pID;
 	    }
 	    // game ended tied
