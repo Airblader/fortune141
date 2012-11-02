@@ -49,6 +49,89 @@ function FortuneApp () {
     }
     
     /*
+     *	Updates the bubble counts on the main page
+     */
+    self.updateIndexBubbles = function () {
+	// resume game
+	app.dbFortune.query(
+	    'SELECT COUNT(*) AS numResGame FROM ' + app.dbFortune.tables.Game141.name + ' WHERE isFinished="0"',
+	    [],
+	    function (tx, result) {
+		if (result.rows.length == 0) {
+		    return false;
+		}
+		
+		var row = result.rows.item(0);
+		$('#resumeGameBubble').html(row['numResGame']);
+		return true;
+	    }
+	);
+	
+	// view games
+	app.dbFortune.query(
+	    'SELECT COUNT(*) AS numViewGames FROM ' + app.dbFortune.tables.Game141.name + ' WHERE isFinished="1"',
+	    [],
+	    function (tx, result) {
+		if (result.rows.length == 0) {
+		    return false;
+		}
+		
+		var row = result.rows.item(0);
+		$('#viewGamesBubble').html(row['numViewGames']);
+		return true;
+	    }
+	);
+	
+	// player profiles
+	app.dbFortune.query(
+	    'SELECT COUNT(*) AS numPlayers FROM ' + app.dbFortune.tables.Player.name,
+	    [],
+	    function (tx, result) {
+		if (result.rows.length == 0) {
+		    return false;
+		}
+		
+		var row = result.rows.item(0);
+		$('#playerProfilesBubble').html(row['numPlayers']);
+		return true;
+	    }
+	);
+	
+	// game profiles
+	app.dbFortune.query(
+	    'SELECT COUNT(*) AS numProfiles FROM ' + app.dbFortune.tables.Game141Profile.name,
+	    [],
+	    function (tx, result) {
+		if (result.rows.length == 0) {
+		    return false;
+		}
+		
+		var row = result.rows.item(0);
+		$('#gameProfilesBubble').html(row['numProfiles']);
+		return true;
+	    }
+	);
+    }
+    
+    /*
+     *	Checks whether this phone supports the HTML5 canvas element
+     *		forceCheck (optional) : forces to recheck
+     */
+    self.checkForCanvasSupport = function () {
+	var forceCheck = (typeof arguments[0] !== 'undefined') ? arguments[0] : false;
+	    lsVarName  = 'supportsCanvas';
+	
+	if (localStorage.getItem(lsVarName) == 'true' && !forceCheck) {
+	    return localStorage.getItem(lsVarName);
+	}
+	
+	var isSupported = !!window.CanvasRenderingContext2D;
+	localStorage.setItem(lsVarName, (isSupported) ? 'true' : 'false');
+	
+	return isSupported;
+    }
+    
+    /*
      *	Validate a name
      *		name     : string to be checked
      *		required : whether the name can be empty

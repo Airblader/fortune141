@@ -48,20 +48,43 @@
         <ul data-role="listview" data-dividertheme="a">
             <li data-role="list-divider">General</li>
             
-            <li><a href="#selectNewGame" data-rel="popup">New Game</a></li>
-            <li><a href="pages/resumeGame.html">Resume Game</a></li>
-            <li><a href="#selectViewGamesList" data-rel="popup">View Games</a></li>
+            <li><a href="#selectNewGame"       data-rel="popup">New Game</a></li>
+            <li>
+                <a href="#selectResumeGame"    data-rel="popup">
+                    Resume Game
+                    <p id="resumeGameBubble" class="ui-li-count">0</p>
+                </a>
+            </li>
+            <li>
+                <a href="#selectViewGamesList" data-rel="popup">
+                    View Games
+                    <p id="viewGamesBubble" class="ui-li-count">0</p>
+                </a>
+            </li>
+            
+            <li data-role="list-divider">Profiles</li>
+            
+            <li><a href="pages/player/player_details.html?pID=1">My Profile</a></li>
+            <li>
+                <a href="pages/player/player_list.html">
+                    Player Profiles
+                    <p id="playerProfilesBubble" class="ui-li-count">0</p>
+                </a>
+            </li>
+            <li>
+                <a href="#selectGameProfileList" data-rel="popup">
+                    Game Profiles
+                    <p id="gameProfilesBubble" class="ui-li-count">0</p>
+                </a>
+            </li>
             
             <li data-role="list-divider">Settings</li>
             
-            <li><a href="pages/player/player_details.html?pID=1">My Profile</a></li>
-            <li><a href="pages/player/player_list.html">Player Profiles</a></li>
-            <li><a href="#selectGameProfileList" data-rel="popup">Game Profiles</a></li>
             <li><a href="#">Preferences</a></li>
         </ul>
     </div>
     
-    <!-- Select Game Type Popup -->
+    <!-- Select New Game Popup -->
     <div id="selectNewGame" data-role="popup" data-overlay-theme="a" data-position-to="window" data-corners="false" style="min-width: 300px;">
         <div data-role="header">
             <h2>New Game</h2>
@@ -70,6 +93,29 @@
             <ul data-role="listview">
                 <li>
                     <a href="pages/game141/game141_Setup.html">
+                        <img src="img/gameicons/game141.png" />
+                        Straight Pool
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <img src="img/gameicons/game8910.png" />
+                        8-/&thinsp;9-/&thinsp;10-Ball
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Select Resume Game Popup -->
+    <div id="selectResumeGame" data-role="popup" data-overlay-theme="a" data-position-to="window" data-corners="false" style="min-width: 300px;">
+        <div data-role="header">
+            <h2>Resume Game</h2>
+        </div>
+        <div data-role="content">
+            <ul data-role="listview">
+                <li>
+                    <a href="pages/resumeGame/resume141Game.html">
                         <img src="img/gameicons/game141.png" />
                         Straight Pool
                     </a>

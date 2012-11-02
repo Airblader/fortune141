@@ -61,7 +61,7 @@ $(document).off('click', '#resumeGameResumeButton')
     var redirect;
     switch ($('#resumeGamePopup').data('gType')) {
 	case '141':
-	    redirect = 'game141/game141.html';
+	    redirect = '../game141/game141.html';
 	    break;
 	default:
 	    return false;

@@ -9,12 +9,19 @@ $(document).bind("mobileinit", function () {
         $('#pageIndexBody').hide();
         $('#pageIndexFirstRunMainUser').show();
     }, function() {
-	app.updateMainUser();    
+	app.updateMainUser();
+	app.updateIndexBubbles();
     });
 });
 
 $(document).on('pageshow', '#pageIndex', function () {
     $('#pageIndexFirstRunMainUser').hide();
+    
+    try {
+	app.updateIndexBubbles();
+    } catch (e) {
+	//
+    }
 });
 
 

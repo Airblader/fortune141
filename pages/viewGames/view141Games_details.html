@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+
+<div data-role="page" id="pageView141GamesDetails">
+    <div data-role="header">
+        <a href="view141Games_list.html" data-icon="arrow-l">Back</a>
+        <h1>Game Details</h1>
+    </div>
+    
+    <div data-role="content">
+        <div style="width: 100%; text-align: center;">
+            <h2 style="margin-bottom: 0;">Straight Pool Match</h2>
+            <h3 id="view141GamesDetailsDate"></h3>
+        </div>
+        <div class="ui-grid-a" style="text-align: center;">
+            <div class="ui-block-a" id="view141GamesDetailsName1"></div>
+            <div class="ui-block-b" id="view141GamesDetailsName2"></div>
+            
+            <div class="ui-block-a" id="view141GamesDetailsScore1"></div>
+            <div class="ui-block-b" id="view141GamesDetailsScore2"></div>
+        </div>
+        
+        <div data-role="fieldcontain">
+            <input type="button" id="view141GamesDetailsViewTable" name="view141GamesDetailsViewTable" value="View Score Table" data-icon="arrow-r" data-iconpos="right" />
+        </div>
+        
+        <div id="view141GamesDetailsCanvasContainer" style="text-align: center;">
+            <!-- Dynamically created -->
+        </div>
+        
+        <div data-role="fieldcontain">
+            <input type="button" id="view141GamesDetailsDelete" value="Delete Game" data-theme="e" data-icon="delete" />
+        </div>
+    </div>
+    
+    <div id="view141GamesDetailsScoreTableContainer" style="position: absolute; width: 100%; height: 100%; cursor: pointer;">
+        <table id="view141GamesDetailsScoreTable" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>
+                    <td colspan="7" style="border-bottom-width: 0; height: 30px; line-height: 30px;">Scoreboard</td>
+                </tr>
+                <tr>
+                    <td colspan="3" id="player0gd" style="border-bottom-width: 0; height: 30px; line-height: 30px;"></td>
+                    <td style="border-bottom-width: 0;"></td>
+                    <td colspan="3" id="player1gd" style="border-bottom-width: 0; height: 30px; line-height: 30px;"></td>
+                </tr>
+                <tr>
+                    <td>Pts</td>
+                    <td>F</td>
+                    <td>Total</td>
+                    <td>#</td>
+                    <td>Pts</td>
+                    <td>F</td>
+                    <td>Total</td>
+                </tr>
+            </thead>
+            <!-- Dynamically created -->
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

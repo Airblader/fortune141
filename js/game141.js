@@ -255,6 +255,8 @@ function StraightPool () {
 	self.isFinished       = false;
 	self.winner           = -1;
 	
+	self.timestamp = Math.floor(Date.now() / 1000).toFixed(0);
+	
 	self.firstShot        = true;
 	
 	self.switchButton = true;
@@ -441,6 +443,7 @@ function StraightPool () {
 		self.isFinished      = (parseInt(row['isFinished'])      == 1) ? true : false;
 		self.mode            =  parseInt(row['Mode']);
 		self.winner          =  parseInt(row['Winner']);
+		self.timestamp       =  parseInt(row['Timestamp']);
 		
 		self.players = new Array(self.dummyPlayer(),
 					 self.dummyPlayer());
@@ -512,11 +515,10 @@ function StraightPool () {
 		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141, false, false) + ' '
 		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 	    
-	    var timestamp  = Math.floor(Date.now() / 1000).toFixed(0),
-		strInnings = self.inningsToString();
-	        
+	    var strInnings = self.inningsToString(); 
+		
 	    app.dbFortune.query(sql,
-				[timestamp,
+				[self.timestamp,
 				 self.players[0].obj.pID,
 				 self.players[0].obj.getDisplayName(),
 				 self.players[1].obj.pID,
@@ -1085,9 +1087,10 @@ function StraightPool () {
 		    self.saveGame(function () {
 			// update statistics
 			self.players[0].obj.updateStatistics();
-			self.players[1].obj.updateStatistics();	
+			self.players[1].obj.updateStatistics();
+			
+			$.mobile.changePage('../viewGames/view141Games_details.html?gID=' + self.gameID + '&from_game=1');
 		    });
-		    self.handleMinimizeMainPanelButton(event);
 		},
 		'Game over!',
 		'OK'
