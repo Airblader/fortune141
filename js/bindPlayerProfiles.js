@@ -203,6 +203,8 @@ $(document).off('click', '#pagePlayerDetailsEditPlayerBackLink')
 	
     $('#pagePlayerDetailsOverviewHead').show();
     $('#pagePlayerDetailsOverview')    .show();
+    
+    $('#pagePlayerDetails').trigger('pageshow');
 });
 
 $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', function (event) {

@@ -37,15 +37,20 @@ function FortuneApp () {
      *	Updates information about main user on index page
      */
     self.updateMainUser = function () {
-	// Image
-	var image = (self.Players.main.image.length > 0) ? self.Players.main.image : (app.imgPlayerPath + 'playerDummy.jpg');
-	$('#indexMainUserImg').attr('src', image);
-	
-	// Name
-	var name = self.Players.main.name.split(" ");
-	
-	$('#pageIndex .firstName').html(name.shift());
-	$('#pageIndex .lastName') .html(name.join(" "));
+	self.Players.main.load(
+	    1,
+	    function () {
+		// Image
+		var image = (self.Players.main.image.length > 0) ? self.Players.main.image : (app.imgPlayerPath + 'playerDummy.jpg');
+		$('#indexMainUserImg').attr('src', image);
+		
+		// Name
+		var name = self.Players.main.name.split(" ");
+		
+		$('#pageIndex .firstName').html(name.shift());
+		$('#pageIndex .lastName') .html(name.join(" "));
+	    }
+	);
     }
     
     /*
@@ -272,7 +277,7 @@ function FortuneApp () {
 		onSuccess,
 		onError,
 		{
-		    quality: 90,
+		    quality: 100,
 		    destinationType: Camera.DestinationType.FILE_URI,
 		    sourceType: Camera.PictureSourceType.CAMERA,
 		    allowEdit: true,
