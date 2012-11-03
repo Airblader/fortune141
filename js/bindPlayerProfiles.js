@@ -3,37 +3,46 @@ $(document).on('pageshow', '#pagePlayersList', function () {
     $('#pagePlayersListNewPlayer')    .hide();
     
     // Create List
-    var html  = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">';
-	html += '<li data-role="list-divider">Favorites</li>';
+    var listDummy = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">'
+                  + '<li data-role="list-divider">Favorites</li>[entries1]<li data-role="list-divider">All</li>[entries2]</ul>';
+    var entryDummy = '<li data-filtertext="[filter]"><a href="player_details.html?pID=[id]">[image][dispName]</a></li>';
+	
     app.dbFortune.query('SELECT pID, Name, Nickname, Image, displayNickname FROM ' + app.dbFortune.tables.Player.name +
 			' WHERE isFavorite = "true" ORDER BY CASE pID WHEN "1" THEN pID END DESC, LOWER(Name)',
 			[],
     function (tx, results) {
+	var entries1 = new Array(results.rows.length);
 	for (var i = 0; i < results.rows.length; i++) {
 	    var row      = results.rows.item(i),
 		filter   = row['Name'] + ' ' + row['Nickname'],
 		dispName = ((row['displayNickname'] == 'true' && row['Nickname'].length != 0) ? row['Nickname'] : row['Name']),
 		image    = (row['Image'] !== '') ? '<img src="' + row['Image'] + '" />' : '';
-	    
-	    html += '<li data-filtertext="' + filter + '"><a href="player_details.html?pID=' + row['pID'] + '">' + image
-	         +  dispName + '</a></li>';
+		
+	    entries1[i] = entryDummy.replace('[filter]',   filter)
+	                            .replace('[id]',       row['pID'])
+				    .replace('[image]',    image)
+				    .replace('[dispName]', dispName);
 	}
 	
-	html += '<li data-role="list-divider">All</li>';
 	app.dbFortune.query('SELECT pID, Name, Nickname, displayNickname FROM ' + app.dbFortune.tables.Player.name + ' ORDER BY LOWER(Name)',
 			    [],
 	function (tx, results) {
+	    var entries2 = new Array(results.rows.length);
 	    for (var i = 0; i < results.rows.length; i++) {
 		var row      = results.rows.item(i),
 		    dispName = ((row['displayNickname'] == 'true' && row['Nickname'].length != 0) ? row['Nickname'] : row['Name']),
 		    filter   = row['Name'] + ' ' + row['Nickname'];
 		
-		html += '<li data-filtertext="' + filter + '"><a href="player_details.html?pID=' + row['pID'] + '">'
-		     +  dispName + '</a></li>';
+		entries2[i] = entryDummy.replace('[filter]',   filter)
+					.replace('[id]',       row['pID'])
+					.replace('[image]',    '')
+					.replace('[dispName]', dispName);
 	    }
 	   
-	    html += '</ul>';
-	    $('#playerList').html(html).trigger('create');
+	    $('#playerList').html(
+		listDummy.replace('[entries1]', entries1.join(''))
+		         .replace('[entries2]', entries2.join(''))
+	    ).trigger('create');
 	});
     });
 });
@@ -124,6 +133,8 @@ $(document).off('click', '#addPlayer_Picture')
 });
 
 $(document).on('pageshow', '#pagePlayerDetails', function () {
+    var $btnDelete = $('#playerDetailsDeleteButton');
+    
     $('#pagePlayerDetailsEditPlayerHead').hide();
     $('#pagePlayerDetailsEditPlayer')    .hide();
     
@@ -132,9 +143,9 @@ $(document).on('pageshow', '#pagePlayerDetails', function () {
 	pID = parseInt(url.param('pID'));
 	
     // Hide delete button if it's the main user profile
-    $('#playerDetailsDeleteButton').button('enable');
+    $btnDelete.button('enable');
     if (pID == 1) {
-	$('#playerDetailsDeleteButton').button('disable');
+	$btnDelete.button('disable');
     }
     
     app.Players.tmp = new Player();
@@ -207,9 +218,11 @@ $(document).off('click', '#pagePlayerDetailsEditLink')
     $('#editPlayer_DisplayNickname').val(String(app.Players.tmp.displayNickname)).slider('refresh');
     
     // Main player is always a favorite
-    $('#editPlayer_IsFavorite').slider('enable');
+    var $isFavorite = $('#editPlayer_IsFavorite');
+    
+    $isFavorite.slider('enable');
     if (app.Players.tmp.pID == 1) {
-	$('#editPlayer_IsFavorite').slider('disable');
+	$isFavorite.slider('disable');
     }
 });
  

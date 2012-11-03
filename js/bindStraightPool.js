@@ -15,10 +15,12 @@ function game141SetPlayer (idx, pID) {
                                                .data('pid', app.Players.ingame[idx].pID);
 	$('#game141SetupPlayer' + idx + 'Img') .attr('src', image);
 	
-	$('#game141SetupSubmitButton').button('disable');
+	var $btnSubmit = $('#game141SetupSubmitButton');
+	$btnSubmit.button('disable');
 	if (($('#game141SetupPlayer0Name').data('pid') != '-1' && $('#game141SetupPlayer1Name').data('pid') != '-1') &&
 	   ((app.Players.ingame[1-idx].pID != pID) || (app.Players.ingame[idx].pID == app.ANONYMOUSPLAYERPID))) {
-	    $('#game141SetupSubmitButton').button('enable'); 
+	    
+	    $btnSubmit.button('enable'); 
 	}
     });
 }
@@ -44,93 +46,111 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
                                     .on ('taphold', game141TapHoldSelectPlayer);
     
     // create profile list
-    app.dbFortune.query('SELECT * FROM ' + app.dbFortune.tables.Game141Profile.name + ' ORDER BY Usage DESC', [],
+    var entryDummy1 = '<option value="[id]">[name]</option>';
+    app.dbFortune.query('SELECT ID, Name FROM ' + app.dbFortune.tables.Game141Profile.name + ' ORDER BY Usage DESC', [],
 	function (tx, results) {
 	    if (results.rows.length == 0) {
-		$('#game141SetupLoadProfileSelect').append(
+		$('#game141SetupLoadProfileSelect').html(
 		    '<option value="-1">None</option>'
 		).trigger('change');
 		
 		return false;
 	    }
 	    
+	    var entries = new Array(results.rows.length);
 	    for (var i = 0; i < results.rows.length; i++) {
 		var row = results.rows.item(i);
 		
-		$('#game141SetupLoadProfileSelect').append(
-		    '<option value="' + row['ID'] + '">' + row['Name'] + '</option>'
-		);
+		entries[i] = entryDummy1.replace('[id]',   row['ID'])
+		                        .replace('[name]', row['Name']);
 	    }
-	    $('#game141SetupLoadProfileSelect').trigger('change');
-	    
+	    $('#game141SetupLoadProfileSelect').html(entries.join(''))
+	                                       .trigger('change');
 	    return true;
 	}
     );
     
     // create game modes list
+    var entryDummy2 = '<option value="[id]">[name]</option>';
     app.dbFortune.query(
-	'SELECT * FROM ' + app.dbFortune.tables.GameModes.name + ' ORDER BY ID ASC',
+	'SELECT ID, Name FROM ' + app.dbFortune.tables.GameModes.name + ' ORDER BY ID ASC',
 	[],
 	function (tx, results) {
 	    if (results.rows.length == 0) {
-		$('#game141SetupGameMode').append(
+		$('#game141SetupGameMode').html(
 		    '<option value="-1">None</option>'
 		).trigger('change');
 		
 		return false;
 	    }
 	    
+	    var entries = new Array(results.rows.length);
 	    for (var i = 0; i < results.rows.length; i++) {
 		var row = results.rows.item(i);
 		
-		$('#game141SetupGameMode').append(
-		    '<option value="' + row['ID'] + '">' + row['Name'] + '</option>'
-		);
+		entries[i] = entryDummy2.replace('[id]',   row['ID'])
+		                        .replace('[name]', row['Name']);
 	    }
-	    $('#game141SetupGameMode').trigger('change');
 	    
+	    $('#game141SetupGameMode').html(entries.join(''))
+	                              .trigger('change');
 	    return true;
 	}
     );
     
     // create player list
-    var html  = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">';
-	html += '<li data-role="list-divider">Favorites</li>';
-    app.dbFortune.query('SELECT pID, Name, Nickname, Image, displayNickname FROM ' + app.dbFortune.tables.Player.name +
-			' WHERE isFavorite = "true" ORDER BY CASE pID WHEN "1" THEN pID END DESC, LOWER(Name)',
-			[],
-    function (tx, results) {
-	for (var i = 0; i < results.rows.length; i++) {
-	    var row      = results.rows.item(i),
-		filter   = row['Name'] + ' ' + row['Nickname'],
-		dispName = ((row['displayNickname'] == 'true' && row['Nickname'].length != 0) ? row['Nickname'] : row['Name']),
-		image    = (row['Image'] !== '') ? '<img src="' + row['Image'] + '" />' : '';
-	    
-	    html += '<li data-filtertext="' + filter + '">'
-	         +  '<a href="#" onClick="javascript:game141SetPlayer($(\'#game141Setup2\').data(\'player\'), ' + row['pID'] + '); '
-		 +  '$(\'#game141Setup2\').hide(); $(\'#game141SetupChoosePlayerHead\').hide(); $(\'#game141Setup1\').show(); $(\'#game141SetupHead\').show();">'
-	         +  image + dispName + '</a></li>';
-	}
-	
-	html += '<li data-role="list-divider">All</li>';
-	app.dbFortune.query('SELECT pID, Name, Nickname, displayNickname FROM ' + app.dbFortune.tables.Player.name + ' ORDER BY LOWER(Name)',
-			    [],
+    var listDummy = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">'
+                  + '<li data-role="list-divider">Favorites</li>[entries1]'
+		  + '<li data-role="list-divider">All</li>[entries2]'
+		  + '</ul>';
+		  
+    var entryDummy = '<li data-filtertext="[filter]">'
+                   + '<a href="#" onClick="javascript:game141SetPlayer($(\'#game141Setup2\').data(\'player\'), [pID]); '
+		   + '$(\'#game141Setup2\').hide(); $(\'#game141SetupChoosePlayerHead\').hide(); $(\'#game141Setup1\').show(); $(\'#game141SetupHead\').show();">'
+		   + '[image][dispName]</a></li>';
+    
+    app.dbFortune.query(
+	'SELECT pID, Name, Nickname, Image, displayNickname FROM ' + app.dbFortune.tables.Player.name +
+	    ' WHERE isFavorite = "true" ORDER BY CASE pID WHEN "1" THEN pID END DESC, LOWER(Name)',
+	[],
 	function (tx, results) {
+	    var entries1 = new Array(results.rows.length);
 	    for (var i = 0; i < results.rows.length; i++) {
-		var row      = results.rows.item(i),
+	        var row      = results.rows.item(i),
+		    filter   = row['Name'] + ' ' + row['Nickname'],
 		    dispName = ((row['displayNickname'] == 'true' && row['Nickname'].length != 0) ? row['Nickname'] : row['Name']),
-		    filter   = row['Name'] + ' ' + row['Nickname'];
-		
-		html += '<li data-filtertext="' + filter + '">'
-		     +  '<a href="#" onClick="javascript:game141SetPlayer($(\'#game141Setup2\').data(\'player\'), ' + row['pID'] + '); '
-		     +  '$(\'#game141Setup2\').hide(); $(\'#game141SetupChoosePlayerHead\').hide(); $(\'#game141Setup1\').show(); $(\'#game141SetupHead\').show();">'
-		     +  dispName + '</a></li>';
+		    image    = (row['Image'] !== '') ? '<img src="' + row['Image'] + '" />' : '';
+	    
+		    entries1[i] = entryDummy.replace('[filter]',   filter)
+					    .replace('[pID]',      row['pID'])
+					    .replace('[image]',    image)
+					    .replace('[dispName]', dispName);
 	    }
-	   
-	    html += '</ul>';
-	    $('#game141Setup2').html(html).trigger('create');
-	});
-    });
+	
+	    app.dbFortune.query(
+		'SELECT pID, Name, Nickname, displayNickname FROM ' + app.dbFortune.tables.Player.name + ' ORDER BY LOWER(Name)',
+		[],
+		function (tx, results) {
+		    var entries2 = new Array(results.rows.length);
+		    for (var i = 0; i < results.rows.length; i++) {
+			var row      = results.rows.item(i),
+			    dispName = ((row['displayNickname'] == 'true' && row['Nickname'].length != 0) ? row['Nickname'] : row['Name']),
+			    filter   = row['Name'] + ' ' + row['Nickname'];
+			
+			entries2[i] = entryDummy.replace('[filter]',   filter)
+						.replace('[pID]',      row['pID'])
+						.replace('[image]',    '')
+						.replace('[dispName]', dispName);
+		    }
+
+		    $('#game141Setup2').html(
+			listDummy.replace('[entries1]', entries1.join(''))
+			         .replace('[entries2]', entries2.join(''))
+		    ).trigger('create');
+		}
+	    );
+	}
+    );
 });
 
 $(document).off('click', '#game141SetupChoosePlayerHeadBackLink')

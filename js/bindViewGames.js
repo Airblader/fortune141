@@ -1,38 +1,44 @@
 $(document).on('pageshow', '#pageView141Games', function () {
-    $('#view141GamesList').html('');
-    var entryDummy = '<li><a href="[href]"><p><strong>[name1] vs. [name2]</strong></p><p>Score: [points1] &ndash; [points2]</p><p class="ui-li-aside">[month]/[day]/[year]</p></a></li>';
+    var listDummy  = '<ul data-role="listview" id="view141GamesList">[entries]</ul>',
+        entryDummy = '<li><a href="view141Games_details.html?gID=[gID]"><p><strong>[name1] vs. [name2]</strong></p>'
+                   + '<p>Score: [points1] &ndash; [points2]</p><p class="ui-li-aside">[month]/[day]/[year]</p></a></li>';
     
     app.dbFortune.query(
         'SELECT * FROM ' + app.dbFortune.tables.Game141.name + ' WHERE isFinished="1" ORDER BY Timestamp DESC',
         [],
         function (tx, results) {
+            var entries = new Array(results.rows.length);
             for (var i = 0; i < results.rows.length; i++) {
-                var row   = results.rows.item(i),
-                    entry = entryDummy;
-                
-                var date = app.convertTimestamp(row['Timestamp']);
+                var row  = results.rows.item(i),
+                    date = app.convertTimestamp(row['Timestamp']);
                     
-                entry = entry.replace('[href]',    'view141Games_details.html?gID=' + row['gID'])
-                             .replace('[name1]',   row['Player1Name'])
-                             .replace('[name2]',   row['Player2Name'])
-                             .replace('[points1]', row['PointsPlayer1'])
-                             .replace('[points2]', row['PointsPlayer2'])
-                             .replace('[month]',   date.month)
-                             .replace('[day]',     date.day)
-                             .replace('[year]',    date.year);
-                    
-                $('#view141GamesList').append(entry);
+                entries[i] = entryDummy.replace('[gID]',     row['gID'])
+                                       .replace('[name1]',   row['Player1Name'])
+                                       .replace('[name2]',   row['Player2Name'])
+                                       .replace('[points1]', row['PointsPlayer1'])
+                                       .replace('[points2]', row['PointsPlayer2'])
+                                       .replace('[month]',   date.month)
+                                       .replace('[day]',     date.day)
+                                       .replace('[year]',    date.year);
             }
-            $('#view141GamesList').listview('refresh');
+            
+            $('#view141GamesListContainer').html(
+                listDummy.replace('[entries]', entries.join(''))
+            );
+            $('#view141GamesList').listview();
         },
         app.dummyFalse
     );
 });
 
 $(document).on('pageshow', '#pageView141GamesDetails', function () {
-    var url      = $.url( $.url().attr('fragment') ),
-        gID      = parseInt(url.param('gID')),
-        fromGame = parseInt(url.param('from_game'));
+    var url         = $.url( $.url().attr('fragment') ),
+        gID         = parseInt(url.param('gID')),
+        fromGame    = parseInt(url.param('from_game')),
+        windowWidth = $('#view141GamesDetailsCanvasContainer').width();
+        
+    var $name1 = $('#view141GamesDetailsName1'),
+        $name2 = $('#view141GamesDetailsName2');
     
     $('#view141GamesHandicapTitle').hide();
     $('#view141GamesHandicapTable').hide();
@@ -49,44 +55,46 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
     
     var tmpGame = new StraightPool();
     tmpGame.loadGame(gID, function () {
-        $('#view141GamesDetailsName1').html(tmpGame.players[0].obj.name);
-        $('#view141GamesDetailsName2').html(tmpGame.players[1].obj.name);
+        $name1.html(tmpGame.players[0].obj.name)
+              .off('click')
+              .on ('click',
+                function (event) {
+                    $.mobile.changePage('../player/player_details.html?pID' + tmpGame.players[0].obj.pID);
+                }
+              )
+              .removeClass('winner').removeClass('loser');
         
-        $('#view141GamesDetailsName1').off('click')
-                                      .on ('click', function (event) {
-            $.mobile.changePage('../player/player_details.html?pID' + tmpGame.players[0].obj.pID);
-        });
-        
-        $('#view141GamesDetailsName2').off('click')
-                                      .on ('click', function (event) {
-            $.mobile.changePage('../player/player_details.html?pID=' + tmpGame.players[1].obj.pID);
-        });
+        $name2.html(tmpGame.players[1].obj.name)
+              .off('click')
+              .on ('click',
+                function (event) {
+                    $.mobile.changePage('../player/player_details.html?pID=' + tmpGame.players[1].obj.pID);
+                }
+              )
+              .removeClass('winner').removeClass('loser');
         
         $('#view141GamesDetailsScore1').html(tmpGame.players[0].points);
         $('#view141GamesDetailsScore2').html(tmpGame.players[1].points);
         
         var date = app.convertTimestamp(tmpGame.timestamp);
         $('#view141GamesDetailsDate').html(date.month + '/' + date.day + '/' + date.year);
-        
-        $('#view141GamesDetailsName1').removeClass('winner').removeClass('loser');
-        $('#view141GamesDetailsName2').removeClass('winner').removeClass('loser');
-        
+                
         var idxWinner = 0;
         if (tmpGame.winner == tmpGame.players[0].obj.pID) {
             idxWinner = 0;
             
-            $('#view141GamesDetailsName1').addClass('winner');
-            $('#view141GamesDetailsName2').addClass('loser');
+            $name1.addClass('winner');
+            $name2.addClass('loser');
         }
         else if (tmpGame.winner == tmpGame.players[1].obj.pID) {
             idxWinner = 1;
             
-            $('#view141GamesDetailsName1').addClass('loser');
-            $('#view141GamesDetailsName2').addClass('winner');
+            $name1.addClass('loser');
+            $name2.addClass('winner');
         }
         else { // tie game
-            $('#view141GamesDetailsName1').addClass('winner');
-            $('#view141GamesDetailsName2').addClass('winner');
+            $name1.addClass('winner');
+            $name2.addClass('winner');
         }
         
         if (tmpGame.handicap[0] != 0 || tmpGame.handicap[1] != 0) {
@@ -106,8 +114,7 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
         
         // Draw graph
         if (canvasSupport) {
-            var pixelRatio  = 1,
-                windowWidth = $('#view141GamesDetailsCanvasContainer').width();
+            var pixelRatio  = 1;
             if (typeof window.devicePixelRatio !== 'undefined') {
                 pixelRatio = Math.min(2, Math.max(0, window.devicePixelRatio));
             }
