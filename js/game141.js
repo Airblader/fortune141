@@ -973,6 +973,9 @@ function StraightPool () {
      */
     self.handleAcceptButton = function (event) {
 	event.preventDefault();
+	
+	// tutorial
+	app.triggerTutorial('tutorial141SelectCueBall');
         
 	self.switchButton = false;
         $('#playerSwitch').hide();

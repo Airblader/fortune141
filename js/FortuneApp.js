@@ -8,7 +8,9 @@ function FortuneApp () {
     
     self.dbFortune = undefined;
     self.debugMode = !(navigator.userAgent.toLowerCase().indexOf("android") > -1);
-    self.tooltips  = new Tooltips();
+    
+    self.tooltips         = new Tooltips();
+    self.activateTooltips = false;
     
     self.Players   = {
 	main : undefined,	// Main User
@@ -46,7 +48,7 @@ function FortuneApp () {
      *	Trigger a popup for the tutorial with the given key name
      */
     self.triggerTutorial = function (key) {
-	if (window.localStorage.getItem(key) == '1') {
+	if (window.localStorage.getItem(key) == '1' || !self.activateTooltips) {
 	    return false;
 	}
 	

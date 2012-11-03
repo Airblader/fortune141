@@ -44,13 +44,8 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
         $('#view141GamesDetailsViewTable').trigger('click');
     }
     
+    $('#view141GamesDetailsCanvasContainer').hide();
     var canvasSupport = app.checkForCanvasSupport();
-    if (canvasSupport) {
-        $('#view141GamesDetailsCanvasContainer').show();    
-    }
-    else {
-        $('#view141GamesDetailsCanvasContainer').hide();
-    }
     
     var tmpGame = new StraightPool();
     tmpGame.loadGame(gID, function () {
@@ -231,6 +226,8 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
                 }
                 context.stroke();
             }
+            
+            $('#view141GamesDetailsCanvasContainer').show();
         }
         
         // Draw Canvas and Scoreboard
