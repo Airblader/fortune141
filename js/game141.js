@@ -21,6 +21,14 @@ function BallRack () {
     
     var ballPositions = new Array();
     
+    // caching for better performance
+    var $balls   = new Array(16),
+	$shadows = new Array(16);
+    for (var i=0; i<=15; i++) {
+	$balls[i]   = $('#ball'   + i);
+	$shadows[i] = $('#shadow' + i);
+    }
+    
     if (self.debugMode) {
         var touchCommands = "mousedown";
     }
@@ -86,22 +94,22 @@ function BallRack () {
 	// this factor defines how much the shadow is spread around the balls
 	var shadowFactor = 1.35;
 	
-        for (var i=0; i<=15; i++) {
-            $('#ball' + i).css('position',      'absolute'                  )
-                          .css('width',         self.ballSizeSmall    + 'px')
-                          .css('height',        self.ballSizeSmall    + 'px')
-                          .css('margin-left', (-self.ballSizeSmall/2) + 'px')
-                          .css('margin-top',  (-self.ballSizeSmall/2) + 'px')
-                          .css('left',          ballPositions[i].x    + 'px')
-                          .css('top',           ballPositions[i].y    + 'px'); 
+        for (var i = 0; i <= 15; i++) {
+            $balls[i].css('position',      'absolute'                  )
+		     .css('width',         self.ballSizeSmall    + 'px')
+		     .css('height',        self.ballSizeSmall    + 'px')
+		     .css('margin-left', (-self.ballSizeSmall/2) + 'px')
+		     .css('margin-top',  (-self.ballSizeSmall/2) + 'px')
+		     .css('left',          ballPositions[i].x    + 'px')
+		     .css('top',           ballPositions[i].y    + 'px'); 
 
-            $('#shadow' + i).css('position',      'absolute'                               )
-                            .css('width',         shadowFactor*self.ballSizeSmall    + 'px')
-                            .css('height',        shadowFactor*self.ballSizeSmall    + 'px')
-                            .css('margin-left', (-shadowFactor*self.ballSizeSmall/2) + 'px')
-                            .css('margin-top',  (-shadowFactor*self.ballSizeSmall/2) + 'px')
-                            .css('left',          ballPositions[i].x                 + 'px')
-                            .css('top',           ballPositions[i].y                 + 'px'); 
+            $shadows[i].css('position',      'absolute'                               )
+		       .css('width',         shadowFactor*self.ballSizeSmall    + 'px')
+		       .css('height',        shadowFactor*self.ballSizeSmall    + 'px')
+		       .css('margin-left', (-shadowFactor*self.ballSizeSmall/2) + 'px')
+		       .css('margin-top',  (-shadowFactor*self.ballSizeSmall/2) + 'px')
+		       .css('left',          ballPositions[i].x                 + 'px')
+		       .css('top',           ballPositions[i].y                 + 'px'); 
         }
     }
     
@@ -117,13 +125,13 @@ function BallRack () {
         }
 	
         var opacity = (active) ? '1.0' : '0.4';
-        $('#ball' + idx).css('opacity', opacity);
+        $balls[idx].css('opacity', opacity);
 		
 	if (active) {
-	    $('#shadow' + idx).addClass('ballShadow');
+	    $shadows[idx].addClass('ballShadow');
 	}
 	else {
-	    $('#shadow' + idx).removeClass('ballShadow');
+	    $shadows[idx].removeClass('ballShadow');
 	}
     }
     
@@ -145,7 +153,6 @@ function BallRack () {
      *	Activate touch events
      */
     self.setHandler = function () {
-        //$('body').on(touchCommands, '#ballRack', function(e) { self.ballSelectHandler(e); });
 	$('body').on(touchCommands, '#ballRack', self.ballSelectHandler);
     }
 
@@ -198,7 +205,33 @@ function BallRack () {
 function StraightPool () {
     var self = this;
     
-    self.pageName  = '#pageGame141';
+    $page = $('#pageGame141');
+    $activePlayer = $('#activePlayer');
+    
+    $btnAccept = $('#usrAccept');
+    $btnFoul = $('#usrFoulDisplay');
+    $btnSafety = $('#usrSafeDisplay');
+    $btnPlayerSwitch = $('#playerSwitch');
+    $btnUndo = $('#btnDetailsUndo');
+    
+    $loadingPanel = $('#panelLoading');
+    $detailsPanel = $('#panelDetails');
+    $panelRackAndMenu = $('#panelRackAndMenu');
+    
+    $ptsPlayer = new Array($('#ptsPlayer0'), $('#ptsPlayer1'));
+    
+    $foulDisplay = $('#foulDisplay');
+    $foulDisplayName = $('#foulDisplayName');
+    
+    $safetyDisplay = $('#safetyDisplay');
+    
+    $ballRack = $('#ballRack');
+    
+    $popupSevereFoul       = $('#popupSevereFoul');
+    $popupSevereFoulPoints = $('#popupSevereFoulPoints');
+    $popupSevereFoulRerack = $('#popupSevereFoulRerack');
+    
+    
     self.debugMode = app.debugMode;
     
     self.gameID        = -1;
@@ -212,11 +245,10 @@ function StraightPool () {
      */
     self.dummyPlayer = function () {
         return {
-                    //name  : '',
-                    fouls : 0,
-                    points: 0,
-		    obj   : undefined,	// holds the Player object
-               };
+	    fouls : 0,
+            points: 0,
+	    obj   : undefined,	// holds the Player object
+        };
     }
     
     /*
@@ -224,12 +256,12 @@ function StraightPool () {
      */
     self.dummyInning = function () {
         return {
-                    number   : 1,				// number of the inning
-                    points   : new Array(0, 0),			// points made in this inning
-                    foulPts  : new Array(0, 0),			// foul points in this inning
-                    ptsToAdd : new Array(0, 0),			// unprocessed/non-final points
-                    safety   : new Array(false, false),		// whether this inning ended in a safety
-               };
+            number   : 1,				// number of the inning
+            points   : new Array(0, 0),			// points made in this inning
+            foulPts  : new Array(0, 0),			// foul points in this inning
+            ptsToAdd : new Array(0, 0),			// unprocessed/non-final points
+            safety   : new Array(false, false),		// whether this inning ended in a safety
+        };
     }
     
     /*
@@ -257,10 +289,10 @@ function StraightPool () {
 	
 	self.timestamp = Math.floor(Date.now() / 1000).toFixed(0);
 	
-	self.firstShot        = true;
+	self.firstShot = true;
 	
 	self.switchButton = true;
-	$('#playerSwitch').show();
+	$btnPlayerSwitch.show();
 	
 	self.ballRack = new BallRack();
 	self.ballRack.redraw();
@@ -464,9 +496,9 @@ function StraightPool () {
 
 		self.ballRack.redraw();
 		
-		$('#playerSwitch').hide();
+		$btnPlayerSwitch.hide();
 		if (self.switchButton) {
-		    $('#playerSwitch').show();
+		    $btnPlayerSwitch.show();
 		}
 		
 		app.Players.ingame[0] = new Player();
@@ -517,36 +549,37 @@ function StraightPool () {
 	    
 	    var strInnings = self.inningsToString(); 
 		
-	    app.dbFortune.query(sql,
-				[self.timestamp,
-				 self.players[0].obj.pID,
-				 self.players[0].obj.getDisplayName(),
-				 self.players[1].obj.pID,
-				 self.players[1].obj.getDisplayName(),
-				 self.players[0].points,
-				 self.players[1].points,
-				 self.scoreGoal,
-				 self.maxInnings,
-				 self.inningsExtension,
-				 self.handicap[0],
-				 self.handicap[1],
-				 self.multiplicator[0],
-				 self.multiplicator[1],
-				 strInnings[0],
-				 strInnings[1],
-				 self.players[0].fouls,
-				 self.players[1].fouls,
-				 self.ballRack.ballsOnTable,
-				 self.currPlayer,
-				(self.firstShot)       ? 1 : 0,
-				(self.switchButton)    ? 1 : 0,
-				 Number(self.mode),
-				(self.isFinished)      ? 1 : 0,
-				 self.winner,
-				 '',
-				 0,
-				 0
-				],
+	    app.dbFortune.query(
+		sql,
+		[self.timestamp,
+		 self.players[0].obj.pID,
+		 self.players[0].obj.getDisplayName(),
+		 self.players[1].obj.pID,
+		 self.players[1].obj.getDisplayName(),
+		 self.players[0].points,
+		 self.players[1].points,
+		 self.scoreGoal,
+		 self.maxInnings,
+		 self.inningsExtension,
+		 self.handicap[0],
+		 self.handicap[1],
+		 self.multiplicator[0],
+		 self.multiplicator[1],
+		 strInnings[0],
+		 strInnings[1],
+		 self.players[0].fouls,
+		 self.players[1].fouls,
+		 self.ballRack.ballsOnTable,
+		 self.currPlayer,
+		(self.firstShot)       ? 1 : 0,
+		(self.switchButton)    ? 1 : 0,
+		 Number(self.mode),
+		(self.isFinished)      ? 1 : 0,
+		 self.winner,
+		 '',
+		 0,
+		 0
+		],
 		function (tx, result) {
 		    self.gameID = result.insertId;
 		    cbSuccess();
@@ -566,24 +599,25 @@ function StraightPool () {
 		
 	var strInnings = self.inningsToString();
 		
-	app.dbFortune.query(sql,
-			    [self.handicap[0],
-			     self.handicap[1],
-			     self.multiplicator[0],
-			     self.multiplicator[1],
-			     strInnings[0],
-			     strInnings[1],
-			     self.players[0].points,
-			     self.players[1].points,
-			     self.players[0].fouls,
-			     self.players[1].fouls,
-			     self.ballRack.ballsOnTable,
-			     self.currPlayer,
-			    (self.firstShot)    ? 1 : 0,
-			    (self.switchButton) ? 1 : 0,
-			    (self.isFinished)   ? 1 : 0,
-			     self.winner
-			    ],
+	app.dbFortune.query(
+	    sql,
+	    [self.handicap[0],
+	     self.handicap[1],
+	     self.multiplicator[0],
+	     self.multiplicator[1],
+	     strInnings[0],
+	     strInnings[1],
+	     self.players[0].points,
+	     self.players[1].points,
+	     self.players[0].fouls,
+	     self.players[1].fouls,
+	     self.ballRack.ballsOnTable,
+	     self.currPlayer,
+	    (self.firstShot)    ? 1 : 0,
+	    (self.switchButton) ? 1 : 0,
+	    (self.isFinished)   ? 1 : 0,
+	     self.winner
+	    ],
 	    cbSuccess,
 	    app.dummyFalse
 	);
@@ -651,9 +685,9 @@ function StraightPool () {
 		self.firstShot    = (parseInt(row['FirstShot'])    == 1) ? true : false;
 		self.switchButton = (parseInt(row['SwitchButton']) == 1) ? true : false;
 		
-		$('#playerSwitch').hide();
+		$btnPlayerSwitch.hide();
 		if (self.switchButton) {
-		    $('#playerSwitch').show();
+		    $btnPlayerSwitch.show();
 		}
 		
 		self.ballRack.ballsOnTable = parseInt(row['BallsOnTable']);
@@ -720,7 +754,7 @@ function StraightPool () {
 	var foulName = "None";
 	if (foulCount == 1 && !severe) {
 	    foulName = "Normal";
-	    $('#foulDisplayName').data('rerack', false);
+	    $foulDisplayName.data('rerack', false);
 	}
 	else if (foulCount > 1 || severe) {
 	    foulName = "Severe";
@@ -728,16 +762,16 @@ function StraightPool () {
 	    // Setting rerack to true might not always be technically correct, as a player after
 	    // a first shot foul has a choice. However, there will be 15 balls on the table anyway,
 	    // so this won't have an effect on that situation
-	    $('#foulDisplayName').data('rerack', true);
+	    $foulDisplayName.data('rerack', true);
 	}
 	else {
-	    $('#foulDisplayName').data('rerack', false);
+	    $foulDisplayName.data('rerack', false);
 	}
 	
 	// check for valid number
 	if ($.isNumeric(foulCount)) {
-	    $('#foulDisplay')    .html(foulCount);
-	    $('#foulDisplayName').html(foulName );
+	    $foulDisplay    .html(foulCount);
+	    $foulDisplayName.html(foulName );
 	}
     }
     
@@ -766,13 +800,13 @@ function StraightPool () {
         
         // we will return this value to provide information on the processed inning
         var ret = {
-                    ballsOnTable : parseInt(selectedBall),
-                    firstShot    : false,
-                    currPlayer   : currPlayer,
-                    current      : current,
-                    safety       : safety,
-                    rerack       : hasToRerack,
-                  };
+	    ballsOnTable : parseInt(selectedBall),
+	    firstShot    : false,
+	    currPlayer   : currPlayer,
+	    current      : current,
+	    safety       : safety,
+	    rerack       : hasToRerack,
+        };
         
         // points that were made and need to be added or saved
         self.innings[current].ptsToAdd[currPlayer] += parseInt(ballsOnTable) - parseInt(selectedBall);
@@ -867,13 +901,13 @@ function StraightPool () {
      */
     self.getPanelHeights = function () {
 	var viewPortHeight = $(window).height(),
-	    headerHeight   = $(self.pageName).find('[data-role="header"]') .height(),
-	    contentHeight  = $(self.pageName).find('[data-role="content"]').height();
+	    headerHeight   = $page.find('[data-role="header"]') .height(),
+	    contentHeight  = $page.find('[data-role="content"]').height();
 		    
 	return {
-		mainPanel    : viewPortHeight - headerHeight - contentHeight - 25,
-		detailsPanel : viewPortHeight,
-	       }
+	    mainPanel    : viewPortHeight - headerHeight - contentHeight - 25,
+	    detailsPanel : viewPortHeight,
+	}
     }
     
     /*
@@ -881,9 +915,9 @@ function StraightPool () {
      */
     self.getBestBallRadius = function () {
 	var maxHeight = self.getPanelHeights().mainPanel
-	 		   - parseInt($(self.pageName).find('#ballRack').css('bottom').replace('px', ''))   // margin from toolbar
-	 		   - 20                                                                        	    // additional margins
-	 		   - 40,                                                                            // margin from detail/switch buttons
+	 		   - parseInt($ballRack.css('bottom').replace('px', ''))   // margin from toolbar
+	 		   - 20                                                    // additional margins
+	 		   - 40,                                                   // margin from detail/switch buttons
 	    maxWidth  = $(window).width() * 0.95;
         
         var bestRadius = Math.min(
@@ -922,16 +956,16 @@ function StraightPool () {
 	// stop listening to the hardware back button
 	document.removeEventListener('backbutton', self.closeDetailsPanel, false);
 	
-        $('#panelLoading').show();
-        $(self.pageName)  .find('[data-role="header"]')
-	                  .show();
+        $loadingPanel.show();
+        $page        .find('[data-role="header"]')
+	             .show();
 			  
-        $('#panelRackAndMenu').show(function () {
+        $panelRackAndMenu.show(function () {
 	    // Bugfix : Panel moved to the right because of the (even if invisible) scrollbars
-            $('#panelRackAndMenu').css('left', '0');
+            $panelRackAndMenu.css('left', '0');
 	    
-            $('#panelDetails')  .hide();
-            $('#panelLoading')  .hide();
+            $detailsPanel.hide();
+            $loadingPanel.hide();
         });
 	
 	return true;
@@ -956,16 +990,16 @@ function StraightPool () {
      *	Updates score display
      */
     self.updateScoreDisplay = function () {
-	$('#ptsPlayer0').html(self.players[0].points);
-        $('#ptsPlayer1').html(self.players[1].points);
+	$ptsPlayer[0].html(self.players[0].points);
+        $ptsPlayer[1].html(self.players[1].points);
     }
     
     /*
      *	Sets the marker for which player's turn it is
      */
     self.setActivePlayerMarker = function (activePlayer) {
-	$('#activePlayer').removeClass('activePlayer' + (1-activePlayer ))
-		          .addClass   ('activePlayer' + (self.currPlayer));
+	$activePlayer.removeClass('activePlayer' + (1-activePlayer ))
+		     .addClass   ('activePlayer' + (self.currPlayer));
     }
     
     /*
@@ -978,7 +1012,7 @@ function StraightPool () {
 	app.triggerTutorial('tutorial141SelectCueBall');
         
 	self.switchButton = false;
-        $('#playerSwitch').hide();
+        $btnPlayerSwitch.hide();
         
         // if button is still active from last click, abort
         if (btnAcceptPressed) {
@@ -987,25 +1021,27 @@ function StraightPool () {
 	
         // block button and rack
         btnAcceptPressed = true;
-        $('#usrAccept').addClass('navbarButtonDown');
+        $btnAccept.addClass('navbarButtonDown');
         self.ballRack.unsetHandler();
         
         // reset button and rack in given time
         setTimeout(function() {
             btnAcceptPressed = false;
-            $('#usrAccept').removeClass('navbarButtonDown');
+            $btnAccept.removeClass('navbarButtonDown');
             self.ballRack.setHandler();
         }, 500);
         
         // check if rerack is needed
-        rerack = $('#foulDisplayName').data('rerack');
+        rerack = $foulDisplayName.data('rerack');
         
         // process the input
-        var ret = self.processInput(self.ballRack.ballsOnTable,
-                                    self.ballRack.selectedBall,
-                                    parseInt( $('#foulDisplay').html() ),
-                                    Boolean( 1 - yesno.indexOf( $('#safetyDisplay').html() ) ),
-                                    rerack);
+        var ret = self.processInput(
+	    self.ballRack.ballsOnTable,
+	    self.ballRack.selectedBall,
+	    parseInt( $foulDisplay.html() ),
+	    Boolean( 1 - yesno.indexOf( $safetyDisplay.html() ) ),
+	    rerack
+	);
         
         // handle rerack
         if (rerack || ret.rerack) {
@@ -1014,13 +1050,13 @@ function StraightPool () {
             ret.selectedBall = 15;
             
 	    self.switchButton = true;
-            $('#playerSwitch').show();
+            $btnPlayerSwitch.show();
         }
         
         // after a shot has been accepted, the foul and safety displays reset
         self.setFoulDisplay(0);
-        $('#foulDisplayName').data('rerack', false);
-        $('#safetyDisplay')  .html(yesno[1]);
+        $foulDisplayName.data('rerack', false);
+        $safetyDisplay  .html(yesno[1]);
         
         // this displays the change of points (if neccessary), e.g. "+3" or "-1".
         var tmpDisplay;
@@ -1030,7 +1066,7 @@ function StraightPool () {
                 self.multiplicator[ret.currPlayer] * (self.innings[ret.current].ptsToAdd[ret.currPlayer] - self.innings[ret.current].foulPts[ret.currPlayer]);
 
         tmpDisplay = (tmpDisplay >= 0) ? "+"+tmpDisplay : tmpDisplay;
-        $('#ptsPlayer' + ret.currPlayer).html(tmpDisplay);
+        $ptsPlayer[ret.currPlayer].html(tmpDisplay);
         
         // check for end of game
         if ((self.players[0].points >= self.scoreGoal || self.players[1].points >= self.scoreGoal)			// won by points
@@ -1063,14 +1099,14 @@ function StraightPool () {
 		},
 		500
 	    );
-	    $('#usrAccept')     .off('click').off('tap');
-	    $('#usrFoulDisplay').off('click').off('tap').off('taphold');
-	    $('#usrSafeDisplay').off('click').off('tap');
-	    $('#btnDetailsUndo').off('click').off('tap');
+	    $btnAccept.off('click').off('tap');
+	    $btnFoul  .off('click').off('tap').off('taphold');
+	    $btnSafety.off('click').off('tap');
+	    $btnUndo  .off('click').off('tap');
 	    
 	    // unset the current player marker
-	    $('#activePlayer').removeClass('activePlayer0')
-			      .removeClass('activePlayer1');
+	    $activePlayer.removeClass('activePlayer0')
+			 .removeClass('activePlayer1');
 	    
 	    // cap off last inning and total points to be no larger than the score goal
 	    if (self.winner != 0) {
@@ -1126,19 +1162,21 @@ function StraightPool () {
 	event.preventDefault();
         
         // if button is still active, ignore
-        if( $('#usrFoulDisplay').hasClass('navbarButtonDown') ) {
+        if( $btnFoul.hasClass('navbarButtonDown') ) {
             return false;
         }
 	
 	// animation
-        $('#usrFoulDisplay').addClass('navbarButtonDown');
+        $btnFoul.addClass('navbarButtonDown');
         setTimeout(function() {
-            $('#usrFoulDisplay').removeClass('navbarButtonDown');
+            $btnFoul.removeClass('navbarButtonDown');
         }, 250);
 
 	// toggle foul display
-        self.setFoulDisplay(1 + parseInt( $('#foulDisplay').html() ),
-			    self.firstShot && (self.ballRack.selectedBall == self.ballRack.ballsOnTable));
+        self.setFoulDisplay(
+	    1 + parseInt( $foulDisplay.html() ),
+	    self.firstShot && (self.ballRack.selectedBall == self.ballRack.ballsOnTable)
+	);
 	return true;
     }
     
@@ -1149,14 +1187,14 @@ function StraightPool () {
 	event.preventDefault();
 	
 	// if button is still active, ignore
-        if( $('#usrFoulDisplay').hasClass('navbarButtonDown') ) {
+        if( $btnFoul.hasClass('navbarButtonDown') ) {
             return false;
         }
 	
 	// animation
-        $('#usrFoulDisplay').addClass('navbarButtonDown');
+        $btnFoul.addClass('navbarButtonDown');
         setTimeout(function() {
-            $('#usrFoulDisplay').removeClass('navbarButtonDown');
+            $btnFoul.removeClass('navbarButtonDown');
         }, 250);
 
 	// open manual entry popup
@@ -1172,17 +1210,17 @@ function StraightPool () {
 	event.preventDefault();
         
         // if button is still active, ignore
-        if( $('#usrSafeDisplay').hasClass('navbarButtonDown') ) {
+        if( $btnSafety.hasClass('navbarButtonDown') ) {
             return false;
         }
 	
-        $('#usrSafeDisplay').addClass('navbarButtonDown');
+        $btnSafety.addClass('navbarButtonDown');
         setTimeout(function() {
-            $('#usrSafeDisplay').removeClass('navbarButtonDown');
+            $btnSafety.removeClass('navbarButtonDown');
         }, 250);
         
 	// toggle safety display
-        $('#safetyDisplay').html( yesno[ 1 - yesno.indexOf( $('#safetyDisplay').html() ) ] );
+        $safetyDisplay.html( yesno[ 1 - yesno.indexOf( $safetyDisplay.html() ) ] );
 	return true;
     }
     
@@ -1193,12 +1231,13 @@ function StraightPool () {
     self.handleMinimizeMainPanelButton = function (event) {
 	event.preventDefault();
 	
-	$('#panelLoading')			     .show();
-        $(self.pageName).find('[data-role="header"]').hide();
-        $('#panelDetails')                           .show(function () {
+	$loadingPanel     .show();
+        $page             .find('[data-role="header"]')
+	                  .hide();
+        $detailsPanel.show(function () {
             document.addEventListener('backbutton', self.closeDetailsPanel, false);
 	    
-            $('#panelRackAndMenu').hide();
+            $panelRackAndMenu.hide();
             
             var details  ='';
             details += '<table id="detailScoreTable" cellpadding="0" cellspacing="0">';
@@ -1289,7 +1328,7 @@ function StraightPool () {
             $('#player0gd').html('&#216;&thinsp;' + ((!isNaN(GDs[0])) ? GDs[0].toFixed(2) : '0.00'));
             $('#player1gd').html('&#216;&thinsp;' + ((!isNaN(GDs[1])) ? GDs[1].toFixed(2) : '0.00'));
             
-            $('#panelLoading')  .hide();
+            $loadingPanel.hide();
         });
     }
     
@@ -1301,8 +1340,8 @@ function StraightPool () {
 	if (self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] != -1 && self.innings[self.innings.length-1].foulPts[self.currPlayer] != 0) {
 	    self.processInput(15, 15, 0, false, false);
 	    
-	    $('#ptsPlayer0').html(self.players[0].points);
-	    $('#ptsPlayer1').html(self.players[1].points);
+	    $ptsPlayer[0].html(self.players[0].points);
+	    $ptsPlayer[1].html(self.players[1].points);
 	}
 	else {
 	    self.switchPlayer();
@@ -1320,7 +1359,7 @@ function StraightPool () {
 	event.preventDefault();
 	
 	var diff    = (plus) ? 1 : -1,
-	    currVal = parseInt( $('#popupSevereFoulPoints').val() ),
+	    currVal = parseInt( $popupSevereFoulPoints.val() ),
 	    newVal  = currVal + diff;
         
 	// we don't allow negative values
@@ -1328,7 +1367,7 @@ function StraightPool () {
 	    newVal = 0;
 	}
 	
-	$('#popupSevereFoulPoints').val(newVal);
+	$popupSevereFoulPoints.val(newVal);
     }
     
     /*
@@ -1337,20 +1376,20 @@ function StraightPool () {
     self.handleSevereFoulSubmitButton = function (event) {
 	event.preventDefault();
 	
-	var fouls  = Math.abs( parseInt( $('#popupSevereFoulPoints').val() ) ),
-	    rerack = $('#popupSevereFoulRerack')[0].checked;
+	var fouls  = Math.abs( parseInt( $popupSevereFoulPoints.val() ) ),
+	    rerack = $popupSevereFoulRerack[0].checked;
 	
 	self.setFoulDisplay(fouls, false, true);
 	
 	// important to call this AFTER setting the foul display to overwrite rerack setting
-	$('#foulDisplayName').data('rerack', rerack);
+	$foulDisplayName.data('rerack', rerack);
 	
-	$('#popupSevereFoul').popup('close');
+	$popupSevereFoul.popup('close');
 	
 	// reset the popup form
-	$('#popupSevereFoulPoints').val('2');
-	$('#popupSevereFoulRerack').prop('checked', false)
-				   .checkboxradio("refresh");
+	$popupSevereFoulPoints.val('2');
+	$popupSevereFoulRerack.prop('checked', false)
+			      .checkboxradio('refresh');
     }
     
     /*
@@ -1360,14 +1399,14 @@ function StraightPool () {
 	event.preventDefault();
 	
 	// if button is still active, ignore
-        if( $('#btnDetailsUndo').hasClass('panelButtonDown') ) {
+        if( $btnUndo.hasClass('panelButtonDown') ) {
             return false;
         }
 	
 	// animation
-        $('#btnDetailsUndo').addClass('panelButtonDown');
+        $btnUndo.addClass('panelButtonDown');
         setTimeout(function() {
-            $('#btnDetailsUndo').removeClass('panelButtonDown');
+            $btnUndo.removeClass('panelButtonDown');
         }, 250);
 	
 	app.confirmDlg(
@@ -1393,8 +1432,7 @@ function StraightPool () {
      *	Initializes the whole UI
      */
     self.initUI = function () {
-	// enable loading screen
-	$('#panelLoading').show();
+	$loadingPanel.show();
 	
 	// set score goal, points and player names
 	$('#game141ScoreGoal').html(self.scoreGoal);
@@ -1418,11 +1456,9 @@ function StraightPool () {
 	
 	// set panel sizes
 	var panelHeights = self.getPanelHeights();
-	$('#panelRackAndMenu').css('height', panelHeights.mainPanel   );
-	$('#panelDetails')    .css('height', panelHeights.detailsPanel);
-	
-	// we don't need to see this panel right now, so hide it
-	$('#panelDetails').hide();
+	$panelRackAndMenu.css('height', panelHeights.mainPanel   );
+	$detailsPanel    .css('height', panelHeights.detailsPanel)
+	                 .hide();
 	
 	var bestRadius  = self.getBestBallRadius(),
 	    nearestSize = self.getBallImageSize(bestRadius);
@@ -1446,15 +1482,15 @@ function StraightPool () {
 	}
 	
 	// now we make the buttons work
-	$('#usrAccept')             .off('tap')    .on('tap',     self.handleAcceptButton           );
-	$('#usrFoulDisplay')        .off('tap')    .on('tap',     self.handleFoulButtonTap          );
-	$('#usrFoulDisplay')        .off('taphold').on('taphold', self.handleFoulButtonHold         );
-	$('#usrSafeDisplay')        .off('tap')    .on('tap',     self.handleSafetyButton           );
+	$btnAccept                  .off('tap')    .on('tap',     self.handleAcceptButton           );
+	$btnFoul                    .off('tap')    .on('tap',     self.handleFoulButtonTap          );
+	$btnFoul                    .off('taphold').on('taphold', self.handleFoulButtonHold         );
+	$btnSafety                  .off('tap')    .on('tap',     self.handleSafetyButton           );
 	$('.minimizePanel')         .off('click')  .on('click',   self.handleMinimizeMainPanelButton);
-	$('#playerSwitch')          .off('click')  .on('click',   self.handlePlayerSwitchButton     );
+	$btnPlayerSwitch            .off('click')  .on('click',   self.handlePlayerSwitchButton     );
 	$('#severeFoulSubmitButton').off('click')  .on('click',   self.handleSevereFoulSubmitButton );
 	$('#detailsScoreBoard')     .off('click')  .on('click',   self.closeDetailsPanel            );
-	$('#btnDetailsUndo')        .off('tap')    .on('tap',     self.handleUndoButton             );
+	$btnUndo                    .off('tap')    .on('tap',     self.handleUndoButton             );
 	
 	$('#severeFoulMinusButton').off('click')
 				   .on ('click', function (event) {
@@ -1467,6 +1503,6 @@ function StraightPool () {
 	});
 	
 	// disable loading panel
-	$('#panelLoading').hide();
+	$loadingPanel.hide();
     }
 }
