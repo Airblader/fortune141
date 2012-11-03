@@ -28,9 +28,9 @@ $(document).on('pageshow', '#pageIndex', function () {
 $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainUser_Submit', function (event) {
     event.preventDefault();
     
-    var name            = $('#firstRunMainUser_Name').val(),
+    var name            = $('#firstRunMainUser_Name')    .val(),
 	nickname        = $('#firstRunMainUser_Nickname').val(),
-	image           = '',
+	image           = $('#pageIndexFirstRunMainUser').data('image') || '',
 	isFavorite      = true,
 	displayNickname = ($('#firstRunMainUser_DisplayNickname').val() == "true") ? true : false;
     
@@ -87,4 +87,23 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
     // kill this button to prevent any double-firing (we dont need it anymore anyway)
     $(document).off('click', '#firstRunMainUser_Submit');
     return true;
+});
+
+$(document).off('click', '#firstRunMainUser_Picture')
+           .on ('click', '#firstRunMainUser_Picture', function (event) {
+    event.preventDefault();
+    
+    app.getPicture(
+	function (imgURI) {
+	    $('#pageIndexFirstRunMainUser').data('image', imgURI);
+	},
+	function (message) {
+	    app.alertDlg(
+		'Oops! Something went wrong :( The message is: ' + message,
+		app.dummyFalse,
+		'Error',
+		'OK'
+	    );
+	}
+    );
 });

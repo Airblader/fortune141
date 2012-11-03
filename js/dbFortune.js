@@ -267,6 +267,9 @@ function dbFortune () {
 		// no tables should exist at this point anyway, but we make sure to get a clean start
 		self.dropAllTables();
 		
+		// init variables for tutorials
+		app.initTutorialVariables();
+		
                 cbFirstRun();
             },
 	    function () {

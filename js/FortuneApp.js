@@ -8,6 +8,7 @@ function FortuneApp () {
     
     self.dbFortune = undefined;
     self.debugMode = !(navigator.userAgent.toLowerCase().indexOf("android") > -1);
+    self.tooltips  = new Tooltips();
     
     self.Players   = {
 	main : undefined,	// Main User
@@ -32,6 +33,34 @@ function FortuneApp () {
     // Dummy functions to avoid unneccessary anonymous functions
     self.dummyFalse = function () { return false; }
     self.dummyTrue  = function () { return true;  }
+    
+    /*
+     *	Initialize variables for tutorial
+     */
+    self.initTutorialVariables = function () {
+	window.localStorage.setItem('tutorial141TapholdSelectPlayer', '0');
+	window.localStorage.setItem('tutorial141TapholdSevereFoul', '0');
+    }
+    
+    /*
+     *	Trigger a popup for the tutorial with the given key name
+     */
+    self.triggerTutorial = function (key) {
+	if (window.localStorage.getItem(key) == '1') {
+	    return false;
+	}
+	
+	self.alertDlg(
+	    self.tooltips.get(key),
+	    function () {
+		window.localStorage.setItem(key, '1');
+	    },
+	    'Did you know?',
+	    'OK'
+	);
+	
+	return true;
+    }
     
     /*
      *	Updates information about main user on index page
@@ -126,12 +155,12 @@ function FortuneApp () {
 	var forceCheck = (typeof arguments[0] !== 'undefined') ? arguments[0] : false;
 	    lsVarName  = 'supportsCanvas';
 	
-	if (localStorage.getItem(lsVarName) == 'true' && !forceCheck) {
-	    return localStorage.getItem(lsVarName);
+	if (window.localStorage.getItem(lsVarName) == 'true' && !forceCheck) {
+	    return window.localStorage.getItem(lsVarName);
 	}
 	
 	var isSupported = !!window.CanvasRenderingContext2D;
-	localStorage.setItem(lsVarName, (isSupported) ? 'true' : 'false');
+	window.localStorage.setItem(lsVarName, (isSupported) ? 'true' : 'false');
 	
 	return isSupported;
     }

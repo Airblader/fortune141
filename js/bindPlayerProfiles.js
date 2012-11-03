@@ -70,10 +70,10 @@ $(document).off('click', '#addPlayer_Submit')
            .on('click', '#addPlayer_Submit', function (event) {
     event.preventDefault();
     
-    var name            = $('#addPlayer_Name').val(),
-	nickname        = $('#addPlayer_Nickname').val(),
-	image           = '',
-	isFavorite      = ($('#addPlayer_IsFavorite').val()      == "true") ? true : false,
+    var name            = $('#addPlayer_Name')            .val(),
+	nickname        = $('#addPlayer_Nickname')        .val(),
+	image           = $('#pagePlayersListNewPlayer')  .data('image') || '',
+	isFavorite      = ($('#addPlayer_IsFavorite')     .val() == "true") ? true : false,
 	displayNickname = ($('#addPlayer_DisplayNickname').val() == "true") ? true : false;
     
     // Validation
@@ -102,6 +102,25 @@ $(document).off('click', '#addPlayer_Submit')
 	$('#pagePlayersList').trigger('pageshow');
     });
     return true;
+});
+	   
+$(document).off('click', '#addPlayer_Picture')
+           .on ('click', '#addPlayer_Picture', function (event) {
+    event.preventDefault();
+    
+    app.getPicture(
+	function (imgURI) {
+	    $('#pagePlayersListNewPlayer').data('image', imgURI);
+	},
+	function (message) {
+	    app.alertDlg(
+		'Oops! Something went wrong :( The message is: ' + message,
+		app.dummyFalse,
+		'Error',
+		'OK'
+	    );
+	}
+    );
 });
 
 $(document).on('pageshow', '#pagePlayerDetails', function () {

@@ -29,6 +29,9 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
     $('#game141SetupChoosePlayerHead').hide();
     $('#game141SetupSubmitButton')    .button('disable');
     
+    // tutorial
+    app.triggerTutorial('tutorial141TapholdSelectPlayer');
+    
     // set locally saved score goal if available
     var scoreGoal = window.localStorage.getItem('game141_ScoreGoal') || 60;
     $('#game141SetupScoreGoal').val(scoreGoal).slider('refresh');
@@ -296,22 +299,23 @@ $(document).on('pageshow', '#pageGame141', function () {
 	    multiplicator1   = parseInt(url.param('multiplicator1'  ));
     }
     
-    //$.getScript('../../js/game141.js', function() {
-	app.currentGame = new StraightPool();
-	if (load) {
-	    app.currentGame.loadGame(
-		gID,
-		app.currentGame.initUI
-	    );
-	}
-	else {
-	    app.currentGame.initNewGame(scoreGoal, maxInnings, inningsExtension, gameMode, [handicap0, handicap1], [multiplicator0, multiplicator1],
-		function () {
-		    app.currentGame.setPlayers(
-			app.currentGame.initUI
-		    );
-		}
-	    );
-	}
-    //});
+    app.currentGame = new StraightPool();
+    if (load) {
+	app.currentGame.loadGame(
+	    gID,
+	    app.currentGame.initUI
+	);
+    }
+    else {
+	app.currentGame.initNewGame(scoreGoal, maxInnings, inningsExtension, gameMode, [handicap0, handicap1], [multiplicator0, multiplicator1],
+	    function () {
+		app.currentGame.setPlayers(
+		    app.currentGame.initUI
+		);
+		
+		// tutorial
+		app.triggerTutorial('tutorial141TapholdSevereFoul');
+	    }
+	);
+    }
 });
