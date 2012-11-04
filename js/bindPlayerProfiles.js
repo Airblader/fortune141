@@ -169,9 +169,9 @@ $(document).on('pageshow', '#pagePlayerDetails', function () {
 	$('#playerDetails_Quota').html(parseFloat(100*app.Players.tmp.quota).toFixed(0) + '&thinsp;%');
     });
 });
-
-$(document).off('click', '#playerDetailsDeleteConfirm')
-           .on('click', '#playerDetailsDeleteConfirm', function (event) {
+	   
+$(document).off('click', '#playerDetailsDeleteButton')
+           .on ('click', '#playerDetailsDeleteButton', function (event) {
     event.preventDefault();
     
     var pID = app.Players.tmp.pID;
@@ -182,18 +182,24 @@ $(document).off('click', '#playerDetailsDeleteConfirm')
 	    var ctr = results.rows.item(0)['ctr'];
 	    
 	    if (ctr == 0) {
-		app.Players.tmp.remove(function () {
-		    // Bugfix: Changing the page screwed up the history stack, by going back in the history
-		    //	       we can fix this.
-		    history.go(-2);
-		});
+		app.confirmDlg(
+		    'Are you sure you want to delete this player? This action cannot be undone!',
+		    function () {
+			app.Players.tmp.remove(function () {
+			    app.Players.tmp = undefined;
+			    
+			    $.mobile.changePage('player_list.html');
+			});
+		    },
+		    app.dummyFalse,
+		    'Confirm',
+		    'Delete,Cancel'
+		);
 	    }
 	    else {
 		app.alertDlg(
 		    'Sorry, you cannot delete this player as long as you have games stored on your phone in which this person played!',
-		    function () {
-			$('#popupDeletePlayer').popup('close');
-		    },
+		    app.dummyFalse,
 		    'Error',
 		    'OK'
 		);

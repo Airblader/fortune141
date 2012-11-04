@@ -33,7 +33,10 @@
             <div class="ui-block-b" id="playerDetails_DisplayNickname"></div>
         </div>
         
-        <div class="ui-grid-a ui-bar ui-bar-c" style="margin-top: 15px;">
+        <div class="ui-grid-solo" style="text-align: center; margin-top: 15px; margin-bottom: 0;">
+            <h3 style="margin-bottom: 0;">Straight Pool</h3>
+        </div>
+        <div class="ui-grid-a ui-bar ui-bar-c">
             <div class="ui-block-a">High Run (HS)</div>
             <div class="ui-block-b" id="playerDetails_HS"></div>
             
@@ -45,12 +48,6 @@
             
             <div class="ui-block-a">Quota</div>
             <div class="ui-block-b" id="playerDetails_Quota"></div>
-        </div>
-        
-        <div class="ui-grid-solo" style="margin-top: 50px;">
-            <div class="ui-block-a">
-                <input type="button" id="playerDetailsDeleteButton" value="Delete Player" data-theme="e" data-icon="delete" onClick="javascript:$('#popupDeletePlayer').popup('open');" />
-            </div>
         </div>
     </div>
     
@@ -90,20 +87,7 @@
         <div data-role="fieldcontain">
             <input type="button" id="editPlayer_Picture" name="editPlayer_Picture" value="Take Picture" data-icon="plus" />
             <input type="button" id="editPlayer_Submit" name="editPlayer_Submit" value="Submit" data-icon="check" />
-        </div>
-    </div>
-    
-    <!-- Delete Player Popup -->
-    <div data-role="popup" id="popupDeletePlayer" data-overlay-theme="a" data-theme="e">
-        <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
-        
-        <div data-role="content">
-            <h2>Warning!</h2>
-            <p>You are about to delete this player.</p>
-            <p>Are you sure that you want to do this? This action can <strong>not</strong> be undone!</p>
-            
-            <input type="button" id="playerDetailsDeleteConfirm" data-theme="e" data-icon="check" value="Yes, delete" />
-            <input type="button" onClick="javascript:$('#popupDeletePlayer').popup('close');" data-theme="b" data-icon="delete" value="No, cancel" />
+            <input type="button" id="playerDetailsDeleteButton" name="playerDetailsDeleteButton" value="Delete Player" data-theme="e" data-icon="delete" />
         </div>
     </div>
 </div>
