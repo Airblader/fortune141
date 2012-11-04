@@ -153,9 +153,12 @@ $(document).on('pageshow', '#pagePlayerDetails', function () {
 	if (app.Players.tmp.image !== '') {
 	    $('#playerDetails_Image').show()
 	                             .attr('src', app.Players.tmp.image);
+	    $('#editPlayer_Picture') .show()
+	                             .attr('src', app.Players.tmp.image);
 	}
 	else{
 	    $('#playerDetails_Image').hide();
+	    $('#editPlayer_Picture') .hide();
 	}
 	
 	$('#playerDetails_Name')           .html(app.Players.tmp.name                            );
@@ -222,6 +225,7 @@ $(document).off('click', '#pagePlayerDetailsEditLink')
     $('#editPlayer_Nickname')       .val(app.Players.tmp.nickname       	);
     $('#editPlayer_IsFavorite')     .val(String(app.Players.tmp.isFavorite)     ).slider('refresh');
     $('#editPlayer_DisplayNickname').val(String(app.Players.tmp.displayNickname)).slider('refresh');
+    $('#editPlayer_Picture')        .attr('src', app.Players.tmp.image          );
     
     // Main player is always a favorite
     var $isFavorite = $('#editPlayer_IsFavorite');
@@ -250,7 +254,7 @@ $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', 
     
     var name            = $('#editPlayer_Name').val(),
 	nickname        = $('#editPlayer_Nickname').val(),
-//	image           = 'playerDummy.jpg',
+	image           = $('#editPlayer_Picture').attr('src'),
 	isFavorite      = ($('#editPlayer_IsFavorite').val()      == "true") ? true : false,
 	displayNickname = ($('#editPlayer_DisplayNickname').val() == "true") ? true : false;
     
@@ -263,8 +267,8 @@ $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', 
 	return false;
     }
     
-    app.Players.tmp.modify(['Name',     'Nickname',     'isFavorite', 'displayNickname'],
-			   [ name.name,  nickname.name,  isFavorite,   displayNickname ],
+    app.Players.tmp.modify(['Name',     'Nickname',     'Image', 'isFavorite', 'displayNickname'],
+			   [ name.name,  nickname.name,  image,   isFavorite,   displayNickname ],
     function () {
 	$('#pagePlayerDetailsEditPlayerHead').hide();
         $('#pagePlayerDetailsEditPlayer')    .hide();
@@ -277,19 +281,21 @@ $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', 
     return true;
 });
 
-$(document).off('click', '#editPlayer_Picture')
-           .on ('click', '#editPlayer_Picture', function (event) {
+$(document).off('click', '#editPlayer_PictureTake')
+           .on ('click', '#editPlayer_PictureTake', function (event) {
     event.preventDefault();
     
     app.getPicture(
 	function (imgURI) {
-	    app.Players.tmp.modify(
+	    $('#editPlayer_Picture').attr('src', imgURI).show();
+	    //$('#pagePlayerDetailsEditPlayer').data('image', imgURI);
+	    /*app.Players.tmp.modify(
 		['Image'],
 		[imgURI],
 		function () {
 		    $.mobile.changePage('player_details.html?pID=' + app.Players.tmp.pID);
 		}
-	    );
+	    );*/
 	},
 	function (message) {
 	    app.alertDlg(
@@ -300,4 +306,11 @@ $(document).off('click', '#editPlayer_Picture')
 	    );
 	}
     );
+});
+	   
+$(document).off('click', '#editPlayer_PictureDelete')
+           .on ('click', '#editPlayer_PictureDelete', function (event) {
+    event.preventDefault();
+    
+    $('#editPlayer_Picture').attr('src', '').hide();
 });
