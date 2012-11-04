@@ -1,10 +1,24 @@
 $(document).on('pageshow', '#pageView141Games', function () {
     var listDummy  = '<ul data-role="listview" id="view141GamesList">[entries]</ul>',
         entryDummy = '<li><a href="view141Games_details.html?gID=[gID]"><p><strong>[name1] vs. [name2]</strong></p>'
-                   + '<p>Score: [points1] &ndash; [points2]</p><p class="ui-li-aside">[month]/[day]/[year]</p></a></li>';
+                   + '<p>Score: [points1] &ndash; [points2]</p><p>[mode]</p><p class="ui-li-aside">[month]/[day]/[year]</p></a></li>';
+    
+    var tableGame  = app.dbFortune.tables.Game141.name,
+        tableModes = app.dbFortune.tables.GameModes.name;
     
     app.dbFortune.query(
-        'SELECT * FROM ' + app.dbFortune.tables.Game141.name + ' WHERE isFinished="1" ORDER BY Timestamp DESC',
+        'SELECT '
+            + tableGame + '.gID AS gID, '
+            + tableGame + '.Player1Name AS Player1Name, '
+            + tableGame + '.Player2Name AS Player2Name, '
+            + tableGame + '.PointsPlayer1 AS PointsPlayer1, '
+            + tableGame + '.PointsPlayer2 AS PointsPlayer2, '
+            + tableGame + '.Timestamp AS Timestamp, '
+            + tableModes + '.Name AS ModeName '
+            + 'FROM ' + tableGame + ', ' + tableModes + ' WHERE '
+            + tableGame + '.isFinished="1" AND '
+            + tableGame + '.Mode=' + tableModes + '.ID '
+            + 'ORDER BY ' + tableGame + '.Timestamp DESC',
         [],
         function (tx, results) {
             var entries = new Array(results.rows.length);
@@ -19,7 +33,8 @@ $(document).on('pageshow', '#pageView141Games', function () {
                                        .replace('[points2]', row['PointsPlayer2'])
                                        .replace('[month]',   date.month)
                                        .replace('[day]',     date.day)
-                                       .replace('[year]',    date.year);
+                                       .replace('[year]',    date.year)
+                                       .replace('[mode]',    row['ModeName']);
             }
             
             $('#view141GamesListContainer').html(

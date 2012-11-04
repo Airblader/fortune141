@@ -288,14 +288,6 @@ $(document).off('click', '#editPlayer_PictureTake')
     app.getPicture(
 	function (imgURI) {
 	    $('#editPlayer_Picture').attr('src', imgURI).show();
-	    //$('#pagePlayerDetailsEditPlayer').data('image', imgURI);
-	    /*app.Players.tmp.modify(
-		['Image'],
-		[imgURI],
-		function () {
-		    $.mobile.changePage('player_details.html?pID=' + app.Players.tmp.pID);
-		}
-	    );*/
 	},
 	function (message) {
 	    app.alertDlg(
