@@ -146,14 +146,15 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
             }).appendTo('#view141GamesDetailsCanvasContainer');
             
             // for scaling, look for potentially negative scores
-            var tmpPts = new Array(0, 0);
+            var tmpPts = new Array(tmpGame.handicap[0], tmpGame.handicap[1]);
             var minPoints = 0;
             for (var i = 0; i < tmpGame.innings.length; i++) {
                 tmpPts[0] += tmpGame.innings[i].points[0];
-                tmpPts[0] += tmpGame.innings[i].points[1];
+                tmpPts[1] += tmpGame.innings[i].points[1];
                 
                 minPoints = Math.min(minPoints, tmpPts[0], tmpPts[1]);
             }
+            minPoints = Math.min(0, minPoints);
             
             var canvas  = document.getElementById('view141GamesDetailsCanvas'),
                 context = canvas.getContext('2d');
@@ -252,9 +253,17 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
             $('#view141GamesDetailsCanvasContainer').show();
         }
         
-        // Draw Canvas and Scoreboard
+        // Draw Scoreboard
         var totalPts     = new Array(tmpGame.handicap[0], tmpGame.handicap[1]),
-            totalInnings = new Array(0, 0);
+            totalInnings = new Array(0, 0),
+            safety       = new Array(2),
+            foul         = new Array(2),
+            entryDummy   = '<td class="[safety]">[points]</td>'
+                         + '<td class="[safety][foul]">[foulPts]</td>'
+                         + '<td class="[safety]totals">[totalPts]</td>',
+            inningDummy  = '<td class="">[inning]</td>',
+            tbodyDummy   = '<tbody id="view141GamesDetailsScoreTableBody">[entries]</tbody>',
+            entries      = new Array(tmpGame.innings.length);
         for (var i = 0; i < tmpGame.innings.length; i++) {
             totalPts[0] += tmpGame.innings[i].points[0];
             totalPts[1] += tmpGame.innings[i].points[1];
@@ -262,58 +271,34 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
             totalInnings[0] += (tmpGame.innings[i].ptsToAdd[0] == -1) ? 1 : 0;
             totalInnings[1] += (tmpGame.innings[i].ptsToAdd[1] == -1) ? 1 : 0;
             
-            var safety = new Array(
-                                   (tmpGame.innings[i].safety[0]) ? 'safety ' : '',
-                                   (tmpGame.innings[i].safety[1]) ? 'safety ' : ''
-                                   );
-            var foul = new Array(
-                                 (tmpGame.innings[i].foulPts[0] != 0) ? 'foul ' : 'nofoul ',
-                                 (tmpGame.innings[i].foulPts[1] != 0) ? 'foul ' : 'nofoul '
-                                 );
+            safety[0] = (tmpGame.innings[i].safety[0]) ? 'safety ' : '';
+            safety[1] = (tmpGame.innings[i].safety[1]) ? 'safety ' : '';
+
+            foul[0] = (tmpGame.innings[i].foulPts[0] != 0) ? 'foul ' : 'nofoul ';
+            foul[1] = (tmpGame.innings[i].foulPts[1] != 0) ? 'foul ' : 'nofoul ';
             
-            var row = '<tr>';
-                
-            // Player 1
-            row += '<td class="' + safety[0] + '">'
-                + ((tmpGame.innings[i].ptsToAdd[0] == -1) ? (tmpGame.innings[i].points[0]+tmpGame.innings[i].foulPts[0]) : '&ndash;')
-                + '</td>';
-                    
-            row += '<td class="' + safety[0] + foul[0] + '">'
-                + ((tmpGame.innings[i].foulPts[0]) ? tmpGame.innings[i].foulPts[0] : '')
-                + '</td>';
-                    
-            row += '<td class="' + safety[0] + 'totals">'
-                + ((tmpGame.innings[i].ptsToAdd[0] == -1) ? totalPts[0] : '&ndash;')
-                + '</td>';
-                    
-            // Inning
-            row += '<td class="">'
-                + tmpGame.innings[i].number
-                + '</td>';
-                    
-            // Player 2
-            row += '<td class="' + safety[1] + '">'
-                + ((tmpGame.innings[i].ptsToAdd[1] == -1) ? (tmpGame.innings[i].points[1]+tmpGame.innings[i].foulPts[1]) : '&ndash;')
-                + '</td>';
-            
-            row += '<td class="' + safety[1] + foul[1] + '">'
-                + ((tmpGame.innings[i].foulPts[1]) ? tmpGame.innings[i].foulPts[1] : '')
-                + '</td>';
-                    
-            row += '<td class="' + safety[1] + 'totals">'
-                + ((tmpGame.innings[i].ptsToAdd[1] == -1) ? totalPts[1] : '&ndash;')
-                + '</td>';
-                    
-            row += '</tr>'
-            
-            $('#view141GamesDetailsScoreTable').append(row)
-                                               .trigger('refresh');
+            entries[i] = entryDummy.replace (/\[safety\]/g,  safety[0])
+                                   .replace ('[points]',   ((tmpGame.innings[i].ptsToAdd[0] == -1) ? (tmpGame.innings[i].points[0]+tmpGame.innings[i].foulPts[0]) : '&ndash;'))
+                                   .replace ('[foul]',       foul[0])
+                                   .replace ('[foulPts]',  ((tmpGame.innings[i].foulPts[0]) ? tmpGame.innings[i].foulPts[0] : ''))
+                                   .replace ('[totalPts]', ((tmpGame.innings[i].ptsToAdd[0] == -1) ? totalPts[0] : '&ndash;'))
+                       + inningDummy.replace('[inning]', tmpGame.innings[i].number)
+                       + entryDummy.replace (/\[safety\]/g,  safety[1])
+                                   .replace ('[points]',   ((tmpGame.innings[i].ptsToAdd[1] == -1) ? (tmpGame.innings[i].points[1]+tmpGame.innings[i].foulPts[1]) : '&ndash;'))
+                                   .replace ('[foul]',       foul[1])
+                                   .replace ('[foulPts]',  ((tmpGame.innings[i].foulPts[1]) ? tmpGame.innings[i].foulPts[1] : ''))
+                                   .replace ('[totalPts]', ((tmpGame.innings[i].ptsToAdd[1] == -1) ? totalPts[1] : '&ndash;'));
         }
+        $('#view141GamesDetailsScoreTable').remove('#view141GamesDetailsScoreTableBody')
+                                           .append(
+                                                tbodyDummy.replace('[entries]', '<tr>' + entries.join('</tr><tr>') + '</tr>')
+                                           );
         
         var GDs = new Array(
             Math.round(100 * (totalPts[0] - tmpGame.handicap[0]) / (totalInnings[0] * tmpGame.multiplicator[0])) / 100,
             Math.round(100 * (totalPts[1] - tmpGame.handicap[1]) / (totalInnings[1] * tmpGame.multiplicator[1])) / 100
         );
+        
         $('#player0gd').html('&#216;&thinsp;' + ((!isNaN(GDs[0])) ? GDs[0].toFixed(2) : '0.00'));
         $('#player1gd').html('&#216;&thinsp;' + ((!isNaN(GDs[1])) ? GDs[1].toFixed(2) : '0.00'));
     });

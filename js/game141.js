@@ -1239,87 +1239,47 @@ function StraightPool () {
 	    
             $panelRackAndMenu.hide();
             
-            var details  ='';
-            details += '<table id="detailScoreTable" cellpadding="0" cellspacing="0">';
-            
-            details += '<thead>';
-                details += '<tr>';
-                    details += '<td colspan="7" style="border-bottom-width: 0; height: 30px; line-height: 30px;">Scoreboard</td>';
-                details += '</tr>';
-                
-                details += '<tr>';
-                    details += '<td colspan="3" id="player0gd" style="border-bottom-width: 0; height: 30px; line-height: 30px;"></td>';
-                    details += '<td style="border-bottom-width: 0;"></td>';
-                    details += '<td colspan="3" id="player1gd" style="border-bottom-width: 0; height: 30px; line-height: 30px;"></td>';
-                details += '</tr>';
-            
-                details += '<tr>';
-                    details += '<td>Pts</td>';
-                    details += '<td>F</td>';
-                    details += '<td>Total</td>';
-                    details += '<td>#</td>';
-                    details += '<td>Pts</td>';
-                    details += '<td>F</td>';
-                    details += '<td>Total</td>';
-                details += '</tr>';
-            details += '</thead>';
-            
             var totalPts     = new Array(self.handicap[0], self.handicap[1]),
-                totalInnings = new Array(0, 0);
+                totalInnings = new Array(0, 0),
+		safety       = new Array(2),
+		foul         = new Array(2),
+		entryDummy   = '<td class="[safety]">[points]</td>'
+			     + '<td class="[safety][foul]">[foulPts]</td>'
+			     + '<td class="[safety]totals">[totalPts]</td>',
+	        inningDummy  = '<td class="">[inning]</td>',
+	        tbodyDummy   = '<tbody id="detailsScoreBoardTableBody">[entries]</tbody>',
+	        entries      = new Array(self.innings.length);
             for (var i = 0; i < self.innings.length; i++) {
                 totalPts[0] += self.innings[i].points[0];
                 totalPts[1] += self.innings[i].points[1];
                 
                 totalInnings[0] += (self.innings[i].ptsToAdd[0] == -1) ? 1 : 0;
                 totalInnings[1] += (self.innings[i].ptsToAdd[1] == -1) ? 1 : 0;
+
+		safety[0] = (self.innings[i].safety[0]) ? 'safety ' : '';
+		safety[1] = (self.innings[i].safety[1]) ? 'safety ' : '';
                 
-                var safety = new Array(
-                                       (self.innings[i].safety[0]) ? 'safety ' : '',
-                                       (self.innings[i].safety[1]) ? 'safety ' : ''
-                                       );
-                var foul = new Array(
-                                     (self.innings[i].foulPts[0] != 0) ? 'foul ' : 'nofoul ',
-                                     (self.innings[i].foulPts[1] != 0) ? 'foul ' : 'nofoul '
-                                     );
+		foul[0] = (self.innings[i].foulPts[0] != 0) ? 'foul ' : 'nofoul ';
+		foul[1] = (self.innings[i].foulPts[1] != 0) ? 'foul ' : 'nofoul ';
                 
-                details += '<tr>';
-                
-                    // Player 1
-                    details += '<td class="' + safety[0] + '">'
-                            + ((self.innings[i].ptsToAdd[0] == -1) ? (self.innings[i].points[0]+self.innings[i].foulPts[0]) : '&ndash;')
-                            + '</td>';
-                            
-                    details += '<td class="' + safety[0] + foul[0] + '">'
-                            + ((self.innings[i].foulPts[0]) ? self.innings[i].foulPts[0] : '')
-                            + '</td>';
-                            
-                    details += '<td class="' + safety[0] + 'totals">'
-                            + ((self.innings[i].ptsToAdd[0] == -1) ? totalPts[0] : '&ndash;')
-                            + '</td>';
-                            
-                    // Inning
-                    details += '<td class="">'
-                            + self.innings[i].number
-                            + '</td>';
-                            
-                    // Player 2
-                    details += '<td class="' + safety[1] + '">'
-                            + ((self.innings[i].ptsToAdd[1] == -1) ? (self.innings[i].points[1]+self.innings[i].foulPts[1]) : '&ndash;')
-                            + '</td>';
-                    
-                    details += '<td class="' + safety[1] + foul[1] + '">'
-                            + ((self.innings[i].foulPts[1]) ? self.innings[i].foulPts[1] : '')
-                            + '</td>';
-                            
-                    details += '<td class="' + safety[1] + 'totals">'
-                            + ((self.innings[i].ptsToAdd[1] == -1) ? totalPts[1] : '&ndash;')
-                            + '</td>';
-                            
-                details += '</tr>'
+
+		entries[i] = entryDummy.replace (/\[safety\]/g,  safety[0])
+				       .replace ('[points]',   ((self.innings[i].ptsToAdd[0] == -1) ? (self.innings[i].points[0]+self.innings[i].foulPts[0]) : '&ndash;'))
+				       .replace ('[foul]',       foul[0])
+				       .replace ('[foulPts]',  ((self.innings[i].foulPts[0]) ? self.innings[i].foulPts[0] : ''))
+				       .replace ('[totalPts]', ((self.innings[i].ptsToAdd[0] == -1) ? totalPts[0] : '&ndash;'))
+			   + inningDummy.replace('[inning]', self.innings[i].number)
+			   + entryDummy.replace (/\[safety\]/g,  safety[1])
+				       .replace ('[points]',   ((self.innings[i].ptsToAdd[1] == -1) ? (self.innings[i].points[1]+self.innings[i].foulPts[1]) : '&ndash;'))
+				       .replace ('[foul]',       foul[1])
+				       .replace ('[foulPts]',  ((self.innings[i].foulPts[1]) ? self.innings[i].foulPts[1] : ''))
+				       .replace ('[totalPts]', ((self.innings[i].ptsToAdd[1] == -1) ? totalPts[1] : '&ndash;'));
             }
             
-            details += '</table>';
-            $('#detailsScoreBoard').html(details);
+            $('#detailsScoreBoardTable').remove('#detailsScoreBoardTableBody')
+					.append(
+					     tbodyDummy.replace('[entries]', '<tr>' + entries.join('</tr><tr>') + '</tr>')
+					);
             
             var GDs = new Array(
                                 Math.round(100 * (totalPts[0] - self.handicap[0]) / (totalInnings[0] * self.multiplicator[0])) / 100,

@@ -64,7 +64,30 @@
         </div>
         
         <div style="width: 100%; position: relative; top: 50px;">
-            <div id="detailsScoreBoard" style="width: 100%; cursor: pointer;"></div>
+            <div id="detailsScoreBoard" style="width: 100%; cursor: pointer;">
+		<table id="detailsScoreBoardTable" cellspacing="0" cellpadding="0">
+		    <thead>
+			<tr>
+			    <td colspan="7" style="border-bottom-width: 0; height: 30px; line-height: 30px;">Scoreboard</td>
+			</tr>
+			<tr>
+			    <td colspan="3" id="player0gd" style="border-bottom-width: 0; height: 30px; line-height: 30px;"></td>
+			    <td style="border-bottom-width: 0;"></td>
+			    <td colspan="3" id="player1gd" style="border-bottom-width: 0; height: 30px; line-height: 30px;"></td>
+			</tr>
+			<tr>
+			    <td>Pts</td>
+			    <td>F</td>
+			    <td>Total</td>
+			    <td>#</td>
+			    <td>Pts</td>
+			    <td>F</td>
+			    <td>Total</td>
+			</tr>
+		    </thead>
+		    <!-- Dynamically created -->
+		</table>
+	    </div>
         </div>
     </div>
     

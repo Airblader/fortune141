@@ -146,7 +146,7 @@ input {
     overflow: scroll;
 }
 
-#pageGame141 #panelDetails #detailScoreTable,
+#pageGame141 #panelDetails #detailsScoreBoardTable,
 #pageView141GamesDetails #view141GamesDetailsScoreTable {
     width: 100%;
     background: white;
@@ -164,40 +164,40 @@ input {
     background: transparent;
 }
 
-#pageGame141 #panelDetails #detailScoreTable thead,
+#pageGame141 #panelDetails #detailsScoreBoardTable thead,
 #pageView141GamesDetails #view141GamesDetailsScoreTable thead {
     background: rgba(100, 200, 100, 0.2);
     border-bottom: 2px solid black;
     font-weight: bold;
 }
 
-#pageGame141 #panelDetails #detailScoreTable tr td,
+#pageGame141 #panelDetails #detailsScoreBoardTable tr td,
 #pageView141GamesDetails #view141GamesDetailsScoreTable tr td {
     border-bottom: 1px dotted gray;
 }
 
-#pageGame141 #panelDetails #detailScoreTable tr td:nth-child(4n),
+#pageGame141 #panelDetails #detailsScoreBoardTable tr td:nth-child(4n),
 #pageView141GamesDetails #view141GamesDetailsScoreTable tr td:nth-child(4n) {
     border-left:  1px solid black;
     border-right: 1px solid black;
 }
 
-#pageGame141 #panelDetails #detailScoreTable .totals,
+#pageGame141 #panelDetails #detailsScoreBoardTable .totals,
 #pageView141GamesDetails #view141GamesDetailsScoreTable .totals {
     font-weight: bold;
 }
 
-#pageGame141 #panelDetails #detailScoreTable .safety,
+#pageGame141 #panelDetails #detailsScoreBoardTable .safety,
 #pageView141GamesDetails #view141GamesDetailsScoreTable .safety {
     background-color: rgba(255, 255, 0, 0.5);
 }
 
-#pageGame141 #panelDetails #detailScoreTable .foul,
+#pageGame141 #panelDetails #detailsScoreBoardTable .foul,
 #pageView141GamesDetails #view141GamesDetailsScoreTable .foul {
     color: rgb(200, 50, 50);
 }
 
-#pageGame141 #panelDetails #detailScoreTable .nofoul,
+#pageGame141 #panelDetails #detailsScoreBoardTable .nofoul,
 #pageView141GamesDetails #view141GamesDetailsScoreTable .nofoul {
     color: rgba(0, 0, 0, 0.0);
 }

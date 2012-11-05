@@ -149,7 +149,7 @@ $(document).off('click', '#edit141Profile_Delete')
      event.preventDefault();
            
      var ID = $('#edit141Profile_Delete').data('ID');
-    
+     
      app.confirmDlg(
           'Are you sure you want to delete this profile? This action cannot be undone.',
           function () {
