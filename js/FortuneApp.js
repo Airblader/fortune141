@@ -293,7 +293,11 @@ function FortuneApp () {
 	else {
 	    navigator.camera.getPicture(
 		onSuccess,
-		onError,
+		function (msg) {
+		    if (msg.toLowerCase().indexOf('camera cancelled') == -1) {
+			onError(msg);
+		    }
+		},
 		{
 		    quality: 100,
 		    destinationType: Camera.DestinationType.FILE_URI,
