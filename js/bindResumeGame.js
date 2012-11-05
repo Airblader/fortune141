@@ -39,6 +39,35 @@ $(document).on('pageshow', '#pageResumeGame', function () {
     );
 });
 
+$(document).off('click', '#pageResumeGameEmptyLink')
+           .on ('click', '#pageResumeGameEmptyLink', function (event) {
+    event.preventDefault();
+    
+    app.confirmDlg(
+	'Are you sure you want to delete all unfinished games?',
+	function () {
+	    app.dbFortune.query(
+		'DELETE FROM ' + app.dbFortune.tables.Game141.name + ' WHERE isFinished="0"',
+		[],
+		function () {
+		    $.mobile.changePage('../../index.html');
+		},
+		function () {
+		    app.alertDlg(
+			'Oops! Something went wrong :( Deleting failed!',
+			app.dummyFalse,
+			'Error',
+			'OK'
+		    );
+		}
+	    );
+	},
+	app.dummyFalse,
+	'Confirm',
+	'Delete,Cancel'
+    );
+});
+
 $(document).off('click', '#resumeGameResumeButton')
            .on ('click', '#resumeGameResumeButton', function (event) {
     event.preventDefault();
