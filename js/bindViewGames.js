@@ -1,7 +1,9 @@
 $(document).on('pageshow', '#pageView141Games', function () {
     var listDummy  = '<ul data-role="listview" id="view141GamesList">[entries]</ul>',
         entryDummy = '<li><a href="view141Games_details.html?gID=[gID]"><p><strong>[name1] vs. [name2]</strong></p>'
-                   + '<p>Score: [points1] &ndash; [points2]</p><p>[mode]</p><p class="ui-li-aside">[month]/[day]/[year]</p></a></li>';
+                   + '<p>Score: [points1] &ndash; [points2]</p><p>[mode]</p><p class="ui-li-aside">'
+                   + app.settings.getDateFormat();
+                   + '</p></a></li>';
     
     var tableGame  = app.dbFortune.tables.Game141.name,
         tableModes = app.dbFortune.tables.GameModes.name;
@@ -91,8 +93,13 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
         $('#view141GamesDetailsScore1').html(tmpGame.players[0].points);
         $('#view141GamesDetailsScore2').html(tmpGame.players[1].points);
         
-        var date = app.convertTimestamp(tmpGame.timestamp);
-        $('#view141GamesDetailsDate').html(date.month + '/' + date.day + '/' + date.year);
+        var date       = app.convertTimestamp(tmpGame.timestamp),
+            dateFormat = app.settings.getDateFormat();
+        $('#view141GamesDetailsDate').html(
+            dateFormat.replace('[day]',   date.day)
+                      .replace('[month]', date.month)
+                      .replace('[year]',  date.year)
+        );
                 
         var idxWinner = 0;
         if (tmpGame.winner == tmpGame.players[0].obj.pID) {

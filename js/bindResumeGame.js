@@ -6,8 +6,9 @@ $(document).on('pageshow', '#pageResumeGame', function () {
 	           + '<p><strong>[name1] vs. [name2]</strong></p>'
 		   + '<p>Score: [ptsPlayer1] &ndash; [ptsPlayer2]</p>'
 		   + '<p>Game to [scoreGoal]</p>'
-		   + '<p class="ui-li-aside">[month]/[day]/[year]</p>'
-		   + '</a></li>';
+		   + '<p class="ui-li-aside">'
+		   + app.settings.getDateFormat();
+		   + '</p></a></li>';
 
     app.dbFortune.query(
 	'SELECT gID, Timestamp, Player1Name, Player2Name, PointsPlayer1, PointsPlayer2, ScoreGoal FROM '
