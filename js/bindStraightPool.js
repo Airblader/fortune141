@@ -32,7 +32,9 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
     $('#game141SetupSubmitButton')    .button('disable');
     
     // tutorial
-    app.triggerTutorial('tutorial141TapholdSelectPlayer');
+    setTimeout(function () {
+	app.triggerTutorial('tutorial141TapholdSelectPlayer');
+    }, 500);
     
     // set locally saved score goal if available
     var scoreGoal = window.localStorage.getItem('game141_ScoreGoal') || 60;
@@ -302,6 +304,8 @@ $(document).off('click', '#game141AnonPlayer_Submit')
 $(document).on('pageshow', '#pageGame141', function () {
     var url = $.url( $.url().attr('fragment') );
     
+    window.propertiesManager.setKeepScreenOn(app.settings.getKeepScreenOnDuring141Game());
+    
     var gID  = parseInt(url.param('gID')),
 	load = true;
     if (typeof gID === 'undefined' || isNaN(gID)) {
@@ -334,8 +338,14 @@ $(document).on('pageshow', '#pageGame141', function () {
 		);
 		
 		// tutorial
-		app.triggerTutorial('tutorial141TapholdSevereFoul');
+		setTimeout(function () {
+		    app.triggerTutorial('tutorial141TapholdSevereFoul');
+		}, 1000);
 	    }
 	);
     }
+});
+
+$(document).on('pagehide', '#pageGame141', function () {
+    window.propertiesManager.setKeepScreenOn(window.propertiesManager.WAKELOCK_OFF);  
 });

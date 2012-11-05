@@ -9,14 +9,15 @@ function FortuneApp () {
     self.dbFortune = undefined;
     self.debugMode = !(navigator.userAgent.toLowerCase().indexOf("android") > -1);
     
-    self.tooltips         = new Tooltips();
-    self.activateTooltips = false;
+    self.tooltips = new Tooltips();
     
     self.Players   = {
 	main : undefined,	// Main User
 	tmp  : undefined,	// Temporarily used user (modifying users, ...)
 	ingame : new Array(),	// for games
     };
+    
+    self.settings = new AppSettings();
     
     self.imgPlayerPath = 'img/players/';
     
@@ -26,29 +27,15 @@ function FortuneApp () {
     // holds the currently running game
     self.currentGame = undefined;
     
-    // key names for running games
-    self.keyActiveGame = {
-	id   : 'activeGame',
-	type : 'activeGameType', 
-    };
-    
     // Dummy functions to avoid unneccessary anonymous functions
     self.dummyFalse = function () { return false; }
     self.dummyTrue  = function () { return true;  }
     
     /*
-     *	Initialize variables for tutorial
-     */
-    self.initTutorialVariables = function () {
-	window.localStorage.setItem('tutorial141TapholdSelectPlayer', '0');
-	window.localStorage.setItem('tutorial141TapholdSevereFoul', '0');
-    }
-    
-    /*
      *	Trigger a popup for the tutorial with the given key name
      */
     self.triggerTutorial = function (key) {
-	if (window.localStorage.getItem(key) == '1' || !self.activateTooltips) {
+	if (window.localStorage.getItem(key) == '1' || !self.settings.isTooltipsEnabled()) {
 	    return false;
 	}
 	

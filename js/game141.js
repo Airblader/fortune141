@@ -429,8 +429,8 @@ function StraightPool () {
 	    ret[i].ptsToAdd[0] = parseInt(data1[2]);
 	    ret[i].ptsToAdd[1] = parseInt(data2[2]);
 	    
-	    ret[i].safety[0]   = (parseInt(data1[3]) == 1) ? true : false;
-	    ret[i].safety[1]   = (parseInt(data2[3]) == 1) ? true : false;
+	    ret[i].safety[0]   = (parseInt(data1[3]) == 1);
+	    ret[i].safety[1]   = (parseInt(data2[3]) == 1);
 	}
 	
 	return ret;
@@ -470,9 +470,9 @@ function StraightPool () {
 					    parseInt(row['MultiplicatorPlayer2'])
 				        );
 		
-		self.firstShot       = (parseInt(row['FirstShot'])       == 1) ? true : false;
-		self.switchButton    = (parseInt(row['SwitchButton'])    == 1) ? true : false;
-		self.isFinished      = (parseInt(row['isFinished'])      == 1) ? true : false;
+		self.firstShot       = (parseInt(row['FirstShot'])    == 1);
+		self.switchButton    = (parseInt(row['SwitchButton']) == 1);
+		self.isFinished      = (parseInt(row['isFinished'])   == 1);
 		self.mode            =  parseInt(row['Mode']);
 		self.winner          =  parseInt(row['Winner']);
 		self.timestamp       =  parseInt(row['Timestamp']);
@@ -571,10 +571,10 @@ function StraightPool () {
 		 self.players[1].fouls,
 		 self.ballRack.ballsOnTable,
 		 self.currPlayer,
-		(self.firstShot)       ? 1 : 0,
-		(self.switchButton)    ? 1 : 0,
+		(self.firstShot) ? 1 : 0,
+		(self.switchButton) ? 1 : 0,
 		 Number(self.mode),
-		(self.isFinished)      ? 1 : 0,
+		(self.isFinished) ? 1 : 0,
 		 self.winner,
 		 '',
 		 0,
@@ -613,9 +613,9 @@ function StraightPool () {
 	     self.players[1].fouls,
 	     self.ballRack.ballsOnTable,
 	     self.currPlayer,
-	    (self.firstShot)    ? 1 : 0,
+	    (self.firstShot) ? 1 : 0,
 	    (self.switchButton) ? 1 : 0,
-	    (self.isFinished)   ? 1 : 0,
+	    (self.isFinished) ? 1 : 0,
 	     self.winner
 	    ],
 	    cbSuccess,
@@ -682,8 +682,8 @@ function StraightPool () {
 						    row['InningsPlayer2']);
 		
 		self.currPlayer   =  parseInt(row['CurrPlayer']);
-		self.firstShot    = (parseInt(row['FirstShot'])    == 1) ? true : false;
-		self.switchButton = (parseInt(row['SwitchButton']) == 1) ? true : false;
+		self.firstShot    = (parseInt(row['FirstShot'])    == 1);
+		self.switchButton = (parseInt(row['SwitchButton']) == 1);
 		
 		$btnPlayerSwitch.hide();
 		if (self.switchButton) {
@@ -879,7 +879,7 @@ function StraightPool () {
                     switchPlayer = true;
                 }
                 
-                ret.firstShot    = false;
+                ret.firstShot = false;
         }
         
         if (switchPlayer && !hasToRerack) {
@@ -1009,7 +1009,9 @@ function StraightPool () {
 	event.preventDefault();
 	
 	// tutorial
-	app.triggerTutorial('tutorial141SelectCueBall');
+	setTimeout(function () {
+	    app.triggerTutorial('tutorial141SelectCueBall');
+	}, 1000);
         
 	self.switchButton = false;
         $btnPlayerSwitch.hide();

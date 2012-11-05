@@ -268,7 +268,7 @@ function dbFortune () {
 		self.dropAllTables();
 		
 		// init variables for tutorials
-		app.initTutorialVariables();
+		app.tooltips.resetAll();
 		
                 cbFirstRun();
             },

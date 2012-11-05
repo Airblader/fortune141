@@ -10,4 +10,10 @@ function Tooltips () {
     self.get = function (key) {
         return self.tooltips[key];
     }
+    
+    self.resetAll = function () {
+        for (var key in self.tooltips) {
+            window.localStorage.setItem(self.tooltips[key], '0');
+        }
+    }
 }
