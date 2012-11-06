@@ -46,6 +46,20 @@ $(document).on('pageshow', '#pagePlayersList', function () {
 
 $(document).on('pageshow', '#pagePlayersAdd', function () {
     $('#addPlayer_Picture').hide();
+    
+    // Check if this page was called from a game setup
+    var url           = $.url( $.url().attr('fragment') ),
+	setup         = url.param('setup'),
+	fromNewPlayer = url.param('fromNewPlayer'), 
+	redirect      = 'player_list.html';
+    
+    switch (setup) {
+	case '141':
+	    redirect = '../game141/game141_Setup.html?fromNewPlayer=' + fromNewPlayer;
+	    break;
+    }
+    
+    $('#addPlayer_Submit').data('redirect', redirect);
 });
 
 $(document).off('click', '#addPlayer_PictureTake')
@@ -101,7 +115,7 @@ $(document).off('click', '#addPlayer_Submit')
 
     var newPlayer = new Player(app.dbFortune);
     newPlayer.create(name.name, nickname.name, image, isFavorite, displayNickname, false, function () {
-	$.mobile.changePage('player_list.html');
+	$.mobile.changePage($('#addPlayer_Submit').data('redirect'));
     });
     
     return true;

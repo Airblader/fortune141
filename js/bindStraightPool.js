@@ -26,10 +26,30 @@ function game141SetPlayer (idx, pID) {
 }
 
 $(document).on('pageshow', '#pageGame141Setup', function () {
-    $('#game141Setup2')               .hide();
-    $('#game141SetupAnonPlayer')      .hide();
-    $('#game141SetupChoosePlayerHead').hide();
-    $('#game141SetupSubmitButton')    .button('disable');
+    var url           = $.url( $.url().attr('fragment') ),
+	fromNewPlayer = parseInt(url.param('fromNewPlayer'));
+	
+    var $game141SetupHead = $('#game141SetupHead'),
+	$game141Setup1    = $('#game141Setup1'),
+	$game141Setup2	  = $('#game141Setup2'),
+	$game141SetupChoosePlayerHead = $('#game141SetupChoosePlayerHead');
+    
+    if (!isNaN(fromNewPlayer)) {
+	$('#game141Setup2').data('player', fromNewPlayer);
+	
+	$game141SetupHead.hide();
+	$game141Setup1   .hide();
+	
+	$game141Setup2               .show();
+	$game141SetupChoosePlayerHead.show();
+    }
+    else {
+	$game141Setup2               .hide();
+	$game141SetupChoosePlayerHead.hide();
+    }
+    
+    $('#game141SetupAnonPlayer')  .hide();
+    $('#game141SetupSubmitButton').button('disable');
     
     // tutorial
     setTimeout(function () {
@@ -348,4 +368,11 @@ $(document).on('pageshow', '#pageGame141', function () {
 
 $(document).on('pagehide', '#pageGame141', function () {
     window.propertiesManager.setKeepScreenOn(window.propertiesManager.WAKELOCK_OFF);  
+});
+
+$(document).off('click', '#game141SetupChoosePlayerNewPlayerLink')
+           .on ('click', '#game141SetupChoosePlayerNewPlayerLink', function (event) {
+    event.preventDefault();
+    
+    $.mobile.changePage('../player/player_add.html?setup=141&fromNewPlayer=' + $('#game141Setup2').data('player'));
 });
