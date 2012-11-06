@@ -22,19 +22,27 @@
         </div>
         
         <div data-role="fieldcontain">
-            <label for="addPlayer_DisplayNickname">Use Nickname</label>
-            <select name="addPlayer_DisplayNickname" id="addPlayer_DisplayNickname" data-role="slider">
-                <option value="false">No</option>
-                <option value="true">Yes</option>
-            </select>
-        </div>
-        
-        <div data-role="fieldcontain">
-            <label for="addPlayer_IsFavorite">Favorite</label>
-            <select name="addPlayer_IsFavorite" id="addPlayer_IsFavorite" data-role="slider">
-                <option value="false">No</option>
-                <option value="true">Yes</option>
-            </select>
+            <div class="ui-grid-a">
+                <div class="ui-block-a formElementTableText">
+                    Use Nickname:
+                </div>
+                <div class="ui-block-b formElementTableFormElement">
+                    <select name="addPlayer_DisplayNickname" id="addPlayer_DisplayNickname" data-role="slider">
+                        <option value="false">No</option>
+                        <option value="true">Yes</option>
+                    </select>
+                </div>
+                
+                <div class="ui-block-a formElementTableText">
+                    Favorite:
+                </div>
+                <div class="ui-block-b formElementTableFormElement">
+                    <select name="addPlayer_IsFavorite" id="addPlayer_IsFavorite" data-role="slider">
+                        <option value="false">No</option>
+                        <option value="true">Yes</option>
+                    </select>
+                </div>
+            </div>
         </div>
         
         <div data-role="fieldcontain">

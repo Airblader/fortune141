@@ -69,19 +69,27 @@
         </div>
         
         <div data-role="fieldcontain">
-            <label for="editPlayer_DisplayNickname">Use Nickname</label>
-            <select name="editPlayer_DisplayNickname" id="editPlayer_DisplayNickname" data-role="slider">
-                <option value="false">No</option>
-                <option value="true">Yes</option>
-            </select>
-        </div>
-        
-        <div data-role="fieldcontain">
-            <label for="editPlayer_IsFavorite">Favorite</label>
-            <select name="editPlayer_IsFavorite" id="editPlayer_IsFavorite" data-role="slider">
-                <option value="false">No</option>
-                <option value="true">Yes</option>
-            </select>
+            <div class="ui-grid-a">
+                <div class="ui-block-a formElementTableText">
+                    Use Nickname:
+                </div>
+                <div class="ui-block-b formElementTableFormElement">
+                    <select name="editPlayer_DisplayNickname" id="editPlayer_DisplayNickname" data-role="slider">
+                        <option value="false">No</option>
+                        <option value="true">Yes</option>
+                    </select>
+                </div>
+                
+                <div class="ui-block-a formElementTableText">
+                    Favorite:
+                </div>
+                <div class="ui-block-b formElementTableFormElement">
+                    <select name="editPlayer_IsFavorite" id="editPlayer_IsFavorite" data-role="slider">
+                        <option value="false">No</option>
+                        <option value="true">Yes</option>
+                    </select>
+                </div>
+            </div>
         </div>
         
         <div data-role="fieldcontain">
