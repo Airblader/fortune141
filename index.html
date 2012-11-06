@@ -82,9 +82,10 @@
                 </a>
             </li>
             
-            <li data-role="list-divider">Settings</li>
+            <li data-role="list-divider">Misc</li>
             
             <li><a href="pages/settings/settings.html">Preferences</a></li>
+            <li><a href="pages/help/help_start.html">Help</a></li>
         </ul>
     </div>
     
@@ -188,27 +189,37 @@
         <div data-role="fieldcontain">
             <label for="firstRunMainUser_Name">Full Name</label>
             <input type="text" id="firstRunMainUser_Name" name="firstRunMainUser_Name" value="" />
-        </div>
-        
-        <div data-role="fieldcontain">
+
             <label for="firstRunMainUser_Nickname">Nickname (optional)</label>
             <input type="text" id="firstRunMainUser_Nickname" name="firstRunMainUser_Nickname" value="" />
         </div>
         
         <div data-role="fieldcontain">
-            <label for="firstRunMainUser_DisplayNickname">Use Nickname</label>
-            <select name="firstRunMainUser_DisplayNickname" id="firstRunMainUser_DisplayNickname" data-role="slider">
-                <option value="false">No</option>
-                <option value="true">Yes</option>
-            </select>
-        </div>
-        
-        <div data-role="fieldcontain">
-            <label for="firstRunMainUser_activateTooltips">Activate Tooltips</label>
-            <select name="firstRunMainUser_activateTooltips" id="firstRunMainUser_activateTooltips" data-role="slider">
-                <option value="false">No</option>
-                <option value="true">Yes</option>
-            </select>
+            <div data-role="collapsible">
+                <h3>Settings</h3>
+                
+                <div class="ui-grid-a">
+                    <div class="ui-block-a formElementTableText">
+                        Use Nickname
+                    </div>
+                    <div class="ui-block-b formElementTableFormElement">
+                        <select name="firstRunMainUser_DisplayNickname" id="firstRunMainUser_DisplayNickname" data-role="slider">
+                            <option value="false">No</option>
+                            <option value="true">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="ui-block-a formElementTableText">
+                        Activate Tooltips
+                    </div>
+                    <div class="ui-block-b formElementTableFormElement">
+                        <select name="firstRunMainUser_activateTooltips" id="firstRunMainUser_activateTooltips" data-role="slider">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div data-role="fieldcontain">

@@ -394,6 +394,15 @@ input {
     max-height: 120px;
 }
 
+.formElementTableText, .formElementTableFormElement {
+    height: 50px;
+}
+.formElementTableText {
+    line-height: 50px;
+}
+.formElementTableFormElement {
+    text-align: right;
+}
 
 #pageView141GamesDetails .winner {
     color: #008a00;

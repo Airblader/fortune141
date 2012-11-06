@@ -28,7 +28,7 @@ function AppSettings () {
     }
     
     self.getLanguage = function () {
-        return self.get(keyLanguage, 'de');
+        return self.get(keyLanguage, 'en');
     }
     self.setLanguage = function (lang) {
         self.set(keyLanguage, lang);

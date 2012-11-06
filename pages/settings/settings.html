@@ -21,18 +21,39 @@
         </div>
         
         <div data-role="fieldcontain">
-        <label for="settingsDateFormat">Date Format:</label>
+            <label for="settingsDateFormat">Date Format:</label>
             <select name="settingsDateFormat" id="settingsDateFormat">
                     <option value="[month]/[day]/[year]">MM/DD/YYYY</option>
                     <option value="[day].[month].[year]">DD.MM.YYYY</option>
             </select>
+
+            <label for="settingsLanguage">Language:</label>
+            <select name="settingsLanguage" id="settingsLanguage">
+                    <option value="en">English</option>
+            </select>
         </div>
         
         <div data-role="fieldcontain">
-        <label for="settingsLanguage">Language:</label>
-            <select name="settingsLanguage" id="settingsLanguage">
-                    <option value="de">Deutsch</option>
-            </select>
+            <div data-role="collapsible">
+                <h3>Tooltips</h3>
+                
+                <div class="ui-grid-a">
+                    <div class="ui-block-a formElementTableText">
+                        Tooltips:
+                    </div>
+                    <div class="ui-block-b formElementTableFormElement">
+                        <select name="settingsTooltips" id="settingsTooltips" data-role="slider">
+                            <option value="false">Off</option>
+                            <option value="true">On</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="ui-grid-solo">
+                    <div class="ui-block-a">
+                        <input type="button" id="settingsTooltipsReset" name="settingsTooltipsReset" value="Reset" data-icon="refresh" />
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
