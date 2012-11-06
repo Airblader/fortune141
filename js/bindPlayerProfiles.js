@@ -1,7 +1,4 @@
-$(document).on('pageshow', '#pagePlayersList', function () {
-    $('#pagePlayersListNewPlayerHead').hide();
-    $('#pagePlayersListNewPlayer')    .hide();
-    
+$(document).on('pageshow', '#pagePlayersList', function () {    
     // Create List
     var listDummy = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">'
                   + '<li data-role="list-divider">Favorites</li>[entries1]<li data-role="list-divider">All</li>[entries2]</ul>';
@@ -47,79 +44,17 @@ $(document).on('pageshow', '#pagePlayersList', function () {
     });
 });
 
-$(document).off('click', '#pagePlayersListNewPlayerLink')
-           .on ('click', '#pagePlayersListNewPlayerLink', function (event) {
-    event.preventDefault();
-
-    $('#playerListHead').hide();
-    $('#playerList')    .hide();
-    
-    $('#pagePlayersListNewPlayerHead').show();
-    $('#pagePlayersListNewPlayer')    .show();
-});
-	   
-$(document).off('click', '#pagePlayersListNewPlayerBackLink')
-           .on ('click', '#pagePlayersListNewPlayerBackLink', function (event) {
-    event.preventDefault();
-    
-    $('#playerListHead').show();
-    $('#playerList')    .show();
-    
-    $('#pagePlayersListNewPlayerHead').hide();
-    $('#pagePlayersListNewPlayer')    .hide();
-    
-    // reset form
-    $('#addPlayer_Name')           .val('');
-    $('#addPlayer_Nickname')       .val('');
-    $('#addPlayer_IsFavorite')     .val('false').slider('refresh');
-    $('#addPlayer_DisplayNickname').val('false').slider('refresh');
+$(document).on('pageshow', '#pagePlayersAdd', function () {
+    $('#addPlayer_Picture').hide();
 });
 
-$(document).off('click', '#addPlayer_Submit')
-           .on('click', '#addPlayer_Submit', function (event) {
-    event.preventDefault();
-    
-    var name            = $('#addPlayer_Name')            .val(),
-	nickname        = $('#addPlayer_Nickname')        .val(),
-	image           = $('#pagePlayersListNewPlayer')  .data('image') || '',
-	isFavorite      = ($('#addPlayer_IsFavorite')     .val() == "true") ? true : false,
-	displayNickname = ($('#addPlayer_DisplayNickname').val() == "true") ? true : false;
-    
-    // Validation
-    name     = app.validateName(name,     true );
-    nickname = app.validateName(nickname, false);
-    
-    if (!name.valid || !nickname.valid) {
-	app.alertDlg('A name must consist of at least 3 characters.', app.dummyTrue, 'Invalid name', 'OK');
-	return false;
-    }
-
-    var newPlayer = new Player(app.dbFortune);
-    newPlayer.create(name.name, nickname.name, image, isFavorite, displayNickname, false, function () {
-        $('#pagePlayersListNewPlayerHead').hide();
-	$('#pagePlayersListNewPlayer')    .hide();
-	
-	$('#playerListHead').show();
-	$('#playerList')    .show();
-	
-	// reset form
-	$('#addPlayer_Name')           .val('');
-        $('#addPlayer_Nickname')       .val('');
-        $('#addPlayer_IsFavorite')     .val('false').slider('refresh');
-        $('#addPlayer_DisplayNickname').val('false').slider('refresh');
-	
-	$('#pagePlayersList').trigger('pageshow');
-    });
-    return true;
-});
-	   
-$(document).off('click', '#addPlayer_Picture')
-           .on ('click', '#addPlayer_Picture', function (event) {
+$(document).off('click', '#addPlayer_PictureTake')
+           .on ('click', '#addPlayer_PictureTake', function (event) {
     event.preventDefault();
     
     app.getPicture(
 	function (imgURI) {
-	    $('#pagePlayersListNewPlayer').data('image', imgURI);
+	    $('#addPlayer_Picture').attr('src', imgURI).show();
 	},
 	function (message) {
 	    app.alertDlg(
@@ -130,6 +65,46 @@ $(document).off('click', '#addPlayer_Picture')
 	    );
 	}
     );
+});
+	   
+$(document).off('click', '#addPlayer_PictureDelete')
+           .on ('click', '#addPlayer_PictureDelete', function (event) {
+    event.preventDefault();
+    
+    $('#addPlayer_Picture').attr('src', '').hide();
+});
+	   
+$(document).off('click', '#addPlayer_Submit')
+           .on('click', '#addPlayer_Submit', function (event) {
+    event.preventDefault();
+    
+    var name            = $('#addPlayer_Name')            .val(),
+	nickname        = $('#addPlayer_Nickname')        .val(),
+	image           = $('#addPlayer_Picture')         .attr('src'),
+	isFavorite      = ($('#addPlayer_IsFavorite')     .val() == "true") ? true : false,
+	displayNickname = ($('#addPlayer_DisplayNickname').val() == "true") ? true : false;
+    
+    // Validation
+    name     = app.validateName(name,     true );
+    nickname = app.validateName(nickname, false);
+    
+    if (!name.valid || !nickname.valid) {
+	app.alertDlg(
+	    'A name must consist of at least 3 characters.',
+	    app.dummyFalse,
+	    'Error',
+	    'OK'
+	);
+	
+	return false;
+    }
+
+    var newPlayer = new Player(app.dbFortune);
+    newPlayer.create(name.name, nickname.name, image, isFavorite, displayNickname, false, function () {
+	$.mobile.changePage('player_list.html');
+    });
+    
+    return true;
 });
 
 $(document).on('pageshow', '#pagePlayerDetails', function () {

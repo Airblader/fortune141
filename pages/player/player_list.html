@@ -5,53 +5,14 @@
 <body>
 
 <div data-role="page" id="pagePlayersList">
-    <div data-role="header" id="playerListHead">
+    <div data-role="header" data-position="fixed" id="playerListHead">
         <a href="../../index.html" data-icon="arrow-l">Back</a>
         <h1>Player Profiles</h1>
-        <a href="#" id="pagePlayersListNewPlayerLink" data-icon="plus" class="ui-btn-right">New</a>
+        <a href="player_add.html" data-icon="plus" class="ui-btn-right">New</a>
     </div>
     
     <div data-role="content" id="playerList">
         <!-- Dynamically created -->
-    </div>
-    
-    <!-- Add Player -->
-    <div data-role="header" id="pagePlayersListNewPlayerHead">
-        <a href="#" id="pagePlayersListNewPlayerBackLink" data-icon="arrow-l">Back</a>
-        <h1>Add Player</h1>
-    </div>
-    
-    <div id="pagePlayersListNewPlayer" data-role="content">
-        <div data-role="fieldcontain">
-            <label for="addPlayer_Name">Full Name</label>
-            <input type="text" id="addPlayer_Name" name="addPlayer_Name" value="" />
-        </div>
-        
-        <div data-role="fieldcontain">
-            <label for="addPlayer_Nickname">Nickname (optional)</label>
-            <input type="text" id="addPlayer_Nickname" name="addPlayer_Nickname" value="" />
-        </div>
-        
-        <div data-role="fieldcontain">
-            <label for="addPlayer_DisplayNickname">Use Nickname</label>
-            <select name="addPlayer_DisplayNickname" id="addPlayer_DisplayNickname" data-role="slider">
-                <option value="false">No</option>
-                <option value="true">Yes</option>
-            </select>
-        </div>
-        
-        <div data-role="fieldcontain">
-            <label for="addPlayer_IsFavorite">Favorite</label>
-            <select name="addPlayer_IsFavorite" id="addPlayer_IsFavorite" data-role="slider">
-                <option value="false">No</option>
-                <option value="true">Yes</option>
-            </select>
-        </div>
-        
-        <div data-role="fieldcontain">
-            <input type="button" id="addPlayer_Picture" name="addPlayer_Picture" value="Take Picture" data-icon="plus" />
-            <input type="button" id="addPlayer_Submit" name="addPlayer_Submit" value="Submit" data-icon="check" />
-        </div>
     </div>
 </div>
 
