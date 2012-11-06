@@ -81,8 +81,8 @@ $(document).off('click', '#addPlayer_Submit')
     var name            = $('#addPlayer_Name')            .val(),
 	nickname        = $('#addPlayer_Nickname')        .val(),
 	image           = $('#addPlayer_Picture')         .attr('src'),
-	isFavorite      = ($('#addPlayer_IsFavorite')     .val() == "true") ? true : false,
-	displayNickname = ($('#addPlayer_DisplayNickname').val() == "true") ? true : false;
+	isFavorite      = ($('#addPlayer_IsFavorite')     .val() == "true"),
+	displayNickname = ($('#addPlayer_DisplayNickname').val() == "true");
     
     // Validation
     name     = app.validateName(name,     true );
@@ -230,8 +230,8 @@ $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', 
     var name            = $('#editPlayer_Name').val(),
 	nickname        = $('#editPlayer_Nickname').val(),
 	image           = $('#editPlayer_Picture').attr('src'),
-	isFavorite      = ($('#editPlayer_IsFavorite').val()      == "true") ? true : false,
-	displayNickname = ($('#editPlayer_DisplayNickname').val() == "true") ? true : false;
+	isFavorite      = ($('#editPlayer_IsFavorite').val()      == "true"),
+	displayNickname = ($('#editPlayer_DisplayNickname').val() == "true");
     
     // Validation
     name     = app.validateName(name,     true );

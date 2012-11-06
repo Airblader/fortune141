@@ -149,8 +149,8 @@ function Player () {
 	    self.name            = row['Name'];
 	    self.nickname        = row['Nickname'];
 	    self.image           = row['Image'];
-	    self.isFavorite      = (row['isFavorite']      == "true") ? true : false;
-	    self.displayNickname = (row['displayNickname'] == "true") ? true : false;
+	    self.isFavorite      = (row['isFavorite']      == "true");
+	    self.displayNickname = (row['displayNickname'] == "true");
 	    self.hs		 = parseInt(row['HS']);
 	    self.gd		 = row['GD'];
 	    self.hgd             = row['HGD'];
