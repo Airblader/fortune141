@@ -1101,10 +1101,10 @@ function StraightPool () {
 		},
 		500
 	    );
-	    $btnAccept.off('click').off('tap');
-	    $btnFoul  .off('click').off('tap').off('taphold');
-	    $btnSafety.off('click').off('tap');
-	    $btnUndo  .off('click').off('tap');
+	    $btnAccept.off('click').off('vclick');
+	    $btnFoul  .off('click').off('vclick').off('taphold');
+	    $btnSafety.off('click').off('vclick');
+	    $btnUndo  .off('click').off('vclick');
 	    
 	    // unset the current player marker
 	    $activePlayer.removeClass('activePlayer0')
@@ -1444,23 +1444,23 @@ function StraightPool () {
 	}
 	
 	// now we make the buttons work
-	$btnAccept                  .off('tap')    .on('tap',     self.handleAcceptButton           );
-	$btnFoul                    .off('tap')    .on('tap',     self.handleFoulButtonTap          );
+	$btnAccept                  .off('vclick')    .on('vclick',     self.handleAcceptButton           );
+	$btnFoul                    .off('vclick')    .on('vclick',     self.handleFoulButtonTap          );
 	$btnFoul                    .off('taphold').on('taphold', self.handleFoulButtonHold         );
-	$btnSafety                  .off('tap')    .on('tap',     self.handleSafetyButton           );
+	$btnSafety                  .off('vclick')    .on('vclick',     self.handleSafetyButton           );
 	$('.minimizePanel')         .off('click')  .on('click',   self.handleMinimizeMainPanelButton);
 	$btnPlayerSwitch            .off('click')  .on('click',   self.handlePlayerSwitchButton     );
 	$('#severeFoulSubmitButton').off('click')  .on('click',   self.handleSevereFoulSubmitButton );
 	$('#detailsScoreBoard')     .off('click')  .on('click',   self.closeDetailsPanel            );
-	$btnUndo                    .off('tap')    .on('tap',     self.handleUndoButton             );
+	$btnUndo                    .off('vclick')    .on('vclick',     self.handleUndoButton             );
 	
-	$('#severeFoulMinusButton').off('click')
-				   .on ('click', function (event) {
+	$('#severeFoulMinusButton').off('vclick')
+				   .on ('vclick', function (event) {
 	    self.handleSevereFoulPlusMinusButton(event, false);
 	});
 	
-	$('#severeFoulPlusButton').off('click')
-				  .on ('click', function (event) {
+	$('#severeFoulPlusButton').off('vclick')
+				  .on ('vclick', function (event) {
 	    self.handleSevereFoulPlusMinusButton(event, true);
 	});
 	
