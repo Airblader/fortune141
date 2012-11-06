@@ -16,6 +16,7 @@ $(document).bind("mobileinit", function () {
 
 $(document).on('pageshow', '#pageIndex', function () {
     $('#pageIndexFirstRunMainUser').hide();
+    $('#firstRunMainUser_Picture') .hide();
     
     try {
 	app.updateIndexBubbles();
@@ -30,7 +31,7 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
     
     var name            = $('#firstRunMainUser_Name')    .val(),
 	nickname        = $('#firstRunMainUser_Nickname').val(),
-	image           = $('#pageIndexFirstRunMainUser').data('image') || '',
+	image           = $('#firstRunMainUser_Picture') .attr('src'),
 	isFavorite      = true,
 	displayNickname = ($('#firstRunMainUser_DisplayNickname').val() == "true") ? true : false;
     
@@ -39,6 +40,13 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
     nickname = app.validateName(nickname, false);
     
     if (!name.valid || !nickname.valid) {
+	app.alertDlg(
+	    'A name has to be at least 3 characters long!',
+	    app.dummyFalse,
+	    'Error',
+	    'OK'
+	);
+	
 	return false;
     }
     
@@ -89,13 +97,13 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
     return true;
 });
 
-$(document).off('click', '#firstRunMainUser_Picture')
-           .on ('click', '#firstRunMainUser_Picture', function (event) {
+$(document).off('click', '#firstRunMainUser_PictureTake')
+           .on ('click', '#firstRunMainUser_PictureTake', function (event) {
     event.preventDefault();
     
     app.getPicture(
 	function (imgURI) {
-	    $('#pageIndexFirstRunMainUser').data('image', imgURI);
+	    $('#firstRunMainUser_Picture').attr('src', imgURI).show();
 	},
 	function (message) {
 	    app.alertDlg(
@@ -106,4 +114,11 @@ $(document).off('click', '#firstRunMainUser_Picture')
 	    );
 	}
     );
+});
+	   
+$(document).off('click', '#firstRunMainUser_PictureDelete')
+           .on ('click', '#firstRunMainUser_PictureDelete', function (event) {
+    event.preventDefault();
+    
+    $('#firstRunMainUser_Picture').attr('src', '').hide();
 });

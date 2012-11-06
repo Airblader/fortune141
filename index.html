@@ -204,7 +204,18 @@
         </div>
         
         <div data-role="fieldcontain">
-            <input type="button" id="firstRunMainUser_Picture" name="firstRunMainUser_Picture" value="Take Picture" data-icon="plus" />
+            <div data-role="collapsible">
+                <h3>Picture</h3>
+                <div style="text-align: center;">
+                    <img src="" id="firstRunMainUser_Picture" class="userPictureBig" />
+                </div>
+                
+                <input type="button" id="firstRunMainUser_PictureTake" name="firstRunMainUser_PictureTake" value="Take Picture" data-icon="plus" />
+                <input type="button" id="firstRunMainUser_PictureDelete" name="firstRunMainUser_PictureDelete" value="Delete Picture" data-icon="delete" />
+            </div>
+        </div>
+        
+        <div data-role="fieldcontain">
             <input type="button" id="firstRunMainUser_Submit" name="firstRunMainUser_Submit" value="Submit" data-icon="check" />
         </div>
     </div>
