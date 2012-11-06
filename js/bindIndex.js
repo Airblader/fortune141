@@ -29,11 +29,12 @@ $(document).on('pageshow', '#pageIndex', function () {
 $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainUser_Submit', function (event) {
     event.preventDefault();
     
-    var name            = $('#firstRunMainUser_Name')    .val(),
-	nickname        = $('#firstRunMainUser_Nickname').val(),
-	image           = $('#firstRunMainUser_Picture') .attr('src'),
-	isFavorite      = true,
-	displayNickname = ($('#firstRunMainUser_DisplayNickname').val() == "true") ? true : false;
+    var name             = $('#firstRunMainUser_Name')    .val(),
+	nickname         = $('#firstRunMainUser_Nickname').val(),
+	image            = $('#firstRunMainUser_Picture') .attr('src'),
+	isFavorite       = true,
+	displayNickname  = ($('#firstRunMainUser_DisplayNickname').val() == 'true'),
+	activateTooltips = $('#firstRunMainUser_activateTooltips').val();
     
     // Validation
     name     = app.validateName(name,     true );
@@ -59,6 +60,9 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
 	    $('#pageIndexBody').show();
 	    $('#pageIndexFirstRunMainUser').hide();
 	});
+	
+	// tooltips
+	app.settings.setTooltipsEnabled(activateTooltips);
 	
 	// Fill with default game profiles
 	var query1 = new dbFortuneQuery();

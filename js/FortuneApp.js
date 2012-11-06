@@ -35,14 +35,16 @@ function FortuneApp () {
      *	Trigger a popup for the tutorial with the given key name
      */
     self.triggerTutorial = function (key) {
-	if (window.localStorage.getItem(key) == '1' || !self.settings.isTooltipsEnabled()) {
+	var tooltip = self.tooltips.get(key);
+	
+	if (tooltip.length === 0 || !self.settings.getTooltipsEnabled()) {
 	    return false;
 	}
 	
 	self.alertDlg(
-	    self.tooltips.get(key),
+	    tooltip,
 	    function () {
-		window.localStorage.setItem(key, '1');
+		self.tooltips.set(key, '1');
 	    },
 	    'Did you know?',
 	    'OK'

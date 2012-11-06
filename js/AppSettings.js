@@ -3,30 +3,41 @@ function AppSettings () {
     
     var keyKeepScreenOnDuring141Game = 'keepScreenOnDuring141Game',
         keyDateFormat                = 'dateFormat',
-        keyLanguage                  = 'language';
+        keyLanguage                  = 'language',
+        keyTooltips                  = 'tooltips';
+        
+    self.get = function (key) {
+        return window.localStorage.getItem(key) || arguments[1];
+    }
+    self.set = function (key, val) {
+        window.localStorage.setItem(key, val);
+    }
     
     self.getKeepScreenOnDuring141Game = function () {
-        return parseInt(window.localStorage.getItem(keyKeepScreenOnDuring141Game)) || 0;
+        return parseInt(self.get(keyKeepScreenOnDuring141Game, 0));
     }
     self.setKeepScreenOnDuring141Game = function (keepScreenOn) {
-        window.localStorage.setItem(keyKeepScreenOnDuring141Game, keepScreenOn);
+        self.set(keyKeepScreenOnDuring141Game, keepScreenOn);
     }
     
     self.getDateFormat = function () {
-        return window.localStorage.getItem(keyDateFormat) || '[month]/[day]/[year]';
+        return self.get(keyDateFormat, '[month]/[day]/[year]');
     }
     self.setDateFormat = function (dateFormat) {
-        window.localStorage.setItem(keyDateFormat, dateFormat);
+        self.set(keyDateFormat, dateFormat);
     }
     
     self.getLanguage = function () {
-        return window.localStorage.getItem(keyLanguage) || 'de';
+        return self.get(keyLanguage, 'de');
     }
     self.setLanguage = function (lang) {
-        window.localStorage.setItem(keyLanguage, lang);
+        self.set(keyLanguage, lang);
     }
     
-    self.isTooltipsEnabled = function () {
-        return true;
+    self.getTooltipsEnabled = function () {
+        return (self.get(keyTooltips, 'false') == 'true');
+    }
+    self.setTooltipsEnabled = function (enableTooltips) {
+        self.set(keyTooltips, enableTooltips);
     }
 }

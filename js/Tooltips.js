@@ -8,12 +8,20 @@ function Tooltips () {
     };
     
     self.get = function (key) {
-        return self.tooltips[key];
+        return (window.localStorage.getItem(key) == '0') ? self.tooltips[key] : '';
+    }
+    
+    self.set = function (key, val) {
+        if (val != '1' && val != '0') {
+            val = (val) ? '1' : '0';
+        }
+        
+        window.localStorage.setItem(key, val);
     }
     
     self.resetAll = function () {
         for (var key in self.tooltips) {
-            window.localStorage.setItem(self.tooltips[key], '0');
+            window.localStorage.setItem(key, '0');
         }
     }
 }
