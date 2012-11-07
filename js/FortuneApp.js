@@ -61,8 +61,16 @@ function FortuneApp () {
 	    1,
 	    function () {
 		// Image
-		var image = (self.Players.main.image.length > 0) ? self.Players.main.image : (app.imgPlayerPath + 'playerDummy.jpg');
-		$('#indexMainUserImg').attr('src', image);
+		//var image = (self.Players.main.image.length > 0) ? self.Players.main.image : (app.imgPlayerPath + 'playerDummy.jpg');
+		//$('#indexMainUserImg').attr('src', image);
+		self.checkImage(
+		    self.Players.main.image,
+		    function (success) {
+			if (success) {
+			    $('#indexMainUserImg').attr('src', self.Players.main.image);
+			}
+		    }
+		);
 		
 		// Name
 		var name = self.Players.main.name.split(" ");
