@@ -259,25 +259,46 @@ function dbFortune () {
     self.open = function (cbFirstRun) {
         var cbNotFirstRun = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyTrue;
         
-        self.db = window.openDatabase(self.dbName, '1.0', self.dbDesc, self.dbSize);
-        
-        // Check if this is the first connection attempt
-        self.checkForFirstRun(
-            function () {
-		// no tables should exist at this point anyway, but we make sure to get a clean start
-		self.dropAllTables();
+        self.db = window.openDatabase(self.dbName, '', self.dbDesc, self.dbSize);
+	
+	var Migrator = new dbFortuneMigrator();
+	Migrator.init(self.db);
+	
+	// Initial installation setup
+	Migrator.addMigration(
+	    1,
+	    function (tx) {
+		// drop all tables (just to be safe)
+		$.each(self.tables, function (name, obj) {
+		    tx.executeSql( self.getDropTableStatement(self.tables[name]) );
+		});
 		
-		// init variables for tutorials
-		app.tooltips.resetAll();
-		
-                cbFirstRun();
-            },
-	    function () {
-		// load the main player
-		app.Players.main = new Player();
-		app.Players.main.load(1, cbNotFirstRun);
+		// create all tables
+		$.each(self.tables, function (name, obj) {
+		    tx.executeSql( self.getCreateTableStatement(self.tables[name]) );
+		});
 	    }
-        );
+	);
+	
+	Migrator.start(
+	    function (initialVersion) {
+		switch (initialVersion) {
+		    case 0:
+			app.tooltips.resetAll();
+			cbFirstRun();
+			
+			break;
+		    default:
+			app.Players.main = new Player();
+			app.Players.main.load(
+			    1,
+			    cbNotFirstRun
+			);
+			
+			break;
+		}
+	    }
+	);
     }
     
     /*
