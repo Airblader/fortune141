@@ -1243,6 +1243,7 @@ function StraightPool () {
             
             var totalPts     = new Array(self.handicap[0], self.handicap[1]),
                 totalInnings = new Array(0, 0),
+		HS           = new Array(0, 0),
 		safety       = new Array(2),
 		foul         = new Array(2),
 		entryDummy   = '<td class="[safety]">[points]</td>'
@@ -1254,6 +1255,9 @@ function StraightPool () {
             for (var i = 0; i < self.innings.length; i++) {
                 totalPts[0] += self.innings[i].points[0];
                 totalPts[1] += self.innings[i].points[1];
+		
+		HS[0] = Math.max(HS[0], self.innings[i].points[0]);
+		HS[1] = Math.max(HS[1], self.innings[i].points[1]);
                 
                 totalInnings[0] += (self.innings[i].ptsToAdd[0] == -1) ? 1 : 0;
                 totalInnings[1] += (self.innings[i].ptsToAdd[1] == -1) ? 1 : 0;
@@ -1289,6 +1293,9 @@ function StraightPool () {
                                 );
             $('#player0gd').html('&#216;&thinsp;' + ((!isNaN(GDs[0])) ? GDs[0].toFixed(2) : '0.00'));
             $('#player1gd').html('&#216;&thinsp;' + ((!isNaN(GDs[1])) ? GDs[1].toFixed(2) : '0.00'));
+	    
+	    $('#player0hs').html('max ' + HS[0]);
+	    $('#player1hs').html('max ' + HS[1]);
             
             $loadingPanel.hide();
         });
