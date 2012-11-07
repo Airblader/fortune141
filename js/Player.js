@@ -148,7 +148,6 @@ function Player () {
 	    self.pID	         = parseInt(pID);
 	    self.name            = row['Name'];
 	    self.nickname        = row['Nickname'];
-	    self.image           = row['Image'];
 	    self.isFavorite      = (row['isFavorite']      == "true");
 	    self.displayNickname = (row['displayNickname'] == "true");
 	    self.hs		 = parseInt(row['HS']);
@@ -156,7 +155,14 @@ function Player () {
 	    self.hgd             = row['HGD'];
 	    self.quota		 = row['Quota'];
 	    
-	    cbSuccess();
+	    app.checkImage(
+		row['Image'],
+		function (success) {
+		    self.image = (success) ? row['Image'] : '';
+		    cbSuccess();
+		}
+	    );
+
 	    return true;
 	},
 	cbError);

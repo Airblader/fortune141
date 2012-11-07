@@ -308,9 +308,22 @@ function FortuneApp () {
 		    encodingType: Camera.EncodingType.JPEG,
 		    targetWidth: 120,
 		    targeHeight: 120,
+		    saveToPhotoAlbum: true,
 		}
 	    );
 	}
+    }
+    
+    /*
+     *	Check whether an image exists
+     */
+    self.checkImage = function (uri, cb) {
+	$.ajax({
+	    url:     uri,
+	    type:    'HEAD',
+	    success: function () { cb(true);  },
+	    error:   function () { cb(false); },
+	});
     }
     
     self.trim = function (str) {

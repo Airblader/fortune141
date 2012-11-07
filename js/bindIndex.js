@@ -21,6 +21,7 @@ $(document).on('pageshow', '#pageIndex', function () {
     $('#firstRunMainUser_Picture') .hide();
     
     try {
+	app.updateMainUser();
 	app.updateIndexBubbles();
     } catch (e) {
 	//
