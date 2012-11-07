@@ -296,10 +296,10 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
                                    .replace ('[foulPts]',  ((tmpGame.innings[i].foulPts[1]) ? tmpGame.innings[i].foulPts[1] : ''))
                                    .replace ('[totalPts]', ((tmpGame.innings[i].ptsToAdd[1] == -1) ? totalPts[1] : '&ndash;'));
         }
-        $('#view141GamesDetailsScoreTable').remove('#view141GamesDetailsScoreTableBody')
-                                           .append(
-                                                tbodyDummy.replace('[entries]', '<tr>' + entries.join('</tr><tr>') + '</tr>')
-                                           );
+        $('#view141GamesDetailsScoreTableBody').remove();
+        $('#view141GamesDetailsScoreTable')    .append(
+                                                    tbodyDummy.replace('[entries]', '<tr>' + entries.join('</tr><tr>') + '</tr>')
+                                               );
         
         var GDs = new Array(
             Math.round(100 * (totalPts[0] - tmpGame.handicap[0]) / (totalInnings[0] * tmpGame.multiplicator[0])) / 100,

@@ -1278,10 +1278,10 @@ function StraightPool () {
 				       .replace ('[totalPts]', ((self.innings[i].ptsToAdd[1] == -1) ? totalPts[1] : '&ndash;'));
             }
             
-            $('#detailsScoreBoardTable').remove('#detailsScoreBoardTableBody')
-					.append(
-					     tbodyDummy.replace('[entries]', '<tr>' + entries.join('</tr><tr>') + '</tr>')
-					);
+	    $('#detailsScoreBoardTableBody').remove();
+            $('#detailsScoreBoardTable')    .append(
+						tbodyDummy.replace('[entries]', '<tr>' + entries.join('</tr><tr>') + '</tr>')
+					    );
             
             var GDs = new Array(
                                 Math.round(100 * (totalPts[0] - self.handicap[0]) / (totalInnings[0] * self.multiplicator[0])) / 100,
