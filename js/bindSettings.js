@@ -10,6 +10,9 @@ $(document).on('pageshow', '#pageSettings', function () {
                           
     $('#settingsTooltips').val(String(app.settings.getTooltipsEnabled()))
                           .slider('refresh');
+                          
+    $('#settingsSaveToAlbum').val(String(app.settings.getSaveToAlbum()))
+                             .selectmenu('refresh');
 });
 
 $(document).on('change', '#settingsKeepScreenOn', function (event) {
@@ -42,6 +45,12 @@ $(document).off('click', '#settingsTooltipsReset')
         'Reset,Cancel'
     );
 });
+           
+$(document).on('change', '#settingsSaveToAlbum', function (event) {
+    app.settings.setSaveToAlbum( String($(this).val()) );
+});
+           
+           
            
 $(document).on('pageshow', '#pageFreeVersion', function () {
     $('#pageFreeVersion141InningsLimit').html(app.freeVersionLimit.limits.GAME141_MAX_INNINGS);

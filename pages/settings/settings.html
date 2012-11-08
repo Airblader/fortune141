@@ -21,16 +21,32 @@
         </div>
         
         <div data-role="fieldcontain">
-            <label for="settingsLanguage">Language:</label>
-            <select name="settingsLanguage" id="settingsLanguage">
-                    <option value="en">English</option>
-            </select>
-            
-            <label for="settingsDateFormat">Date Format:</label>
-            <select name="settingsDateFormat" id="settingsDateFormat">
-                    <option value="[month]/[day]/[year]">MM/DD/YYYY</option>
-                    <option value="[day].[month].[year]">DD.MM.YYYY</option>
-            </select>
+            <div data-role="collapsible" data-collapsed="false">
+                <h3>Language</h3>
+                
+                <label for="settingsLanguage">Language:</label>
+                <select name="settingsLanguage" id="settingsLanguage">
+                        <option value="en">English</option>
+                </select>
+                
+                <label for="settingsDateFormat">Date Format:</label>
+                <select name="settingsDateFormat" id="settingsDateFormat">
+                        <option value="[month]/[day]/[year]">MM/DD/YYYY</option>
+                        <option value="[day].[month].[year]">DD.MM.YYYY</option>
+                </select>
+            </div>
+        </div>
+        
+        <div data-role="fieldcontain">
+            <div data-role="collapsible">
+                <h3>Player Profiles</h3>
+                
+                <label for="settingsSaveToAlbum">Save Location:</label>
+                <select name="settingsSaveToAlbum" id="settingsSaveToAlbum">
+                        <option value="true">Photo Album</option>
+                        <option value="false">App Cache</option>
+                </select>
+            </div>
         </div>
         
         <div data-role="fieldcontain">
@@ -50,7 +66,7 @@
                 </div>
                 <div class="ui-grid-solo">
                     <div class="ui-block-a">
-                        <input type="button" id="settingsTooltipsReset" name="settingsTooltipsReset" value="Reset" data-icon="refresh" />
+                        <input type="button" id="settingsTooltipsReset" name="settingsTooltipsReset" value="Reset Tooltips" data-icon="refresh" />
                     </div>
                 </div>
             </div>

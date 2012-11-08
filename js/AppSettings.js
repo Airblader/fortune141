@@ -4,7 +4,8 @@ function AppSettings () {
     var keyKeepScreenOnDuring141Game = 'keepScreenOnDuring141Game',
         keyDateFormat                = 'dateFormat',
         keyLanguage                  = 'language',
-        keyTooltips                  = 'tooltips';
+        keyTooltips                  = 'tooltips',
+        keySaveToAlbum               = 'saveToAlbum';
         
     this.get = function (key) {
         return window.localStorage.getItem(key) || arguments[1];
@@ -39,5 +40,12 @@ function AppSettings () {
     }
     this.setTooltipsEnabled = function (enableTooltips) {
         self.set(keyTooltips, enableTooltips);
+    }
+    
+    this.getSaveToAlbum = function () {
+        return (self.get(keySaveToAlbum, 'true') == 'true');
+    }
+    this.setSaveToAlbum = function (saveToAlbum) {
+        self.set(keySaveToAlbum, saveToAlbum);
     }
 }

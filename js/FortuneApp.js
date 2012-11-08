@@ -323,7 +323,7 @@ function FortuneApp () {
 		encodingType: Camera.EncodingType.JPEG,
 		targetWidth: 120,
 		targeHeight: 120,
-		saveToPhotoAlbum: true,
+		saveToPhotoAlbum: self.settings.getSaveToAlbum(),
 	    }
 	);
     }
