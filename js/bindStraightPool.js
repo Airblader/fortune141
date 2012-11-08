@@ -25,6 +25,23 @@ function game141SetPlayer (idx, pID) {
     });
 }
 
+function game141HidePlayerList () {
+    $('#game141Setup2')               .hide();
+    $('#game141SetupChoosePlayerHead').hide();
+    
+    $('#game141Setup1')   .show();
+    $('#game141SetupHead').show();
+}
+
+function game141OnListClick (pID) {
+    $('#pageGame141Setup').data('activePage', 'pageGame141Setup_Main');
+    
+    $game141Setup2 = $('#game141Setup2');
+    game141SetPlayer($('#game141Setup2').data('player'), pID);
+    
+    game141HidePlayerList();
+}
+
 $(document).on('pageshow', '#pageGame141Setup', function () {
     var url           = $.url( $.url().attr('fragment') ),
 	fromNewPlayer = parseInt(url.param('fromNewPlayer'));
@@ -134,8 +151,7 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
 		  + '</ul>';
 		  
     var entryDummy = '<li data-filtertext="[filter]">'
-                   + '<a href="#" onClick="javascript:game141SetPlayer($(\'#game141Setup2\').data(\'player\'), [pID]); '
-		   + '$(\'#game141Setup2\').hide(); $(\'#game141SetupChoosePlayerHead\').hide(); $(\'#game141Setup1\').show(); $(\'#game141SetupHead\').show();">'
+                   + '<a href="#" onClick="javascript:game141OnListClick([pID]);">'
 		   + '[image][dispName]</a></li>';
     
     app.dbFortune.query(
@@ -198,17 +214,7 @@ $(document).off('click', '#pageGame141MainBackLink')
            .on ('click', '#pageGame141MainBackLink', function (event) {
     event.preventDefault();
     
-    app.confirmDlg(
-	'If you leave this game, you will be able to resume it, but any actions prior to this point cannot be undone anymore. Are you sure you want to leave?',
-	function () {
-	    app.dbFortune.dropTable(app.dbFortune.tables.Game141History);
-	    $.mobile.changePage('../../index.html');
-	    return true;
-	},
-	app.dummyFalse,
-	'Leave Game',
-	'Yes, No'
-    );
+    app.currentGame.warnLeaveGame();
 });
 
 $(document).off('click', '#game141SetupLoadProfileButton')
@@ -275,6 +281,8 @@ $(document).off('click', '#game141SetupPlayerGrid div')
 	   .on ('click', '#game141SetupPlayerGrid div', function (event) {
     event.preventDefault();
     
+    $('#pageGame141Setup').data('activePage', 'pageGame141Setup_PlayerList');
+    
     var element_id = $(this).attr('id'),
 	idx	   = element_id.substr(element_id.length-1, 1);
 	
@@ -293,6 +301,8 @@ $(document).off('click', '#game141SetupPlayerGrid div')
 function game141TapHoldSelectPlayer (event) {
     event.preventDefault();
     
+    $('#pageGame141Setup').data('activePage', 'pageGame141Setup_AnonPlayer');
+    
     var element_id = $(this).attr('id'),
 	idx	   = element_id.substr(element_id.length-1, 1);
 	
@@ -302,7 +312,14 @@ function game141TapHoldSelectPlayer (event) {
                                 .show();
     $('#game141SetupChoosePlayerHead').show();
 }
-	   
+
+function game141HideAnonPlayer() {
+    $('#game141AnonPlayer_Name')      .val('');
+    $('#game141SetupAnonPlayer')      .hide();
+    $('#game141SetupChoosePlayerHead').hide();
+    $('#game141Setup1')               .show();
+    $('#game141SetupHead')            .show();
+}
 $(document).off('click', '#game141AnonPlayer_Submit')
            .on ('click', '#game141AnonPlayer_Submit', function (event) {
     event.preventDefault();
@@ -310,11 +327,7 @@ $(document).off('click', '#game141AnonPlayer_Submit')
     var name = app.validateName($('#game141AnonPlayer_Name').val(), true);
     
     if (name.valid) {
-	$('#game141AnonPlayer_Name')      .val('');
-	$('#game141SetupAnonPlayer')      .hide();
-	$('#game141SetupChoosePlayerHead').hide();
-	$('#game141Setup1')               .show();
-	$('#game141SetupHead')            .show();
+	game141HideAnonPlayer();
 	
 	var idx = parseInt( $('#game141SetupAnonPlayer').data('player') );
 	game141SetPlayer(

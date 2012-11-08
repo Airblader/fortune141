@@ -18,64 +18,42 @@ function getLinkFromBackButton () {
 function onBackButtonPress () {
     // First look for 'data-activePage="..."' to control special cases.
     // Otherwise simply use the page's ID
-    var pageID = $.mobile.activePage.data('activePage') || $.mobile.activePage.attr('id');
+    var pageID = $.mobile.activePage.attr('id'),
+        subID  = $.mobile.activePage.data('activePage');
     
     switch (pageID) {
-        // INDEX
         case 'pageIndex':
             navigator.app.exitApp();
             break;
         
-        
-        // GAME 14/1
         case 'pageGame141': // TODO
-            app.confirmDlg(
-                'You don\'t really want to quit. ;)',
-                app.dummyFalse,
-                app.dummyFalse,
-                'Confirm',
-                'No,No'
-            );
+            switch (subID) {
+                case 'pageGame141_DetailsPanel':
+                    app.currentGame.closeDetailsPanel();
+                    break;
+                case 'pageGame141_MainPanel':
+                default:
+                    app.currentGame.warnLeaveGame();
+                    break;
+            }
+            
             break;
         case 'pageGame141Setup': // TODO
-            $.mobile.changePage(getLinkFromBackButton());
+            switch (subID) {
+                case 'pageGame141Setup_PlayerList':
+                    game141HidePlayerList();
+                    break;
+                case 'pageGame141Setup_AnonPlayer':
+                    game141HideAnonPlayer();
+                    break;
+                case 'pageGame141Setup_Main':
+                default:
+                    $.mobile.changePage(getLinkFromBackButton());
+                    break;
+            }
+            
             break;
         
-        
-        // GAME PROFILES
-        /*case 'pageProfiles141Add':
-            $.mobile.changePage(getLinkFromBackButton());
-            break;
-        case 'pageProfiles141Details':
-            $.mobile.changePage(getLinkFromBackButton());
-            break;
-        case 'pageProfiles141List':
-            $.mobile.changePage(getLinkFromBackButton());
-            break;*/
-        
-        
-        // PLAYER PROFILES
-        /*case 'pagePlayersAdd':
-            $.mobile.changePage(getLinkFromBackButton());
-            break;
-        case 'pagePlayerDetails':
-            $.mobile.changePage(getLinkFromBackButton());
-            break;
-        case 'pagePlayersList':
-            $.mobile.changePage(getLinkFromBackButton());
-            break;*/
-        
-        
-        // RESUME GAME
-        /*case 'pageResumeGame':
-            $.mobile.changePage(getLinkFromBackButton());
-            break;*/
-        
-        
-        // SETTINGS
-        /*case 'pageSettings':
-            $.mobile.changePage(getLinkFromBackButton());
-            break;*/
         case 'pageFreeVersion':
             app.alertDlg(
                 'Please read the limitations and accept them!',
@@ -85,11 +63,6 @@ function onBackButtonPress () {
             );
             break;
         
-        
-        // HELP
-        /*case 'pageHelpStart':
-            $.mobile.changePage(getLinkFromBackButton());
-            break;*/
         
         default:
             $.mobile.changePage(getLinkFromBackButton());

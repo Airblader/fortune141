@@ -330,6 +330,7 @@ function StraightPool () {
 	
 	cbSuccess();
     }
+    
     /*
      *	Defines what action to take when the current player already has two fouls and needs to be warned
      */
@@ -340,6 +341,23 @@ function StraightPool () {
 	    app.dummyFalse,
 	    'Warning!',
 	    'OK'
+	);
+    }
+    
+    /*
+     *	Leaving the game
+     */
+    self.warnLeaveGame = function () {
+	app.confirmDlg(
+	    'If you leave this game, you will be able to resume it, but any actions prior to this point cannot be undone anymore. Are you sure you want to leave?',
+	    function () {
+		app.dbFortune.dropTable(app.dbFortune.tables.Game141History);
+		$.mobile.changePage('../../index.html');
+		return true;
+	    },
+	    app.dummyFalse,
+	    'Leave Game',
+	    'Yes, No'
 	);
     }
     
@@ -953,8 +971,7 @@ function StraightPool () {
      *	Close the details panel
      */
     self.closeDetailsPanel = function () {	
-	// stop listening to the hardware back button
-	document.removeEventListener('backbutton', self.closeDetailsPanel, false);
+	$page.data('activePage', 'pageGame141_MainPanel');
 	
         $loadingPanel.show();
         $page        .find('[data-role="header"]')
@@ -1237,7 +1254,7 @@ function StraightPool () {
         $page             .find('[data-role="header"]')
 	                  .hide();
         $detailsPanel.show(function () {
-            document.addEventListener('backbutton', self.closeDetailsPanel, false);
+	    $page.data('activePage', 'pageGame141_DetailsPanel');
 	    
             $panelRackAndMenu.hide();
             
