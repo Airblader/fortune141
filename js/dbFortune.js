@@ -5,14 +5,14 @@
 function dbFortune () {
     var self = this;
     
-    self.dbName = 'Fortune';
-    self.dbSize = 5 * 1000 * 1000;
-    self.dbDesc = 'Fortune 14/1 Database';
+    this.dbName = 'Fortune';
+    this.dbSize = 5 * 1000 * 1000;
+    this.dbDesc = 'Fortune 14/1 Database';
     
     /*
      *  Definition of database tables
      */
-    self.tables = {
+    this.tables = {
         Player : {
             name : 'Player',
             fields : new Array(
@@ -256,7 +256,7 @@ function dbFortune () {
      *		cbFirstRun               : callback function if it was the first start
      *		cbNotFirstRun (optional) : callback function if it was *not* the first start
      */
-    self.open = function (cbFirstRun) {
+    this.open = function (cbFirstRun) {
         var cbNotFirstRun = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyTrue;
         
         self.db = window.openDatabase(self.dbName, '', self.dbDesc, self.dbSize);
@@ -308,7 +308,7 @@ function dbFortune () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.query = function (sql) {
+    this.query = function (sql) {
 	var query = new dbFortuneQuery();
 	query.add(
 	    sql,
@@ -326,7 +326,7 @@ function dbFortune () {
      *		types (optional)    : whether to include the field types (defaults to false)
      *		defaults (optional) : whether to include the field defaults (requires 'types' to be true, defaults to false)
      */
-    self.getTableFields_String = function (table) {
+    this.getTableFields_String = function (table) {
 	var types    = (typeof arguments[1] !== 'undefined')          ? arguments[1] : false,
 	    defaults = (typeof arguments[2] !== 'undefined' && types) ? arguments[2] : false;
 	
@@ -346,7 +346,7 @@ function dbFortune () {
      *	Returns the SQL statement to create a table
      *		table : table for which to create the statement
      */
-    self.getCreateTableStatement = function (table) {	
+    this.getCreateTableStatement = function (table) {	
 	var sql  = 'CREATE TABLE IF NOT EXISTS ' + table.name + ' ' + self.getTableFields_String(table, true, true);
 	return sql;
     }
@@ -357,7 +357,7 @@ function dbFortune () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.createTable = function (table) {
+    this.createTable = function (table) {
         var cbSuccess = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse,
             cbError   = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse;
         
@@ -370,7 +370,7 @@ function dbFortune () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.createAllTables = function () {
+    this.createAllTables = function () {
 	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
             cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 	    
@@ -387,7 +387,7 @@ function dbFortune () {
      * 	Returns the SQL statement to delete/drop a table
      *  	table : table for which to create the statement
      */
-    self.getDropTableStatement = function (table) {
+    this.getDropTableStatement = function (table) {
 	return 'DROP TABLE IF EXISTS ' + table.name;
     }
     
@@ -397,7 +397,7 @@ function dbFortune () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.dropTable = function (table) {
+    this.dropTable = function (table) {
 	var cbSuccess = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse,
             cbError   = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse;
         
@@ -410,7 +410,7 @@ function dbFortune () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.dropAllTables = function () {
+    this.dropAllTables = function () {
 	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
             cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 	
@@ -430,7 +430,7 @@ function dbFortune () {
      *		cbError (optional) : callback function in case of an error
      *				     (if not defined, cbFirstRun will be used instead)
      */
-    self.checkForFirstRun = function (cbFirstRun, cbNotFirstRun) {
+    this.checkForFirstRun = function (cbFirstRun, cbNotFirstRun) {
         var cbError = (typeof arguments[2] !== 'undefined') ? arguments[2] : cbFirstRun;
 
         //self.query('SELECT COUNT(*) AS firstRun FROM sqlite_master WHERE type="table" AND name="' + self.tables.Player.name + '"',

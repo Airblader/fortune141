@@ -8,16 +8,16 @@ function BallRack () {
     // debugMode:
     //	true  : for usage on computers (mouse events)
     //  false : for usage on mobile devices (touch events)
-    self.debugMode = app.debugMode;
+    this.debugMode = app.debugMode;
     
     // size for the div containing the rack
     var divWidth,
         divHeight = 0;
     
-    self.ballsOnTable = 15;
-    self.selectedBall = self.ballsOnTable;
+    this.ballsOnTable = 15;
+    this.selectedBall = this.ballsOnTable;
     
-    self.ballSizeSmall = 60;
+    this.ballSizeSmall = 60;
     
     var ballPositions = new Array();
     
@@ -29,7 +29,7 @@ function BallRack () {
 	$shadows[i] = $('#shadow' + i);
     }
     
-    if (self.debugMode) {
+    if (this.debugMode) {
         var touchCommands = "mousedown";
     }
     else {
@@ -39,7 +39,7 @@ function BallRack () {
     /*
      *	Calculate the ball positions.
      */
-    self.calcBallPositions = function () {
+    this.calcBallPositions = function () {
 	// we only need to calculate these positions once
         if (ballPositions.length > 0) {
             return;
@@ -84,7 +84,7 @@ function BallRack () {
     /*
      *	Sets up the balls into the right positions
      */
-    self.drawRack = function () {
+    this.drawRack = function () {
 	// first we set up the surrounding div element
         $('#ballRack').css('width',       divWidth      + 'px')
                       .css('height',      divHeight     + 'px')
@@ -118,7 +118,7 @@ function BallRack () {
      *		idx               : index of the ball
      *		active (optional) : whether the ball is active or inactive (defaults to true)
      */
-    self.setActiveBall = function (idx) {
+    this.setActiveBall = function (idx) {
         var active = true;
         if (typeof arguments[1] !== 'undefined') {
             active = arguments[1];
@@ -138,7 +138,7 @@ function BallRack () {
     /*
      *	Update all balls
      */
-    self.redraw = function() {
+    this.redraw = function() {
         for (var i = 0; i <= 15; i++) {
             var isActive = false;
             if (i <= self.selectedBall) {
@@ -152,14 +152,14 @@ function BallRack () {
     /*
      *	Activate touch events
      */
-    self.setHandler = function () {
+    this.setHandler = function () {
 	$('body').on(touchCommands, '#ballRack', self.ballSelectHandler);
     }
 
     /*
      *	Deactivate touch events
      */
-    self.unsetHandler = function () {
+    this.unsetHandler = function () {
         $('body').off(touchCommands, '#ballRack');
     }
     
@@ -168,7 +168,7 @@ function BallRack () {
      *	determines which ball was clicked and redraws the rack accordingly.
      *	It also checks if the click was legal (clicked ball is accessible)
      */
-    self.ballSelectHandler = function (event) {
+    this.ballSelectHandler = function (event) {
         event.preventDefault();
 	
 	// Bugfix : Android devices require us to unset the handler in order to allow
@@ -205,37 +205,37 @@ function BallRack () {
 function StraightPool () {
     var self = this;
     
-    $page = $('#pageGame141');
-    $activePlayer = $('#activePlayer');
+    var $page = $('#pageGame141'),
+	$activePlayer = $('#activePlayer'),
+	
+	$btnAccept = $('#usrAccept'),
+	$btnFoul = $('#usrFoulDisplay'),
+	$btnSafety = $('#usrSafeDisplay'),
+	$btnPlayerSwitch = $('#playerSwitch'),
+	$btnUndo = $('#btnDetailsUndo'),
+	
+	$loadingPanel = $('#panelLoading'),
+	$detailsPanel = $('#panelDetails'),
+	$panelRackAndMenu = $('#panelRackAndMenu'),
+	
+	$ptsPlayer = new Array($('#ptsPlayer0'), $('#ptsPlayer1')),
+	
+	$foulDisplay = $('#foulDisplay'),
+	$foulDisplayName = $('#foulDisplayName'),
+	
+	$safetyDisplay = $('#safetyDisplay'),
+	
+	$ballRack = $('#ballRack'),
+	
+	$popupSevereFoul       = $('#popupSevereFoul'),
+	$popupSevereFoulPoints = $('#popupSevereFoulPoints'),
+	$popupSevereFoulRerack = $('#popupSevereFoulRerack');
     
-    $btnAccept = $('#usrAccept');
-    $btnFoul = $('#usrFoulDisplay');
-    $btnSafety = $('#usrSafeDisplay');
-    $btnPlayerSwitch = $('#playerSwitch');
-    $btnUndo = $('#btnDetailsUndo');
     
-    $loadingPanel = $('#panelLoading');
-    $detailsPanel = $('#panelDetails');
-    $panelRackAndMenu = $('#panelRackAndMenu');
+    this.debugMode = app.debugMode;
     
-    $ptsPlayer = new Array($('#ptsPlayer0'), $('#ptsPlayer1'));
-    
-    $foulDisplay = $('#foulDisplay');
-    $foulDisplayName = $('#foulDisplayName');
-    
-    $safetyDisplay = $('#safetyDisplay');
-    
-    $ballRack = $('#ballRack');
-    
-    $popupSevereFoul       = $('#popupSevereFoul');
-    $popupSevereFoulPoints = $('#popupSevereFoulPoints');
-    $popupSevereFoulRerack = $('#popupSevereFoulRerack');
-    
-    
-    self.debugMode = app.debugMode;
-    
-    self.gameID        = -1;
-    self.historyStack  = new Array();
+    this.gameID        = -1;
+    this.historyStack  = new Array();
     
     var btnAcceptPressed = false,
         yesno            = new Array("Yes", "No");
@@ -243,7 +243,7 @@ function StraightPool () {
     /*
      *	Returns a dummy object for a player
      */
-    self.dummyPlayer = function () {
+    this.dummyPlayer = function () {
         return {
 	    fouls : 0,
             points: 0,
@@ -254,7 +254,7 @@ function StraightPool () {
     /*
      *	Returns a dummy objects for an inning
      */
-    self.dummyInning = function () {
+    this.dummyInning = function () {
         return {
             number   : 1,				// number of the inning
             points   : new Array(0, 0),			// points made in this inning
@@ -267,7 +267,7 @@ function StraightPool () {
     /*
      *	Initizalize a new game by resetting variables
      */
-    self.initNewGame = function (scoreGoal, maxInnings, inningsExtension, mode, handicap, multiplicator) {
+    this.initNewGame = function (scoreGoal, maxInnings, inningsExtension, mode, handicap, multiplicator) {
 	var cbSuccess = (typeof arguments[6] !== 'undefined') ? arguments[6] : app.dummyFalse;
 	
         self.players         = new Array(self.dummyPlayer(),
@@ -303,7 +303,7 @@ function StraightPool () {
     /*
      *	Add a new inning to the game and set it up right
      */
-    self.newInning = function () {
+    this.newInning = function () {
         // if last inning wasn't processed correctly, we throw an error
         var current = self.innings.length-1;
         if (self.innings[current].ptsToAdd[0] != -1 || self.innings[current].ptsToAdd[1] != -1) {
@@ -319,7 +319,7 @@ function StraightPool () {
     /*
      *	Loads players from app.currentGame into the game
      */
-    self.setPlayers = function () {
+    this.setPlayers = function () {
 	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse;
 	  
 	self.players[0].obj = new Player();
@@ -334,7 +334,7 @@ function StraightPool () {
     /*
      *	Defines what action to take when the current player already has two fouls and needs to be warned
      */
-    self.warnConsecutiveFouls = function () {
+    this.warnConsecutiveFouls = function () {
 	app.alertDlg(
 	    'You\'re already up to two consecutive fouls. If you foul on this inning, you will get an additional 15 points penalty.\r\n\r\n' +
             'If this applies to your opponent and not to you, you should now inform him about this.',
@@ -347,7 +347,7 @@ function StraightPool () {
     /*
      *	Leaving the game
      */
-    self.warnLeaveGame = function () {
+    this.warnLeaveGame = function () {
 	app.confirmDlg(
 	    'If you leave this game, you will be able to resume it, but any actions prior to this point cannot be undone anymore. Are you sure you want to leave?',
 	    function () {
@@ -364,7 +364,7 @@ function StraightPool () {
     /*
      *	Switch the current player and check for potencially needed 3-foul-rule warning
      */
-    self.switchPlayer = function () {
+    this.switchPlayer = function () {
         self.currPlayer = (self.currPlayer == 0) ? 1 : 0;
 		
 	// trigger 3-foul-rule warning if needed
@@ -377,7 +377,7 @@ function StraightPool () {
      *	Undo last action
      *		callback (optional) : callback function
      */
-    self.undo = function () {
+    this.undo = function () {
 	var callback = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse;
 	
 	self.loadHistory(
@@ -398,7 +398,7 @@ function StraightPool () {
      *	The format is X,X,X,X;X,X,X,X;X,X,X,X;... -- the numbers, in this order,
      *	stand for points, fouls, ptsToAdd and whether the inning ended in a safety.
      */
-    self.inningsToString = function () {
+    this.inningsToString = function () {
 	var inning = new Array('', '');
 	
 	for (var i = 0; i < self.innings.length; i++) {
@@ -424,7 +424,7 @@ function StraightPool () {
      *		str1,
      *		str2 : strings to convert (resp. player 1 & 2)
      */
-    self.stringToInnings = function (str1, str2) {
+    this.stringToInnings = function (str1, str2) {
 	// first we separate into the innings
 	var innings1 = str1.split(';'),
 	    innings2 = str2.split(';'),
@@ -460,7 +460,7 @@ function StraightPool () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.loadGame = function (gID) {
+    this.loadGame = function (gID) {
 	var cbSuccess = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse,
             cbError   = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse;
 	
@@ -555,7 +555,7 @@ function StraightPool () {
      *	otherwise a new entry will be created.
      *		cbSuccess (optional) : callback function
      */
-    self.saveGame = function () {
+    this.saveGame = function () {
 	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse;
 	
 	// no entry exists yet
@@ -647,7 +647,7 @@ function StraightPool () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.initHistory = function () {
+    this.initHistory = function () {
 	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
 	    cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 	    
@@ -670,7 +670,7 @@ function StraightPool () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.loadHistory = function () {
+    this.loadHistory = function () {
 	var //steps     = (typeof arguments[0] !== 'undefined') ? arguments[0] : 1,
 	    cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
 	    cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
@@ -727,7 +727,7 @@ function StraightPool () {
     /*
      *	Save current game state to temporary database
      */
-    self.saveHistory = function () {
+    this.saveHistory = function () {
 	var sql = 'INSERT INTO '
 		    + app.dbFortune.tables.Game141History.name + ' '
 		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141History, false, false) + ' '
@@ -763,7 +763,7 @@ function StraightPool () {
      *		severe (optional)    : whether the foul is severe
      *		                       (defaults to false)
      */
-    self.setFoulDisplay = function (fouls) {
+    this.setFoulDisplay = function (fouls) {
 	var firstShot = (typeof arguments[1] !== 'undefined') ? arguments[1] : false,
 	    severe    = (typeof arguments[2] !== 'undefined') ? arguments[2] : false,
 	    maxFouls  = Number(firstShot) + 1,
@@ -802,7 +802,7 @@ function StraightPool () {
      *		rerack       : whether a rerack has to take place after this
      *	Returns an object containing information before changes were made
      */	
-    self.processInput = function(ballsOnTable, selectedBall, foulPts, safety, rerack) {
+    this.processInput = function(ballsOnTable, selectedBall, foulPts, safety, rerack) {
         var current      = self.innings.length-1,
 	    switchPlayer = false,
 	    hasToRerack  = rerack;
@@ -917,7 +917,7 @@ function StraightPool () {
     /*
      *	Returns an object containing the heights for the main and details panel
      */
-    self.getPanelHeights = function () {
+    this.getPanelHeights = function () {
 	var viewPortHeight = $(window).height(),
 	    headerHeight   = $page.find('[data-role="header"]') .height(),
 	    contentHeight  = $page.find('[data-role="content"]').height();
@@ -931,7 +931,7 @@ function StraightPool () {
     /*
      *	Determine the best size for ball images
      */
-    self.getBestBallRadius = function () {
+    this.getBestBallRadius = function () {
 	var maxHeight = self.getPanelHeights().mainPanel
 	 		   - parseInt($ballRack.css('bottom').replace('px', ''))   // margin from toolbar
 	 		   - 20                                                    // additional margins
@@ -949,7 +949,7 @@ function StraightPool () {
     /*
      *	Determine which image set to use for the CSS Sprites
      */
-    self.getBallImageSize = function (bestRadius) {
+    this.getBallImageSize = function (bestRadius) {
 	var devicePixelRatio = 1;
 	if (typeof window.devicePixelRatio !== 'undefined') {
 	    devicePixelRatio = Math.max(1, Math.min(2, window.devicePixelRatio));
@@ -970,7 +970,7 @@ function StraightPool () {
     /*
      *	Close the details panel
      */
-    self.closeDetailsPanel = function () {	
+    this.closeDetailsPanel = function () {	
 	$page.data('activePage', 'pageGame141_MainPanel');
 	
         $loadingPanel.show();
@@ -991,7 +991,7 @@ function StraightPool () {
     /*
      *	Updates display for consecutive fouls
      */
-    self.updateConsecutiveFoulsDisplay = function () {
+    this.updateConsecutiveFoulsDisplay = function () {
         for (var player = 0; player <= 1; player++) {
             for (var foul = 1; foul <= 2; foul++) {
                 if (foul <= self.players[player].fouls) {
@@ -1006,7 +1006,7 @@ function StraightPool () {
     /*
      *	Updates score display
      */
-    self.updateScoreDisplay = function () {
+    this.updateScoreDisplay = function () {
 	$ptsPlayer[0].html(self.players[0].points);
         $ptsPlayer[1].html(self.players[1].points);
     }
@@ -1014,7 +1014,7 @@ function StraightPool () {
     /*
      *	Sets the marker for which player's turn it is
      */
-    self.setActivePlayerMarker = function (activePlayer) {
+    this.setActivePlayerMarker = function (activePlayer) {
 	$activePlayer.removeClass('activePlayer' + (1-activePlayer ))
 		     .addClass   ('activePlayer' + (self.currPlayer));
     }
@@ -1022,7 +1022,7 @@ function StraightPool () {
     /*
      *	Handles a click on the "Accept" button and triggers the game logic
      */
-    self.handleAcceptButton = function (event) {
+    this.handleAcceptButton = function (event) {
 	event.preventDefault();
 	
 	// tutorial
@@ -1177,7 +1177,7 @@ function StraightPool () {
     /*
      *	Handle click on the foul button
      */
-    self.handleFoulButtonTap = function (event) {
+    this.handleFoulButtonTap = function (event) {
 	event.preventDefault();
         
         // if button is still active, ignore
@@ -1202,7 +1202,7 @@ function StraightPool () {
     /*
      *	Handles long click on foul button for manual foul entry
      */
-    self.handleFoulButtonHold = function (event) {
+    this.handleFoulButtonHold = function (event) {
 	event.preventDefault();
 	
 	// if button is still active, ignore
@@ -1225,7 +1225,7 @@ function StraightPool () {
     /*
      *	Handle click on safety button
      */
-    self.handleSafetyButton = function (event) {
+    this.handleSafetyButton = function (event) {
 	event.preventDefault();
         
         // if button is still active, ignore
@@ -1247,7 +1247,7 @@ function StraightPool () {
      *	Handle click on the button to minimize the main panel, show the details panel
      *	and display the scoreboard
      */
-    self.handleMinimizeMainPanelButton = function (event) {
+    this.handleMinimizeMainPanelButton = function (event) {
 	event.preventDefault();
 	
 	$loadingPanel     .show();
@@ -1321,7 +1321,7 @@ function StraightPool () {
     /*
      *	Handle click on the button to switch players
      */
-    self.handlePlayerSwitchButton = function (event) {
+    this.handlePlayerSwitchButton = function (event) {
 	// if there is unprocessed business, let's take care of it
 	if (self.innings[self.innings.length-1].ptsToAdd[self.currPlayer] != -1 && self.innings[self.innings.length-1].foulPts[self.currPlayer] != 0) {
 	    self.processInput(15, 15, 0, false, false);
@@ -1341,7 +1341,7 @@ function StraightPool () {
      *	Handle click on the +/- buttons in the popup for manual entry of severe fouls
      *		plus : true for "+" button, false for "-" button
      */
-    self.handleSevereFoulPlusMinusButton = function (event, plus) {
+    this.handleSevereFoulPlusMinusButton = function (event, plus) {
 	event.preventDefault();
 	
 	var diff    = (plus) ? 1 : -1,
@@ -1359,7 +1359,7 @@ function StraightPool () {
     /*
      *	Handle click on the submit button in the popup for manual entry of severe fouls
      */
-    self.handleSevereFoulSubmitButton = function (event) {
+    this.handleSevereFoulSubmitButton = function (event) {
 	event.preventDefault();
 	
 	var fouls  = Math.abs( parseInt( $popupSevereFoulPoints.val() ) ),
@@ -1381,7 +1381,7 @@ function StraightPool () {
     /*
      *	Handle undo button click
      */
-    self.handleUndoButton = function (event) {
+    this.handleUndoButton = function (event) {
 	event.preventDefault();
 	
 	// if button is still active, ignore
@@ -1417,7 +1417,7 @@ function StraightPool () {
     /*
      *	Initializes the whole UI
      */
-    self.initUI = function () {
+    this.initUI = function () {
 	$loadingPanel.show();
 	
 	// set score goal, points and player names

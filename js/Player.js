@@ -4,19 +4,19 @@
 function Player () {
     var self = this;
     
-    self.db = app.dbFortune;
+    this.db = app.dbFortune;
     
     // Player properties
-    self.pID 		 = -1;
-    self.name 		 = '';
-    self.nickname 	 = '';
-    self.image 		 = '';
-    self.isFavorite 	 = false;
-    self.displayNickname = false;
-    self.hs		 = 0;
-    self.gd		 = 0;
-    self.hgd             = 0;
-    self.quota		 = 0;
+    this.pID 		 = -1;
+    this.name 		 = '';
+    this.nickname 	 = '';
+    this.image 		 = '';
+    this.isFavorite 	 = false;
+    this.displayNickname = false;
+    this.hs		 = 0;
+    this.gd		 = 0;
+    this.hgd             = 0;
+    this.quota		 = 0;
     
     /*
      *	Create a new player and add to database
@@ -29,7 +29,7 @@ function Player () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.create = function (name, nickname, image, isFavorite, displayNickname, mainUser) {
+    this.create = function (name, nickname, image, isFavorite, displayNickname, mainUser) {
 	var cbSuccess = (typeof arguments[6] !== 'undefined') ? arguments[6] : app.dummyFalse,
 	    cbError   = (typeof arguments[7] !== 'undefined') ? arguments[7] : app.dummyFalse;
 	
@@ -74,7 +74,7 @@ function Player () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.modify = function (fields, values) {
+    this.modify = function (fields, values) {
 	var cbSuccess = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse,
 	    cbError   = (typeof arguments[3] !== 'undefined') ? arguments[3] : app.dummyFalse;
 	
@@ -90,7 +90,7 @@ function Player () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.remove = function () {
+    this.remove = function () {
 	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
 	    cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 	    
@@ -112,7 +112,7 @@ function Player () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.load = function (pID) {
+    this.load = function (pID) {
 	var cbSuccess = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse,
 	    cbError   = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse;
 	    
@@ -172,7 +172,7 @@ function Player () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.loadBy141Game = function (pID, idx, gID) {
+    this.loadBy141Game = function (pID, idx, gID) {
 	var cbSuccess = (typeof arguments[3] !== 'undefined') ? arguments[3] : app.dummyFalse,
 	    cbError   = (typeof arguments[4] !== 'undefined') ? arguments[4] : app.dummyFalse;
 	    
@@ -208,7 +208,7 @@ function Player () {
      *	Returns either name or nickname depending on whether the nickname should
      *	be used and is not empty
      */
-    self.getDisplayName = function () {
+    this.getDisplayName = function () {
 	return (self.displayNickname && self.nickname.length != 0) ? self.nickname : self.name;
     }
     
@@ -218,7 +218,7 @@ function Player () {
      *			             containing the calculated information
      *		cbError (optional) : error callback
      */
-    self.getStatistics = function (cbSuccess) {
+    this.getStatistics = function (cbSuccess) {
 	var cbError       = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse,
 	    HS            = 0,
 	    PointsMade    = 0,
@@ -315,7 +315,7 @@ function Player () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.updateStatistics = function () {
+    this.updateStatistics = function () {
 	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
 	    cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 	

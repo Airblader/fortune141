@@ -6,38 +6,38 @@ function AppSettings () {
         keyLanguage                  = 'language',
         keyTooltips                  = 'tooltips';
         
-    self.get = function (key) {
+    this.get = function (key) {
         return window.localStorage.getItem(key) || arguments[1];
     }
-    self.set = function (key, val) {
+    this.set = function (key, val) {
         window.localStorage.setItem(key, val);
     }
     
-    self.getKeepScreenOnDuring141Game = function () {
+    this.getKeepScreenOnDuring141Game = function () {
         return parseInt(self.get(keyKeepScreenOnDuring141Game, 0));
     }
-    self.setKeepScreenOnDuring141Game = function (keepScreenOn) {
+    this.setKeepScreenOnDuring141Game = function (keepScreenOn) {
         self.set(keyKeepScreenOnDuring141Game, keepScreenOn);
     }
     
-    self.getDateFormat = function () {
+    this.getDateFormat = function () {
         return self.get(keyDateFormat, '[month]/[day]/[year]');
     }
-    self.setDateFormat = function (dateFormat) {
+    this.setDateFormat = function (dateFormat) {
         self.set(keyDateFormat, dateFormat);
     }
     
-    self.getLanguage = function () {
+    this.getLanguage = function () {
         return self.get(keyLanguage, 'en');
     }
-    self.setLanguage = function (lang) {
+    this.setLanguage = function (lang) {
         self.set(keyLanguage, lang);
     }
     
-    self.getTooltipsEnabled = function () {
+    this.getTooltipsEnabled = function () {
         return (self.get(keyTooltips, 'false') == 'true');
     }
-    self.setTooltipsEnabled = function (enableTooltips) {
+    this.setTooltipsEnabled = function (enableTooltips) {
         self.set(keyTooltips, enableTooltips);
     }
 }

@@ -56,11 +56,11 @@ function dbFortuneMigrator () {
      *      func      : migration function
      *                  (will be called with a transaction object)
      */
-    self.addMigration = function (toVersion, func) {
+    this.addMigration = function (toVersion, func) {
         migrationFuncs[toVersion] = func;
     }
     
-    self.init = function (db) {
+    this.init = function (db) {
         initialVersion = self.getCurrentVersion();
         database = db;
     }
@@ -70,7 +70,7 @@ function dbFortuneMigrator () {
      *      func : Callback function when all migrations have finished
      *             (will be called with the version installed before migration started)
      */
-    self.start = function (func) {
+    this.start = function (func) {
         if (currentState != consts.MIGRATION_PENDING || initialVersion === -1)
             return false;
         
@@ -80,11 +80,11 @@ function dbFortuneMigrator () {
         return true;
     }
     
-    self.setCurrentVersion = function (version) {
+    this.setCurrentVersion = function (version) {
         window.localStorage.setItem(keyVersion, version);
     }
     
-    self.getCurrentVersion = function () {
+    this.getCurrentVersion = function () {
         return parseInt(window.localStorage.getItem(keyVersion)) || 0;
     }
 }

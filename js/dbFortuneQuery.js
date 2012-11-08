@@ -5,8 +5,8 @@
 function dbFortuneQuery () {
     var self = this;
     
-    self.db	    = app.dbFortune.db;
-    self.statements = new Array();
+    this.db	    = app.dbFortune.db;
+    this.statements = new Array();
     
     /*
      *	Add an SQL statement to the query
@@ -15,7 +15,7 @@ function dbFortuneQuery () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.add = function (sql) {
+    this.add = function (sql) {
 	var args      = (typeof arguments[1] !== 'undefined') ? arguments[1] : [],
             cbSuccess = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse,
             cbError   = (typeof arguments[3] !== 'undefined') ? arguments[3] : app.dummyFalse;
@@ -33,7 +33,7 @@ function dbFortuneQuery () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    self.execute = function () {
+    this.execute = function () {
 	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
 	    cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 	
