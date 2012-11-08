@@ -23,7 +23,7 @@ function onBackButtonPress () {
     
     switch (pageID) {
         case 'pageIndex':
-            navigator.app.exitApp();
+            app.exitApp(true);
             break;
         
         case 'pageGame141': // TODO

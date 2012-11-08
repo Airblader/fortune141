@@ -340,6 +340,23 @@ function FortuneApp () {
 	});
     }
     
+    /*
+     *	Exit app
+     *		force: boolean whether to ask for confirmation first
+     */
+    this.exitApp = function (force) {
+	if (force)
+	    navigator.app.exitApp();
+	else {
+	    self.confirmDlg(
+		'Do you really want to quit?',
+		navigator.app.exitApp,
+		'Quit',
+		'Yes,No'
+	    );
+	}
+    }
+    
     this.trim = function (str) {
 	return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     }
