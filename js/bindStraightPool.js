@@ -60,8 +60,7 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
 	
 	$game141Setup2               .show();
 	$game141SetupChoosePlayerHead.show();
-    }
-    else {
+    } else {
 	$game141Setup2               .hide();
 	$game141SetupChoosePlayerHead.hide();
     }
@@ -337,8 +336,7 @@ $(document).off('click', '#game141AnonPlayer_Submit')
 	    app.ANONYMOUSPLAYERPID,
 	    name.name
 	);
-    }
-    else {
+    } else {
 	app.alertDlg(
 	    'The name you entered is invalid. A valid name consists of at least three characters.',
 	    app.dummyFalse,
@@ -376,8 +374,7 @@ $(document).on('pageshow', '#pageGame141', function () {
 	    gID,
 	    app.currentGame.initUI
 	);
-    }
-    else {
+    } else {
 	app.currentGame.initNewGame(scoreGoal, maxInnings, inningsExtension, gameMode, [handicap0, handicap1], [multiplicator0, multiplicator1],
 	    function () {
 		app.currentGame.setPlayers(

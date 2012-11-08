@@ -187,8 +187,7 @@ $(document).off('click', '#playerDetailsDeleteButton')
 		    'Confirm',
 		    'Delete,Cancel'
 		);
-	    }
-	    else {
+	    } else {
 		app.alertDlg(
 		    'Sorry, you cannot delete this player as long as you have games stored on your phone in which this person played!',
 		    app.dummyFalse,

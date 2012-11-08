@@ -107,14 +107,12 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
             
             $name1.addClass('winner');
             $name2.addClass('loser');
-        }
-        else if (tmpGame.winner == tmpGame.players[1].obj.pID) {
+        } else if (tmpGame.winner == tmpGame.players[1].obj.pID) {
             idxWinner = 1;
             
             $name1.addClass('loser');
             $name2.addClass('winner');
-        }
-        else { // tie game
+        } else { // tie game
             $name1.addClass('winner');
             $name2.addClass('winner');
         }
@@ -324,8 +322,7 @@ $(document).off('click', '#view141GamesDetailsViewTable')
     
     if (fromGame == 1) {
         $('#pageView141GamesDetails').data('activePage', 'pageView141GamesDetails_Scoreboard1');
-    }
-    else {
+    } else {
         $('#pageView141GamesDetails').data('activePage', 'pageView141GamesDetails_Scoreboard2');
     }
     
@@ -351,8 +348,7 @@ $(document).off('click', '#view141GamesDetailsScoreTableContainer')
     
     if (fromGame == 1) {
         $.mobile.changePage('../../index.html');
-    }
-    else {
+    } else {
         view141GamesDetailsHideScoreboard();
     }
 });

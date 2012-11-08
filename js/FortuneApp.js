@@ -217,19 +217,16 @@ function FortuneApp () {
 	    var response = confirm(arguments[0]);
 	    if (response) {
 		cbSuccess();
-	    }
-	    else {
+	    } else {
 		cbDenied();
 	    }
-	}
-	else {
+	} else {
 	    navigator.notification.confirm(
 		arguments[0],
 		function (response) {
 		    if (response == 1) {
 			cbSuccess();
-		    }
-		    else {
+		    } else {
 			cbDenied();
 		    }
 		},
@@ -252,8 +249,7 @@ function FortuneApp () {
 	if (self.debugMode) {
 	    alert(arguments[0]);
 	    cbSuccess();
-	}
-	else {
+	} else {
 	    navigator.notification.alert(
 		arguments[0],
 		cbSuccess,
@@ -271,8 +267,7 @@ function FortuneApp () {
     this.vibrate = function () {
 	if (self.debugMode) {
 	    //
-	}
-	else {
+	} else {
 	    //navigator.notification.vibrate(duration);
 	}
     }
@@ -291,8 +286,7 @@ function FortuneApp () {
 		'Error',
 		'OK'
 	    );
-	}
-	else {
+	} else {
 	    self.confirmDlg(
 		'Please choose whether you want to take a new picture or load one from your albums.',
 		function () {

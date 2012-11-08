@@ -195,8 +195,7 @@ function Player () {
 			},
 			cbError
 		    );    
-		}
-		else {
+		} else {
 		    cbSuccess();
 		}
 	    },

@@ -31,8 +31,7 @@ function BallRack () {
     
     if (this.debugMode) {
         var touchCommands = "mousedown";
-    }
-    else {
+    } else {
         var touchCommands = 'touchstart touchmove touchend';
     }
     
@@ -129,8 +128,7 @@ function BallRack () {
 		
 	if (active) {
 	    $shadows[idx].addClass('ballShadow');
-	}
-	else {
+	} else {
 	    $shadows[idx].removeClass('ballShadow');
 	}
     }
@@ -781,8 +779,7 @@ function StraightPool () {
 	    // a first shot foul has a choice. However, there will be 15 balls on the table anyway,
 	    // so this won't have an effect on that situation
 	    $foulDisplayName.data('rerack', true);
-	}
-	else {
+	} else {
 	    $foulDisplayName.data('rerack', false);
 	}
 	
@@ -846,8 +843,7 @@ function StraightPool () {
             // only standard fouls count
             if (parseInt(foulPts) == 1) {
                 self.players[currPlayer].fouls++;
-            }
-            else {
+            } else {
                 self.players[currPlayer].fouls = 0;
             }
             
@@ -863,8 +859,7 @@ function StraightPool () {
                 hasToRerack = true;
                 ret.rerack  = true;
             }
-        }
-	else {
+        } else {
 	    self.players[currPlayer].fouls = 0;
 	}
         
@@ -1331,8 +1326,7 @@ function StraightPool () {
 	    
 	    $ptsPlayer[0].html(self.players[0].points);
 	    $ptsPlayer[1].html(self.players[1].points);
-	}
-	else {
+	} else {
 	    self.switchPlayer();
 	}
 	
