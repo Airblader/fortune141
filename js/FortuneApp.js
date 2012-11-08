@@ -63,6 +63,8 @@ function FortuneApp () {
 		// Image
 		if (self.Players.main.image.length > 0)
 		    $('#indexMainUserImg').attr('src', self.Players.main.image);
+		else
+		    $('#indexMainUserImg').attr('src', 'file:///android_asset/www/img/players/playerDummy.jpg');
 		
 		// Name
 		var name = self.Players.main.name.split(" ");
