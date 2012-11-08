@@ -18,9 +18,7 @@ function FortuneApp () {
     this.settings = new AppSettings();
     this.tooltips = new Tooltips();
     this.freeVersionLimit = new freeVersionLimit(true);
-    
-    this.imgPlayerPath = 'img/players/';
-    
+
     // pID for anonymous player
     this.ANONYMOUSPLAYERPID = -10;
     

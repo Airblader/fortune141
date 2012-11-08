@@ -1025,15 +1025,7 @@ function StraightPool () {
     this.handleAcceptButton = function (event) {
 	event.preventDefault();
 	
-	// tutorial
-	setTimeout(function () {
-	    app.triggerTutorial('tutorial141SelectCueBall');
-	}, 1000);
-        
-	self.switchButton = false;
-        $btnPlayerSwitch.hide();
-        
-        // if button is still active from last click, abort
+	// if button is still active from last click, abort
         if (btnAcceptPressed) {
             return false;
         }
@@ -1049,6 +1041,14 @@ function StraightPool () {
             $btnAccept.removeClass('navbarButtonDown');
             self.ballRack.setHandler();
         }, 500);
+	
+	// tutorial
+	setTimeout(function () {
+	    app.triggerTutorial('tutorial141SelectCueBall');
+	}, 1000);
+        
+	self.switchButton = false;
+        $btnPlayerSwitch.hide();
         
         // check if rerack is needed
         rerack = $foulDisplayName.data('rerack');

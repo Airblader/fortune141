@@ -4,7 +4,7 @@ function game141SetPlayer (idx, pID) {
     app.Players.ingame[idx] = new Player();
     app.Players.ingame[idx].load(pID, function () {
 	var dispName = app.Players.ingame[idx].getDisplayName(),
-	    image    = (app.Players.ingame[idx].image.length > 0) ? app.Players.ingame[idx].image : ('../../' + app.imgPlayerPath + 'playerDummy.jpg');
+	    image    = (app.Players.ingame[idx].image.length > 0) ? app.Players.ingame[idx].image : 'file:///android_asset/www/img/players/playerDummy.jpg';
 	
 	if (pID == app.ANONYMOUSPLAYERPID) {
 	    app.Players.ingame[idx].name = anonName;
