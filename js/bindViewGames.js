@@ -57,9 +57,7 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
     var $name1 = $('#view141GamesDetailsName1'),
         $name2 = $('#view141GamesDetailsName2');
     
-    $('#view141GamesHandicapTitle').hide();
     $('#view141GamesHandicapTable').hide();
-    $('#view141GamesMultiplicatorTitle').hide();
     $('#view141GamesMultiplicatorTable').hide();
     
     $('#view141GamesDetailsScoreTableContainer').hide();
@@ -76,6 +74,7 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
               .off('click')
               .on ('click',
                 function (event) {
+                    event.preventDefault();
                     $.mobile.changePage('../player/player_details.html?pID' + tmpGame.players[0].obj.pID);
                 }
               )
@@ -85,6 +84,7 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
               .off('click')
               .on ('click',
                 function (event) {
+                    event.preventDefault();
                     $.mobile.changePage('../player/player_details.html?pID=' + tmpGame.players[1].obj.pID);
                 }
               )
@@ -120,14 +120,12 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
         }
         
         if (tmpGame.handicap[0] != 0 || tmpGame.handicap[1] != 0) {
-            $('#view141GamesHandicapTitle').show();
             $('#view141GamesHandicapTable').show();
             
             $('#view141GamesHandicap1').html(tmpGame.handicap[0]);
             $('#view141GamesHandicap2').html(tmpGame.handicap[1]);
         }
         if (tmpGame.multiplicator[0] != 1 || tmpGame.multiplicator[1] != 1) {
-            $('#view141GamesMultiplicatorTitle').show();
             $('#view141GamesMultiplicatorTable').show();
             
             $('#view141GamesMultiplicator1').html(tmpGame.multiplicator[0]);
@@ -149,7 +147,7 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
             }).css({
                 width:  Math.round(0.975 * windowWidth) + 'px',
                 height: '150px',
-                border: '1px solid black'
+                border: '1px solid black',
             }).appendTo('#view141GamesDetailsCanvasContainer');
             
             // for scaling, look for potentially negative scores
@@ -263,6 +261,7 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
         // Draw Scoreboard
         var totalPts     = new Array(tmpGame.handicap[0], tmpGame.handicap[1]),
             totalInnings = new Array(0, 0),
+            HS           = new Array(0, 0),
             safety       = new Array(2),
             foul         = new Array(2),
             entryDummy   = '<td class="[safety]">[points]</td>'
@@ -277,6 +276,9 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
             
             totalInnings[0] += (tmpGame.innings[i].ptsToAdd[0] == -1) ? 1 : 0;
             totalInnings[1] += (tmpGame.innings[i].ptsToAdd[1] == -1) ? 1 : 0;
+            
+            HS[0] = Math.max(HS[0], tmpGame.innings[i].points[0]);
+	    HS[1] = Math.max(HS[1], tmpGame.innings[i].points[1]);
             
             safety[0] = (tmpGame.innings[i].safety[0]) ? 'safety ' : '';
             safety[1] = (tmpGame.innings[i].safety[1]) ? 'safety ' : '';
@@ -306,8 +308,10 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
             Math.round(100 * (totalPts[1] - tmpGame.handicap[1]) / (totalInnings[1] * tmpGame.multiplicator[1])) / 100
         );
         
-        $('#player0gd').html('&#216;&thinsp;' + ((!isNaN(GDs[0])) ? GDs[0].toFixed(2) : '0.00'));
-        $('#player1gd').html('&#216;&thinsp;' + ((!isNaN(GDs[1])) ? GDs[1].toFixed(2) : '0.00'));
+        $('#view141GamesDetailsGD1').html(((!isNaN(GDs[0])) ? GDs[0].toFixed(2) : '0.00'));
+        $('#view141GamesDetailsGD2').html(((!isNaN(GDs[1])) ? GDs[1].toFixed(2) : '0.00'));
+        $('#view141GamesDetailsHS1').html(HS[0]);
+        $('#view141GamesDetailsHS2').html(HS[1]);
     });
 });
 
