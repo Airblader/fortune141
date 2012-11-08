@@ -54,6 +54,23 @@ function onBackButtonPress () {
             
             break;
         
+        case 'pageView141GamesDetails':
+            switch (subID) {
+                case 'pageView141GamesDetails_Scoreboard2':
+                    view141GamesDetailsHideScoreboard();
+                    break;
+                case 'pageView141GamesDetails_Scoreboard1':
+                    view141GamesDetailsHideScoreboard();
+                    $.mobile.changePage('../../index.html');
+                    break;
+                case 'pageView141GamesDetails_Main':
+                default:
+                    $.mobile.changePage(getLinkFromBackButton());
+                    break;
+            }
+            
+            break;
+        
         case 'pageFreeVersion':
             app.alertDlg(
                 'Please read the limitations and accept them!',

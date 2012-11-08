@@ -1102,13 +1102,16 @@ function StraightPool () {
 	    // determine winner
 	    var ptsDiff = self.players[1].points - self.players[0].points;
 	    if (ptsDiff != 0) {
-		var idxWinner = (1 + (ptsDiff && (ptsDiff / Math.abs(ptsDiff)))) / 2;
+		var idxWinner = (ptsDiff > 0) ? 1 : 0;
 		self.winner = self.players[idxWinner].obj.pID;
 	    }
 	    // game ended tied
 	    else {
 		self.winner = 0;
 	    }
+	    
+	    // finish inning
+	    self.innings[self.innings.length-1].ptsToAdd[idxWinner] = -1;
 	    
 	    // block all inputs
 	    setTimeout(

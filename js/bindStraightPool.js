@@ -26,6 +26,8 @@ function game141SetPlayer (idx, pID) {
 }
 
 function game141HidePlayerList () {
+    $('#pageGame141Setup').data('activePage', 'pageGame141Setup_Main');
+    
     $('#game141Setup2')               .hide();
     $('#game141SetupChoosePlayerHead').hide();
     
@@ -34,8 +36,6 @@ function game141HidePlayerList () {
 }
 
 function game141OnListClick (pID) {
-    $('#pageGame141Setup').data('activePage', 'pageGame141Setup_Main');
-    
     $game141Setup2 = $('#game141Setup2');
     game141SetPlayer($('#game141Setup2').data('player'), pID);
     
@@ -314,6 +314,8 @@ function game141TapHoldSelectPlayer (event) {
 }
 
 function game141HideAnonPlayer() {
+    $('#pageGame141Setup').data('activePage', 'pageGame141Setup_Main');
+    
     $('#game141AnonPlayer_Name')      .val('');
     $('#game141SetupAnonPlayer')      .hide();
     $('#game141SetupChoosePlayerHead').hide();

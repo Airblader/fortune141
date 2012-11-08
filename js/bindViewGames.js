@@ -319,24 +319,41 @@ $(document).off('click', '#view141GamesDetailsViewTable')
            .on ('click', '#view141GamesDetailsViewTable', function (event) {
     event.preventDefault();
     
+    var url      = $.url( $.url().attr('fragment') ),
+        fromGame = parseInt(url.param('from_game'));
+    
+    if (fromGame == 1) {
+        $('#pageView141GamesDetails').data('activePage', 'pageView141GamesDetails_Scoreboard1');
+    }
+    else {
+        $('#pageView141GamesDetails').data('activePage', 'pageView141GamesDetails_Scoreboard2');
+    }
+    
     $('[data-role=content]').hide();
     $('[data-role=header]') .hide();
     $('#view141GamesDetailsScoreTableContainer').show();
 });
            
-$(document).off('click', '#view141GamesDetailsScoreTableContainer')
-           .on ('click', '#view141GamesDetailsScoreTableContainer', function (event) {
-    event.preventDefault();
-    
-    var url      = $.url( $.url().attr('fragment') ),
-        fromGame = parseInt(url.param('from_game'));
-    
+function view141GamesDetailsHideScoreboard () {
     $('[data-role=content]').show();
     $('[data-role=header]') .show();
     $('#view141GamesDetailsScoreTableContainer').hide();
     
+    $('#pageView141GamesDetails').data('activePage', 'pageView141GamesDetails_Main');
+}
+
+$(document).off('click', '#view141GamesDetailsScoreTableContainer')
+           .on ('click', '#view141GamesDetailsScoreTableContainer', function (event) {
+    event.preventDefault();
+
+    var url      = $.url( $.url().attr('fragment') ),
+        fromGame = parseInt(url.param('from_game'));
+    
     if (fromGame == 1) {
         $.mobile.changePage('../../index.html');
+    }
+    else {
+        view141GamesDetailsHideScoreboard();
     }
 });
            
