@@ -61,14 +61,8 @@ function FortuneApp () {
 	    1,
 	    function () {
 		// Image
-		self.checkImage(
-		    self.Players.main.image,
-		    function (success) {
-			if (success) {
-			    $('#indexMainUserImg').attr('src', self.Players.main.image);
-			}
-		    }
-		);
+		if (self.Players.main.image.length > 0)
+		    $('#indexMainUserImg').attr('src', self.Players.main.image);
 		
 		// Name
 		var name = self.Players.main.name.split(" ");
