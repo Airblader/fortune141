@@ -42,3 +42,16 @@ $(document).off('click', '#settingsTooltipsReset')
         'Reset,Cancel'
     );
 });
+           
+$(document).on('pageshow', '#pageFreeVersion', function () {
+    $('#pageFreeVersion141InningsLimit').html(app.freeVersionLimit.limits.GAME141_MAX_INNINGS);
+    $('#pageFreeVersion8910RacksLimit') .html(app.freeVersionLimit.limits.GAME8910_MAX_RACKS_PER_SET);
+    $('#pageFreeVersion8910SetsLimit')  .html(app.freeVersionLimit.limits.GAME8910_MAX_SETS);
+});
+
+$(document).off('click', '#pageFreeVersionBtnAccept')
+           .on ('click', '#pageFreeVersionBtnAccept', function (event) {
+    event.preventDefault();
+    
+    $.mobile.changePage('../../index.html');
+});

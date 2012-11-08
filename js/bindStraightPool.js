@@ -32,7 +32,8 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
     var $game141SetupHead = $('#game141SetupHead'),
 	$game141Setup1    = $('#game141Setup1'),
 	$game141Setup2	  = $('#game141Setup2'),
-	$game141SetupChoosePlayerHead = $('#game141SetupChoosePlayerHead');
+	$game141SetupChoosePlayerHead = $('#game141SetupChoosePlayerHead'),
+	$game141SetupMaxInnings = $('#game141SetupMaxInnings');
     
     if (!isNaN(fromNewPlayer)) {
 	$('#game141Setup2').data('player', fromNewPlayer);
@@ -55,6 +56,12 @@ $(document).on('pageshow', '#pageGame141Setup', function () {
     setTimeout(function () {
 	app.triggerTutorial('tutorial141TapholdSelectPlayer');
     }, 500);
+    
+    // free version limit
+    $game141SetupMaxInnings.slider('enable');
+    if (app.freeVersionLimit.isLimited()) {
+	$game141SetupMaxInnings.slider('disable');
+    }
     
     // set locally saved score goal if available
     var scoreGoal = window.localStorage.getItem('game141_ScoreGoal') || 60;
@@ -240,15 +247,20 @@ $(document).off('click', '#game141SetupSubmitButton')
 	   .on ('click', '#game141SetupSubmitButton', function (event) {
     event.preventDefault();
     
-    // save score goal locally
+    // save score goal locally to remember it upon next loading
     window.localStorage.setItem('game141_ScoreGoal', $('#game141SetupScoreGoal').val());
+    
+    // free version limits
+    var maxInnings = (app.freeVersionLimit.isLimited())
+		    ? app.freeVersionLimit.limits.GAME141_MAX_INNINGS
+		    : $('#game141SetupMaxInnings').val(); 
     
     $.mobile.changePage('game141.html', {
 	data : {
 	    player0          : $('#game141SetupPlayer0Name')     .data('pid'),
 	    player1          : $('#game141SetupPlayer1Name')     .data('pid'),
 	    scoreGoal        : $('#game141SetupScoreGoal')       .val()      ,
-	    maxInnings       : $('#game141SetupMaxInnings')      .val()      ,
+	    maxInnings       : maxInnings                                    ,
 	    inningsExtension : $('#game141SetupInningsExtension').val()      ,
 	    gameMode         : $('#game141SetupGameMode')        .val()      ,
 	    handicap0	     : $('#game141SetupHandicap1')       .val()      ,

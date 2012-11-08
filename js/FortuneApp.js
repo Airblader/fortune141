@@ -7,34 +7,34 @@ function FortuneApp () {
     var self = this;
     
     self.dbFortune = undefined;
-    self.debugMode = !(navigator.userAgent.toLowerCase().indexOf("android") > -1);
+    self.debugMode = !(navigator.userAgent.toLowerCase().indexOf('android') > -1);
     
-    self.tooltips = new Tooltips();
-    
-    self.Players   = {
+    this.Players   = {
 	main : undefined,	// Main User
 	tmp  : undefined,	// Temporarily used user (modifying users, ...)
 	ingame : new Array(),	// for games
     };
     
-    self.settings = new AppSettings();
+    this.settings = new AppSettings();
+    this.tooltips = new Tooltips();
+    this.freeVersionLimit = new freeVersionLimit(true);
     
-    self.imgPlayerPath = 'img/players/';
+    this.imgPlayerPath = 'img/players/';
     
     // pID for anonymous player
-    self.ANONYMOUSPLAYERPID = -10;
+    this.ANONYMOUSPLAYERPID = -10;
     
     // holds the currently running game
-    self.currentGame = undefined;
+    this.currentGame = undefined;
     
     // Dummy functions to avoid unneccessary anonymous functions
-    self.dummyFalse = function () { return false; }
-    self.dummyTrue  = function () { return true;  }
+    this.dummyFalse = function () { return false; }
+    this.dummyTrue  = function () { return true;  }
     
     /*
      *	Trigger a popup for the tutorial with the given key name
      */
-    self.triggerTutorial = function (key) {
+    this.triggerTutorial = function (key) {
 	var tooltip = self.tooltips.get(key);
 	
 	if (tooltip.length === 0 || !self.settings.getTooltipsEnabled()) {
@@ -56,13 +56,11 @@ function FortuneApp () {
     /*
      *	Updates information about main user on index page
      */
-    self.updateMainUser = function () {
+    this.updateMainUser = function () {
 	self.Players.main.load(
 	    1,
 	    function () {
 		// Image
-		//var image = (self.Players.main.image.length > 0) ? self.Players.main.image : (app.imgPlayerPath + 'playerDummy.jpg');
-		//$('#indexMainUserImg').attr('src', image);
 		self.checkImage(
 		    self.Players.main.image,
 		    function (success) {
@@ -84,7 +82,7 @@ function FortuneApp () {
     /*
      *	Updates the bubble counts on the main page
      */
-    self.updateIndexBubbles = function () {
+    this.updateIndexBubbles = function () {
 	// resume game
 	app.dbFortune.query(
 	    'SELECT COUNT(*) AS numResGame FROM ' + app.dbFortune.tables.Game141.name + ' WHERE isFinished="0"',
@@ -150,7 +148,7 @@ function FortuneApp () {
      *	Checks whether this phone supports the HTML5 canvas element
      *		forceCheck (optional) : forces to recheck
      */
-    self.checkForCanvasSupport = function () {
+    this.checkForCanvasSupport = function () {
 	var forceCheck = (typeof arguments[0] !== 'undefined') ? arguments[0] : false;
 	    lsVarName  = 'supportsCanvas';
 	
@@ -167,7 +165,7 @@ function FortuneApp () {
     /*
      *	Converts a timestamp
      */
-    self.convertTimestamp = function (timestamp) {
+    this.convertTimestamp = function (timestamp) {
 	var date = new Date(1000 * parseInt(timestamp));
 	
 	function addZeros (val) {
@@ -193,7 +191,7 @@ function FortuneApp () {
      *		name  : name after validation
      *		valid : whether the name is valid
      */
-    self.validateName = function (name, required) {
+    this.validateName = function (name, required) {
 	var validated = {
 	    name  : self.trim(name),
 	    valid : true,
@@ -217,7 +215,7 @@ function FortuneApp () {
      *		title (optional)   : dialog title (only available on mobile phones)
      *		buttons (optional) : button labels (only available on mobile phones)
      */
-    self.confirmDlg = function () {
+    this.confirmDlg = function () {
 	var cbSuccess = arguments[1],
 	    cbDenied  = arguments[2];
 	
@@ -254,7 +252,7 @@ function FortuneApp () {
      *		title (optional)  : dialog title (only available on mobile phones)
      *		button (optional) : button label (only available on mobile phones)
      */
-    self.alertDlg = function () {
+    this.alertDlg = function () {
 	var cbSuccess = arguments[1];
 	
 	if (self.debugMode) {
@@ -276,7 +274,7 @@ function FortuneApp () {
      *	DEPRECATED -- NO EFFECT
      *		duration : duration of vibration
      */
-    self.vibrate = function () {
+    this.vibrate = function () {
 	if (self.debugMode) {
 	    //
 	}
@@ -288,7 +286,7 @@ function FortuneApp () {
     /*
      *	Normalize getPicture function
      */
-    self.getPicture = function () {
+    this.getPicture = function () {
 	var onSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
 	    onError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 	    
@@ -325,7 +323,7 @@ function FortuneApp () {
     /*
      *	Check whether an image exists
      */
-    self.checkImage = function (uri, cb) {
+    this.checkImage = function (uri, cb) {
 	$.ajax({
 	    url:     uri,
 	    type:    'HEAD',
@@ -334,7 +332,7 @@ function FortuneApp () {
 	});
     }
     
-    self.trim = function (str) {
+    this.trim = function (str) {
 	return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     }
 }

@@ -28,7 +28,7 @@ function onBackButtonPress () {
         
         
         // GAME 14/1
-        case 'pageGame141':
+        case 'pageGame141': // TODO
             app.confirmDlg(
                 'You don\'t really want to quit. ;)',
                 app.dummyFalse,
@@ -37,13 +37,13 @@ function onBackButtonPress () {
                 'No,No'
             );
             break;
-        case 'pageGame141Setup':
+        case 'pageGame141Setup': // TODO
             $.mobile.changePage(getLinkFromBackButton());
             break;
         
         
         // GAME PROFILES
-        case 'pageProfiles141Add':
+        /*case 'pageProfiles141Add':
             $.mobile.changePage(getLinkFromBackButton());
             break;
         case 'pageProfiles141Details':
@@ -51,11 +51,11 @@ function onBackButtonPress () {
             break;
         case 'pageProfiles141List':
             $.mobile.changePage(getLinkFromBackButton());
-            break;
+            break;*/
         
         
         // PLAYER PROFILES
-        case 'pagePlayersAdd':
+        /*case 'pagePlayersAdd':
             $.mobile.changePage(getLinkFromBackButton());
             break;
         case 'pagePlayerDetails':
@@ -63,28 +63,36 @@ function onBackButtonPress () {
             break;
         case 'pagePlayersList':
             $.mobile.changePage(getLinkFromBackButton());
-            break;
+            break;*/
         
         
         // RESUME GAME
-        case 'pageResumeGame':
+        /*case 'pageResumeGame':
             $.mobile.changePage(getLinkFromBackButton());
-            break;
+            break;*/
         
         
         // SETTINGS
-        case 'pageSettings':
+        /*case 'pageSettings':
             $.mobile.changePage(getLinkFromBackButton());
+            break;*/
+        case 'pageFreeVersion':
+            app.alertDlg(
+                'Please read the limitations and accept them!',
+                app.dummyFalse,
+                'Free Version',
+                'OK'
+            );
             break;
         
         
         // HELP
-        case 'pageHelpStart':
+        /*case 'pageHelpStart':
             $.mobile.changePage(getLinkFromBackButton());
-            break;
+            break;*/
         
         default:
-            //
+            $.mobile.changePage(getLinkFromBackButton());
             break;
     }
 }
