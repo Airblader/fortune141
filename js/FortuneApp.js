@@ -293,25 +293,39 @@ function FortuneApp () {
 	    );
 	}
 	else {
-	    navigator.camera.getPicture(
-		onSuccess,
-		function (msg) {
-		    if (msg.toLowerCase().indexOf('camera cancelled') == -1) {
-			onError(msg);
-		    }
+	    self.confirmDlg(
+		'Please choose whether you want to take a new picture or load one from your albums.',
+		function () {
+		    self._getPicture(Camera.PictureSourceType.CAMERA, onSuccess, onError);
 		},
-		{
-		    quality: 100,
-		    destinationType: Camera.DestinationType.FILE_URI,
-		    sourceType: Camera.PictureSourceType.CAMERA,
-		    allowEdit: true,
-		    encodingType: Camera.EncodingType.JPEG,
-		    targetWidth: 120,
-		    targeHeight: 120,
-		    saveToPhotoAlbum: true,
-		}
+		function () {
+		    self._getPicture(Camera.PictureSourceType.SAVEDPHOTOALBUM, onSuccess, onError);
+		},
+		'Player Picture',
+		'Take Picture,Load Picture'
 	    );
 	}
+    }
+    
+    self._getPicture = function (mode, onSuccess, onError) {
+	navigator.camera.getPicture(
+	    onSuccess,
+	    function (msg) {
+		if (msg.toLowerCase().indexOf('camera cancelled') == -1) {
+		    onError(msg);
+		}
+	    },
+	    {
+		quality: 100,
+		destinationType: Camera.DestinationType.FILE_URI,
+		sourceType: mode,
+		allowEdit: true,
+		encodingType: Camera.EncodingType.JPEG,
+		targetWidth: 120,
+		targeHeight: 120,
+		saveToPhotoAlbum: true,
+	    }
+	);
     }
     
     /*
