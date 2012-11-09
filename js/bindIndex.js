@@ -4,21 +4,27 @@ $(document).bind('mobileinit', function () {
 });
 
 $(document).bind('deviceready', function () {
-    app = new FortuneApp();
+    $('#pageIndexHead').hide();
+    $('#pageIndexBody').hide();
+    
+    app           = new FortuneApp();
     app.dbFortune = new dbFortune();
-    app.dbFortune.open(function () {
-	$('#pageIndexHead').hide();
-        $('#pageIndexBody').hide();
-        $('#pageIndexFirstRunMainUser').show();
-    }, function() {
-	app.updateMainUser();
-	app.updateIndexBubbles();
-    });
+    app.dbFortune.open(
+	function () {
+	    $('#pageIndexFirstRunMainUser').show();
+	},
+	function() {
+	    $('#pageIndexHead').show();
+	    $('#pageIndexBody').show();
+	    
+	    app.updateMainUser();
+	    app.updateIndexBubbles();
+	}
+    );
 });
 
 $(document).on('pageshow', '#pageIndex', function () {
-    $('#pageIndexFirstRunMainUser').hide();
-    $('#firstRunMainUser_Picture') .hide();
+    $('#firstRunMainUser_Picture').hide();
     
     try {
 	app.updateMainUser();
@@ -57,14 +63,16 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
 
     app.Players.main = new Player();
     app.Players.main.create(name.name, nickname.name, image, isFavorite, displayNickname, true, function () {
-	app.updateMainUser();
-	$('#pageIndexHead').show();
-	$('#pageIndexBody').show();
 	$('#pageIndexFirstRunMainUser').hide();
 	
 	// free version information
 	if (app.freeVersionLimit.isLimited()) {
 	    $.mobile.changePage('pages/settings/freeversion.html');
+	} else {
+	    app.updateMainUser();
+	    
+	    $('#pageIndexHead').show();
+	    $('#pageIndexBody').show();
 	}
     });
     
