@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+
+<div data-role="page" id="pageHelpStart">
+    <div data-role="header" data-tap-toggle="false">
+        <a href="help_start.html" data-icon="arrow-l">Back</a>
+        <h1>Help</h1>
+    </div>
+    
+    <div data-role="content">
+        <p style="white-space: normal;">
+            <i>Straight pool</i>, which is also known as <i>14.1 (continous)</i>, is a pool discipline that requires
+            players to continously keep track of the score on a score sheet. Making this task easier and provding
+            statistics about the games is one of the main purposes of Fortune 14/1.
+        </p>
+        <p style="white-space: normal;">
+            If you need any information on how to use this app to capture straight pool games, please click on
+            the category you want to get information on.
+        </p>
+        
+        <div data-role="collapsible">
+            <h3>Game Setup</h3>
+            
+            <p style="white-space: normal;">
+                Setting up a straight pool game is very straight-forward: Simply tap on either player to display
+                the list of player profiles and choose one from there, or tap and hold on it to enter the name
+                for a player you don't want to create a profile for (i.e. tournament opponents you will only play once).
+            </p>
+            <div data-role="collapsible">
+                <h3>Setup Options</h3>
+                
+                <ul data-role="listview">
+                    <li>
+                        <p style="white-space: normal;"><strong>Score Goal</strong></p>
+                        <p style="white-space: normal;">
+                            The score goal sets the amount of points a player needs to get to win the game.
+                        </p>
+                    </li>
+                    <li>
+                        <p style="white-space: normal;"><strong>Game Mode</strong></p>
+                        <p style="white-space: normal;">
+                            Game modes allow you to tag games. This can be useful to differentiate between practice
+                            and league games, for example to allow separate statistics for each mode.
+                        </p>
+                        <p style="white-space: normal;">
+                            Note: Fortune 14/1 memorizes the score goal and puts it as the pre-set value for the next
+                            game you set up.
+                        </p>
+                    </li>
+                    <li>
+                        <p style="white-space: normal;"><strong>Innings Limit</strong></p>
+                        
+                        <p style="white-space: normal;">
+                            Rather than just setting the score goal, you can also additionally set a maximum number of
+                            innings to be played. If you set this to 0, there will be no limit on the number of innings.
+                        </p>
+                    </li>
+                    <li>
+                        <p style="white-space: normal;"><strong>Innings Extension</strong></p>
+                        
+                        <p style="white-space: normal;">
+                            If you set a limit for the innings and you reach this limit while having tied scores, this
+                            number will determine how many additional innings will be played. In any case, both players will
+                            be guaranteed to get the same number of additional innings. Set this value to 0 to allow
+                            the game to end with a tied score.
+                        </p>
+                    </li>
+                    <li>
+                        <p style="white-space: normal;"><strong>Handicap</strong></p>
+                        
+                        <p style="white-space: normal;">
+                            If you play against a person who plays significantly stronger or weaker than you, it might be
+                            a good idea to make the game more fair by setting up a handicap. Fortune 14/1 allows you to either
+                            set a certain amount of points as a headstart or a multiplicator with which the points this player
+                            makes will be multiplied.
+                        </p>
+                        <p style="white-space: normal;">
+                            Note: The 15 points penalty will not be affected by the multiplicator.
+                        </p>
+                    </li>
+                    <li>
+                        <p style="white-space: normal;"><strong>Game Profiles</strong></p>
+                        
+                        <p style="white-space: normal;">
+                            Most players only use a limited number of game setups, for example for league and practice games.
+                            To avoid having to set the game up over and over again, you can create game profiles that you
+                            can simply load by selecting the profile you wish to use and hit the load button.
+                        </p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div data-role="collapsible">
+            <h3>In-Game</h3>
+            
+            <p style="white-space: normal;">
+                Straight pool is a complex game with many possible scenarios. Fortune 14/1 tries to provide you with the possibility
+                to capture every scenario you can think of, while focussing on only having the most common ones directly available
+                for easy usage.
+            </p>
+            <p style="white-space: normal;">
+                By the way: Fortune 14/1 will save games automatically, so even if the app crashes, when you close it or when you
+                run out of battery, you can resume the game later on in the "Resume Game" menu.
+            </p>
+            
+            <ul data-role="listview">
+                <li>
+                    <p style="white-space: normal;"><strong>Basic Usage</strong></p>
+                    
+                    <p style="white-space: normal;">
+                        Simply select the number of balls that remain on the table when an inning ends or the balls are reracked,
+                        mark the inning with fouls or as a safety if needed and tap "Accept". Fortune 14/1 will do all the
+                        calculations for you.
+                    </p>
+                </li>
+                <li>
+                    <p style="white-space: normal;"><strong>New Rack</strong></p>
+                    
+                    <p style="white-space: normal;">
+                        If the balls are reracked during an inning, simply select either the 1-ball (typical scenario) or
+                        the cue ball (if all balls were made in the last shot) and hit Accept. Fortune 14/1 will automatically
+                        start a new inning.
+                    </p>
+                </li>
+                <li>
+                    <p style="white-space: normal;"><strong>Fouls</strong></p>
+                    
+                    <p style="white-space: normal;">
+                        Simply tap the "Fouls" button to add or remove a foul before hitting "Accept". In most cases, this will
+                        toggle between no fouls and a normal foul (which is -1 points). In certain cases, most typically for the
+                        first shot of the game, there will also be a toggle state for severe fouls (which is -2 points).
+                    </p>
+                    <p style="white-space: normal;">
+                        Fortune 14/1 will memorize consecutive fouls automatically. If a player is up to two consecutive fouls,
+                        a warning will be triggered. This is meant to support fair play as the rules typically require you
+                        to remind your opponent of being in this situation before he takes his shot. If a player fouls three
+                        times in a row, he will additionally be punished with -15 points. Additionally, the balls will be reracked
+                        and you will be given the option to switch which player continues to play.
+                    </p>
+                    <p style="white-space: normal;">
+                        Certain situations, like unsportsmanlike conduct, result in other punishments. If you tap and hold the
+                        foul button, you can manually enter an arbitrary number of points as a punishment. Optionally, you
+                        can also check whether the balls should be reracked.
+                    </p>
+                </li>
+                <li>
+                    <p style="white-space: normal;"><strong>Safety</strong></p>
+                    
+                    <p style="white-space: normal;">
+                        If an inning ends with the player calling a safety, you can mark this inning as a safety. While being
+                        irrelevant for the score or result of the game in any way, this is useful information for calculating
+                        statistics.
+                    </p>
+                </li>
+                <li>
+                    <p style="white-space: normal;"><strong>Switch Player</strong></p>
+                    
+                    <p style="white-space: normal;">
+                        The button to switch players will only be visible when switching turns is available, i.e. in the
+                        beginning of the game or after a severe foul that caused a rerack.
+                    </p>
+                </li>
+                <li>
+                    <p style="white-space: normal;"><strong>Details</strong></p>
+                    
+                    <p style="white-space: normal;">
+                        Clicking on either "Details" button will bring up a scoreboard where you can see the score sheet
+                        in the way you typically would write it down. In addition to that you will be shown the average
+                        points per inning and the highest number of balls made in one inning for each player. Simply
+                        tap the scoreboard to go back to the game.
+                    </p>
+                </li>
+                <li>
+                    <p style="white-space: normal;"><strong>Undo</strong></p>
+                    
+                    <p style="white-space: normal;">
+                        In the Details tab you will also find an "Undo" button that allows you to undo previous actions
+                        in case you made a mistake. You can go back any number of actions, but only if they have been
+                        made in the current session. This means: Closing and resumg a game will result in the loss of
+                        the ability to undo actions.
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+</div>
+
+</body>
+</html>
