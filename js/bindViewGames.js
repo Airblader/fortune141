@@ -93,6 +93,29 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
         $('#view141GamesDetailsScore1').html(tmpGame.players[0].points);
         $('#view141GamesDetailsScore2').html(tmpGame.players[1].points);
         
+        var information  = '[scoregoal][maxinnings]',
+            scoreDummy   = 'Game to [points]',
+            inningsDummy = ' / max. [innings] innings';
+        $('#view141GamesDetailsInfo').html(
+            information
+                .replace(
+                    '[scoregoal]',
+                    scoreDummy.replace(
+                        '[points]',
+                        tmpGame.scoreGoal
+                    )
+                )
+                .replace(
+                    '[maxinnings]',
+                    (tmpGame.maxInnings === 0)
+                        ? ''
+                        : inningsDummy.replace(
+                            '[innings]',
+                            tmpGame.maxInnings
+                        )
+                )
+        );
+        
         var date       = app.convertTimestamp(tmpGame.timestamp),
             dateFormat = app.settings.getDateFormat();
         $('#view141GamesDetailsDate').html(
