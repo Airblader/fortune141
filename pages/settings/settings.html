@@ -12,12 +12,16 @@
     
     <div data-role="content">
         <div data-role="fieldcontain">
-        <label for="settingsKeepScreenOn">Keep display on during games:</label>
-            <select name="settingsKeepScreenOn" id="settingsKeepScreenOn">
-                    <option value="0">Off</option>
-                    <option value="1">On, but allow dimming</option>
-                    <option value="2">On</option>
-            </select>
+            <div data-role="collapsible" data-collapsed="false">
+                <h3>General</h3>
+                
+                <label for="settingsKeepScreenOn">Keep display on during games:</label>
+                <select name="settingsKeepScreenOn" id="settingsKeepScreenOn">
+                        <option value="0">Off</option>
+                        <option value="1">On, but allow dimming</option>
+                        <option value="2">On</option>
+                </select>
+            </div>
         </div>
         
         <div data-role="fieldcontain">

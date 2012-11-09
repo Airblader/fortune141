@@ -1002,8 +1002,14 @@ function StraightPool () {
      *	Updates score display
      */
     this.updateScoreDisplay = function () {
-	$ptsPlayer[0].html(self.players[0].points);
-        $ptsPlayer[1].html(self.players[1].points);
+	var current = self.innings.length - 1;
+	var tmpPtsToAdd = new Array(
+	    (self.innings[current].ptsToAdd[0] === -1) ? 0 : self.innings[current].ptsToAdd[0],
+	    (self.innings[current].ptsToAdd[1] === -1) ? 0 : self.innings[current].ptsToAdd[1]
+	);
+
+	$ptsPlayer[0].html(self.players[0].points + tmpPtsToAdd[0]);
+        $ptsPlayer[1].html(self.players[1].points + tmpPtsToAdd[1]);
     }
     
     /*
@@ -1074,12 +1080,13 @@ function StraightPool () {
         
         // this displays the change of points (if neccessary), e.g. "+3" or "-1".
         var tmpDisplay;
-        tmpDisplay = (self.innings[ret.current].ptsToAdd[ret.currPlayer] == -1) ?
-                self.innings[ret.current].points[ret.currPlayer]
-            :
-                self.multiplicator[ret.currPlayer] * (self.innings[ret.current].ptsToAdd[ret.currPlayer] - self.innings[ret.current].foulPts[ret.currPlayer]);
+	if (self.innings[ret.current].ptsToAdd[ret.currPlayer] == -1) {
+	    tmpDisplay = self.innings[ret.current].points[ret.currPlayer];
+	} else {
+	    tmpDisplay = self.multiplicator[ret.currPlayer] * (self.innings[ret.current].ptsToAdd[ret.currPlayer] - self.innings[ret.current].foulPts[ret.currPlayer]);  
+	}
 
-        tmpDisplay = (tmpDisplay >= 0) ? ('+'+tmpDisplay) : tmpDisplay;
+        tmpDisplay = (tmpDisplay >= 0) ? ('+' + tmpDisplay) : tmpDisplay;
         $ptsPlayer[ret.currPlayer].html(tmpDisplay);
         
         // check for end of game
@@ -1164,8 +1171,9 @@ function StraightPool () {
 	
 	setTimeout(function() {
             self.updateScoreDisplay();
-	    self.setActivePlayerMarker(self.currPlayer);
-        }, 500);
+	    //self.setActivePlayerMarker(self.currPlayer);
+        }, 1000);
+	self.setActivePlayerMarker(self.currPlayer);
         
         self.updateConsecutiveFoulsDisplay();
         
