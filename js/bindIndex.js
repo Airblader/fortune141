@@ -63,16 +63,14 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
 
     app.Players.main = new Player();
     app.Players.main.create(name.name, nickname.name, image, isFavorite, displayNickname, true, function () {
+	app.updateMainUser();
+	$('#pageIndexHead').show();
+	$('#pageIndexBody').show();
 	$('#pageIndexFirstRunMainUser').hide();
 	
 	// free version information
 	if (app.freeVersionLimit.isLimited()) {
 	    $.mobile.changePage('pages/settings/freeversion.html');
-	} else {
-	    app.updateMainUser();
-	    
-	    $('#pageIndexHead').show();
-	    $('#pageIndexBody').show();
 	}
     });
     
