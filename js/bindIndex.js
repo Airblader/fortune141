@@ -71,9 +71,11 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
     // tooltips
     app.settings.setTooltipsEnabled(activateTooltips);
     
+    
+    var query = new dbFortuneQuery();
+    
     // Fill with default game profiles
-    var query1 = new dbFortuneQuery();
-    query1.add(
+    query.add(
 	'INSERT INTO '
 	    + app.dbFortune.tables.Game141Profile.name + ' '
 	    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141Profile)
@@ -81,18 +83,15 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
 	['Default', 60, 0, 1, 0, 0, 1, 1, 0, 0]
     );
     
-    query1.execute();
-    
     // Fill with default game modes
-    var query2 = new dbFortuneQuery();
-    query2.add(
+    query.add(
 	'INSERT INTO '
 	    + app.dbFortune.tables.GameModes.name + ' '
 	    + app.dbFortune.getTableFields_String(app.dbFortune.tables.GameModes)
 	    + ' VALUES (NULL, ?)',
 	['Practice Game']
     );
-    query2.add(
+    query.add(
 	'INSERT INTO '
 	    + app.dbFortune.tables.GameModes.name + ' '
 	    + app.dbFortune.getTableFields_String(app.dbFortune.tables.GameModes)
@@ -100,7 +99,7 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
 	['League Game']
     );
     
-    query2.execute();
+    query.execute();
     
     // kill this button to prevent any double-firing (we dont need it anymore anyway)
     $(document).off('click', '#firstRunMainUser_Submit');

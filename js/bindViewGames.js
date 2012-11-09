@@ -332,11 +332,11 @@ $(document).off('click', '#view141GamesDetailsViewTable')
 });
            
 function view141GamesDetailsHideScoreboard () {
+    $('#pageView141GamesDetails').data('activePage', 'pageView141GamesDetails_Main');
+    
     $('[data-role=content]').show();
     $('[data-role=header]') .show();
     $('#view141GamesDetailsScoreTableContainer').hide();
-    
-    $('#pageView141GamesDetails').data('activePage', 'pageView141GamesDetails_Main');
 }
 
 $(document).off('click', '#view141GamesDetailsScoreTableContainer')
@@ -347,6 +347,7 @@ $(document).off('click', '#view141GamesDetailsScoreTableContainer')
         fromGame = parseInt(url.param('from_game'));
     
     if (fromGame == 1) {
+        view141GamesDetailsHideScoreboard();
         $.mobile.changePage('../../index.html');
     } else {
         view141GamesDetailsHideScoreboard();

@@ -1079,19 +1079,20 @@ function StraightPool () {
             :
                 self.multiplicator[ret.currPlayer] * (self.innings[ret.current].ptsToAdd[ret.currPlayer] - self.innings[ret.current].foulPts[ret.currPlayer]);
 
-        tmpDisplay = (tmpDisplay >= 0) ? "+"+tmpDisplay : tmpDisplay;
+        tmpDisplay = (tmpDisplay >= 0) ? ('+'+tmpDisplay) : tmpDisplay;
         $ptsPlayer[ret.currPlayer].html(tmpDisplay);
         
         // check for end of game
-        if ((self.players[0].points >= self.scoreGoal || self.players[1].points >= self.scoreGoal)			// won by points
-	    || (self.maxInnings > 0											// innings limit is set
-		&& self.innings.length >= self.maxInnings								// innings limit is reached
-		&& (self.inningsExtension == 0										// either no innings extension is set or ...
-		    || (self.innings[self.innings.length-1].number - self.maxInnings) % self.inningsExtension == 0)	// ... minimum number of extension innings have been played
-		&& self.innings[self.innings.length-1].ptsToAdd[1-ret.currPlayer] == -1)				// both players had their chance
-		&& (self.players[0].points != self.players[1].points							// game not tied ...
-		    || self.inningsExtension == 0)) {									// ... except no innings extension is set
-	    
+	var wonByPoints  = (self.players[0].points >= self.scoreGoal || self.players[1].points >= self.scoreGoal);
+	var wonByInnings = (self.maxInnings > 0											// innings limit is set
+			    && self.innings.length >= self.maxInnings								// innings limit is reached
+			    && (self.inningsExtension == 0									// either no innings extension is set or ...
+				|| (self.innings[self.innings.length-1].number - self.maxInnings) % self.inningsExtension == 0)	// ... minimum number of extension innings have been played
+			    && self.innings[self.innings.length-1].ptsToAdd[1-ret.currPlayer] == -1)				// both players had their chance
+			    && (self.players[0].points != self.players[1].points						// game not tied ...
+				|| self.inningsExtension == 0);									// ... except no innings extension is set
+	
+	if (wonByPoints || wonByInnings) {
 	    self.isFinished = true;
 	    
 	    // determine winner
@@ -1131,10 +1132,17 @@ function StraightPool () {
 		self.players[idxWinner].points                         = Math.min(self.players[idxWinner].points, self.scoreGoal);
 	    }
 	    
-	    var msg = (self.winner != 0)
-			? (self.players[idxWinner].obj.getDisplayName() + ' has won the game!')
-			: 'The game ended in a tie!';
-		
+	    var msg;
+	    if (wonByPoints) {
+		msg = (self.players[idxWinner].obj.getDisplayName()) + ' has won the game!';
+	    } else {
+		if (self.winner === 0) { // ended in a tie
+		    msg = 'The game ended tie due to reaching the maximum number of innings!';
+		} else { // ended because innings limit was reached
+		    msg = (self.players[idxWinner].obj.getDisplayName()) + ' has won the game because the maximum number of innings was reached!';
+		}
+	    }
+	    
 	    app.alertDlg(
 		msg,
 		function () {
