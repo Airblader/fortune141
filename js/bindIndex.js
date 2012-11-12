@@ -49,17 +49,24 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
     name     = app.validateName(name,     true );
     nickname = app.validateName(nickname, false);
     
-    if (!name.valid || !nickname.valid) {
+    var msg = '';
+    if (!name.valid) {
+	msg = 'The name you entered is invalid! Your name has to be at least 3 characters long and should consist of both your first and last name.';
+    }
+    if (!nickname.valid) {
+	msg = 'The nickname you entered is invalid. Nicknames are optional. However, if you choose to use one, it has to be at least 3 characters long.';
+    }
+    
+    if (msg.length > 0) {
 	app.alertDlg(
-	    'A name has to be at least 3 characters long!',
+	    msg,
 	    app.dummyFalse,
-	    'Error',
+	    'Invalid name',
 	    'OK'
 	);
 	
 	return false;
     }
-    
 
     app.Players.main = new Player();
     app.Players.main.create(name.name, nickname.name, image, isFavorite, displayNickname, true, function () {
