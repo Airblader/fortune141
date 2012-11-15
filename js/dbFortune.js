@@ -232,6 +232,150 @@ function dbFortune () {
 		'0'
 	    ),
 	},
+	Game8910 : {
+	    name : 'Game8910',
+	    fields : new Array(
+		'gID',
+		'gameType',
+		'Timestamp',
+		'Player1Name',
+		'Player2Name',
+		'Player1',
+		'Player2',
+		'CurrPlayer',
+		'NumberOfSets',
+		'RacksPerSet',
+		'Score',
+		'FoulsPlayer1',
+		'FoulsPlayer2',
+		'breakType',
+		'Mode',
+		'isFinished',
+		'Winner',
+		'Comment',
+		'isUploaded',
+		'isReadyForDeletion',
+		'Shotclock',
+		'ExtensionTime',
+		'ExtensionsPerRack',
+		'ShotclockUseSound'
+	    ),
+	    types : new Array(
+		'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
+		'INTEGER',
+		'TEXT',
+		'TEXT',
+		'TEXT',
+		'INTEGER NOT NULL',
+		'INTEGER NOT NULL',
+		'BIT',
+		'INTEGER',
+		'INTEGER',
+		'TEXT',
+		'INTEGER',
+		'INTEGER',
+		'INTEGER',
+		'INTEGER',
+		'BIT',
+		'INTEGER',
+		'TEXT',
+		'BIT',
+		'BIT',
+		'INTEGER',
+		'INTEGER',
+		'INTEGERs',
+		'BIT'
+	    ),
+	    defaults : new Array(
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		'-1',
+		'-1',
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined
+	    ),
+	},
+	Game8910History : {
+	    name : 'Game8910History',
+	    fields : new Array(
+		'ID',
+		'Score',
+		'FoulsPlayer1',
+		'FoulsPlayer2',
+		'CurrPlayer'
+	    ),
+	    types : new Array(
+		'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
+		'TEXT',
+		'INTEGER',
+		'INTEGER',
+		'BIT'
+	    ),
+	    defaults : new Array(
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined
+	    )
+	},
+	Game8910Profile : {
+	    name : 'Game8910Profile',
+	    fields : new Array(
+		'ID',
+		'Name',
+		'NumberOfSets',
+		'RacksPerSet',
+		'Shotclock',
+		'ExtensionTime',
+		'ExtensionsPerRack',
+		'ShotclockUseSound',
+		'GameMode',
+		'Usage'
+	    ),
+	    types : new Array(
+		'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
+		'TEXT',
+		'INTEGER',
+		'INTEGER',
+		'INTEGER',
+		'INTEGER',
+		'INTEGER',
+		'BIT',
+		'INTEGER',
+		'INTEGER'
+	    ),
+	    defaults : new Array(
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined,
+		undefined
+	    )
+	},
 	GameModes : {
 	    name : 'GameModes',
 	    fields : new Array(
@@ -273,12 +417,29 @@ function dbFortune () {
 		    tx.executeSql( self.getDropTableStatement(self.tables[name]) );
 		});
 		
+		tx.executeSql( self.getCreateTableStatement(self.tables['Player'])         );
+		tx.executeSql( self.getCreateTableStatement(self.tables['Game141'])        );
+		tx.executeSql( self.getCreateTableStatement(self.tables['Game141History']) );
+		tx.executeSql( self.getCreateTableStatement(self.tables['Game141Profile']) );
+		tx.executeSql( self.getCreateTableStatement(self.tables['GameModes'])      );
+		
 		// create all tables
-		$.each(self.tables, function (name, obj) {
-		    tx.executeSql( self.getCreateTableStatement(self.tables[name]) );
-		});
+		//$.each(self.tables, function (name, obj) {
+		//    tx.executeSql( self.getCreateTableStatement(self.tables[name]) );
+		//});
 	    }
 	);
+	
+	// Game8910 Tables
+	Migrator.addMigration(
+	    2,
+	    function (tx) {
+		tx.executeSql( self.getCreateTableStatement(self.tables['Game8910'])        );
+		tx.executeSql( self.getCreateTableStatement(self.tables['Game8910History']) );
+		tx.executeSql( self.getCreateTableStatement(self.tables['Game8910Profile']) );
+	    }
+	)
+	
 	
 	Migrator.start(
 	    function (initialVersion) {

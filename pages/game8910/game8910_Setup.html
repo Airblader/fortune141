@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+
+<div data-role="page" id="pageGame8910Setup">
+    <div id="game8910SetupHead" data-role="header" data-tap-toggle="false">
+        <a href="../../index.html" data-icon="arrow-l">Back</a>
+        <h1>Game Setup</h1>
+    </div>
+    
+    <div id="game8910SetupChoosePlayerHead" data-role="header">
+        <a href="#" id="game8910SetupChoosePlayerHeadBackLink" data-icon="arrow-l">Back</a>
+        <h1>Select Players</h1>
+    </div>
+    
+    <div data-role="content" id="game8910Setup1">
+        <input type="button" id="game8910SetupSubmitButton" value="Start Game" data-theme="e" />
+        
+        <div class="ui-grid-a ui-bar" id="game8910SetupPlayerGrid">
+            <div class="ui-block-a" id="game8910SetupPlayer0">
+                <span id="game8910SetupPlayer0Name" data-pid="-1">Player 1</span>
+                <br />
+                <img src="../../img/players/playerDummy.jpg" id="game8910SetupPlayer0Img" class="userPictureBig" />
+            </div>
+            <div class="ui-block-b" id="game8910SetupPlayer1">
+                <span id="game8910SetupPlayer1Name" data-pid="-1">Player 2</span>
+                <br />
+                <img src="../../img/players/playerDummy.jpg" id="game8910SetupPlayer1Img" class="userPictureBig" />
+            </div>
+        </div>
+        
+        <div data-role="fieldcontain">
+            <select name="game8910SetupGameType" id="game8910SetupGameType">
+                <option value="8">8-Ball</option>
+                <option value="9">9-Ball</option>
+                <option value="10">10-Ball</option>
+            </select>
+        </div>
+        
+        <div data-role="fieldcontain">
+            <select name="game8910SetupGameBreakType" id="game8910SetupGameBreakType">
+                <option value="0">Winner Break</option>
+                <option value="1">Loser Break</option>
+                <option value="2">Alternate Break</option>
+            </select>
+        </div>
+        
+        <div data-role="fieldcontain">
+            <select name="game8910SetupGameMode" id="game8910SetupGameMode">
+                <!-- Dynamically created -->
+            </select>
+        </div>
+        
+        <div data-role="fieldcontain">
+            <div data-role="fieldcontain">
+                <label for="game8910SetupRacksPerSet">Race To</label>
+                <input type="range" name="game8910SetupRacksPerSet" id="game8910SetupRacksPerSet" value="6" min="1" max="25" step="1" />
+            </div>
+
+            <div data-role="fieldcontain">
+                <label for="game8910SetupNumberOfSets">Number of Sets</label>
+                <input type="range" name="game8910SetupNumberOfSets" id="game8910SetupNumberOfSets" value="1" min="1" max="15" step="1" />
+            </div>
+        </div>
+        
+        <div data-role="fieldcontain">
+            <div data-role="collapsible">
+                <h3>Shotclock</h3>
+            
+                <div data-role="fieldcontain">
+                    <label for="game8910SetupShotclock">Shotclock</label>
+                    <input type="range" name="game8910SetupShotclock" id="game8910SetupShotclock" value="0" min="0" max="60" step="5" />
+                </div>
+                    
+                <div data-role="fieldcontain">
+                    <label for="game8910SetupExtension">Extension Time</label>
+                    <input type="range" name="game8910SetupExtension" id="game8910SetupExtension" value="10" min="0" max="60" step="5" />
+                </div>
+                    
+                <div data-role="fieldcontain">
+                    <label for="game8910SetupExtensionsPerRack">Extensions per Rack</label>
+                    <input type="range" name="game8910SetupExtensionsPerRack" id="game8910SetupExtensionsPerRack" value="1" min="0" max="3" step="1" />
+                </div>
+            </div>
+        </div>
+        
+        <div data-role="fieldcontain">
+            <select name="game8910SetupLoadProfileSelect" id="game8910SetupLoadProfileSelect">
+                <!-- Dynamically created -->
+            </select>
+            <input type="button" id="game8910SetupLoadProfileButton" value="Load Game Profile" />
+        </div>
+    </div>
+    
+    <!-- Player List -->
+    <div data-role="content" id="game8910Setup2">
+        
+    </div>
+    
+    <!-- Anonymous Player -->
+    <div data-role="content" id="game8910SetupAnonPlayer">
+        <h2>Anonymous Player</h2>
+        <p>You can enter a name manually here to play against someone who you don't want to create a player profile for.</p>
+        
+        <div data-role="fieldcontain">
+            <label for="game8910AnonPlayer_Name">Full Name</label>
+            <input type="text" id="game8910AnonPlayer_Name" name="game8910AnonPlayer_Name" value="" />
+        </div>
+        
+        <div data-role="fieldcontain">
+            <input type="button" id="game8910AnonPlayer_Submit" name="game8910AnonPlayer_Submit" value="Submit" />
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

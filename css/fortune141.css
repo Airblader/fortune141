@@ -372,6 +372,159 @@ input {
 }
 
 
+#pageGame8910 #pageContent {
+    padding: 0;
+    margin:  0;
+    width:   100%;
+}
+
+#pageGame8910 .ui-grid-solo {
+    width: 100%;
+    margin-top: 0;
+    
+    text-align: center;
+}
+
+#pageGame8910 .ui-grid-solo .ui-block-a {
+    width: 100%;
+}
+
+#pageGame8910 .ui-grid-a .ui-block-a,
+#pageGame8910 .ui-grid-a .ui-block-b {
+    width: 50%;
+}
+
+#pageGame8910 #shotClock {
+    height:      30px;
+    line-height: 30px;
+    
+    text-align: right;
+}
+
+#pageGame8910 #shotClock #remainingTime {
+    height: 100%;
+    
+    float: left;
+    position: relative;
+    left: 0;
+    top:  0;
+    
+    background: rgb(207,4,4);
+    
+    background: -moz-linear-gradient(left,  rgba(207,4,4,1) 0%, rgba(255,48,25,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(207,4,4,1)), color-stop(100%,rgba(255,48,25,1)));
+    background: -webkit-linear-gradient(left,  rgba(207,4,4,1) 0%,rgba(255,48,25,1) 100%);
+    background: -o-linear-gradient(left,  rgba(207,4,4,1) 0%,rgba(255,48,25,1) 100%);
+    background: -ms-linear-gradient(left,  rgba(207,4,4,1) 0%,rgba(255,48,25,1) 100%);
+    background: linear-gradient(to right,  rgba(207,4,4,1) 0%,rgba(255,48,25,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cf0404', endColorstr='#ff3019',GradientType=1 );
+}
+
+#pageGame8910 #btnExtension {
+    height: 50px;
+    line-height: 50px;
+    
+    backgroumd: #333;
+    
+    background-image: -webkit-gradient(linear, left top, left bottom, from( #444 /*{a-bup-background-start}*/), to( #2d2d2d /*{a-bup-background-end}*/)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/); /* FF3.6 */
+    background-image:     -ms-linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/); /* IE10 */
+    background-image:      -o-linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/); /* Opera 11.10+ */
+    background-image:         linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/);
+    
+    box-sizing:         border-box;
+    -moz-box-sizing:    border-box; /* Firefox */
+    -webkit-box-sizing: border-box; /* Safari */
+    
+    border: 1px solid #111;
+    border-left-width: 0;
+    border-right-width:  0;
+    
+    color: #fff;
+    text-shadow: 0 1px 1px #111;
+    
+    cursor: pointer;
+}
+
+#pageGame8910 #btnExtension .btnDown {
+    background: #222;
+    
+    background-image: -webkit-gradient(linear, left top, left bottom, from( #202020 /*{a-bdown-background-start}*/), to( #2c2c2c /*{a-bdown-background-end}*/)); /* Saf4+, Chrome */
+    background-image: -webkit-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* Chrome 10+, Saf5.1+ */
+    background-image:    -moz-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* FF3.6 */
+    background-image:     -ms-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* IE10 */
+    background-image:      -o-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* Opera 11.10+ */
+    background-image:         linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); 
+}
+
+#pageGame8910 #mainPanel {
+    width: 100%;
+    margin-bottom: 0;
+    text-align: center;
+    text-shadow: none;
+    
+    border-bottom: 1px solid black;
+}
+
+#pageGame8910 #mainPanel #setScore1,
+#pageGame8910 #mainPanel #setScore2 {
+    height: 40px;
+    line-height: 40px;
+    
+    border-bottom: 1px solid black;
+}
+
+#pageGame8910 #mainPanel #setScore1,
+#pageGame8910 #mainPanel #setScore2 {
+    font-size: large;
+    font-weight: bold;
+}
+
+#pageGame8910 #mainPanel #setScore1 span {
+    margin-right: 10px;    
+}
+
+#pageGame8910 #mainPanel #setScore2 span {
+    margin-left: 10px;
+}
+
+#pageGame8910 #mainPanel #setScore1 {
+    text-align: right;
+    border-right: 1px solid black;
+}
+
+#pageGame8910 #mainPanel #setScore2 {
+    text-align: left;
+}
+
+#pageGame8910 #mainPanel #mainPlayer1 {
+    /**/
+    border-right: 1px solid black;
+}
+
+#pageGame8910 #mainPanel #mainPlayer2 {
+    /**/
+}
+
+#pageGame8910 #setOverviewWrapper {
+    height:      40px;
+    line-height: 40px;
+    border-bottom: 1px solid black;
+}
+
+#pageGame8910Setup #game8910SetupPlayerGrid {
+    text-align: center;
+    cursor: pointer;
+}
+
+#pageGame8910Setup #game8910SetupPlayer0Name,
+#pageGame8910Setup #game8910SetupPlayer1Name {
+    font-size: 12pt;
+    text-shadow: none;
+}
+
+
 .userPictureSmall, .userPictureMedium, .userPictureBig {
     border: 1px solid black;
     

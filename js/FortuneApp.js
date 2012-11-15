@@ -312,12 +312,14 @@ function FortuneApp () {
 	    {
 		quality: 100,
 		destinationType: Camera.DestinationType.FILE_URI,
+		mediaType: navigator.camera.MediaType.PICTURE,
 		sourceType: mode,
 		allowEdit: true,
 		encodingType: Camera.EncodingType.JPEG,
 		targetWidth: 120,
 		targeHeight: 120,
 		saveToPhotoAlbum: self.settings.getSaveToAlbum(),
+		correctOrientation: true,
 	    }
 	);
     }
