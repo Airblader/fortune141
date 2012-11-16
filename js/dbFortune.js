@@ -342,6 +342,8 @@ function dbFortune () {
 	    fields : new Array(
 		'ID',
 		'Name',
+		'GameType',
+		'BreakType',
 		'NumberOfSets',
 		'RacksPerSet',
 		'Shotclock',
@@ -359,11 +361,15 @@ function dbFortune () {
 		'INTEGER',
 		'INTEGER',
 		'INTEGER',
+		'INTEGER',
+		'INTEGER',
 		'BIT',
 		'INTEGER',
 		'INTEGER'
 	    ),
 	    defaults : new Array(
+		undefined,
+		undefined,
 		undefined,
 		undefined,
 		undefined,

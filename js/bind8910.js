@@ -83,7 +83,7 @@ $(document).on('pageshow', '#pageGame8910Setup', function () {
     $('#game8910SetupAnonPlayer')  .hide();
     $('#game8910SetupSubmitButton').button('disable');
     
-    // TODO Free version limit
+    // Free version limit
     if (app.freeVersionLimit.isLimited()) {
         $game8910SetupNumberOfSets.attr('max', app.freeVersionLimit.limits.GAME8910_MAX_SETS)         .slider('refresh');
         $game8910SetupRacksPerSet .attr('max', app.freeVersionLimit.limits.GAME8910_MAX_RACKS_PER_SET).slider('refresh');
@@ -257,7 +257,15 @@ $(document).off('click', '#game8910SetupLoadProfileButton')
 	    }
 	    
 	    var row = result.rows.item(0);
-	    // TODO load settings
+	    $('#game8910SetupNumberOfSets')     .val(row['NumberOfSets'])     .slider('refresh');
+	    $('#game8910SetupRacksPerSet')      .val(row['RacksPerSet'])      .slider('refresh');
+	    $('#game8910SetupShotclock')        .val(row['Shotclock'])        .slider('refresh');
+	    $('#game8910SetupExtension')        .val(row['ExtensionTime'])    .slider('refresh');
+	    $('#game8910SetupExtensionsPerRack').val(row['ExtensionsPerRack']).slider('refresh');
+	    $('#game8910SetupShotclockUseSound').val(row['ShotclockUseSound']).slider('refresh');
+	    $('#game8910SetupGameType')         .val(row['GameType'])         .trigger('change');
+	    $('#game8910SetupGameBreakType')    .val(row['BreakType'])        .trigger('change');
+	    $('#game8910SetupGameMode')         .val(row['GameMode'])         .trigger('change');
 	    
 	    // increase usage counter
 	    app.dbFortune.query(
@@ -298,7 +306,9 @@ $(document).off('click', '#game8910SetupSubmitButton')
 	   .on ('click', '#game8910SetupSubmitButton', function (event) {
     event.preventDefault();
     
-    // TODO Save memorized variables
+    window.localStorage.setItem('game8910_gameType',    $('#game8910SetupGameType').val()),
+    window.localStorage.setItem('game8910_breakType',   $('#game8910SetupGameBreakType').val()),
+    window.localStorage.setItem('game8910_racksPerSet', $('#game8910SetupRacksPerSet').val());
     
     $.mobile.changePage('game8910.html', {
 	data : {
