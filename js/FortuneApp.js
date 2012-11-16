@@ -305,7 +305,7 @@ function FortuneApp () {
 	navigator.camera.getPicture(
 	    onSuccess,
 	    function (msg) {
-		if (msg.toLowerCase().indexOf('camera cancelled') == -1) {
+		if (msg.toLowerCase().indexOf('cancelled') == -1) {
 		    onError(msg);
 		}
 	    },

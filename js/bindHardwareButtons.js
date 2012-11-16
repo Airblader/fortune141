@@ -26,7 +26,7 @@ function onBackButtonPress () {
             app.exitApp(true);
             break;
         
-        case 'pageGame141': // TODO
+        case 'pageGame141':
             switch (subID) {
                 case 'pageGame141_DetailsPanel':
                     app.currentGame.closeDetailsPanel();
@@ -38,7 +38,8 @@ function onBackButtonPress () {
             }
             
             break;
-        case 'pageGame141Setup': // TODO
+        
+        case 'pageGame141Setup':
             switch (subID) {
                 case 'pageGame141Setup_PlayerList':
                     game141HidePlayerList();
@@ -69,6 +70,21 @@ function onBackButtonPress () {
                     break;
             }
             
+            break;
+        
+        case 'pageGame8910Setup':
+            switch (subID) {
+                case 'pageGame8910Setup_PlayerList':
+                    game8910HidePlayerList();
+                    break;
+                case 'pageGame8910Setup_AnonPlayer':
+                    game8910HideAnonPlayer();
+                    break;
+                case 'pageGame8910Setup_Main':
+                default:
+                    $.mobile.changePage(getLinkFromBackButton());
+                    break;
+            }
             break;
         
         case 'pageFreeVersion':

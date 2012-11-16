@@ -36,7 +36,6 @@ function game141HidePlayerList () {
 }
 
 function game141OnListClick (pID) {
-    $game141Setup2 = $('#game141Setup2');
     game141SetPlayer($('#game141Setup2').data('player'), pID);
     
     game141HidePlayerList();
@@ -321,6 +320,7 @@ function game141HideAnonPlayer() {
     $('#game141Setup1')               .show();
     $('#game141SetupHead')            .show();
 }
+
 $(document).off('click', '#game141AnonPlayer_Submit')
            .on ('click', '#game141AnonPlayer_Submit', function (event) {
     event.preventDefault();
