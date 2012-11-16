@@ -1,11 +1,12 @@
 function AppSettings () {
     var self = this;
     
-    var keyKeepScreenOnDuring141Game = 'keepScreenOnDuring141Game',
-        keyDateFormat                = 'dateFormat',
-        keyLanguage                  = 'language',
-        keyTooltips                  = 'tooltips',
-        keySaveToAlbum               = 'saveToAlbum';
+    var keyKeepScreenOnDuring141Game  = 'keepScreenOnDuring141Game',
+        keyKeepScreenOnDuring8910Game = 'keepScreenOnDuring8910Game',
+        keyDateFormat                 = 'dateFormat',
+        keyLanguage                   = 'language',
+        keyTooltips                   = 'tooltips',
+        keySaveToAlbum                = 'saveToAlbum';
         
     this.get = function (key) {
         return window.localStorage.getItem(key) || arguments[1];
@@ -19,6 +20,13 @@ function AppSettings () {
     }
     this.setKeepScreenOnDuring141Game = function (keepScreenOn) {
         self.set(keyKeepScreenOnDuring141Game, keepScreenOn);
+    }
+    
+    this.getKeepScreenOnDuring8910Game = function () {
+        return parseInt(self.get(keyKeepScreenOnDuring8910Game, 0));
+    }
+    this.setKeepScreenOnDuring8910Game = function (keepScreenOn) {
+        self.set(keyKeepScreenOnDuring8910Game, keepScreenOn);
     }
     
     this.getDateFormat = function () {

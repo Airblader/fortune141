@@ -316,3 +316,12 @@ $(document).off('click', '#game8910SetupSubmitButton')
 	}	
     });
 });
+	   
+$(document).on('pageshow', '#pageGame8910', function () {
+    var url = $.url( $.url().attr('fragment') );
+    
+    window.propertiesManager.setKeepScreenOn(app.settings.getKeepScreenOnDuring8910Game());
+    
+    $('#shotClockWrapper').hide();
+    $('#setOverviewWrapper').hide();
+});
