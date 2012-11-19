@@ -257,12 +257,15 @@ $(document).off('click', '#game8910SetupLoadProfileButton')
 	    }
 	    
 	    var row = result.rows.item(0);
+	    
+	    var useSoundValue = String(row['ShotclockUseSound'] == 1);
+	    
 	    $('#game8910SetupNumberOfSets')     .val(row['NumberOfSets'])     .slider('refresh');
 	    $('#game8910SetupRacksPerSet')      .val(row['RacksPerSet'])      .slider('refresh');
 	    $('#game8910SetupShotclock')        .val(row['Shotclock'])        .slider('refresh');
 	    $('#game8910SetupExtension')        .val(row['ExtensionTime'])    .slider('refresh');
 	    $('#game8910SetupExtensionsPerRack').val(row['ExtensionsPerRack']).slider('refresh');
-	    $('#game8910SetupShotclockUseSound').val(row['ShotclockUseSound']).slider('refresh');
+	    $('#game8910SetupShotclockUseSound').val(useSoundValue)           .slider('refresh');
 	    $('#game8910SetupGameType')         .val(row['GameType'])         .trigger('change');
 	    $('#game8910SetupGameBreakType')    .val(row['BreakType'])        .trigger('change');
 	    $('#game8910SetupGameMode')         .val(row['GameMode'])         .trigger('change');
@@ -312,7 +315,17 @@ $(document).off('click', '#game8910SetupSubmitButton')
     
     $.mobile.changePage('game8910.html', {
 	data : {
-	    // TODO Send data
+	    player0           : $('#game8910SetupPlayer0Name')  .data('pid'),
+	    player1           : $('#game8910SetupPlayer1Name')  .data('pid'),
+	    gameType          : $('#game8910SetupGameType')     .val(),
+	    breakType         : $('#game8910SetupGameBreakType').val(),
+	    mode              : $('#game8910SetupGameMode')     .val(),
+	    racksPerSet       : $('#game8910SetupRacksPerSet')  .val(),
+	    numberOfSets      : $('#game8910SetupNumberOfSets') .val(),
+	    shotClock         : $('#game8910SetupShotclock')    .val(),
+	    extensionTime     : $('#game8910SetupExtension')    .val(),
+	    extensionsPerRack : $('#game8910SetupExtensionsPerRack').val(),
+	    useSoundWarning   : $('#game8910SetupShotclockUseSound').val() === 'true',
 	}	
     });
 });
@@ -324,4 +337,28 @@ $(document).on('pageshow', '#pageGame8910', function () {
     
     $('#shotClockWrapper').hide();
     $('#setOverviewWrapper').hide();
+    
+    var gID  = parseInt(url.param('gID')),
+	load = true;
+    if (typeof gID === 'undefined' || isNaN(gID)) {
+	load = false;
+	
+	// TODO
+    }
+    
+    app.currentGame = new Game8910();
+    if (load) {
+	app.currentGame.loadGame(
+	    gID,
+	    app.currentGame.initUI
+	);
+    } else {
+	app.currentGame.initNewGame( // TODO Arguments
+	    function () {
+		app.currentGame.setPlayers(
+		    app.currentGame.initUI
+		);
+	    }
+	);
+    }
 });

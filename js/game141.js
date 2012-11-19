@@ -232,8 +232,8 @@ function StraightPool () {
     
     this.debugMode = app.debugMode;
     
-    this.gameID        = -1;
-    this.historyStack  = new Array();
+    this.gameID       = -1;
+    this.historyStack = new Array();
     
     var btnAcceptPressed = false,
         yesno            = new Array("Yes", "No");

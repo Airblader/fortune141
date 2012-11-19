@@ -429,10 +429,30 @@ function dbFortune () {
 		tx.executeSql( self.getCreateTableStatement(self.tables['Game141Profile']) );
 		tx.executeSql( self.getCreateTableStatement(self.tables['GameModes'])      );
 		
-		// create all tables
-		//$.each(self.tables, function (name, obj) {
-		//    tx.executeSql( self.getCreateTableStatement(self.tables[name]) );
-		//});
+		// Fill with default game profiles
+		tx.executeSql(
+		    'INSERT INTO '
+			+ app.dbFortune.tables.Game141Profile.name + ' '
+			+ app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141Profile)
+			+ ' VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		    ['Default', 60, 0, 1, 0, 0, 1, 1, 0, 0]
+		);
+		
+		// Fill with default game modes
+		tx.executeSql(
+		    'INSERT INTO '
+			+ app.dbFortune.tables.GameModes.name + ' '
+			+ app.dbFortune.getTableFields_String(app.dbFortune.tables.GameModes)
+			+ ' VALUES (NULL, ?)',
+		    ['Practice Game']
+		);
+		tx.executeSql(
+		    'INSERT INTO '
+			+ app.dbFortune.tables.GameModes.name + ' '
+			+ app.dbFortune.getTableFields_String(app.dbFortune.tables.GameModes)
+			+ ' VALUES (NULL, ?)',
+		    ['League Game']
+		);
 	    }
 	);
 	

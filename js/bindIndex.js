@@ -84,36 +84,6 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
     // tooltips
     app.settings.setTooltipsEnabled(activateTooltips);
     
-    
-    var query = new dbFortuneQuery();
-    
-    // Fill with default game profiles
-    query.add(
-	'INSERT INTO '
-	    + app.dbFortune.tables.Game141Profile.name + ' '
-	    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game141Profile)
-	    + ' VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-	['Default', 60, 0, 1, 0, 0, 1, 1, 0, 0]
-    );
-    
-    // Fill with default game modes
-    query.add(
-	'INSERT INTO '
-	    + app.dbFortune.tables.GameModes.name + ' '
-	    + app.dbFortune.getTableFields_String(app.dbFortune.tables.GameModes)
-	    + ' VALUES (NULL, ?)',
-	['Practice Game']
-    );
-    query.add(
-	'INSERT INTO '
-	    + app.dbFortune.tables.GameModes.name + ' '
-	    + app.dbFortune.getTableFields_String(app.dbFortune.tables.GameModes)
-	    + ' VALUES (NULL, ?)',
-	['League Game']
-    );
-    
-    query.execute();
-    
     // kill this button to prevent any double-firing (we dont need it anymore anyway)
     $(document).off('click', '#firstRunMainUser_Submit');
     return true;
