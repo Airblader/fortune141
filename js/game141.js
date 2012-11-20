@@ -1481,15 +1481,15 @@ function StraightPool () {
 	}
 	
 	// now we make the buttons work
-	$btnAccept                  .off('vclick')    .on('vclick',     self.handleAcceptButton           );
-	$btnFoul                    .off('vclick')    .on('vclick',     self.handleFoulButtonTap          );
+	$btnAccept                  .off('vclick') .on('vclick',  self.handleAcceptButton           );
+	$btnFoul                    .off('vclick') .on('vclick',  self.handleFoulButtonTap          );
 	$btnFoul                    .off('taphold').on('taphold', self.handleFoulButtonHold         );
-	$btnSafety                  .off('vclick')    .on('vclick',     self.handleSafetyButton           );
+	$btnSafety                  .off('vclick') .on('vclick',  self.handleSafetyButton           );
 	$('.minimizePanel')         .off('click')  .on('click',   self.handleMinimizeMainPanelButton);
 	$btnPlayerSwitch            .off('click')  .on('click',   self.handlePlayerSwitchButton     );
 	$('#severeFoulSubmitButton').off('click')  .on('click',   self.handleSevereFoulSubmitButton );
 	$('#detailsScoreBoard')     .off('click')  .on('click',   self.closeDetailsPanel            );
-	$btnUndo                    .off('vclick')    .on('vclick',     self.handleUndoButton             );
+	$btnUndo                    .off('vclick') .on('vclick',  self.handleUndoButton             );
 	
 	$('#severeFoulMinusButton').off('vclick')
 				   .on ('vclick', function (event) {

@@ -335,15 +335,22 @@ $(document).on('pageshow', '#pageGame8910', function () {
     
     window.propertiesManager.setKeepScreenOn(app.settings.getKeepScreenOnDuring8910Game());
     
-    $('#shotClockWrapper').hide();
-    $('#setOverviewWrapper').hide();
-    
     var gID  = parseInt(url.param('gID')),
 	load = true;
     if (typeof gID === 'undefined' || isNaN(gID)) {
 	load = false;
 	
-	// TODO
+	var player0           = parseInt(url.param('player0')),
+	    player1           = parseInt(url.param('player1')),
+	    gameType          = parseInt(url.param('gameType')),
+	    breakType         = parseInt(url.param('breakType')),
+	    mode              = parseInt(url.param('mode')),
+	    racksPerSet       = parseInt(url.param('racksPerSet')),
+	    numberOfSets      = parseInt(url.param('numberOfSets')),
+	    shotClock         = parseInt(url.param('shotClock')),
+	    extensionTime     = parseInt(url.param('extensionTime')),
+	    extensionsPerRack = parseInt(url.param('extensionsPerRack')),
+	    useSoundWarning   = url.param('useSoundWarning') === 'true';
     }
     
     app.currentGame = new Game8910();
@@ -353,7 +360,8 @@ $(document).on('pageshow', '#pageGame8910', function () {
 	    app.currentGame.initUI
 	);
     } else {
-	app.currentGame.initNewGame( // TODO Arguments
+	app.currentGame.initNewGame(
+	    gameType, breakType, mode, racksPerSet, numberOfSets, shotClock, extensionTime, extensionsPerRack, useSoundWarning,
 	    function () {
 		app.currentGame.setPlayers(
 		    app.currentGame.initUI

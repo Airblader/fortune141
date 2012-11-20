@@ -13,37 +13,46 @@
     <div data-role="content" id="pageContent">
         <div class="ui-grid-solo" id="shotClockWrapper">
             <div class="ui-block-a" id="shotClock">
-                <div id="remainingTime" style="width: 65%;">
+                <div id="remainingTime">
                 </div>
-                <span>
-                    9
+                <span id="game8910ShotClockRemainingTime">
                 </span>
-                <span style="margin-right: 10px;">
+                <span id="game8910ShotClockRemainingTimeSuffix">
                     &thinsp;s
                 </span>
             </div>
-            <div class="ui-block-a" id="btnExtension">
+            <div class="ui-block-a btnUp" id="btnExtension">
                 Call Extension
             </div>
         </div>
         
         <div class="ui-grid-a" id="mainPanel">
             <div class="ui-block-a" id="setScore1">
-                <span>3</span>
+                <div id="setScore1Bar">
+                </div>
+                <span id="setScore1Value"></span>
             </div>
             <div class="ui-block-b" id="setScore2">
-                <span>2</span>
+                <span id="setScore2Value"></span>
+                <div id="setScore2Bar">
+                </div>
             </div>
             
             <div class="ui-block-a" id="mainPlayer1">
-                <p>Ingo Bürk</p>
+                <p id="mainPlayer1Name"></p>
                 
-                <img src="../../img/players/playerDummy.jpg" class="userPictureBig" />
+                <img src="../../img/players/playerDummy.jpg" id="mainPlayer1Img" class="userPictureBig" />
             </div>
             <div class="ui-block-b" id="mainPlayer2">
-                <p>Max Muster</p>
+                <p id="mainPlayer2Name"></p>
                 
-                <img src="../../img/players/playerDummy.jpg" class="userPictureBig" />
+                <img src="../../img/players/playerDummy.jpg" id="mainPlayer2Img" class="userPictureBig" />
+            </div>
+        </div>
+        
+        <div class="ui-grid-solo" id="btnUndoWrapper">
+            <div class="ui-block-a btnUp" id="btnUndo">
+                Undo
             </div>
         </div>
         

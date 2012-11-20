@@ -237,7 +237,8 @@ function dbFortune () {
 	    fields : new Array(
 		'gID',
 		'gameType',
-		'Timestamp',
+		'StartTimestamp',
+		'EndTimestamp',
 		'Player1Name',
 		'Player2Name',
 		'Player1',
@@ -266,6 +267,7 @@ function dbFortune () {
 		'TEXT',
 		'TEXT',
 		'TEXT',
+		'TEXT',
 		'INTEGER NOT NULL',
 		'INTEGER NOT NULL',
 		'BIT',
@@ -287,6 +289,7 @@ function dbFortune () {
 		'BIT'
 	    ),
 	    defaults : new Array(
+		undefined,
 		undefined,
 		undefined,
 		undefined,

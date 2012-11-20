@@ -346,9 +346,9 @@ input {
     background-image:         linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/);
     
     border: 1px solid #111;
-    border-top-width: 0;
-    border-right-width:  0;
-    border-left-width: 0;
+    border-top-width:   0;
+    border-right-width: 0;
+    border-left-width:  0;
     
     color: #fff;
     text-shadow: 0 1px 1px #111;
@@ -358,8 +358,6 @@ input {
 
 #pageGame141 #panelDetails .panelButtonDown {
     border: 1px solid #000;
-    border-top-width: 0;
-    border-right-width:  0;
     
     background: #222;
     
@@ -395,6 +393,8 @@ input {
 }
 
 #pageGame8910 #shotClock {
+    position: relative;
+    
     height:      30px;
     line-height: 30px;
     
@@ -403,9 +403,10 @@ input {
 
 #pageGame8910 #shotClock #remainingTime {
     height: 100%;
+    width:  0%;
     
-    float: left;
-    position: relative;
+    position: absolute;
+    z-index: 1;
     left: 0;
     top:  0;
     
@@ -417,11 +418,22 @@ input {
     background: -o-linear-gradient(left,  rgba(207,4,4,1) 0%,rgba(255,48,25,1) 100%);
     background: -ms-linear-gradient(left,  rgba(207,4,4,1) 0%,rgba(255,48,25,1) 100%);
     background: linear-gradient(to right,  rgba(207,4,4,1) 0%,rgba(255,48,25,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cf0404', endColorstr='#ff3019',GradientType=1 );
 }
 
-#pageGame8910 #btnExtension {
-    height: 50px;
+#pageGame8910 #shotClock #game8910ShotClockRemainingTime,
+#pageGame8910 #shotClock #game8910ShotClockRemainingTimeSuffix {
+    position: relative;
+    z-index: 2;
+    
+    text-shadow: none;
+}
+
+#pageGame8910 #shotClock #game8910ShotClockRemainingTimeSuffix {
+    margin-right: 10px;
+}
+
+#pageGame8910 .btnUp {
+    height:      50px;
     line-height: 50px;
     
     backgroumd: #333;
@@ -447,7 +459,7 @@ input {
     cursor: pointer;
 }
 
-#pageGame8910 #btnExtension .btnDown {
+#pageGame8910 .btnDown {
     background: #222;
     
     background-image: -webkit-gradient(linear, left top, left bottom, from( #202020 /*{a-bdown-background-start}*/), to( #2c2c2c /*{a-bdown-background-end}*/)); /* Saf4+, Chrome */
@@ -463,20 +475,56 @@ input {
     margin-bottom: 0;
     text-align: center;
     text-shadow: none;
+}
+
+#pageGame8910 #setScore1Bar,
+#pageGame8910 #setScore2Bar {
+    height: 100%;
+    width:  0%;
     
-    border-bottom: 1px solid black;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+}
+
+#pageGame8910 #setScore1Bar {
+    left: 0;
+	
+    background: rgb(0,200,0);
+    background: -moz-linear-gradient(left,  rgba(0,200,0,1) 0%, rgba(0,255,0,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,200,0,1)), color-stop(100%,rgba(0,255,0,1)));
+    background: -webkit-linear-gradient(left,  rgba(0,200,0,1) 0%,rgba(0,255,0,1) 100%);
+    background: -o-linear-gradient(left,  rgba(0,200,0,1) 0%,rgba(0,255,0,1) 100%);
+    background: -ms-linear-gradient(left,  rgba(0,200,0,1) 0%,rgba(0,255,0,1) 100%);
+    background: linear-gradient(to right,  rgba(0,200,0,1) 0%,rgba(0,255,0,1) 100%);
+}
+#pageGame8910 #setScore2Bar {
+    right: 0;
+	
+    background: rgb(0,255,0);
+    background: -moz-linear-gradient(left,  rgba(0,255,0,1) 0%, rgba(0,200,0,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,255,0,1)), color-stop(100%,rgba(0,200,0,1)));
+    background: -webkit-linear-gradient(left,  rgba(0,255,0,1) 0%,rgba(0,200,0,1) 100%);
+    background: -o-linear-gradient(left,  rgba(0,255,0,1) 0%,rgba(0,200,0,1) 100%);
+    background: -ms-linear-gradient(left,  rgba(0,255,0,1) 0%,rgba(0,200,0,1) 100%);
+    background: linear-gradient(to right,  rgba(0,255,0,1) 0%,rgba(0,200,0,1) 100%);
 }
 
 #pageGame8910 #mainPanel #setScore1,
 #pageGame8910 #mainPanel #setScore2 {
+    position: relative;
+    
     height: 40px;
     line-height: 40px;
     
     border-bottom: 1px solid black;
 }
 
-#pageGame8910 #mainPanel #setScore1,
-#pageGame8910 #mainPanel #setScore2 {
+#pageGame8910 #mainPanel #setScore1 span,
+#pageGame8910 #mainPanel #setScore2 span {
+    position: relative;
+    z-index: 2;
+    
     font-size: large;
     font-weight: bold;
 }
@@ -508,9 +556,17 @@ input {
 }
 
 #pageGame8910 #setOverviewWrapper {
-    height:      40px;
-    line-height: 40px;
+    margin:  0;
+    padding: 0;
+    
     border-bottom: 1px solid black;
+}
+
+#pageGame8910 #setOverview {
+    margin:  0;
+    padding: 0;
+    
+    text-align: center;
 }
 
 #pageGame8910Setup #game8910SetupPlayerGrid {
