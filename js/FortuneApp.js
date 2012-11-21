@@ -316,8 +316,8 @@ function FortuneApp () {
 		sourceType: mode,
 		allowEdit: true,
 		encodingType: Camera.EncodingType.JPEG,
-		targetWidth: 120,
-		targeHeight: 120,
+		targetWidth: 200,
+		targeHeight: 200,
 		saveToPhotoAlbum: self.settings.getSaveToAlbum(),
 		correctOrientation: true,
 	    }

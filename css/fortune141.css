@@ -392,6 +392,16 @@ input {
     width: 50%;
 }
 
+#pageGame8910 #shotClockWrapper {
+    width:   100%;
+    margin:  0;
+    padding: 0;
+}
+
+#pageGame8910 #shotClockWrapper .ui-grid-a {
+    text-align: center;
+}
+
 #pageGame8910 #shotClock {
     position: relative;
     
@@ -468,6 +478,10 @@ input {
     background-image:     -ms-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* IE10 */
     background-image:      -o-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* Opera 11.10+ */
     background-image:         linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); 
+}
+
+#pageGame8910 #btnShotClockCtrl {
+    border-right-width: 1px;
 }
 
 #pageGame8910 #mainPanel {
@@ -553,6 +567,19 @@ input {
 
 #pageGame8910 #mainPanel #mainPlayer2 {
     /**/
+    margin-left: -1px;
+    border-left: 1px solid black;
+}
+
+#pageGame8910 #mainPanel #mainPlayerStreakWrapper {
+    margin: 0 0 5px 0;
+    color: #666;
+}
+
+#pageGame8910 #mainPanel #mainPlayer1Name,
+#pageGame8910 #mainPanel #mainPlayer2Name {
+    font-weight: bold;
+    margin: 5px 0 0 0;
 }
 
 #pageGame8910 #setOverviewWrapper {

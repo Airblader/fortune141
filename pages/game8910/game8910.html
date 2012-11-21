@@ -11,18 +11,18 @@
     </div>
     
     <div data-role="content" id="pageContent">
-        <div class="ui-grid-solo" id="shotClockWrapper">
-            <div class="ui-block-a" id="shotClock">
-                <div id="remainingTime">
+        <div id="shotClockWrapper">
+            <div class="ui-grid-solo">    
+                <div class="ui-block-a" id="shotClock">
+                    <div id="remainingTime"></div>
+                    <span id="game8910ShotClockRemainingTime"></span>
+                    <span id="game8910ShotClockRemainingTimeSuffix">s</span>
                 </div>
-                <span id="game8910ShotClockRemainingTime">
-                </span>
-                <span id="game8910ShotClockRemainingTimeSuffix">
-                    &thinsp;s
-                </span>
             </div>
-            <div class="ui-block-a btnUp" id="btnExtension">
-                Call Extension
+            
+            <div class="ui-grid-a">
+                <div class="ui-block-a btnUp" id="btnShotClockCtrl">Start</div>
+                <div class="ui-block-b btnUp" id="btnExtension">Extension</div>
             </div>
         </div>
         
@@ -40,11 +40,13 @@
             
             <div class="ui-block-a" id="mainPlayer1">
                 <p id="mainPlayer1Name"></p>
+                <p id="mainPlayerStreakWrapper">Streak: <span id="mainPlayer1Streak"></span></p>
                 
                 <img src="../../img/players/playerDummy.jpg" id="mainPlayer1Img" class="userPictureBig" />
             </div>
             <div class="ui-block-b" id="mainPlayer2">
                 <p id="mainPlayer2Name"></p>
+                <p id="mainPlayerStreakWrapper">Streak: <span id="mainPlayer2Streak"></span></p>
                 
                 <img src="../../img/players/playerDummy.jpg" id="mainPlayer2Img" class="userPictureBig" />
             </div>
