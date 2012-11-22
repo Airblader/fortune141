@@ -1,21 +1,31 @@
 $(document).on('pageshow', '#pageSettings', function () {
-    $('#settingsKeepScreenOn').val(app.settings.getKeepScreenOnDuring141Game())
-                              .selectmenu('refresh');
+    $('#settingsKeepScreenOn')
+        .val(app.settings.getKeepScreenOnDuring141Game())
+        .selectmenu('refresh');
                               
-    $('#settingsKeepScreenOn8910').val(app.settings.getKeepScreenOnDuring8910Game())
-                              .selectmenu('refresh');
+    $('#settingsKeepScreenOn8910')
+        .val(app.settings.getKeepScreenOnDuring8910Game())
+        .selectmenu('refresh');
+                              
+    $('#settings8910NotifyWhoHasToBreak')
+        .val(app.settings.get8910NotifyWhoHasToBreak())
+        .selectmenu('refresh');
     
-    $('#settingsDateFormat').val(app.settings.getDateFormat())
-                            .selectmenu('refresh');
+    $('#settingsDateFormat')
+        .val(app.settings.getDateFormat())
+        .selectmenu('refresh');
     
-    $('#settingsLanguage').val(app.settings.getLanguage())
-                          .selectmenu('refresh');
+    $('#settingsLanguage')
+        .val(app.settings.getLanguage())
+        .selectmenu('refresh');
                           
-    $('#settingsTooltips').val(String(app.settings.getTooltipsEnabled()))
-                          .slider('refresh');
+    $('#settingsTooltips')
+        .val(String(app.settings.getTooltipsEnabled()))
+        .slider('refresh');
                           
-    $('#settingsSaveToAlbum').val(String(app.settings.getSaveToAlbum()))
-                             .selectmenu('refresh');
+    $('#settingsSaveToAlbum')
+        .val(String(app.settings.getSaveToAlbum()))
+        .selectmenu('refresh');
 });
 
 $(document).on('change', '#settingsKeepScreenOn', function (event) {
@@ -24,6 +34,10 @@ $(document).on('change', '#settingsKeepScreenOn', function (event) {
 
 $(document).on('change', '#settingsKeepScreenOn8910', function (event) {
     app.settings.setKeepScreenOnDuring8910Game($(this).val());
+});
+
+$(document).on('change', '#settings8910NotifyWhoHasToBreak', function (event) {
+    app.settings.set8910NotifyWhoHasToBreak($(this).val());
 });
 
 $(document).on('change', '#settingsDateFormat', function (event) {

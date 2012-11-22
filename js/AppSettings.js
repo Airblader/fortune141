@@ -2,7 +2,10 @@ function AppSettings () {
     var self = this;
     
     var keyKeepScreenOnDuring141Game  = 'keepScreenOnDuring141Game',
+    
         keyKeepScreenOnDuring8910Game = 'keepScreenOnDuring8910Game',
+        key8910NotifyWhoHasToBreak    = 'game8910WhoHasToBreak',
+    
         keyDateFormat                 = 'dateFormat',
         keyLanguage                   = 'language',
         keyTooltips                   = 'tooltips',
@@ -27,6 +30,13 @@ function AppSettings () {
     }
     this.setKeepScreenOnDuring8910Game = function (keepScreenOn) {
         self.set(keyKeepScreenOnDuring8910Game, keepScreenOn);
+    }
+    
+    this.get8910NotifyWhoHasToBreak = function () {
+        return (self.get(key8910NotifyWhoHasToBreak, 'true') == 'true');
+    }
+    this.set8910NotifyWhoHasToBreak = function (notify) {
+        self.set(key8910NotifyWhoHasToBreak, notify);
     }
     
     this.getDateFormat = function () {

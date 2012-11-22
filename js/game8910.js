@@ -3,6 +3,16 @@ function Game8910 () {
     var TEMP_SCORE_DURATION = 1000,
         tmpScoreInUse       = false;
     
+    var $btnShotClockCtrl  = $('#btnShotClockCtrl'),
+        $btnExtension      = $('#btnExtension'),
+        $btnUndo           = $('#btnUndo'),
+        $mainPlayer1Streak = $('#mainPlayer1Streak'),
+        $mainPlayer2Streak = $('#mainPlayer2Streak'),
+        $setScore1Bar      = $('#setScore1Bar'),
+        $setScore2Bar      = $('#setScore2Bar'),
+        $setScore1Value    = $('#setScore1Value'),
+        $setScore2Value    = $('#setScore2Value');
+    
     this.gameID       = -1;
     this.historyStack = new Array();
  
@@ -54,6 +64,9 @@ function Game8910 () {
         self.isFinished = false;
 	self.winner     = -1;
         
+        self.firstBreak = -1;
+        self.lastBreak  = -1;
+        
         self.gameType     = gameType;
         self.breakType    = breakType;
         self.mode         = mode;
@@ -66,22 +79,6 @@ function Game8910 () {
 
         self.shotClock = new ShotClock8910();
         self.shotClock.init(1000 * shotClock, 1000 * extensionTime, extensionsPerRack, useSoundWarning);
-        self.shotClock.setAction(function (status) {
-            $('#game8910ShotClockRemainingTime').html(status.remainingSeconds);
-            $('#remainingTime').css('width', status.elapsedRatio + '%');
-            
-            if (status.outOfTime) {
-                self.shotClock.pauseClock();
-                self.shotClock.switchPlayer();
-                
-                app.alertDlg(
-                    'Out of time!',
-                    app.dummyFalse,
-                    'ShotClock',
-                    'OK'
-                );
-            }
-        });
         
         self.initHistory(cbSuccess);
     }
@@ -104,6 +101,14 @@ function Game8910 () {
 	self.players[1].obj = app.Players.ingame[1];
 	
 	cbSuccess();
+    }
+    
+    this.setLastBreak = function (idx) {
+        self.lastBreak = idx;
+        
+        if (typeof self.firstBreak === 'undefined') {
+            self.firstBreak = idx;
+        }
     }
     
     this.warnLeaveGame = function () {
@@ -140,7 +145,7 @@ function Game8910 () {
     
     this.handleBtnShotClockCtrlTap = function (event) {
         event.preventDefault();
-        var $this = $('#btnShotClockCtrl');
+        var $this = $btnShotClockCtrl;
         
         if ($this.hasClass('btnDown')) {
             return false;
@@ -165,7 +170,7 @@ function Game8910 () {
     
     this.handleBtnShotClockCtrlTapHold = function (event) {
         event.preventDefault();
-        var $this = $('#btnShotClockCtrl');
+        var $this = $btnShotClockCtrl;
         
         if ($this.hasClass('btnDown')) {
             return false;
@@ -181,7 +186,14 @@ function Game8910 () {
         if (self.shotClock.clockIsRunning) {
             self.shotClock.pauseClock();
         } else {
-            // Free
+            if (self.shotClock.firstRun) {
+                self.firstBreak = 1 - self.firstBreak;
+                self.lastBreak  = self.firstBreak;
+                
+                self.shotClock.switchPlayer();
+            } else {
+                // Free
+            }
         }
         
         return true;
@@ -189,7 +201,7 @@ function Game8910 () {
     
     this.handleBtnCallExtension = function (event) {
         event.preventDefault();
-        var $this = $('#btnExtension');
+        var $this = $btnExtension;
         
         if ($this.hasClass('btnDown')) {
             return false;
@@ -201,6 +213,17 @@ function Game8910 () {
                 $this.removeClass('btnDown');
             }, 300
         );
+        
+        if (!self.shotClock.clockIsRunning) {
+            app.alertDlg(
+                'You cannot call an extension as long as the clock isn\'t running!',
+                app.dummyFalse,
+                'ShotClock',
+                'OK'
+            );
+            
+            return false;
+        }
         
         if(!self.shotClock.callExtension()) {
             self.shotClock.pauseClock();
@@ -222,7 +245,7 @@ function Game8910 () {
     
     this.handleBtnUndo = function (event) {
         event.preventDefault();
-        var $this = $('#btnUndo');
+        var $this = $btnUndo;
         
         if ($this.hasClass('btnDown')) {
             return false;
@@ -240,11 +263,7 @@ function Game8910 () {
         return true;
     }
     
-    this.handleBtnEntry = function (event, elemID, runOut) {
-        event.preventDefault();
-        
-        var currPlayer = parseInt(elemID.substr(elemID.length-1, 1)) - 1;
-        
+    this._handleBtnEntry = function (currPlayer, runOut) {
         self.processInput(currPlayer, runOut);
         self.updateRackScore();
         self.updateSetScore();
@@ -253,22 +272,42 @@ function Game8910 () {
 	self.saveGame();
     }
     
+    this.handleBtnEntry = function (event, elemID, runOut) {
+        event.preventDefault();
+        
+        var currPlayer = parseInt(elemID.substr(elemID.length-1, 1)) - 1;
+        
+        if (self.shotClock.shotTime !== 0 && !self.shotClock.clockIsRunning) {
+            app.confirmDlg(
+                'The shot clock isn\'t running. Do you want to count this rack or start the clock?',
+                function () {
+                    self._handleBtnEntry(currPlayer, runOut);
+                },
+                self.shotClock.unpauseClock,
+                '',
+                'Count Rack,Start Clock'
+            );
+        } else {
+            self._handleBtnEntry(currPlayer, runOut);
+        }
+    }
+    
     this.updateStreak = function () {
-        $('#mainPlayer1Streak').html(self.players[0].streak);
-        $('#mainPlayer2Streak').html(self.players[1].streak);
+        $mainPlayer1Streak.html(self.players[0].streak);
+        $mainPlayer2Streak.html(self.players[1].streak);
     }
     
     this.updateRackScoreBars = function () {
-        $('#setScore1Bar').css('width', (100 * self.players[0].racks / self.racksPerSet) + '%');
-        $('#setScore2Bar').css('width', (100 * self.players[1].racks / self.racksPerSet) + '%');
+        $setScore1Bar.css('width', (100 * self.players[0].racks / self.racksPerSet) + '%');
+        $setScore2Bar.css('width', (100 * self.players[1].racks / self.racksPerSet) + '%');
     }
     
     this.updateRackScore = function () {
         if (!tmpScoreInUse) {
             tmpScoreInUse = true;
             
-            $('#setScore1Value').html(self.players[0].racks);
-            $('#setScore2Value').html(self.players[1].racks);
+            $setScore1Value.html(self.players[0].racks);
+            $setScore2Value.html(self.players[1].racks);
             
             self.updateRackScoreBars();
             
@@ -286,7 +325,8 @@ function Game8910 () {
     this.tempRackScore = function (index, message) {
         tmpScoreInUse = true;
         
-        $('#setScore' + (index+1) + 'Value').html(message);
+        var $elem = (index === 0) ? $setScore1Value : $setScore2Value;
+        $elem.html(message);
         self.updateRackScoreBars();
         
         setTimeout(
@@ -353,12 +393,55 @@ function Game8910 () {
         self.updateSetScore();
         self.updateStreak();
         
-        self.saveGame();
-        self.saveHistory();
+        if (self.shotClock.shotTime === 0 && self.breakType !== 2) {
+            self.saveGame();
+            self.saveHistory();
+            
+            return;
+        }
+        
+        function cleanName (name) {
+            return name.replace(/,/g, ''); // TODO
+        }
+        
+        app.confirmDlg(
+            'Please select which player has won the lag and will therefore break the first rack:',
+            function () {
+                self.setLastBreak(1);
+                self.shotClock.setCurrPlayer(1);
+                
+                self.saveGame();
+                self.saveHistory();
+            },
+            function () {
+                self.setLastBreak(0);
+                self.shotClock.setCurrPlayer(0);
+                
+                self.saveGame();
+                self.saveHistory();
+            },
+            self.gameType + '-Ball',
+            cleanName(self.players[1].obj.getDisplayName()) + ',' + cleanName(self.players[0].obj.getDisplayName())
+        );
     }
     
     this.processInput = function (currPlayer, runOut) {
         self.shotClock.newRack();
+        
+        switch (self.breakType) {
+            case 0: // Winner
+                self.setLastBreak(currPlayer);
+                self.shotClock.switchPlayer(self.shotClock.currPlayer !== currPlayer);
+                break;
+            case 1: // Loser
+                self.setLastBreak(1-currPlayer);
+                self.shotClock.switchPlayer(self.shotClock.currPlayer === currPlayer);
+                break;
+            case 2: // Alternate
+                self.setLastBreak(1-self.lastBreak);
+                self.shotClock.switchPlayer(self.shotClock.currPlayer !== self.lastBreak);
+                break;
+        }
         
         var tmpScoreMessage = '';
         
@@ -400,18 +483,31 @@ function Game8910 () {
                     // TODO
                     alert(self.players[idxWinner].obj.getDisplayName() + ' has won the game!');
                 }
+                
+                return;
             } else { // Game not over
                 self.idxCurrentSet  = self.addSetToGame();
                 self.idxCurrentRack = 0;
                 
                 self.players[currPlayer]  .racks = 0;
                 self.players[1-currPlayer].racks = 0;
+                
+                // TODO : Who breaks next?
             }
+        }
+        
+        if (self.breakType === 2 && app.settings.get8910NotifyWhoHasToBreak()) {
+            app.alertDlg(
+                self.players[self.shotClock.currPlayer].obj.getDisplayName() + ' has to break now.',
+                app.dummyFalse,
+                'New Rack',
+                'OK'
+            );
         }
     }
 }
 
-// jsFiddle: http://jsfiddle.net/APquU/1/
+
 function ShotClock8910 () {
     var self = this;
     
@@ -421,8 +517,7 @@ function ShotClock8910 () {
     this.elapsedTime    = 0;
     this.allowedTime    = 0;
     this.numCalledExtensions = undefined;
-    this.currPlayer     = 0;                // might not coincide with currPlayer in the game, but that doesn't matter here
-    this.action         = undefined;
+    this.currPlayer     = 0;          
     this.hadSwitch      = false;
     this.kill           = false;
         
@@ -430,6 +525,11 @@ function ShotClock8910 () {
         NO_MORE_EXTENSIONS_ALLOWED = false,
         CLOCK_IS_INACTIVE          = false,
         CLOCK_IS_ALREADY_RUNNING   = false;
+        
+    var $btnShotClockCtrl               = $('#btnShotClockCtrl'),
+        $game8910ShotClockRemainingTime = $('#game8910ShotClockRemainingTime'),
+        $remainingTime                  = $('#remainingTime'),
+        $game8910ShotClockCurrPlayer    = $('#game8910ShotClockCurrPlayer');
     
     this.init = function (shotTime, extensionTime, extensionsPerRack, useSoundWarning) {
         self.shotTime          = shotTime;
@@ -470,10 +570,6 @@ function ShotClock8910 () {
         }
     }
     
-    this.setAction = function (func) {
-        self.action = func;
-    }
-    
     this.getElapsedTime = function () {
         return self.elapsedTime;
     }
@@ -503,14 +599,30 @@ function ShotClock8910 () {
         return true;
     }
     
+    this.updateCurrPlayerDisplay = function () {
+        $game8910ShotClockCurrPlayer.html(
+            ((self.currPlayer === 0) ? 'Left' : 'Right')
+            + ' Player'
+        );
+    }
+    
+    this.setCurrPlayer = function (currPlayer) {
+        self.currPlayer = currPlayer;
+        self.updateCurrPlayerDisplay();
+    }
+    
     this.switchPlayer = function () {
-        self.currPlayer = 1 - self.currPlayer;
+        var doSwitch = (typeof arguments[0] !== 'undefined') ? arguments[0] : true;
+        
+        if (doSwitch) {
+            self.setCurrPlayer(1 - self.currPlayer);
+        }
+        
         self.hadSwitch  = true;
     }
     
     this.newRack = function () {
         self.resetCalledExtensions();
-        self.switchPlayer();
         self.pauseClock();
     }
     
@@ -525,12 +637,12 @@ function ShotClock8910 () {
     }
     
     this.pauseClock = function () {
-        $('#btnShotClockCtrl').html('Start');
+        $btnShotClockCtrl.html('Start');
         self.clockIsRunning = false;
     }
     
     this.unpauseClock = function () {
-        $('#btnShotClockCtrl').html('Switch');
+        $btnShotClockCtrl.html('Switch');
         if (self.firstRun) {
             self.startClock();
         } else {
@@ -539,17 +651,28 @@ function ShotClock8910 () {
     }
     
     this.callAction = function () {
-        if (typeof self.action === 'function') {
-            var status = {
-                elapsedTime      : self.getElapsedTime(),
-                elapsedSeconds   : self.getElapsedSeconds(),
-                elapsedRatio     : Math.min(100, 100 * self.getElapsedTime() / self.allowedTime),
-                remainingSeconds : Math.max(0, self.getRemainingSeconds()),
-                outOfTime        : (self.getElapsedTime() >= self.allowedTime),
-                extensionsCalled : self.numCalledExtensions[self.currPlayer],
-            };
+        var status = {
+            elapsedTime      : self.getElapsedTime(),
+            elapsedSeconds   : self.getElapsedSeconds(),
+            elapsedRatio     : Math.min(100, 100 * self.getElapsedTime() / self.allowedTime),
+            remainingSeconds : Math.max(0, self.getRemainingSeconds()),
+            outOfTime        : (self.getElapsedTime() >= self.allowedTime),
+            extensionsCalled : self.numCalledExtensions[self.currPlayer],
+        };
+
+        $game8910ShotClockRemainingTime.html(status.remainingSeconds);
+        $remainingTime.css('width', status.elapsedRatio + '%');
+        
+        if (status.outOfTime) {
+            self.shotClock.pauseClock();
+            self.shotClock.switchPlayer();
             
-            self.action(status);
+            app.alertDlg(
+                'Out of time!',
+                app.dummyFalse,
+                'ShotClock',
+                'OK'
+            );
         }
     }
     
