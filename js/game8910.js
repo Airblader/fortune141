@@ -83,6 +83,41 @@ function Game8910 () {
         self.initHistory(cbSuccess);
     }
     
+    this.scoreToString = function () {
+        var toReturn = new Array(self.sets.length);
+        
+        for (var i = 0; i < self.sets.length; i++) {
+            toReturn[i] = '';
+            
+            for (var j = 0; j < self.sets[i].racks.length; j++) {
+                toReturn[i] +=  self.sets[i].racks[j].wonByPlayer          + ','
+                            + ((self.sets[i].racks[j].runOut) ? '1' : '0') + ';';
+            }
+            
+            toReturn[i]  = toReturn[i].slice(0, -1);
+        }
+        
+        return toReturn.join('|');
+    }
+    
+    this.stringToScore = function (str) {
+        var sets = str.split('|');
+        self.sets = new Array(sets.length);
+        
+        for (var i = 0; i < sets.length; i++) {
+            self.sets[i] = self.getDummySet();
+            var racks = sets[i].split(';');
+            
+            for (var j = 0; j < racks.length; j++) {
+                self.sets[i].racks[j] = self.getDummyRack();
+                var currentRack = racks[j].split(',');
+
+                self.sets[i].racks[j].wonByPlayer = parseInt(currentRack[0]);
+                self.sets[i].racks[j].runOut      = (currentRack[1] === '1');
+            }
+        }
+    }
+    
     this.loadGame = function (gID, cbSuccess) {
         // TODO
     }
@@ -393,12 +428,12 @@ function Game8910 () {
         self.updateSetScore();
         self.updateStreak();
         
-        if (self.shotClock.shotTime === 0 && self.breakType !== 2) {
+        /*if (self.shotClock.shotTime === 0 && self.breakType !== 2) {
             self.saveGame();
             self.saveHistory();
             
             return;
-        }
+        }*/
         
         function cleanName (name) {
             return name.replace(/,/g, ''); // TODO
@@ -492,17 +527,33 @@ function Game8910 () {
                 self.players[currPlayer]  .racks = 0;
                 self.players[1-currPlayer].racks = 0;
                 
-                // TODO : Who breaks next?
+                function cleanName (name) {
+                    return name.replace(/,/g, ''); // TODO
+                }
+                
+                app.confirmDlg(
+                    'The current set is finished. Who will have the break shot for the first rack of the next set?',
+                    function () {
+                        self.setLastBreak(1);
+                        self.shotClock.setCurrPlayer(1);
+                    },
+                    function () {
+                        self.setLastBreak(0);
+                        self.shotClock.setCurrPlayer(0);
+                    },
+                    self.gameType + '-Ball',
+                    cleanName(self.players[1].obj.getDisplayName()) + ',' + cleanName(self.players[0].obj.getDisplayName())
+                );
             }
-        }
-        
-        if (self.breakType === 2 && app.settings.get8910NotifyWhoHasToBreak()) {
-            app.alertDlg(
-                self.players[self.shotClock.currPlayer].obj.getDisplayName() + ' has to break now.',
-                app.dummyFalse,
-                'New Rack',
-                'OK'
-            );
+        } else {
+            if (self.breakType === 2 && app.settings.get8910NotifyWhoHasToBreak()) {
+                app.alertDlg(
+                    self.players[self.shotClock.currPlayer].obj.getDisplayName() + ' has to break now.',
+                    app.dummyFalse,
+                    'New Rack',
+                    'OK'
+                );
+            }
         }
     }
 }
