@@ -8,7 +8,7 @@ $(document).on('pageshow', '#pageSettings', function () {
         .selectmenu('refresh');
                               
     $('#settings8910NotifyWhoHasToBreak')
-        .val(app.settings.get8910NotifyWhoHasToBreak())
+        .val(String(app.settings.get8910NotifyWhoHasToBreak()))
         .selectmenu('refresh');
     
     $('#settingsDateFormat')

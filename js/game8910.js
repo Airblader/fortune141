@@ -529,8 +529,9 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
         }
     } else {
         if (this.breakType === 2 && app.settings.get8910NotifyWhoHasToBreak()) {
+            var nextBreakPlayerName = this.players[this.shotClock.currPlayer].obj.getDisplayName();
             app.alertDlg(
-                this.players[this.shotClock.currPlayer].obj.getDisplayName() + ' has to break now.',
+                nextBreakPlayerName + ' has to break now.',
                 app.dummyFalse,
                 'New Rack',
                 'OK'
