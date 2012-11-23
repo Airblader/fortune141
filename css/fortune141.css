@@ -570,26 +570,41 @@ input {
     text-align: left;
 }
 
-#pageGame8910 #mainPanel #mainPlayer1 {
+#pageGame8910 #mainPanel .mainPlayer1 {
     /**/
     border-right: 1px solid black;
 }
 
-#pageGame8910 #mainPanel #mainPlayer2 {
+#pageGame8910 #mainPanel .mainPlayer2 {
     /**/
     margin-left: -1px;
     border-left: 1px solid black;
 }
 
-#pageGame8910 #mainPanel #mainPlayerStreakWrapper {
+#pageGame8910 #mainPanel .mainPlayerStreakWrapper {
     margin: 0 0 5px 0;
     color: #666;
 }
 
 #pageGame8910 #mainPanel #mainPlayer1Name,
 #pageGame8910 #mainPanel #mainPlayer2Name {
+    width: 95%;
     font-weight: bold;
     margin: 5px 0 0 0;
+}
+
+#pageGame8910 #mainPanel #mainPlayer1FoulWrapper img,
+#pageGame8910 #mainPanel #mainPlayer2FoulWrapper img {
+    margin: 15px 5px 15px 5px;
+}
+
+#pageGame8910 #mainPanel #mainPlayer1FoulWrapper {
+    border-right: 1px solid black;
+}
+
+#pageGame8910 #mainPanel #mainPlayer2FoulWrapper {
+    border-left: 1px solid black;
+    margin-left: -1px;
 }
 
 #pageGame8910 #setOverviewWrapper {

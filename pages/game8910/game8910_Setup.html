@@ -19,14 +19,17 @@
         <input type="button" id="game8910SetupSubmitButton" value="Start Game" data-theme="e" />
         
         <div class="ui-grid-a ui-bar" id="game8910SetupPlayerGrid">
-            <div class="ui-block-a" id="game8910SetupPlayer0">
+            <div class="ui-block-a">
                 <span id="game8910SetupPlayer0Name" data-pid="-1">Player 1</span>
-                <br />
+            </div>
+            <div class="ui-block-b">
+                <span id="game8910SetupPlayer1Name" data-pid="-1">Player 2</span>
+            </div>
+            
+            <div class="ui-block-a" id="game8910SetupPlayer0">
                 <img src="../../img/players/playerDummy.jpg" id="game8910SetupPlayer0Img" class="userPictureBig" />
             </div>
             <div class="ui-block-b" id="game8910SetupPlayer1">
-                <span id="game8910SetupPlayer1Name" data-pid="-1">Player 2</span>
-                <br />
                 <img src="../../img/players/playerDummy.jpg" id="game8910SetupPlayer1Img" class="userPictureBig" />
             </div>
         </div>
@@ -90,7 +93,7 @@
                             Use Sound Warning:
                         </div>
                         <div class="ui-block-b formElementTableFormElement">
-                            <select name="game8910SetupShotclockUseSound" id="game8910SetupShotclockUseSound" data-role="slider">
+                            <select name="game8910SetupShotclockUseSound" id="game8910SetupShotclockUseSound" data-role="slider" disabled="disabled">
                                 <option value="false">Off</option>
                                 <option value="true">On</option>
                             </select>

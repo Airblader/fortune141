@@ -323,16 +323,22 @@ function dbFortune () {
 		'Score',
 		'FoulsPlayer1',
 		'FoulsPlayer2',
-		'CurrPlayer'
+		'CurrPlayer',
+		'ExtensionsCalledPlayer1',
+		'ExtensionsCalledPlayer2'
 	    ),
 	    types : new Array(
 		'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
 		'TEXT',
 		'INTEGER',
 		'INTEGER',
-		'BIT'
+		'BIT',
+		'INTEGER',
+		'INTEGER'
 	    ),
 	    defaults : new Array(
+		undefined,
+		undefined,
 		undefined,
 		undefined,
 		undefined,
