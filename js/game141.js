@@ -669,8 +669,7 @@ function StraightPool () {
      *		cbError (optional)    : callback functions
      */
     this.loadHistory = function () {
-	var //steps     = (typeof arguments[0] !== 'undefined') ? arguments[0] : 1,
-	    cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
+	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
 	    cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 	
 	if (self.historyStack.length <= 1) {

@@ -260,6 +260,23 @@ function FortuneApp () {
     }
     
     /*
+     *	Pick a player
+     *		namePlayer1,
+     *		namePlayer2   : Name of players to be displayed
+     *		dialogTitle   : Title of dialog
+     *		callback      : callback function
+     *				(will be called with index argument of selected option)
+     */
+    this.pickPlayer = function (namePlayer1, namePlayer2, dialogTitle, callback) {
+	window.utils.pickPlayer(
+	    namePlayer1,
+	    namePlayer2,
+	    dialogTitle,
+	    String(callback)
+	);
+    }
+    
+    /*
      *	Normalize vibrate function
      *	DEPRECATED -- NO EFFECT
      *		duration : duration of vibration

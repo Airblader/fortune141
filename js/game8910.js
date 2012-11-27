@@ -16,26 +16,164 @@ function Game8910 () {
     this.gameID       = -1;
     this.historyStack = new Array();
     
-    this.loadGame = function (gID, cbSuccess) {
-        // TODO
+    this.loadGame = function (gID) {
+        var cbSuccess = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse,
+            cbError   = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse;
+	
+        self.gameID = gID;
+	
+	var sql = 'SELECT * FROM ' + app.dbFortune.tables.Game8910.name + ' WHERE gID="' + gID + '" LIMIT 1';
+	app.dbFortune.query(sql, [],
+	    function (tx, result) {
+		if (result.rows.length == 0) {
+		    cbError();
+		    return false;
+		}
+		
+		var row = result.rows.item(0);
+		
+		// TODO set values
+		
+		app.Players.ingame[0] = new Player();
+		app.Players.ingame[1] = new Player();
+		
+		app.Players.ingame[0].load(
+		    parseInt(row['Player1']),
+		    function () {
+			if (app.Players.ingame[0].pID == app.ANONYMOUSPLAYERPID) {
+			    app.Players.ingame[0].name = row['Player1Name'];
+			}
+			app.Players.ingame[1].load(
+			    parseInt(row['Player2']),
+			    function () {
+				if (app.Players.ingame[1].pID == app.ANONYMOUSPLAYERPID) {
+				    app.Players.ingame[1].name = row['Player2Name'];
+				}
+				self.setPlayers( // TODO does this exist here?
+				    function () {
+					self.initHistory(cbSuccess);
+				    }
+				);
+			    }
+			);
+		    }
+		);
+		
+		return true;
+	    },
+	    cbError
+	);
     }
     
     this.saveGame = function () {
-        // TODO
+        var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse;
+	
+	// no entry exists yet
+	if (self.gameID == -1) {
+	    var sql = 'INSERT INTO '
+		    + app.dbFortune.tables.Game8910.name + ' '
+		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game8910, false, false) + ' '
+		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'; // TODO number of ?s
+	    
+            // TODO score to string
+		
+	    app.dbFortune.query(
+		sql,
+		[
+                    // TODO values
+		],
+		function (tx, result) {
+		    self.gameID = result.insertId;
+		    cbSuccess();
+		},
+		app.dummyFalse
+	    );
+	    
+	    return true;
+	}
+	
+	// modify existing entry
+	var sql = 'UPDATE ' + app.dbFortune.tables.Game8910.name + ' SET '
+                // TODO values
+		+ 'WHERE gID="' + self.gameID + '"';
+		
+        // TODO score to string
+		
+	app.dbFortune.query(
+	    sql,
+	    [
+                // TODO values
+	    ],
+	    cbSuccess,
+	    app.dummyFalse
+	);
+	return true;
     }
     
     this.initHistory = function (cbSuccess) {
-        // TODO
+        var cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
         
-        cbSuccess();
+        // simply drop and recreate table
+	app.dbFortune.dropTable(
+	    app.dbFortune.tables.Game8910History,
+	    function () {
+		app.dbFortune.createTable(
+		    app.dbFortune.tables.Game8910History,
+		    cbSuccess,
+		    cbError
+		);
+	    },
+	    cbError
+	);
     }
     
     this.saveHistory = function () {
-        // TODO
+        var sql = 'INSERT INTO '
+		    + app.dbFortune.tables.Game8910History.name + ' '
+		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game8910History, false, false) + ' '
+		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'; // TODO number of question marks
+	
+        // TODO score to string
+	    
+	app.dbFortune.query(
+	    sql,
+	    [
+                // TODO values
+	    ],
+	    function (tx, result) {
+		self.historyStack.push(result.insertId);
+	    },
+	    app.dummyFalse
+	);
     }
     
     this.loadHistory = function () {
-        // TODO
+        var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
+	    cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
+	
+	if (self.historyStack.length <= 1) {
+	    cbError();
+	}
+	var id = self.historyStack.pop();
+	    id = self.historyStack[self.historyStack.length-1];
+        
+        app.dbFortune.query(
+	    'SELECT * FROM ' + app.dbFortune.tables.Game8910History.name + ' WHERE ID="' + id + '" LIMIT 1',
+	    [],
+	    function (tx, result) {
+		if (result.rows.length == 0) {
+		    return false;
+		}
+		var row = result.rows.item(0);
+		
+		// TODO
+		
+		self.saveGame();
+		cbSuccess();
+		return true;
+	    },
+	    cbError
+	);
     }
     
     this.undo = function () {
@@ -255,6 +393,13 @@ function Game8910 () {
         $('#mainPlayer2Img').attr('src',
             (self.players[1].obj.image.length > 0) ? self.players[1].obj.image : 'file:///android_asset/www/img/players/playerDummy.jpg');
         
+        var heightImg1   = $('#mainPlayer1Img').height(),
+            heightImg2   = $('#mainPlayer2Img').height(),
+            biggerHeight = Math.max(heightImg1, heightImg2);
+        $('#mainPlayer1ImgWrapper').css('height', biggerHeight);
+        $('#mainPlayer2ImgWrapper').css('height', biggerHeight);
+        
+        // TODO
         var setMarkerFactor = 0.2;
             setMarkerSize   = self.getSetMarkerSize(1 + 2*setMarkerFactor),
             setMarkerHTML   = '',
@@ -282,28 +427,17 @@ function Game8910 () {
         self.updateSetScore();
         self.updateStreak();
         
-        function cleanName (name) {
-            return name.replace(/,/g, ''); // TODO
-        }
-        
-        app.confirmDlg(
-            'Please select which player has won the lag and will therefore break the first rack:',
-            function () {
-                self.setLastBreak(1);
-                self.shotClock.setCurrPlayer(1);
+        app.pickPlayer(
+            self.players[0].obj.getDisplayName(),
+            self.players[1].obj.getDisplayName(),
+            'Who will break the first rack?',
+            function (which) {
+                app.currentGame.setLastBreak(which);
+                app.currentGame.shotClock.setCurrPlayer(which);
                 
-                self.saveGame();
-                self.saveHistory();
-            },
-            function () {
-                self.setLastBreak(0);
-                self.shotClock.setCurrPlayer(0);
-                
-                self.saveGame();
-                self.saveHistory();
-            },
-            self.gameType + '-Ball',
-            cleanName(self.players[1].obj.getDisplayName()) + ',' + cleanName(self.players[0].obj.getDisplayName())
+                app.currentGame.saveGame();
+                app.currentGame.saveHistory();
+            }
         );
     }
 }
@@ -509,7 +643,17 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
             this.players[currPlayer]  .racks = 0;
             this.players[1-currPlayer].racks = 0;
             
-            function cleanName (name) {
+            app.pickPlayer(
+                this.players[0].obj.getDisplayName(),
+                this.players[1].obj.getDisplayName(),
+                'Who will break the first rack of the new set?',
+                function (which) {
+                    app.currentGame.setLastBreak(which);
+                    app.currentGame.shotClock.setCurrPlayer(which);
+                }
+            );
+            
+            /*function cleanName (name) {
                 return name.replace(/,/g, ''); // TODO
             }
             
@@ -525,7 +669,7 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
                 },
                 this.gameType + '-Ball',
                 cleanName(this.players[1].obj.getDisplayName()) + ',' + cleanName(this.players[0].obj.getDisplayName())
-            );
+            );*/
         }
     } else {
         if (this.breakType === 2 && app.settings.get8910NotifyWhoHasToBreak()) {
