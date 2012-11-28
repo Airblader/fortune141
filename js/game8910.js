@@ -331,6 +331,34 @@ function Game8910 () {
         }
     }
     
+    this.handleFoulClick = function (event, elemData) {
+        if (event !== null) {
+            event.preventDefault();
+            this.shotClock.switchPlayer();
+        } else {
+            this.shotClock.switchPlayer(false);
+        }
+        this.shotClock.pauseClock();
+        
+        var currPlayer = parseInt(elemData) - 1;
+        this.players[currPlayer].fouls = (this.players[currPlayer].fouls + 1) % 3;
+        
+        // TODO Warn three fouls
+        // Maybe go up to '% 4' and reset with a timeout
+            
+        this.updateFoulDisplay();
+    }
+    
+    this.updateFoulDisplay = function () {
+        // TODO
+        for (var p = 0; p <= 1; p++) {
+            $foulObjs = $('#mainPlayer' + (p+1) + 'FoulWrapper img');
+            for (var f = 0; f <= 3; f++) {
+                $foulObjs.eq(f).css('opacity', (this.players[p].fouls > f) ? '1' : '0.1');
+            }
+        }
+    }
+    
     this.updateStreak = function () {
         $mainPlayer1Streak.html(self.players[0].streak);
         $mainPlayer2Streak.html(self.players[1].streak);
@@ -414,7 +442,7 @@ function Game8910 () {
         }
         $('#setOverview').html(setMarkerHTML);
         
-        $('#btnShotClockCtrl').off('tap')    .on('tap',     self.handleBtnShotClockCtrlTap);
+        $('#btnShotClockCtrl').off('click')  .on('click',   self.handleBtnShotClockCtrlTap);
         $('#btnShotClockCtrl').off('taphold').on('taphold', self.handleBtnShotClockCtrlTapHold);
         $('#btnExtension')    .off('vlick')  .on('vclick',  self.handleBtnCallExtension);
         $('#btnUndo')         .off('vlick')  .on('vclick',  self.handleBtnUndo);
@@ -422,10 +450,12 @@ function Game8910 () {
         $('.mainPlayer2')     .off('click')  .on('click',   function (event) { self.handleBtnEntry(event, $(this).data('player'), false); });
         $('.mainPlayer1')     .off('taphold').on('taphold', function (event) { self.handleBtnEntry(event, $(this).data('player'), true);  });
         $('.mainPlayer2')     .off('taphold').on('taphold', function (event) { self.handleBtnEntry(event, $(this).data('player'), true);  });
+        $('.foulWrapper')     .off('tap')    .on('tap',     function (event) { self.handleFoulClick(event, $(this).data('player')); });
         
         self.updateRackScore();
         self.updateSetScore();
         self.updateStreak();
+        self.updateFoulDisplay();
         
         app.FortuneUtils.openListDialog(
             self.players[0].obj.getDisplayName(),
@@ -775,13 +805,19 @@ ShotClock8910.prototype.afterClockStep = function () {
     this.$remainingTime.css('width', status.elapsedRatio + '%');
     
     if (status.outOfTime) {
-        this.shotClock.pauseClock();
-        this.shotClock.switchPlayer();
+        var currPlayer = this.currPlayer;
+        
+        this.switchPlayer();
+        this.pauseClock();
         
         app.confirmDlg(
-            'Oops! You ran out of time!',
-            app.dummyFalse, // TODO
-            app.dummyFalse,
+            app.currentGame.players[this.currPlayer].obj.getDisplayName() + ' ran out of time!',
+            function () {
+                app.currentGame.handleFoulClick(null, currPlayer+1);
+            },
+            function () {
+                //
+            },
             'ShotClock',
             'Add Foul,Ignore'
         );

@@ -1420,7 +1420,7 @@ function StraightPool () {
 	    },
 	    app.dummyFalse,
 	    'Undo',
-	    'Revert, Cancel'
+	    'Revert,Cancel'
 	);
 	
 	return true;
