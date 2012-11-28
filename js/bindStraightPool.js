@@ -349,7 +349,7 @@ $(document).off('click', '#game141AnonPlayer_Submit')
 $(document).on('pageshow', '#pageGame141', function () {
     var url = $.url( $.url().attr('fragment') );
     
-    window.propertiesManager.setKeepScreenOn(app.settings.getKeepScreenOnDuring141Game());
+    app.FortuneUtils.setKeepScreenOn(app.settings.getKeepScreenOnDuring141Game());
     
     var gID  = parseInt(url.param('gID')),
 	load = true;
@@ -391,7 +391,7 @@ $(document).on('pageshow', '#pageGame141', function () {
 });
 
 $(document).on('pagehide', '#pageGame141', function () {
-    window.propertiesManager.setKeepScreenOn(window.propertiesManager.WAKELOCK_OFF);  
+    app.FortuneUtils.setKeepScreenOn(app.FortuneUtils.WAKELOCK_OFF);  
 });
 
 $(document).off('click', '#game141SetupChoosePlayerNewPlayerLink')

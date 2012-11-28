@@ -427,7 +427,7 @@ function Game8910 () {
         self.updateSetScore();
         self.updateStreak();
         
-        app.pickPlayer(
+        app.FortuneUtils.openListDialog(
             self.players[0].obj.getDisplayName(),
             self.players[1].obj.getDisplayName(),
             'Who will break the first rack?',
@@ -643,7 +643,7 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
             this.players[currPlayer]  .racks = 0;
             this.players[1-currPlayer].racks = 0;
             
-            app.pickPlayer(
+            app.FortuneUtils.openListDialog(
                 this.players[0].obj.getDisplayName(),
                 this.players[1].obj.getDisplayName(),
                 'Who will break the first rack of the new set?',
@@ -652,24 +652,6 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
                     app.currentGame.shotClock.setCurrPlayer(which);
                 }
             );
-            
-            /*function cleanName (name) {
-                return name.replace(/,/g, ''); // TODO
-            }
-            
-            app.confirmDlg(
-                'The current set is finished. Who will have the break shot for the first rack of the next set?',
-                function () {
-                    this.setLastBreak.bind(this, 1);
-                    this.shotClock.setCurrPlayer.bind(this, 1);
-                },
-                function () {
-                    this.setLastBreak.bind(this, 0);
-                    this.shotClock.setCurrPlayer.bind(this, 0);
-                },
-                this.gameType + '-Ball',
-                cleanName(this.players[1].obj.getDisplayName()) + ',' + cleanName(this.players[0].obj.getDisplayName())
-            );*/
         }
     } else {
         if (this.breakType === 2 && app.settings.get8910NotifyWhoHasToBreak()) {

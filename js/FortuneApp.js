@@ -15,8 +15,9 @@ function FortuneApp () {
 	ingame : new Array(),	// for games
     };
     
-    this.settings = new AppSettings();
-    this.tooltips = new Tooltips();
+    this.settings     = new AppSettings();
+    this.FortuneUtils = new FortuneUtilsClass();
+    this.tooltips     = new Tooltips();
     this.freeVersionLimit = new freeVersionLimit(false);
 
     // pID for anonymous player
