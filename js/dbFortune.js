@@ -250,6 +250,7 @@ function dbFortune () {
 		'FoulsPlayer1',
 		'FoulsPlayer2',
 		'breakType',
+		'firstBreak',
 		'Mode',
 		'isFinished',
 		'Winner',
@@ -259,7 +260,9 @@ function dbFortune () {
 		'Shotclock',
 		'ExtensionTime',
 		'ExtensionsPerRack',
-		'ShotclockUseSound'
+		'ShotclockUseSound',
+		'ExtensionsCalledPlayer1',
+		'ExtensionsCalledPlayer2'
 	    ),
 	    types : new Array(
 		'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
@@ -278,6 +281,7 @@ function dbFortune () {
 		'INTEGER',
 		'INTEGER',
 		'INTEGER',
+		'INTEGER',
 		'BIT',
 		'INTEGER',
 		'TEXT',
@@ -285,8 +289,10 @@ function dbFortune () {
 		'BIT',
 		'INTEGER',
 		'INTEGER',
-		'INTEGERs',
-		'BIT'
+		'INTEGER',
+		'BIT',
+		'INTEGER',
+		'INTEGER'
 	    ),
 	    defaults : new Array(
 		undefined,
@@ -296,6 +302,9 @@ function dbFortune () {
 		undefined,
 		'-1',
 		'-1',
+		undefined,
+		undefined,
+		undefined,
 		undefined,
 		undefined,
 		undefined,

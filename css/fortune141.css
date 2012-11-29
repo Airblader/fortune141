@@ -595,7 +595,7 @@ input {
 
 #pageGame8910 #mainPanel #mainPlayer1FoulWrapper img,
 #pageGame8910 #mainPanel #mainPlayer2FoulWrapper img {
-    margin: 15px 5px 15px 5px;
+    margin: 20px 5px 20px 5px;
 }
 
 #pageGame8910 #mainPanel #mainPlayer1FoulWrapper {
@@ -615,10 +615,17 @@ input {
 }
 
 #pageGame8910 #setOverview {
-    margin:  0;
+    margin:  0 auto;
     padding: 0;
     
-    text-align: center;
+    width: auto;
+}
+
+#pageGame8910 #setOverview img {
+    margin-top:    6px;
+    margin-bottom: 6px;
+    
+    opacity: 0.0;
 }
 
 #pageGame8910Setup #game8910SetupPlayerGrid {

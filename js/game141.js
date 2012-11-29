@@ -674,6 +674,7 @@ function StraightPool () {
 	
 	if (self.historyStack.length <= 1) {
 	    cbError();
+	    return;
 	}
 	var id = self.historyStack.pop();
 	    id = self.historyStack[self.historyStack.length-1];

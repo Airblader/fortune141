@@ -31,8 +31,41 @@ function Game8910 () {
 		}
 		
 		var row = result.rows.item(0);
+                
+                self.players = new Array(self.getDummyPlayer(),
+                                         self.getDummyPlayer());
+                self.players[0].fouls = parseInt(row['FoulsPlayer1']);
+                self.players[1].fouls = parseInt(row['FoulsPlayer2']);
 		
-		// TODO set values
+                self.gameType     = row['gameType'];
+                self.breakType    = parseInt(row['breakType']);
+                self.mode         = parseInt(row['Mode']);
+                self.racksPerSet  = parseInt(row['RacksPerSet']);
+                self.numberOfSets = parseInt(row['NumberOfSets']);
+                
+                self.stringToScore(row['Score']);
+                self.idxCurrentSet  = self.sets.length - 1;
+                self.idxCurrentRack = self.sets[self.idxCurrentSet].racks.length - 1;
+                
+                self.timestamp  = row['StartTimestamp'];
+                self.firstBreak = parseInt(row['firstBreak']);
+                self.lastBreak  = parseInt(row['CurrPlayer']);
+                
+                self.isFinished = false;
+                self.isWinner   = -1;
+                
+                self.shotClock = new ShotClock8910();
+                self.shotClock.init(
+                    1000 * parseInt(row['Shotclock']),
+                    1000 * parseInt(row['ExtensionTime']),
+                    parseInt(row['ExtensionsPerRack']),
+                    parseInt(row['ShotclockUseSound']) === 1
+                );
+                self.shotClock.currPlayer = parseInt(row['CurrPlayer']);
+                self.shotClock.numCalledExtensions = new Array(
+                    parseInt(row['ExtensionsCalledPlayer1']),
+                    parseInt(row['ExtensionsCalledPlayer2'])
+                );
 		
 		app.Players.ingame[0] = new Player();
 		app.Players.ingame[1] = new Player();
@@ -49,7 +82,7 @@ function Game8910 () {
 				if (app.Players.ingame[1].pID == app.ANONYMOUSPLAYERPID) {
 				    app.Players.ingame[1].name = row['Player2Name'];
 				}
-				self.setPlayers( // TODO does this exist here?
+				self.setPlayers(
 				    function () {
 					self.initHistory(cbSuccess);
 				    }
@@ -73,14 +106,39 @@ function Game8910 () {
 	    var sql = 'INSERT INTO '
 		    + app.dbFortune.tables.Game8910.name + ' '
 		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game8910, false, false) + ' '
-		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'; // TODO number of ?s
-	    
-            // TODO score to string
+		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'; 
+            
+            var score = self.scoreToString();
 		
 	    app.dbFortune.query(
 		sql,
 		[
-                    // TODO values
+                    self.gameType,
+                    self.timestamp,
+                    self.timestamp,
+                    self.players[0].obj.getDisplayName(),
+                    self.players[1].obj.getDisplayName(),
+                    self.players[0].obj.pID,
+                    self.players[1].obj.pID,
+                    self.shotClock.currPlayer,
+                    self.numberOfSets,
+                    self.racksPerSet,
+                    score,
+                    self.players[0].fouls,
+                    self.players[1].fouls,
+                    self.breakType,
+                    self.mode,
+                    self.isFinished,
+                    self.winner,
+                    '',
+                    0,
+                    0,
+                    self.shotClock.shotTime,
+                    self.shotClock.extensionTime,
+                    self.shotClock.extensionsPerRack,
+                    (self.shotClock.useSoundWarning) ? 1 : 0,
+                    self.shotClock.numCalledExtensions[0],
+                    self.shotClock.numCalledExtensions[1]
 		],
 		function (tx, result) {
 		    self.gameID = result.insertId;
@@ -94,15 +152,24 @@ function Game8910 () {
 	
 	// modify existing entry
 	var sql = 'UPDATE ' + app.dbFortune.tables.Game8910.name + ' SET '
-                // TODO values
+                + 'EndTimestamp=?, CurrPlayer=?, Score=?, FoulsPlayer1=?, FoulsPlayer2=?, isFinished=?, '
+                + 'Winner=?, ExtensionsCalledPlayer1=?, ExtensionsCalledPlayer2=? '
 		+ 'WHERE gID="' + self.gameID + '"';
 		
-        // TODO score to string
+        var score = self.scoreToString();
 		
 	app.dbFortune.query(
 	    sql,
 	    [
-                // TODO values
+                Math.floor(Date.now() / 1000).toFixed(0),
+                self.shotClock.currPlayer,
+                score,
+                self.players[0].fouls,
+                self.players[1].fouls,
+                self.isFinished,
+                self.winner,
+                self.shotClock.numCalledExtensions[0],
+                self.shotClock.numCalledExtensions[1]
 	    ],
 	    cbSuccess,
 	    app.dummyFalse
@@ -131,14 +198,19 @@ function Game8910 () {
         var sql = 'INSERT INTO '
 		    + app.dbFortune.tables.Game8910History.name + ' '
 		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game8910History, false, false) + ' '
-		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'; // TODO number of question marks
+		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?)';
 	
-        // TODO score to string
+        var score = self.scoreToString();
 	    
 	app.dbFortune.query(
 	    sql,
 	    [
-                // TODO values
+                score,
+                self.players[0].fouls,
+                self.players[1].fouls,
+                self.shotClock.currPlayer,
+                self.shotClock.numCalledExtensions[0],
+                self.shotClock.numCalledExtensions[1]
 	    ],
 	    function (tx, result) {
 		self.historyStack.push(result.insertId);
@@ -153,6 +225,7 @@ function Game8910 () {
 	
 	if (self.historyStack.length <= 1) {
 	    cbError();
+            return;
 	}
 	var id = self.historyStack.pop();
 	    id = self.historyStack[self.historyStack.length-1];
@@ -166,8 +239,18 @@ function Game8910 () {
 		}
 		var row = result.rows.item(0);
 		
-		// TODO
+		self.stringToScore(row['Score']);
+                
+                self.players[0].fouls = parseInt(row['FoulsPlayer1']);
+                self.players[1].fouls = parseInt(row['FoulsPlayer2']);
 		
+                self.shotClock.pauseClock();
+                self.shotClock.switchPlayer(self.shotClock.currPlayer !== parseInt(row['CurrPlayer']));
+                self.shotClock.numCalledExtensions = new Array(
+                    parseInt(row['ExtensionsCalledPlayer1']),
+                    parseInt(row['ExtensionsCalledPlayer2'])
+                );
+                
 		self.saveGame();
 		cbSuccess();
 		return true;
@@ -177,7 +260,19 @@ function Game8910 () {
     }
     
     this.undo = function () {
-        // TODO
+        var callback = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse;
+        
+        this.loadHistory(
+            callback,
+            function () {
+                app.alertDlg(
+                    'Sorry, the last action couldn\'t be undone!',
+                    app.dummyFalse,
+                    'Error',
+                    'OK'
+                );
+            }
+        );
     }
     
     this.handleBtnShotClockCtrlTap = function (event) {
@@ -295,15 +390,33 @@ function Game8910 () {
             }, 300
         );
         
-        // TODO
+        app.confirmDlg(
+            'Are you sure you want to revert the last action?',
+            function () {
+                self.undo(
+                    function () {
+                        self.updateRackScore();
+                        self.updateSetScore();
+                        self.updateStreak();
+                        self.updateFoulDisplay();
+                    }
+                );
+            },
+            app.dummyFalse,
+            'Undo',
+            'Revert,Cancel'
+        );
         
         return true;
     }
     
     this._handleBtnEntry = function (currPlayer, runOut) {
         self.processInput(currPlayer, runOut);
+        
         self.updateRackScore();
         self.updateSetScore();
+        self.updateFoulDisplay();
+        self.updateStreak();
         
         self.saveHistory();
 	self.saveGame();
@@ -350,7 +463,6 @@ function Game8910 () {
     }
     
     this.updateFoulDisplay = function () {
-        // TODO
         for (var p = 0; p <= 1; p++) {
             $foulObjs = $('#mainPlayer' + (p+1) + 'FoulWrapper img');
             for (var f = 0; f <= 3; f++) {
@@ -427,11 +539,10 @@ function Game8910 () {
         $('#mainPlayer1ImgWrapper').css('height', biggerHeight);
         $('#mainPlayer2ImgWrapper').css('height', biggerHeight);
         
-        // TODO
         var setMarkerFactor = 0.2;
             setMarkerSize   = self.getSetMarkerSize(1 + 2*setMarkerFactor),
             setMarkerHTML   = '',
-            setMarkerDummy  = '<img src="file:///android_asset/www/img/players/playerDummy.jpg" id="setMarker[ID]" style="width: [width]; height: [height]; margin: 20px [margin-left] 20px [margin-right];" />';
+            setMarkerDummy  = '<img src="file:///android_asset/www/img/setmarker/setmarker1.png" id="setMarker[ID]" style="width: [width]; height: [height]; margin-left: [margin-left]; margin-right: [margin-right];" />';
         for (var i = 0; i < self.numberOfSets; i++) {
             setMarkerHTML += setMarkerDummy
                                 .replace('[ID]',           i)
@@ -500,36 +611,74 @@ Game8910.prototype.initNewGame = function (gameType, breakType, mode, racksPerSe
 }
 
 Game8910.prototype.scoreToString = function () {
-    var toReturn = new Array(this.sets.length);
+    var toReturnArray = new Array(this.sets.length);
     
     for (var i = 0; i < this.sets.length; i++) {
-        toReturn[i] = '';
+        toReturnArray[i] = '';
         
         for (var j = 0; j < this.sets[i].racks.length; j++) {
-            toReturn[i] +=  this.sets[i].racks[j].wonByPlayer          + ','
-                        + ((this.sets[i].racks[j].runOut) ? '1' : '0') + ';';
+            toReturnArray[i] +=  this.sets[i].racks[j].wonByPlayer          + ','
+                             + ((this.sets[i].racks[j].runOut) ? '1' : '0') + ';';
         }
         
-        toReturn[i]  = toReturn[i].slice(0, -1);
+        toReturnArray[i]  = toReturnArray[i].slice(0, -1);
     }
     
-    return toReturn.join('|');
+    var toReturn = toReturnArray.join('|');
+    return toReturn;
 }
 
 Game8910.prototype.stringToScore = function (str) {
+    // TODO Utilize addSetToGame
+    
     var sets = str.split('|');
     this.sets = new Array(sets.length);
+    
+    this.players[0].fouls = 0;
+    this.players[1].fouls = 0;
+    
+    this.players[0].sets = 0;
+    this.players[1].sets = 0;
+    
+    this.players[0].streak = 0;
+    this.players[1].streak = 0;
     
     for (var i = 0; i < sets.length; i++) {
         this.sets[i] = this.getDummySet();
         var racks = sets[i].split(';');
         
+        this.players[0].racks = 0;
+        this.players[1].racks = 0;
+        
+        this.idxCurrentRack = 0;
+        
         for (var j = 0; j < racks.length; j++) {
             this.sets[i].racks[j] = this.getDummyRack();
             var currentRack = racks[j].split(',');
-
-            this.sets[i].racks[j].wonByPlayer = parseInt(currentRack[0]);
-            this.sets[i].racks[j].runOut      = (currentRack[1] === '1');
+            var idxWinner   = parseInt(currentRack[0]);
+            
+            if (idxWinner !== -1) {
+                this.idxCurrentRack++;
+                
+                this.sets[i].racks[j].wonByPlayer = idxWinner;
+                this.sets[i].racks[j].runOut      = (currentRack[1] === '1');
+                
+                this.players[idxWinner].racks++;
+                this.players[idxWinner].streak++;
+                
+                this.players[1-idxWinner].streak = 0;
+                
+                if (j == racks.length - 1) {
+                    this.sets[i].wonByPlayer = idxWinner;
+                    this.players[idxWinner].sets++;
+                }
+            }
+        }
+        
+        if (typeof this.racksPerSet !== 'undefined' && racks.length !== this.racksPerSet) {
+            for (var k = racks.length; k < this.racksPerSet; k++) {
+                this.sets[i].racks[j] = this.getDummyRack();
+            }
         }
     }
 }
@@ -547,7 +696,7 @@ Game8910.prototype.addSetToGame = function () {
 Game8910.prototype.getSetMarkerSize = function (factor) {
     var windowWidth = $(window).width();
     
-    return Math.min(80, windowWidth / (factor*this.numberOfSets));
+    return Math.min(30, windowWidth / (factor*this.numberOfSets));
 }
 
 Game8910.prototype.getDummyPlayer = function () {
@@ -595,13 +744,13 @@ Game8910.prototype.setLastBreak = function (idx) {
 }
 
 Game8910.prototype._updateSetScore = function (idxSet, wonByPlayer) {
-    // TODO
-    $('#setMarker' + idxSet).css('opacity', (wonByPlayer+1)/2);
+    $('#setMarker' + idxSet)
+        .attr('src', 'file:///android_asset/www/img/setmarker/setmarker' + (wonByPlayer+1) + '.png')
+        .css('opacity', (wonByPlayer === -1) ? '0.0' : '1.0');
 }
 
 Game8910.prototype.updateSetScore = function () {
     for (var i = 0; i < this.numberOfSets; i++) {
-        // TODO
         this._updateSetScore(i, (typeof this.sets[i] !== 'undefined') ? this.sets[i].wonByPlayer : -1);
     }
 }
@@ -630,7 +779,9 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
     
     this.players[  currPlayer].streak++;
     this.players[1-currPlayer].streak = 0;
-    this.updateStreak();
+    
+    this.players[0].fouls = 0;
+    this.players[1].fouls = 0;
     
     if (runOut) {
         this.sets[this.idxCurrentSet].racks[this.idxCurrentRack].runOut = true;
@@ -655,11 +806,17 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
             if (this.players[0].sets === this.players[1].sets) { // Game ended tied
                 this.winner = 0;
                 
+                this.saveGame();
+                this.saveHistory();
+                
                 // TODO
                 alert('Game ended in a tie!');
             } else { // Game ended regularly
                 var idxWinner = (this.players[1].sets > this.players[0].sets) ? 1 : 0;
                 this.winner = this.players[idxWinner].obj.pID;
+                
+                this.saveGame();
+                this.saveHistory();
                 
                 // TODO
                 alert(this.players[idxWinner].obj.getDisplayName() + ' has won the game!');
@@ -684,6 +841,8 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
             );
         }
     } else {
+        this.idxCurrentRack++;
+        
         if (this.breakType === 2 && app.settings.get8910NotifyWhoHasToBreak()) {
             var nextBreakPlayerName = this.players[this.shotClock.currPlayer].obj.getDisplayName();
             app.alertDlg(
