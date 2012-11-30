@@ -102,7 +102,7 @@ function Game8910 () {
         var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse;
 	
 	// no entry exists yet
-	if (self.gameID == -1) {
+	if (self.gameID == -1) { 
 	    var sql = 'INSERT INTO '
 		    + app.dbFortune.tables.Game8910.name + ' '
 		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game8910, false, false) + ' '
@@ -127,6 +127,7 @@ function Game8910 () {
                     self.players[0].fouls,
                     self.players[1].fouls,
                     self.breakType,
+                    self.firstBreak,
                     self.mode,
                     self.isFinished,
                     self.winner,
@@ -149,7 +150,7 @@ function Game8910 () {
 	    
 	    return true;
 	}
-	
+
 	// modify existing entry
 	var sql = 'UPDATE ' + app.dbFortune.tables.Game8910.name + ' SET '
                 + 'EndTimestamp=?, CurrPlayer=?, Score=?, FoulsPlayer1=?, FoulsPlayer2=?, isFinished=?, '
@@ -280,7 +281,7 @@ function Game8910 () {
         var $this = $btnShotClockCtrl;
         
         if ($this.hasClass('btnDown')) {
-            return false;
+            return;
         }
         
         $this.addClass('btnDown');
@@ -296,8 +297,6 @@ function Game8910 () {
         } else {
             self.shotClock.unpauseClock();
         }
-        
-        return true;
     }
     
     this.handleBtnShotClockCtrlTapHold = function (event) {
@@ -305,7 +304,7 @@ function Game8910 () {
         var $this = $btnShotClockCtrl;
         
         if ($this.hasClass('btnDown')) {
-            return false;
+            return;
         }
         
         $this.addClass('btnDown');
@@ -327,8 +326,6 @@ function Game8910 () {
                 // Free
             }
         }
-        
-        return true;
     }
     
     this.handleBtnCallExtension = function (event) {
@@ -336,7 +333,7 @@ function Game8910 () {
         var $this = $btnExtension;
         
         if ($this.hasClass('btnDown')) {
-            return false;
+            return;
         }
         
         $this.addClass('btnDown');
@@ -354,7 +351,7 @@ function Game8910 () {
                 'OK'
             );
             
-            return false;
+            return;
         }
         
         if(!self.shotClock.callExtension()) {
@@ -371,8 +368,6 @@ function Game8910 () {
                 'Yes,No'
             );
         }
-        
-        return true;
     }
     
     this.handleBtnUndo = function (event) {
@@ -380,7 +375,7 @@ function Game8910 () {
         var $this = $btnUndo;
         
         if ($this.hasClass('btnDown')) {
-            return false;
+            return;
         }
         
         $this.addClass('btnDown');
@@ -406,8 +401,6 @@ function Game8910 () {
             'Undo',
             'Revert,Cancel'
         );
-        
-        return true;
     }
     
     this._handleBtnEntry = function (currPlayer, runOut) {
@@ -424,6 +417,17 @@ function Game8910 () {
     
     this.handleBtnEntry = function (event, elemData, runOut) {
         event.preventDefault();
+        
+        if ($.mobile.activePage.data('handleBtnEntryPressed') === '1') {
+            return;
+        }
+        
+        $.mobile.activePage.data('handleBtnEntryPressed', '1');
+        setTimeout(
+            function () {
+                $.mobile.activePage.data('handleBtnEntryPressed', '0');
+            }, 1000
+        );
         
         var currPlayer = parseInt(elemData) - 1;
         
@@ -460,6 +464,9 @@ function Game8910 () {
         // Maybe go up to '% 4' and reset with a timeout
             
         this.updateFoulDisplay();
+        
+        this.saveGame();
+        // TODO save/update history?
     }
     
     this.updateFoulDisplay = function () {
@@ -686,7 +693,7 @@ Game8910.prototype.stringToScore = function (str) {
 Game8910.prototype.addSetToGame = function () {
     var setsLength = this.sets.push(this.getDummySet());
     
-    for (var i = 0; i < this.racksPerSet; i++) {
+    for (var i = 0; i < 2*this.racksPerSet-1; i++) {
         this.sets[setsLength-1].racks[i] = this.getDummyRack();
     }
     
@@ -745,7 +752,7 @@ Game8910.prototype.setLastBreak = function (idx) {
 
 Game8910.prototype._updateSetScore = function (idxSet, wonByPlayer) {
     $('#setMarker' + idxSet)
-        .attr('src', 'file:///android_asset/www/img/setmarker/setmarker' + (wonByPlayer+1) + '.png')
+        .attr('src', '../../img/setmarker/setmarker' + (wonByPlayer+1) + '.png')
         .css('opacity', (wonByPlayer === -1) ? '0.0' : '1.0');
 }
 
