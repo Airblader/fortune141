@@ -4,28 +4,33 @@ $(document).bind('mobileinit', function () {
 });
 
 $(document).bind('deviceready', function () {
-    $('#pageIndexHead').hide();
-    $('#pageIndexBody').hide();
-    
     app           = new FortuneApp();
     app.dbFortune = new dbFortune();
     app.dbFortune.open(
 	function () {
-	    $('#pageIndexFirstRunMainUser').show();
+	    navigator.splashscreen.hide();
+	    
+	    $('#firstRunMainUser_Picture').hide();
+	    $('#pageIndexFirstRunMainUser').fadeIn('slow');
 	},
 	function() {
-	    $('#pageIndexHead').show();
-	    $('#pageIndexBody').show();
-	    
 	    app.updateMainUser();
 	    app.updateIndexBubbles();
+	    
+	    $('#pageIndexHead').show();
+	    $('#pageIndexBody').show(function () {
+		setTimeout(navigator.splashscreen.hide, 250);
+	    });
 	}
     );
 });
 
+$(document).one('pagebeforeshow', '#pageIndex', function () {
+    $('#pageIndexHead').hide();
+    $('#pageIndexBody').hide();
+});
+
 $(document).on('pageshow', '#pageIndex', function () {
-    $('#firstRunMainUser_Picture').hide();
-    
     try {
 	app.updateMainUser();
 	app.updateIndexBubbles();

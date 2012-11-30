@@ -47,6 +47,8 @@ function Game8910 () {
                 self.idxCurrentSet  = self.sets.length - 1;
                 self.idxCurrentRack = self.sets[self.idxCurrentSet].racks.length - 1;
                 
+                // TODO Compare score with TempScore from DB
+                
                 self.timestamp  = row['StartTimestamp'];
                 self.firstBreak = parseInt(row['firstBreak']);
                 self.lastBreak  = parseInt(row['CurrPlayer']);
@@ -106,9 +108,13 @@ function Game8910 () {
 	    var sql = 'INSERT INTO '
 		    + app.dbFortune.tables.Game8910.name + ' '
 		    + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game8910, false, false) + ' '
-		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'; 
+		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'; 
             
             var score = self.scoreToString();
+            var tempScore = self.players[0].racks + '/'
+                          + self.players[0].sets  + '/'
+                          + self.players[1].racks + '/'
+                          + self.players[1].sets;
 		
 	    app.dbFortune.query(
 		sql,
@@ -124,12 +130,13 @@ function Game8910 () {
                     self.numberOfSets,
                     self.racksPerSet,
                     score,
+                    tempScore,
                     self.players[0].fouls,
                     self.players[1].fouls,
                     self.breakType,
                     self.firstBreak,
                     self.mode,
-                    self.isFinished,
+                    (self.isFinished) ? '1' : '0',
                     self.winner,
                     '',
                     0,
@@ -153,11 +160,15 @@ function Game8910 () {
 
 	// modify existing entry
 	var sql = 'UPDATE ' + app.dbFortune.tables.Game8910.name + ' SET '
-                + 'EndTimestamp=?, CurrPlayer=?, Score=?, FoulsPlayer1=?, FoulsPlayer2=?, isFinished=?, '
+                + 'EndTimestamp=?, CurrPlayer=?, Score=?, TempScore=?, FoulsPlayer1=?, FoulsPlayer2=?, isFinished=?, '
                 + 'Winner=?, ExtensionsCalledPlayer1=?, ExtensionsCalledPlayer2=? '
 		+ 'WHERE gID="' + self.gameID + '"';
 		
         var score = self.scoreToString();
+        var tempScore = self.players[0].racks + '/'
+                      + self.players[0].sets  + '/'
+                      + self.players[1].racks + '/'
+                      + self.players[1].sets;
 		
 	app.dbFortune.query(
 	    sql,
@@ -165,9 +176,10 @@ function Game8910 () {
                 Math.floor(Date.now() / 1000).toFixed(0),
                 self.shotClock.currPlayer,
                 score,
+                tempScore,
                 self.players[0].fouls,
                 self.players[1].fouls,
-                self.isFinished,
+                (self.isFinished) ? '1' : '0',
                 self.winner,
                 self.shotClock.numCalledExtensions[0],
                 self.shotClock.numCalledExtensions[1]
@@ -411,8 +423,8 @@ function Game8910 () {
         self.updateFoulDisplay();
         self.updateStreak();
         
-        self.saveHistory();
-	self.saveGame();
+        this.saveGame();
+        this.saveHistory();
     }
     
     this.handleBtnEntry = function (event, elemData, runOut) {
@@ -426,7 +438,7 @@ function Game8910 () {
         setTimeout(
             function () {
                 $.mobile.activePage.data('handleBtnEntryPressed', '0');
-            }, 1000
+            }, 500
         );
         
         var currPlayer = parseInt(elemData) - 1;
