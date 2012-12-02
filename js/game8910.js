@@ -44,8 +44,6 @@ function Game8910 () {
                 self.numberOfSets = parseInt(row['NumberOfSets']);
                 
                 self.stringToScore(row['Score']);
-                self.idxCurrentSet  = self.sets.length - 1;
-                self.idxCurrentRack = self.sets[self.idxCurrentSet].racks.length - 1;
                 
                 // TODO Compare score with TempScore from DB
                 
@@ -587,6 +585,10 @@ function Game8910 () {
         self.updateStreak();
         self.updateFoulDisplay();
         
+        if (self.firstBreak !== -1) {
+            return;
+        }
+        
         app.FortuneUtils.openListDialog(
             self.players[0].obj.getDisplayName(),
             self.players[1].obj.getDisplayName(),
@@ -662,6 +664,9 @@ Game8910.prototype.stringToScore = function (str) {
     this.players[0].streak = 0;
     this.players[1].streak = 0;
     
+    this.idxCurrentRack = 0;
+    this.idxCurrentSet = 0;
+    
     for (var i = 0; i < sets.length; i++) {
         this.sets[i] = this.getDummySet();
         var racks = sets[i].split(';');
@@ -669,16 +674,12 @@ Game8910.prototype.stringToScore = function (str) {
         this.players[0].racks = 0;
         this.players[1].racks = 0;
         
-        this.idxCurrentRack = 0;
-        
-        for (var j = 0; j < racks.length; j++) {
+        for (var j = 0; j < 2*this.racksPerSet-1; j++) {
             this.sets[i].racks[j] = this.getDummyRack();
             var currentRack = racks[j].split(',');
             var idxWinner   = parseInt(currentRack[0]);
             
             if (idxWinner !== -1) {
-                this.idxCurrentRack++;
-                
                 this.sets[i].racks[j].wonByPlayer = idxWinner;
                 this.sets[i].racks[j].runOut      = (currentRack[1] === '1');
                 
@@ -687,16 +688,15 @@ Game8910.prototype.stringToScore = function (str) {
                 
                 this.players[1-idxWinner].streak = 0;
                 
-                if (j == racks.length - 1) {
+                if (this.players[idxWinner].racks >= this.racksPerSet) {
                     this.sets[i].wonByPlayer = idxWinner;
                     this.players[idxWinner].sets++;
+                    
+                    this.idxCurrentSet++;
+                    this.idxCurrentRack = 0;
+                } else {
+                    this.idxCurrentRack++;
                 }
-            }
-        }
-        
-        if (typeof this.racksPerSet !== 'undefined' && racks.length !== this.racksPerSet) {
-            for (var k = racks.length; k < this.racksPerSet; k++) {
-                this.sets[i].racks[j] = this.getDummyRack();
             }
         }
     }
@@ -731,7 +731,7 @@ Game8910.prototype.getDummyPlayer = function () {
 Game8910.prototype.getDummySet = function () {
     return {
         wonByPlayer: -1,
-        racks: new Array(this.racksPerSet),
+        racks: new Array(2*this.racksPerSet-1),
     };
 }
 

@@ -1,46 +1,4 @@
-/*$(document).on('pageshow', '#pageResumeGame', function () {
-    var $list = $('#resumeGameListContainer');
-    
-    var listDummy  = '<ul data-role="listview" id="resumeGameList" data-dividertheme="a">[entries]</ul>',
-	entryDummy = '<li><a href="#" onClick="javascript:$(\'#resumeGamePopup\').data(\'gType\', \'141\').data(\'gID\', [gID]).popup(\'open\');">'
-	           + '<p><strong>[name1] vs. [name2]</strong></p>'
-		   + '<p>Score: [ptsPlayer1] &ndash; [ptsPlayer2]</p>'
-		   + '<p>Game to [scoreGoal]</p>'
-		   + '<p class="ui-li-aside">'
-		   + app.settings.getDateFormat();
-		   + '</p></a></li>';
-
-    app.dbFortune.query(
-	'SELECT gID, Timestamp, Player1Name, Player2Name, PointsPlayer1, PointsPlayer2, ScoreGoal FROM '
-	    + app.dbFortune.tables.Game141.name
-	    + ' WHERE isFinished="0" ORDER BY Timestamp DESC',
-	[],
-	function (tx, results) {
-	    var entries = new Array(results.rows.length);
-	    for (var i = 0; i < results.rows.length; i++) {
-		var row = results.rows.item(i);
-		
-		var gID  = parseInt(row['gID']),
-		    date = app.convertTimestamp(row['Timestamp']);
-		    
-		entries[i] = entryDummy.replace('[gID]',        gID)
-		                       .replace('[name1]',      row['Player1Name'])
-				       .replace('[name2]',      row['Player2Name'])
-				       .replace('[ptsPlayer1]', row['PointsPlayer1'])
-				       .replace('[ptsPlayer2]', row['PointsPlayer2'])
-				       .replace('[scoreGoal]',  row['ScoreGoal'])
-				       .replace('[month]',      date.month)
-				       .replace('[day]',        date.day)
-				       .replace('[year]',       date.year);
-	    }
-	    
-	    $list.html(listDummy.replace('[entries]', entries.join('')));
-	    $('#resumeGameList').listview();
-	}
-    );
-});*/
-
-$(document).on('pageshow', '#pageResumeGame', function () {
+$(document).on('pagebeforeshow', '#pageResumeGame', function () {
     $.mobile.loading('show');
     var $list = $('#resumeGameListContainer');
     
@@ -59,7 +17,7 @@ $(document).on('pageshow', '#pageResumeGame', function () {
 		    + '<p class="ui-li-aside">'
 		    + app.settings.getDateFormat();
 		    + '</p></a></li>';
-    var entryDummyB = '<li><a href="#">'
+    var entryDummyB = '<li><a href="#" onClick="javascript:$(\'#resumeGamePopup\').data(\'gType\', \'8910\').data(\'gID\', [gID]).popup(\'open\');">'
 		    + '<img src="../../img/gameicons/game8910.png" />'
 		    + '<p><strong>[name1] vs. [name2]</strong></p>'
 		    + '<p>Score:[setsPlayer1] [racksPlayer1] &ndash; [racksPlayer2][setsPlayer2]</p>'
@@ -76,11 +34,27 @@ $(document).on('pageshow', '#pageResumeGame', function () {
 	}
 	
 	var res = resA.concat(resB);
+	
+	var max_entries = 20;
+	if (res.length > max_entries) {
+	    app.alertDlg(
+		'You have more than ' + max_entries + ' unfinished games. Please consider '
+		+ 'emptying this area.',
+		app.dummyFalse,
+		'Warning',
+		'OK'
+	    );
+	}
+	
 	res.sort(function (a,b) {
-	    if (a['StartTimestamp'] === b['StartTimestamp']) {
+	    var timeA = parseInt(a['StartTimestamp']),
+		timeB = parseInt(b['StartTimestamp']);
+	    
+	    if (timeA === timeB) {
 		return 0;
 	    }
-	    return parseInt(a['StartTimestamp']) <= parseInt(b['StartTimestamp']);
+	    
+	    return (timeA < timeB);
 	});
 	
 	var entries = new Array(res.length);
@@ -139,7 +113,7 @@ $(document).on('pageshow', '#pageResumeGame', function () {
     app.dbFortune.query(
 	'SELECT gID, Timestamp AS StartTimestamp, \'141\' AS gameType, Player1Name, Player2Name, PointsPlayer1, PointsPlayer2, ScoreGoal FROM '
 	    + app.dbFortune.tables.Game141.name
-	    + ' WHERE isFinished=0 ORDER BY Timestamp DESC',
+	    + ' WHERE isFinished=0',
 	[],
 	function (tx, results) {
 	    resA = new Array(results.rows.length);
@@ -155,7 +129,7 @@ $(document).on('pageshow', '#pageResumeGame', function () {
     app.dbFortune.query(
 	'SELECT gID, StartTimestamp, gameType, Player1Name, Player2Name, TempScore, RacksPerSet, NumberOfSets FROM '
 	    + app.dbFortune.tables.Game8910.name
-	    + ' WHERE isFinished=0 ORDER BY StartTimestamp DESC',
+	    + ' WHERE isFinished=0',
 	[],
 	function (tx, results) {
 	    resB = new Array(results.rows.length);
@@ -176,9 +150,12 @@ $(document).off('click', '#pageResumeGameEmptyLink')
     app.confirmDlg(
 	'Are you sure you want to delete all unfinished games?',
 	function () {
-	    app.dbFortune.query(
-		'DELETE FROM ' + app.dbFortune.tables.Game141.name + ' WHERE isFinished="0"',
-		[],
+	    var query = new dbFortuneQuery();
+	    
+	    query.add('DELETE FROM ' + app.dbFortune.tables.Game141.name + ' WHERE isFinished=0');
+	    query.add('DELETE FROM ' + app.dbFortune.tables.Game8910.name + ' WHERE isFinished=0');
+	    
+	    query.execute(
 		function () {
 		    $.mobile.changePage('../../index.html');
 		},
@@ -202,7 +179,19 @@ $(document).off('click', '#resumeGameResumeButton')
            .on ('click', '#resumeGameResumeButton', function (event) {
     event.preventDefault();
     
-    $.mobile.changePage('../game141/game141.html', {
+    var gType = $('#resumeGamePopup').data('gType');
+
+    var href = '../../index.html';    
+    switch (gType) {
+	case '141':
+	    var href = '../game141/game141.html';
+	    break;
+	case '8910':
+	    var href = '../game8910/game8910.html';
+	    break;
+    }
+    
+    $.mobile.changePage(href, {
 	data : {
 	    gID : parseInt( $('#resumeGamePopup').data('gID') ),
 	}	
@@ -216,24 +205,32 @@ $(document).off('click', '#resumeGameDeleteButton')
     event.preventDefault();
     
     var $popup = $('#resumeGamePopup'),
+	gType  = $popup.data('gType'),
 	gID    = parseInt( $popup.data('gID') );
     $popup.popup('close');
+    
+    switch (gType) {
+	case '141':
+	    var table = app.dbFortune.tables.Game141.name;
+	    break;
+	case '8910':
+	    var table = app.dbFortune.tables.Game8910.name;
+	    break;
+    }
     
     app.confirmDlg(
 	'Are you sure that you want to delete this game?',
 	function () {
 	    app.dbFortune.query(
-		'DELETE FROM ' + app.dbFortune.tables.Game141.name + ' WHERE gID="' + gID + '"',
+		'DELETE FROM ' + table + ' WHERE gID="' + gID + '"',
 		[],
 		function () {
-		    $('#pageResumeGame').trigger('pageshow');
+		    $('#pageResumeGame').trigger('pagebeforeshow');
 		},
 		app.dummyFalse
 	    );
 	},
-	function () {
-	    $('#pageResumeGame').trigger('pageshow');
-	},
+	app.dummyFalse,
 	'Delete Game',
 	'Delete, Cancel'
     );

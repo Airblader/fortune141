@@ -102,7 +102,12 @@ function FortuneApp () {
 	
 	// view games
 	app.dbFortune.query(
-	    'SELECT COUNT(*) AS numViewGames FROM ' + app.dbFortune.tables.Game141.name + ' WHERE isFinished="1"',
+	    'SELECT COUNT(*) AS numViewGames FROM ('
+		+ 'SELECT gID FROM '
+		+ app.dbFortune.tables.Game141.name + ' WHERE isFinished=1'
+		+ ' UNION ALL '
+		+ 'SELECT gID FROM '
+		+ app.dbFortune.tables.Game8910.name + ' WHERE isFinished=1)',
 	    [],
 	    function (tx, result) {
 		if (result.rows.length == 0) {
@@ -132,7 +137,12 @@ function FortuneApp () {
 	
 	// game profiles
 	app.dbFortune.query(
-	    'SELECT COUNT(*) AS numProfiles FROM ' + app.dbFortune.tables.Game141Profile.name,
+	    'SELECT COUNT(*) AS numProfiles FROM ('
+		+ 'SELECT ID FROM '
+		+ app.dbFortune.tables.Game141Profile.name
+		+ ' UNION ALL '
+		+ 'SELECT ID FROM '
+		+ app.dbFortune.tables.Game8910Profile.name + ')',
 	    [],
 	    function (tx, result) {
 		if (result.rows.length == 0) {
