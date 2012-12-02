@@ -56,8 +56,8 @@ function Game8910 () {
                 
                 self.shotClock = new ShotClock8910();
                 self.shotClock.init(
-                    1000 * parseInt(row['Shotclock']),
-                    1000 * parseInt(row['ExtensionTime']),
+                    parseInt(row['Shotclock']),
+                    parseInt(row['ExtensionTime']),
                     parseInt(row['ExtensionsPerRack']),
                     parseInt(row['ShotclockUseSound']) === 1
                 );
@@ -66,6 +66,7 @@ function Game8910 () {
                     parseInt(row['ExtensionsCalledPlayer1']),
                     parseInt(row['ExtensionsCalledPlayer2'])
                 );
+                self.shotClock.updateCurrPlayerDisplay();
 		
 		app.Players.ingame[0] = new Player();
 		app.Players.ingame[1] = new Player();
@@ -307,6 +308,8 @@ function Game8910 () {
         } else {
             self.shotClock.unpauseClock();
         }
+        
+        self.saveGame();
     }
     
     this.handleBtnShotClockCtrlTapHold = function (event) {
@@ -336,6 +339,8 @@ function Game8910 () {
                 // Free
             }
         }
+        
+        self.saveGame();
     }
     
     this.handleBtnCallExtension = function (event) {
@@ -372,11 +377,17 @@ function Game8910 () {
                 function () {
                     self.shotClock.callExtension(true);
                     self.shotClock.unpauseClock();
+                    
+                    self.saveGame();
                 },
-                self.shotClock.unpauseClock,
+                function () {
+                    self.shotClock.unpauseClock();
+                },
                 'ShotClock',
                 'Yes,No'
             );
+        } else {
+            self.saveGame();
         }
     }
     
@@ -474,9 +485,6 @@ function Game8910 () {
         // Maybe go up to '% 4' and reset with a timeout
             
         this.updateFoulDisplay();
-        
-        this.saveGame();
-        // TODO save/update history?
     }
     
     this.updateFoulDisplay = function () {
@@ -559,7 +567,7 @@ function Game8910 () {
         var setMarkerFactor = 0.2;
             setMarkerSize   = self.getSetMarkerSize(1 + 2*setMarkerFactor),
             setMarkerHTML   = '',
-            setMarkerDummy  = '<img src="file:///android_asset/www/img/setmarker/setmarker1.png" id="setMarker[ID]" style="width: [width]; height: [height]; margin-left: [margin-left]; margin-right: [margin-right];" />';
+            setMarkerDummy  = '<img src="../../img/setmarker/setmarker1.png" id="setMarker[ID]" style="width: [width]; height: [height]; margin-left: [margin-left]; margin-right: [margin-right];" />';
         for (var i = 0; i < self.numberOfSets; i++) {
             setMarkerHTML += setMarkerDummy
                                 .replace('[ID]',           i)
@@ -586,21 +594,22 @@ function Game8910 () {
         self.updateFoulDisplay();
         
         if (self.firstBreak !== -1) {
-            return;
+            self.saveGame();
+            self.saveHistory();
+        } else {
+            app.FortuneUtils.openListDialog(
+                self.players[0].obj.getDisplayName(),
+                self.players[1].obj.getDisplayName(),
+                'Who will break the first rack?',
+                function (which) {
+                    app.currentGame.setLastBreak(which);
+                    app.currentGame.shotClock.setCurrPlayer(which);
+                    
+                    app.currentGame.saveGame();
+                    app.currentGame.saveHistory();
+                }
+            );
         }
-        
-        app.FortuneUtils.openListDialog(
-            self.players[0].obj.getDisplayName(),
-            self.players[1].obj.getDisplayName(),
-            'Who will break the first rack?',
-            function (which) {
-                app.currentGame.setLastBreak(which);
-                app.currentGame.shotClock.setCurrPlayer(which);
-                
-                app.currentGame.saveGame();
-                app.currentGame.saveHistory();
-            }
-        );
     }
 }
 
@@ -626,7 +635,7 @@ Game8910.prototype.initNewGame = function (gameType, breakType, mode, racksPerSe
     this.idxCurrentRack = 0;
 
     this.shotClock = new ShotClock8910();
-    this.shotClock.init(1000 * shotClock, 1000 * extensionTime, extensionsPerRack, useSoundWarning);
+    this.shotClock.init(shotClock, extensionTime, extensionsPerRack, useSoundWarning);
     
     this.initHistory(cbSuccess);
 }
@@ -757,7 +766,7 @@ Game8910.prototype.setPlayers = function () {
 Game8910.prototype.setLastBreak = function (idx) {
     this.lastBreak = idx;
     
-    if (typeof this.firstBreak === 'undefined') {
+    if (this.firstBreak === -1) {
         this.firstBreak = idx;
     }
 }
@@ -909,6 +918,7 @@ function ShotClock8910 () {
 
 ShotClock8910.prototype.consts = {
     REFRESH_INTERVAL           : 1000,
+    MILLISECONDS_PER_SECOND    : 1000,
     NO_MORE_EXTENSIONS_ALLOWED : false,
     CLOCK_IS_INACTIVE          : false,
     CLOCK_IS_ALREADY_RUNNING   : false,
@@ -1036,7 +1046,7 @@ ShotClock8910.prototype.callExtension = function () {
     }
     
     this.numCalledExtensions[this.currPlayer]++;
-    this.allowedTime += this.extensionTime;
+    this.allowedTime += this.consts.MILLISECONDS_PER_SECOND * this.extensionTime;
     
     return true;
 }
@@ -1071,7 +1081,7 @@ ShotClock8910.prototype.newRack = function () {
 ShotClock8910.prototype.resetTimes = function () {
     this.referenceTime = Date.now();
     this.elapsedTime   = 0;
-    this.allowedTime   = this.shotTime;
+    this.allowedTime   = this.consts.MILLISECONDS_PER_SECOND * this.shotTime;
 }
     
 ShotClock8910.prototype.resetCalledExtensions = function () {
