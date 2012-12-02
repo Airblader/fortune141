@@ -44,8 +44,10 @@ $(document).on('pageshow', '#pageResumeGame', function () {
     $.mobile.loading('show');
     var $list = $('#resumeGameListContainer');
     
-    var readyA = false, readyB = false;
-    var resA, resB;
+    var readyA = false,
+	readyB = false;
+    var resA,
+	resB;
     
     var listDummy = '<ul data-role="listview" id="resumeGameList" data-dividertheme="a">[entries]</ul>';
     
@@ -60,23 +62,24 @@ $(document).on('pageshow', '#pageResumeGame', function () {
     var entryDummyB = '<li><a href="#">'
 		    + '<img src="../../img/gameicons/game8910.png" />'
 		    + '<p><strong>[name1] vs. [name2]</strong></p>'
-		    + '<p>Score: ([setsPlayer1]) [racksPlayer1] &ndash; [racksPlayer2] ([setsPlayer2])</p>'
-		    + '<p>Race to [racksPerSet] ([numberOfSets] sets)</p>'
+		    + '<p>Score:[setsPlayer1] [racksPlayer1] &ndash; [racksPlayer2][setsPlayer2]</p>'
+		    + '<p>Race to [racksPerSet][numberOfSets]</p>'
 		    + '<p class="ui-li-aside">' + app.settings.getDateFormat(); + '</p>'
                     + '</a></li>';
-    
-    function doLoop () {
-	setTimeout(doIt, 100);
-    }
+		    
+    var entryDummyBSetsDummyA = ' ([num])',
+	entryDummyBSetsDummyB = ' ([num] sets)';
     
     function doIt() {
 	if (!readyA || !readyB) {
-	    doLoop();
 	    return;
 	}
 	
 	var res = resA.concat(resB);
 	res.sort(function (a,b) {
+	    if (a['StartTimestamp'] === b['StartTimestamp']) {
+		return 0;
+	    }
 	    return parseInt(a['StartTimestamp']) <= parseInt(b['StartTimestamp']);
 	});
 	
@@ -88,7 +91,7 @@ $(document).on('pageshow', '#pageResumeGame', function () {
 	    var gID  = parseInt(currentEntry['gID']),
 		date = app.convertTimestamp(currentEntry['StartTimestamp']);
 	    
-	    if (typeof currentEntry['gameType'] === 'undefined') { // 14/1
+	    if (currentEntry['gameType'] === '141') { // 14/1
 		entries[i] = entryDummyA.replace('[gID]',        gID)
 		                        .replace('[name1]',      currentEntry['Player1Name'])
 				        .replace('[name2]',      currentEntry['Player2Name'])
@@ -99,20 +102,31 @@ $(document).on('pageshow', '#pageResumeGame', function () {
 				        .replace('[day]',        date.day)
 				        .replace('[year]',       date.year);
 	    } else { // 8-/9-/10
-		var tempScore = currentEntry['TempScore'].split('/');
+		var tempScore    = currentEntry['TempScore'].split('/'),
+		    numberOfSets = parseInt(currentEntry['NumberOfSets']); 
 		
-		entries[i] = entryDummyB.replace('[gID]', gID)
-		                        .replace('[name1]', currentEntry['Player1Name'])
-					.replace('[name2]', currentEntry['Player2Name'])
-					.replace('[setsPlayer1]', tempScore[1])
-					.replace('[setsPlayer2]', tempScore[3])
+		var setsPlayer1 = '',
+		    setsPlayer2 = '',
+		    setsTotal   = '';
+		if (numberOfSets > 1) {
+		    setsPlayer1 = entryDummyBSetsDummyA.replace('[num]', tempScore[1]);
+		    setsPlayer2 = entryDummyBSetsDummyA.replace('[num]', tempScore[3]);
+		    
+		    setsTotal = entryDummyBSetsDummyB.replace('[num]', numberOfSets);
+		}
+		
+		entries[i] = entryDummyB.replace('[gID]',          gID)
+		                        .replace('[name1]',        currentEntry['Player1Name'])
+					.replace('[name2]',        currentEntry['Player2Name'])
+					.replace('[setsPlayer1]',  setsPlayer1)
+					.replace('[setsPlayer2]',  setsPlayer2)
 					.replace('[racksPlayer1]', tempScore[0])
 					.replace('[racksPlayer2]', tempScore[2])
-					.replace('[racksPerSet]', currentEntry['RacksPerSet'])
-					.replace('[numberOfSets]', currentEntry['NumberOfSets'])
-					.replace('[month]', date.month)
-					.replace('[day]', date.day)
-					.replace('[year]', date.year);
+					.replace('[racksPerSet]',  currentEntry['RacksPerSet'])
+					.replace('[numberOfSets]', setsTotal)
+					.replace('[month]',        date.month)
+					.replace('[day]',          date.day)
+					.replace('[year]',         date.year);
 	    }
 	}
 	
@@ -122,12 +136,10 @@ $(document).on('pageshow', '#pageResumeGame', function () {
 	$.mobile.loading('hide');
     }
     
-    doLoop();
-    
     app.dbFortune.query(
-	'SELECT gID, Timestamp AS StartTimestamp, Player1Name, Player2Name, PointsPlayer1, PointsPlayer2, ScoreGoal FROM '
+	'SELECT gID, Timestamp AS StartTimestamp, \'141\' AS gameType, Player1Name, Player2Name, PointsPlayer1, PointsPlayer2, ScoreGoal FROM '
 	    + app.dbFortune.tables.Game141.name
-	    + ' WHERE isFinished="0" ORDER BY Timestamp DESC',
+	    + ' WHERE isFinished=0 ORDER BY Timestamp DESC',
 	[],
 	function (tx, results) {
 	    resA = new Array(results.rows.length);
@@ -136,13 +148,14 @@ $(document).on('pageshow', '#pageResumeGame', function () {
 	    }
 	    
 	    readyA = true;
+	    doIt();
 	}
     );
     
     app.dbFortune.query(
 	'SELECT gID, StartTimestamp, gameType, Player1Name, Player2Name, TempScore, RacksPerSet, NumberOfSets FROM '
 	    + app.dbFortune.tables.Game8910.name
-	    + ' WHERE isFinished="0" ORDER BY StartTimestamp DESC',
+	    + ' WHERE isFinished=0 ORDER BY StartTimestamp DESC',
 	[],
 	function (tx, results) {
 	    resB = new Array(results.rows.length);
@@ -151,6 +164,7 @@ $(document).on('pageshow', '#pageResumeGame', function () {
 	    }
 	    
 	    readyB = true;
+	    doIt();
 	}
     );
 });

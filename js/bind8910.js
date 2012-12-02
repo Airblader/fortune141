@@ -374,3 +374,10 @@ $(document).on('pageshow', '#pageGame8910', function () {
 $(document).on('pagehide', '#pageGame8910', function () {
     app.FortuneUtils.setKeepScreenOn(app.FortuneUtils.WAKELOCK_OFF);
 });
+
+$(document).off('click', '#pageGame8910MainBackLink')
+           .on ('click', '#pageGame8910MainBackLink', function (event) {
+    event.preventDefault();
+    
+    app.currentGame.warnLeaveGame();
+});

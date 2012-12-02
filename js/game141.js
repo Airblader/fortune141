@@ -355,7 +355,7 @@ function StraightPool () {
 	    },
 	    app.dummyFalse,
 	    'Leave Game',
-	    'Yes, No'
+	    'Yes,No'
 	);
     }
     

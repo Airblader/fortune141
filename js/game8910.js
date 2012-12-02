@@ -884,7 +884,7 @@ Game8910.prototype.warnLeaveGame = function () {
         },
         app.dummyFalse,
         'Leave Game',
-        'Yes, No'
+        'Yes,No'
     );
 }
 

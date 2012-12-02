@@ -80,7 +80,12 @@ function FortuneApp () {
     this.updateIndexBubbles = function () {
 	// resume game
 	app.dbFortune.query(
-	    'SELECT COUNT(*) AS numResGame FROM ' + app.dbFortune.tables.Game141.name + ' WHERE isFinished="0"',
+	    'SELECT COUNT(*) AS numResGame FROM ('
+		+ 'SELECT gID FROM '
+		+ app.dbFortune.tables.Game141.name + ' WHERE isFinished=0'
+		+ ' UNION ALL '
+		+ 'SELECT gID FROM '
+		+ app.dbFortune.tables.Game8910.name + ' WHERE isFinished=0)',
 	    [],
 	    function (tx, result) {
 		if (result.rows.length == 0) {
@@ -88,7 +93,9 @@ function FortuneApp () {
 		}
 		
 		var row = result.rows.item(0);
-		$('#resumeGameBubble').html(row['numResGame']);
+		$('#resumeGameBubble').html(
+		    parseInt(row['numResGame'])
+		);
 		return true;
 	    }
 	);

@@ -87,6 +87,14 @@ function onBackButtonPress () {
             }
             break;
         
+        case 'pageGame8910':
+            switch (subID) {
+                default:
+                    app.currentGame.warnLeaveGame();
+                    break;
+            }
+            break;
+        
         case 'pageFreeVersion':
             app.alertDlg(
                 'Please read the limitations and accept them!',
