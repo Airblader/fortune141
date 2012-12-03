@@ -1,50 +1,154 @@
-$(document).on('pageshow', '#pageView141Games', function () {
-    var listDummy  = '<ul data-role="listview" id="view141GamesList">[entries]</ul>',
-        entryDummy = '<li><a href="view141Games_details.html?gID=[gID]"><p><strong>[name1] vs. [name2]</strong></p>'
-                   + '<p>Score: [points1] &ndash; [points2]</p><p>[mode]</p><p class="ui-li-aside">'
-                   + app.settings.getDateFormat();
-                   + '</p></a></li>';
+$(document).on('pageshow', '#pageViewGames', function () {
+    $.mobile.loading('show');
+    var $list = $('#viewGamesListContainer');
     
-    var tableGame  = app.dbFortune.tables.Game141.name,
-        tableModes = app.dbFortune.tables.GameModes.name;
+    var readyA = false,
+        readyB = false;
+    var resA,
+        resB;
+
+    var listDummy  = '<ul data-role="listview" id="viewGamesList">[entries]</ul>',
+        entryDummyA = '<li><a href="view141Games_details.html?gID=[gID]">'
+                    + '<img src="../../img/gameicons/game141.png" />'
+                    + '<p><strong>[name1] vs. [name2]</strong></p>'
+                    + '<p>Score: [points1] &ndash; [points2]</p>'
+                    + '<p>[mode]</p>'
+                    + '<p class="ui-li-aside">' + app.settings.getDateFormat() + '</p>'
+                    + '</a></li>';
+        entryDummyB = '<li><a href="view8910Games_details.html?gID=[gID]">'
+                    + '<img src="../../img/gameicons/game8910.png" />'
+                    + '<p><strong>[name1] vs. [name2]</strong></p>'
+                    + '<p>Score:[setsPlayer1] [racksPlayer1] &ndash; [racksPlayer2][setsPlayer2]</p>'
+                    + '<p>[mode]</p>'
+                    + '<p class="ui-li-aside">' + app.settings.getDateFormat() + '</p>'
+                    + '</a></li>';
+                    
+    var entryDummyBSetsDummyA = ' ([num])',
+        entryDummyBSetsDummyB = ' ([num] sets)';
+        
+    function doIt () {
+        if (!readyA || !readyB) {
+            return;
+        }
+        
+        var res = resA.concat(resB);
+        
+        // TODO Limit entries
+        
+        res.sort(function (a,b) {
+            var timeA = parseInt(a['StartTimestamp']),
+		timeB = parseInt(b['StartTimestamp']);
+	    
+	    if (timeA === timeB) {
+		return 0;
+	    }
+	    
+	    return (timeA < timeB);
+        });
+        
+        var entries = new Array(res.length);
+        
+        for (var i = 0; i < res.length; i++) {
+            var currentEntry = res[i];
+            
+            var gID  = parseInt(currentEntry['gID']),
+		date = app.convertTimestamp(currentEntry['StartTimestamp']);
+	    
+	    if (currentEntry['gameType'] === '141') { // 14/1
+		entries[i] = entryDummyA.replace('[gID]',        gID)
+		                        .replace('[name1]',      currentEntry['Player1Name'])
+				        .replace('[name2]',      currentEntry['Player2Name'])
+				        .replace('[points1]',    currentEntry['PointsPlayer1'])
+				        .replace('[points2]',    currentEntry['PointsPlayer2'])
+                                        .replace('[mode]',       currentEntry['ModeName'])
+				        .replace('[month]',      date.month)
+				        .replace('[day]',        date.day)
+				        .replace('[year]',       date.year);
+	    } else { // 8-/9-/10
+		var tempScore    = currentEntry['TempScore'].split('/'),
+		    numberOfSets = parseInt(currentEntry['NumberOfSets']); 
+		
+		var setsPlayer1 = '',
+		    setsPlayer2 = '',
+		    setsTotal   = '';
+		if (numberOfSets > 1) {
+		    setsPlayer1 = entryDummyBSetsDummyA.replace('[num]', tempScore[1]);
+		    setsPlayer2 = entryDummyBSetsDummyA.replace('[num]', tempScore[3]);
+		    
+		    setsTotal = entryDummyBSetsDummyB.replace('[num]', numberOfSets);
+		}
+		
+		entries[i] = entryDummyB.replace('[gID]',          gID)
+		                        .replace('[name1]',        currentEntry['Player1Name'])
+					.replace('[name2]',        currentEntry['Player2Name'])
+					.replace('[setsPlayer1]',  setsPlayer1)
+					.replace('[setsPlayer2]',  setsPlayer2)
+					.replace('[racksPlayer1]', tempScore[0])
+					.replace('[racksPlayer2]', tempScore[2])
+                                        .replace('[mode]',         currentEntry['ModeName'])
+					.replace('[month]',        date.month)
+					.replace('[day]',          date.day)
+					.replace('[year]',         date.year);
+	    }
+        }
+        
+        $list.html(listDummy.replace('[entries]', entries.join('')));
+        $('#viewGamesList').listview();
+        
+        $.mobile.loading('hide');
+    }
+    
+    var tblGameA = app.dbFortune.tables.Game141.name,
+        tblGameB = app.dbFortune.tables.Game8910.name,
+        tblModes = app.dbFortune.tables.GameModes.name;
     
     app.dbFortune.query(
         'SELECT '
-            + tableGame + '.gID AS gID, '
-            + tableGame + '.Player1Name AS Player1Name, '
-            + tableGame + '.Player2Name AS Player2Name, '
-            + tableGame + '.PointsPlayer1 AS PointsPlayer1, '
-            + tableGame + '.PointsPlayer2 AS PointsPlayer2, '
-            + tableGame + '.Timestamp AS Timestamp, '
-            + tableModes + '.Name AS ModeName '
-            + 'FROM ' + tableGame + ', ' + tableModes + ' WHERE '
-            + tableGame + '.isFinished="1" AND '
-            + tableGame + '.Mode=' + tableModes + '.ID '
-            + 'ORDER BY ' + tableGame + '.Timestamp DESC',
+            + tblGameA + '.gID AS gID, '
+            + tblGameA + '.Timestamp AS StartTimestamp, '
+            + '\'141\' AS gameType, '
+            + tblGameA + '.Player1Name AS Player1Name, '
+            + tblGameA + '.Player2Name AS Player2Name, '
+            + tblGameA + '.PointsPlayer1 AS PointsPlayer1, '
+            + tblGameA + '.PointsPlayer2 AS PointsPlayer2, '
+            + tblModes + '.Name AS ModeName '
+            + 'FROM ' + tblGameA + ', ' + tblModes + ' WHERE '
+            + tblGameA + '.isFinished=1 AND '
+            + tblGameA + '.Mode=' + tblModes + '.ID ',
         [],
         function (tx, results) {
-            var entries = new Array(results.rows.length);
+            resA = new Array(results.rows.length);
             for (var i = 0; i < results.rows.length; i++) {
-                var row  = results.rows.item(i),
-                    date = app.convertTimestamp(row['Timestamp']);
-                    
-                entries[i] = entryDummy.replace('[gID]',     row['gID'])
-                                       .replace('[name1]',   row['Player1Name'])
-                                       .replace('[name2]',   row['Player2Name'])
-                                       .replace('[points1]', row['PointsPlayer1'])
-                                       .replace('[points2]', row['PointsPlayer2'])
-                                       .replace('[month]',   date.month)
-                                       .replace('[day]',     date.day)
-                                       .replace('[year]',    date.year)
-                                       .replace('[mode]',    row['ModeName']);
+                resA[i] = results.rows.item(i);
             }
             
-            $('#view141GamesListContainer').html(
-                listDummy.replace('[entries]', entries.join(''))
-            );
-            $('#view141GamesList').listview();
-        },
-        app.dummyFalse
+            readyA = true;
+            doIt();
+        }
+    );
+    
+    app.dbFortune.query(
+        'SELECT '
+            + tblGameB + '.gID AS gID, '
+            + tblGameB + '.StartTimestamp AS StartTimestamp, '
+            + tblGameB + '.gameType AS gameType, '
+            + tblGameB + '.Player1Name AS Player1Name, '
+            + tblGameB + '.Player2Name AS Player2Name, '
+            + tblGameB + '.TempScore AS TempScore, '
+            + tblModes + '.Name AS ModeName '
+            + 'FROM ' + tblGameB + ', ' + tblModes + ' WHERE '
+            + tblGameB + '.isFinished=1 AND '
+            + tblGameB + '.Mode=' + tblModes + '.ID ',
+        [],
+        function (tx, results) {
+            resB = new Array(results.rows.length);
+            for (var i = 0; i < results.rows.length; i++) {
+                resB[i] = results.rows.item(i);
+            }
+            
+            readyB = true;
+            doIt();
+        }
     );
 });
 
@@ -391,7 +495,7 @@ $(document).off('click', '#view141GamesDetailsDelete')
                    'DELETE FROM ' + app.dbFortune.tables.Game141.name + ' WHERE gID="' + gID + '"',
                    [],
                    function () {
-                       $.mobile.changePage('view141Games_list.html');
+                       $.mobile.changePage('viewGames_list.html');
                    },
                    function () {
                        app.alertDlg(

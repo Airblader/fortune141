@@ -28,7 +28,7 @@ $(document).on('pagebeforeshow', '#pageResumeGame', function () {
     var entryDummyBSetsDummyA = ' ([num])',
 	entryDummyBSetsDummyB = ' ([num] sets)';
     
-    function doIt() {
+    function doIt () {
 	if (!readyA || !readyB) {
 	    return;
 	}
