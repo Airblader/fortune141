@@ -114,7 +114,7 @@ function Game8910 () {
                           + self.players[0].sets  + '/'
                           + self.players[1].racks + '/'
                           + self.players[1].sets;
-		
+	    
 	    app.dbFortune.query(
 		sql,
 		[
@@ -168,7 +168,7 @@ function Game8910 () {
                       + self.players[0].sets  + '/'
                       + self.players[1].racks + '/'
                       + self.players[1].sets;
-		
+                      	
 	app.dbFortune.query(
 	    sql,
 	    [
@@ -231,6 +231,20 @@ function Game8910 () {
 	);
     }
     
+    this.saveFoulHistory = function () {
+        var currentID = self.historyStack[self.historyStack.length-1];
+        
+        app.dbFortune.query(
+            'UPDATE ' + app.dbFortune.tables.Game8910History.name + ' SET '
+            + 'FoulsPlayer1=?, FoulsPlayer2=? '
+            + 'WHERE ID=' + currentID,
+            [
+                self.players[0].fouls,
+                self.players[1].fouls
+             ]
+        );
+    }
+    
     this.loadHistory = function () {
         var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
 	    cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
@@ -239,7 +253,7 @@ function Game8910 () {
 	    cbError();
             return;
 	}
-	var id = self.historyStack.pop();
+	var id = self.historyStack.pop(); // TODO this is weird
 	    id = self.historyStack[self.historyStack.length-1];
         
         app.dbFortune.query(
@@ -485,6 +499,9 @@ function Game8910 () {
         // Maybe go up to '% 4' and reset with a timeout
             
         this.updateFoulDisplay();
+        
+        this.saveFoulHistory();
+        this.saveGame();
     }
     
     this.updateFoulDisplay = function () {
@@ -663,9 +680,6 @@ Game8910.prototype.stringToScore = function (str) {
     
     var sets = str.split('|');
     this.sets = new Array(sets.length);
-    
-    this.players[0].fouls = 0;
-    this.players[1].fouls = 0;
     
     this.players[0].sets = 0;
     this.players[1].sets = 0;

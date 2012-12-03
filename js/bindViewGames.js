@@ -38,12 +38,11 @@ $(document).on('pageshow', '#pageViewGames', function () {
         res.sort(function (a,b) {
             var timeA = parseInt(a['StartTimestamp']),
 		timeB = parseInt(b['StartTimestamp']);
-	    
 	    if (timeA === timeB) {
 		return 0;
 	    }
-	    
-	    return (timeA < timeB);
+            
+	    return (timeA < timeB) ? 1 : -1;
         });
         
         var entries = new Array(res.length);

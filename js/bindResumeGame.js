@@ -54,7 +54,7 @@ $(document).on('pagebeforeshow', '#pageResumeGame', function () {
 		return 0;
 	    }
 	    
-	    return (timeA < timeB);
+	    return (timeA < timeB) ? 1 : -1;
 	});
 	
 	var entries = new Array(res.length);

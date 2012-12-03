@@ -968,8 +968,9 @@ function StraightPool () {
     this.closeDetailsPanel = function () {	
 	$page.data('activePage', 'pageGame141_MainPanel');
 	
-        $loadingPanel.show();
-        $page        .find('[data-role="header"]')
+        //$loadingPanel.show();
+	$.mobile.loading('show');
+	$page        .find('[data-role="header"]')
 	             .show();
 			  
         $panelRackAndMenu.show(function () {
@@ -977,7 +978,8 @@ function StraightPool () {
             $panelRackAndMenu.css('left', '0');
 	    
             $detailsPanel.hide();
-            $loadingPanel.hide();
+            //$loadingPanel.hide();
+	    $.mobile.loading('hide');
         });
 	
 	return true;
@@ -1264,7 +1266,8 @@ function StraightPool () {
     this.handleMinimizeMainPanelButton = function (event) {
 	event.preventDefault();
 	
-	$loadingPanel     .show();
+	$.mobile.loading('show');
+	//$loadingPanel     .show();
         $page             .find('[data-role="header"]')
 	                  .hide();
         $detailsPanel.show(function () {
@@ -1328,7 +1331,8 @@ function StraightPool () {
 	    $('#player0hs').html('max ' + HS[0]);
 	    $('#player1hs').html('max ' + HS[1]);
             
-            $loadingPanel.hide();
+            //$loadingPanel.hide();
+	    $.mobile.loading('hide');
         });
     }
     
@@ -1431,7 +1435,8 @@ function StraightPool () {
      *	Initializes the whole UI
      */
     this.initUI = function () {
-	$loadingPanel.show();
+	$.mobile.loading('show');
+	//$loadingPanel.show();
 	
 	// set score goal, points and player names
 	$('#game141ScoreGoal').html(self.scoreGoal);
@@ -1502,6 +1507,7 @@ function StraightPool () {
 	});
 	
 	// disable loading panel
-	$loadingPanel.hide();
+	$.mobile.loading('hide');
+	//$loadingPanel.hide();
     }
 }
