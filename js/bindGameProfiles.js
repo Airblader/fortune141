@@ -1,4 +1,5 @@
 $(document).on('pageshow', '#pageProfiles141List', function () {
+     $.mobile.loading('show');
      var $list = $('#game141ProfilesListContainer');
      
      // Create List
@@ -33,6 +34,7 @@ $(document).on('pageshow', '#pageProfiles141List', function () {
                
                $list.html(listDummy.replace('[entries]', entries.join('')));
                $('#game141ProfilesList').listview();
+               $.mobile.loading('hide');
           }
      );
 });

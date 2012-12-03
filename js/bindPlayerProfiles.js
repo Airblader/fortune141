@@ -1,5 +1,6 @@
 $(document).on('pageshow', '#pagePlayersList', function () {    
     // Create List
+    $.mobile.loading('show');
     var listDummy = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">'
                   + '<li data-role="list-divider">Favorites</li>[entries1]<li data-role="list-divider">All</li>[entries2]</ul>';
     var entryDummy = '<li data-filtertext="[filter]"><a href="player_details.html?pID=[id]">[image][dispName]</a></li>';
@@ -40,6 +41,7 @@ $(document).on('pageshow', '#pagePlayersList', function () {
 		listDummy.replace('[entries1]', entries1.join(''))
 		         .replace('[entries2]', entries2.join(''))
 	    ).trigger('create');
+	    $.mobile.loading('hide');
 	});
     });
 });
