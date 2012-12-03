@@ -18,13 +18,10 @@ $(document).on('pageshow', '#pageViewGames', function () {
         entryDummyB = '<li><a href="view8910Games_details.html?gID=[gID]">'
                     + '<img src="../../img/gameicons/game8910.png" />'
                     + '<p><strong>[name1] vs. [name2]</strong></p>'
-                    + '<p>Score:[setsPlayer1] [racksPlayer1] &ndash; [racksPlayer2][setsPlayer2]</p>'
+                    + '<p>Score: [score1] &ndash; [score2]</p>'
                     + '<p>[mode]</p>'
                     + '<p class="ui-li-aside">' + app.settings.getDateFormat() + '</p>'
                     + '</a></li>';
-                    
-    var entryDummyBSetsDummyA = ' ([num])',
-        entryDummyBSetsDummyB = ' ([num] sets)';
         
     function doIt () {
         if (!readyA || !readyB) {
@@ -66,24 +63,22 @@ $(document).on('pageshow', '#pageViewGames', function () {
 	    } else { // 8-/9-/10
 		var tempScore    = currentEntry['TempScore'].split('/'),
 		    numberOfSets = parseInt(currentEntry['NumberOfSets']); 
-		
-		var setsPlayer1 = '',
-		    setsPlayer2 = '',
-		    setsTotal   = '';
-		if (numberOfSets > 1) {
-		    setsPlayer1 = entryDummyBSetsDummyA.replace('[num]', tempScore[1]);
-		    setsPlayer2 = entryDummyBSetsDummyA.replace('[num]', tempScore[3]);
-		    
-		    setsTotal = entryDummyBSetsDummyB.replace('[num]', numberOfSets);
-		}
+                
+                var score1,
+                    score2;
+                if (numberOfSets > 1) { // display set scores
+                    score1 = tempScore[1];
+                    score2 = tempScore[3];
+                } else { // display rack scores
+                    score1 = tempScore[0];
+                    score2 = tempScore[2];
+                }
 		
 		entries[i] = entryDummyB.replace('[gID]',          gID)
 		                        .replace('[name1]',        currentEntry['Player1Name'])
 					.replace('[name2]',        currentEntry['Player2Name'])
-					.replace('[setsPlayer1]',  setsPlayer1)
-					.replace('[setsPlayer2]',  setsPlayer2)
-					.replace('[racksPlayer1]', tempScore[0])
-					.replace('[racksPlayer2]', tempScore[2])
+					.replace('[score1]',       score1)
+					.replace('[score2]',       score2)
                                         .replace('[mode]',         currentEntry['ModeName'])
 					.replace('[month]',        date.month)
 					.replace('[day]',          date.day)
@@ -134,6 +129,7 @@ $(document).on('pageshow', '#pageViewGames', function () {
             + tblGameB + '.Player1Name AS Player1Name, '
             + tblGameB + '.Player2Name AS Player2Name, '
             + tblGameB + '.TempScore AS TempScore, '
+            + tblGameB + '.NumberOfSets AS NumberOfSets, '
             + tblModes + '.Name AS ModeName '
             + 'FROM ' + tblGameB + ', ' + tblModes + ' WHERE '
             + tblGameB + '.isFinished=1 AND '
