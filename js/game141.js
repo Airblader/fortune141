@@ -212,7 +212,6 @@ function StraightPool () {
 	$btnPlayerSwitch = $('#playerSwitch'),
 	$btnUndo = $('#btnDetailsUndo'),
 	
-	$loadingPanel = $('#panelLoading'),
 	$detailsPanel = $('#panelDetails'),
 	$panelRackAndMenu = $('#panelRackAndMenu'),
 	
@@ -968,19 +967,18 @@ function StraightPool () {
     this.closeDetailsPanel = function () {	
 	$page.data('activePage', 'pageGame141_MainPanel');
 	
-        //$loadingPanel.show();
 	$.mobile.loading('show');
 	$page        .find('[data-role="header"]')
-	             .show();
+	             .css('display', 'block');
 			  
-        $panelRackAndMenu.show(function () {
+        //$panelRackAndMenu.show(function () {
+	$panelRackAndMenu.css('display', 'block');
 	    // Bugfix : Panel moved to the right because of the (even if invisible) scrollbars
             $panelRackAndMenu.css('left', '0');
 	    
-            $detailsPanel.hide();
-            //$loadingPanel.hide();
+            $detailsPanel.css('display', 'none');
 	    $.mobile.loading('hide');
-        });
+        //});
 	
 	return true;
     }
@@ -1267,13 +1265,13 @@ function StraightPool () {
 	event.preventDefault();
 	
 	$.mobile.loading('show');
-	//$loadingPanel     .show();
         $page             .find('[data-role="header"]')
-	                  .hide();
-        $detailsPanel.show(function () {
+	                  .css('display', 'none');
+        //$detailsPanel.show(function () {
+	$detailsPanel.css('display', 'block');
 	    $page.data('activePage', 'pageGame141_DetailsPanel');
 	    
-            $panelRackAndMenu.hide();
+            $panelRackAndMenu.css('display', 'none');
             
             var totalPts     = new Array(self.handicap[0], self.handicap[1]),
                 totalInnings = new Array(0, 0),
@@ -1331,9 +1329,8 @@ function StraightPool () {
 	    $('#player0hs').html('max ' + HS[0]);
 	    $('#player1hs').html('max ' + HS[1]);
             
-            //$loadingPanel.hide();
 	    $.mobile.loading('hide');
-        });
+        //});
     }
     
     /*
@@ -1436,7 +1433,6 @@ function StraightPool () {
      */
     this.initUI = function () {
 	$.mobile.loading('show');
-	//$loadingPanel.show();
 	
 	// set score goal, points and player names
 	$('#game141ScoreGoal').html(self.scoreGoal);
@@ -1462,7 +1458,7 @@ function StraightPool () {
 	var panelHeights = self.getPanelHeights();
 	$panelRackAndMenu.css('height', panelHeights.mainPanel   );
 	$detailsPanel    .css('height', panelHeights.detailsPanel)
-	                 .hide();
+	                 .css('display', 'none');
 	
 	var bestRadius  = self.getBestBallRadius(),
 	    nearestSize = self.getBallImageSize(bestRadius);
@@ -1508,6 +1504,5 @@ function StraightPool () {
 	
 	// disable loading panel
 	$.mobile.loading('hide');
-	//$loadingPanel.hide();
     }
 }

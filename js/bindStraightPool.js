@@ -28,11 +28,11 @@ function game141SetPlayer (idx, pID) {
 function game141HidePlayerList () {
     $('#pageGame141Setup').data('activePage', 'pageGame141Setup_Main');
     
-    $('#game141Setup2')               .hide();
-    $('#game141SetupChoosePlayerHead').hide();
+    $('#game141Setup2')               .css('display', 'none');
+    $('#game141SetupChoosePlayerHead').css('display', 'none');
     
-    $('#game141Setup1')   .show();
-    $('#game141SetupHead').show();
+    $('#game141Setup1')   .css('display', 'block');
+    $('#game141SetupHead').css('display', 'block');
 }
 
 function game141OnListClick (pID) {
@@ -54,17 +54,17 @@ $(document).on('pagebeforeshow', '#pageGame141Setup', function () {
     if (!isNaN(fromNewPlayer)) {
 	$('#game141Setup2').data('player', fromNewPlayer);
 	
-	$game141SetupHead.hide();
-	$game141Setup1   .hide();
+	$game141SetupHead.css('display', 'none');
+	$game141Setup1   .css('display', 'none');
 	
-	$game141Setup2               .show();
-	$game141SetupChoosePlayerHead.show();
+	$game141Setup2               .css('display', 'block');
+	$game141SetupChoosePlayerHead.css('display', 'block');
     } else {
-	$game141Setup2               .hide();
-	$game141SetupChoosePlayerHead.hide();
+	$game141Setup2               .css('display', 'none');
+	$game141SetupChoosePlayerHead.css('display', 'none');
     }
     
-    $('#game141SetupAnonPlayer')  .hide();
+    $('#game141SetupAnonPlayer')  .css('display', 'none');
     $('#game141SetupSubmitButton').button('disable');
     
     // tutorial
@@ -200,12 +200,12 @@ $(document).off('click', '#game141SetupChoosePlayerHeadBackLink')
            .on ('click', '#game141SetupChoosePlayerHeadBackLink', function (event) {
     event.preventDefault();
     
-    $('#game141SetupChoosePlayerHead').hide();
-    $('#game141Setup2')               .hide();
-    $('#game141SetupAnonPlayer')      .hide();
+    $('#game141SetupChoosePlayerHead').css('display', 'none');
+    $('#game141Setup2')               .css('display', 'none');
+    $('#game141SetupAnonPlayer')      .css('display', 'none');
     
-    $('#game141SetupHead').show();
-    $('#game141Setup1')   .show();
+    $('#game141SetupHead').css('display', 'block');
+    $('#game141Setup1')   .css('display', 'block');
 });
 
 $(document).off('click', '#pageGame141MainBackLink')
@@ -284,11 +284,11 @@ $(document).off('click', '#game141SetupPlayerGrid div')
     var element_id = $(this).attr('id'),
 	idx	   = element_id.substr(element_id.length-1, 1);
 	
-    $('#game141Setup1')   .hide();
-    $('#game141SetupHead').hide();
+    $('#game141Setup1')   .css('display', 'none');
+    $('#game141SetupHead').css('display', 'none');
     $('#game141Setup2').data('player', idx)
-		       .show();
-    $('#game141SetupChoosePlayerHead').show();
+		       .css('display', 'block');
+    $('#game141SetupChoosePlayerHead').css('display', 'block');
 });
 	   
 
@@ -304,21 +304,21 @@ function game141TapHoldSelectPlayer (event) {
     var element_id = $(this).attr('id'),
 	idx	   = element_id.substr(element_id.length-1, 1);
 	
-    $('#game141Setup1')   .hide();
-    $('#game141SetupHead').hide();
+    $('#game141Setup1')   .css('display', 'none');
+    $('#game141SetupHead').css('display', 'none');
     $('#game141SetupAnonPlayer').data('player', idx)
-                                .show();
-    $('#game141SetupChoosePlayerHead').show();
+                                .css('display', 'block');
+    $('#game141SetupChoosePlayerHead').css('display', 'block');
 }
 
 function game141HideAnonPlayer() {
     $('#pageGame141Setup').data('activePage', 'pageGame141Setup_Main');
     
     $('#game141AnonPlayer_Name')      .val('');
-    $('#game141SetupAnonPlayer')      .hide();
-    $('#game141SetupChoosePlayerHead').hide();
-    $('#game141Setup1')               .show();
-    $('#game141SetupHead')            .show();
+    $('#game141SetupAnonPlayer')      .css('display', 'none');
+    $('#game141SetupChoosePlayerHead').css('display', 'none');
+    $('#game141Setup1')               .css('display', 'block');
+    $('#game141SetupHead')            .css('display', 'block');
 }
 
 $(document).off('click', '#game141AnonPlayer_Submit')

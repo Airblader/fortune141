@@ -35,32 +35,32 @@ function game8910TapHoldSelectPlayer (event) {
     var element_id = $(this).attr('id'),
 	idx	   = element_id.substr(element_id.length-1, 1);
 	
-    $('#game8910Setup1')   .hide();
-    $('#game8910SetupHead').hide();
+    $('#game8910Setup1')   .css('display', 'none');
+    $('#game8910SetupHead').css('display', 'none');
     $('#game8910SetupAnonPlayer')
 	.data('player', idx)
-        .show();
-    $('#game8910SetupChoosePlayerHead').show();
+        .css('display', 'block')
+    $('#game8910SetupChoosePlayerHead').css('display', 'block');
 }
 
 function game8910HideAnonPlayer() {
     $('#pageGame8910Setup').data('activePage', 'pageGame8910Setup_Main');
     
     $('#game8910AnonPlayer_Name')      .val('');
-    $('#game8910SetupAnonPlayer')      .hide();
-    $('#game8910SetupChoosePlayerHead').hide();
-    $('#game8910Setup1')               .show();
-    $('#game8910SetupHead')            .show();
+    $('#game8910SetupAnonPlayer')      .css('display', 'none');
+    $('#game8910SetupChoosePlayerHead').css('display', 'none');
+    $('#game8910Setup1')               .css('display', 'block');
+    $('#game8910SetupHead')            .css('display', 'block');
 }
 
 function game8910HidePlayerList () {
     $('#pageGame8910Setup').data('activePage', 'pageGame8910Setup_Main');
     
-    $('#game8910Setup2')               .hide();
-    $('#game8910SetupChoosePlayerHead').hide();
+    $('#game8910Setup2')               .css('display', 'none');
+    $('#game8910SetupChoosePlayerHead').css('display', 'none');
     
-    $('#game8910Setup1')   .show();
-    $('#game8910SetupHead').show();
+    $('#game8910Setup1')   .css('display', 'block');
+    $('#game8910SetupHead').css('display', 'block');
 }
 
 function game8910OnListClick (pID) {
@@ -77,10 +77,10 @@ $(document).on('pagebeforeshow', '#pageGame8910Setup', function () {
         $game8910SetupNumberOfSets     = $('#game8910SetupNumberOfSets'),
         $game8910SetupRacksPerSet      = $('#game8910SetupRacksPerSet');
         
-    $game8910Setup2               .hide();
-    $game8910SetupChoosePlayerHead.hide();
+    $game8910Setup2               .css('display', 'none');
+    $game8910SetupChoosePlayerHead.css('display', 'none');
     
-    $('#game8910SetupAnonPlayer')  .hide();
+    $('#game8910SetupAnonPlayer')  .css('display', 'none');
     $('#game8910SetupSubmitButton').button('disable');
     
     // Free version limit
@@ -225,23 +225,23 @@ $(document).off('click', '#game8910SetupPlayerGrid div')
     var element_id = $(this).attr('id'),
 	idx	   = element_id.substr(element_id.length-1, 1);
 	
-    $('#game8910Setup1')   .hide();
-    $('#game8910SetupHead').hide();
+    $('#game8910Setup1')   .css('display', 'none');
+    $('#game8910SetupHead').css('display', 'none');
     $('#game8910Setup2').data('player', idx)
-		        .show();
-    $('#game8910SetupChoosePlayerHead').show();
+		        .css('display', 'block');
+    $('#game8910SetupChoosePlayerHead').css('display', 'block');
 });
 	   
 $(document).off('click', '#game8910SetupChoosePlayerHeadBackLink')
            .on ('click', '#game8910SetupChoosePlayerHeadBackLink', function (event) {
     event.preventDefault();
     
-    $('#game8910SetupChoosePlayerHead').hide();
-    $('#game8910Setup2')               .hide();
-    $('#game8910SetupAnonPlayer')      .hide();
+    $('#game8910SetupChoosePlayerHead').css('display', 'none');
+    $('#game8910Setup2')               .css('display', 'none');
+    $('#game8910SetupAnonPlayer')      .css('display', 'none');
     
-    $('#game8910SetupHead').show();
-    $('#game8910Setup1')   .show();
+    $('#game8910SetupHead').css('display', 'block');
+    $('#game8910Setup1')   .css('display', 'block');
 });
 	   
 $(document).off('click', '#game8910SetupLoadProfileButton')
