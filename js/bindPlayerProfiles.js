@@ -47,7 +47,7 @@ $(document).on('pagebeforeshow', '#pagePlayersList', function () {
 });
 
 $(document).on('pagebeforeshow', '#pagePlayersAdd', function () {
-    $('#addPlayer_Picture').hide();
+    $('#addPlayer_Picture').css('display', 'none');
     
     // Check if this page was called from a game setup
     var url           = $.url( $.url().attr('fragment') ),
@@ -70,7 +70,7 @@ $(document).off('click', '#addPlayer_PictureTake')
     
     app.getPicture(
 	function (imgURI) {
-	    $('#addPlayer_Picture').attr('src', imgURI).show();
+	    $('#addPlayer_Picture').attr('src', imgURI).css('display', 'block');
 	},
 	function (message) {
 	    app.alertDlg(
@@ -87,7 +87,7 @@ $(document).off('click', '#addPlayer_PictureDelete')
            .on ('click', '#addPlayer_PictureDelete', function (event) {
     event.preventDefault();
     
-    $('#addPlayer_Picture').attr('src', '').hide();
+    $('#addPlayer_Picture').attr('src', '').css('display', 'none');
 });
 	   
 $(document).off('click', '#addPlayer_Submit')
@@ -134,10 +134,10 @@ $(document).off('click', '#addPlayer_Submit')
 $(document).on('pagebeforeshow', '#pagePlayerDetails', function () {
     var $btnDelete = $('#playerDetailsDeleteButton');
     
-    $('#pagePlayerDetailsEditPlayerHead').hide();
-    $('#pagePlayerDetailsEditPlayer')    .hide();
-    $('#playerDetails_Image')            .hide();
-    $('#editPlayer_Picture')             .hide();
+    $('#pagePlayerDetailsEditPlayerHead').css('display', 'none');
+    $('#pagePlayerDetailsEditPlayer')    .css('display', 'none');
+    $('#playerDetails_Image')            .css('display', 'none');
+    $('#editPlayer_Picture')             .css('display', 'none');
     
     // This is a weird glitch-workaround for the url being passed in a rather strange way
     var url = $.url( $.url().attr('fragment') ),
@@ -152,9 +152,9 @@ $(document).on('pagebeforeshow', '#pagePlayerDetails', function () {
     app.Players.tmp = new Player();
     app.Players.tmp.load(pID, function () {
 	if (app.Players.tmp.image !== '') {
-	    $('#playerDetails_Image').show()
+	    $('#playerDetails_Image').css('display', 'block')
 	                             .attr('src', app.Players.tmp.image);
-	    $('#editPlayer_Picture') .show()
+	    $('#editPlayer_Picture') .css('display', 'block')
 	                             .attr('src', app.Players.tmp.image);
 	}
 	
@@ -216,11 +216,11 @@ $(document).off('click', '#pagePlayerDetailsEditLink')
            .on ('click', '#pagePlayerDetailsEditLink', function (event) {
     event.preventDefault();
 	
-    $('#pagePlayerDetailsOverviewHead').hide();
-    $('#pagePlayerDetailsOverview')    .hide();
+    $('#pagePlayerDetailsOverviewHead').css('display', 'none');
+    $('#pagePlayerDetailsOverview')    .css('display', 'none');
     
-    $('#pagePlayerDetailsEditPlayerHead').show();
-    $('#pagePlayerDetailsEditPlayer')    .show();
+    $('#pagePlayerDetailsEditPlayerHead').css('display', 'block');
+    $('#pagePlayerDetailsEditPlayer')    .css('display', 'block');
     
     $('#editPlayer_Name')           .val(app.Players.tmp.name           	);
     $('#editPlayer_Nickname')       .val(app.Players.tmp.nickname       	);
@@ -241,11 +241,11 @@ $(document).off('click', '#pagePlayerDetailsEditPlayerBackLink')
            .on ('click', '#pagePlayerDetailsEditPlayerBackLink', function (event) {
     event.preventDefault();
     
-    $('#pagePlayerDetailsEditPlayerHead').hide();
-    $('#pagePlayerDetailsEditPlayer')    .hide();
+    $('#pagePlayerDetailsEditPlayerHead').css('display', 'none');
+    $('#pagePlayerDetailsEditPlayer')    .css('display', 'none');
 	
-    $('#pagePlayerDetailsOverviewHead').show();
-    $('#pagePlayerDetailsOverview')    .show();
+    $('#pagePlayerDetailsOverviewHead').css('display', 'block');
+    $('#pagePlayerDetailsOverview')    .css('display', 'block');
     
     $('#pagePlayerDetails').trigger('pagebeforeshow');
 });
@@ -271,11 +271,11 @@ $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', 
     app.Players.tmp.modify(['Name',     'Nickname',     'Image', 'isFavorite', 'displayNickname'],
 			   [ name.name,  nickname.name,  image,   isFavorite,   displayNickname ],
     function () {
-	$('#pagePlayerDetailsEditPlayerHead').hide();
-        $('#pagePlayerDetailsEditPlayer')    .hide();
+	$('#pagePlayerDetailsEditPlayerHead').css('display', 'none');
+        $('#pagePlayerDetailsEditPlayer')    .css('display', 'none');
 	
-	$('#pagePlayerDetailsOverviewHead').show();
-	$('#pagePlayerDetailsOverview')    .show();
+	$('#pagePlayerDetailsOverviewHead').css('display', 'block');
+	$('#pagePlayerDetailsOverview')    .css('display', 'block');
 	
 	$('#pagePlayerDetails').trigger('pagebeforeshow');
     });
@@ -288,7 +288,7 @@ $(document).off('click', '#editPlayer_PictureTake')
     
     app.getPicture(
 	function (imgURI) {
-	    $('#editPlayer_Picture').attr('src', imgURI).show();
+	    $('#editPlayer_Picture').attr('src', imgURI).css('display', 'block');
 	},
 	function (message) {
 	    app.alertDlg(
@@ -305,5 +305,5 @@ $(document).off('click', '#editPlayer_PictureDelete')
            .on ('click', '#editPlayer_PictureDelete', function (event) {
     event.preventDefault();
     
-    $('#editPlayer_Picture').attr('src', '').hide();
+    $('#editPlayer_Picture').attr('src', '').css('display', 'none');
 });

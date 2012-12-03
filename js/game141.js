@@ -289,7 +289,7 @@ function StraightPool () {
 	self.firstShot = true;
 	
 	self.switchButton = true;
-	$btnPlayerSwitch.show();
+	$btnPlayerSwitch.css('display', 'block');
 	
 	self.ballRack = new BallRack();
 	self.ballRack.redraw();
@@ -511,9 +511,9 @@ function StraightPool () {
 
 		self.ballRack.redraw();
 		
-		$btnPlayerSwitch.hide();
+		$btnPlayerSwitch.css('display', 'none');
 		if (self.switchButton) {
-		    $btnPlayerSwitch.show();
+		    $btnPlayerSwitch.css('display', 'block');
 		}
 		
 		app.Players.ingame[0] = new Player();
@@ -700,9 +700,9 @@ function StraightPool () {
 		self.firstShot    = (parseInt(row['FirstShot'])    == 1);
 		self.switchButton = (parseInt(row['SwitchButton']) == 1);
 		
-		$btnPlayerSwitch.hide();
+		$btnPlayerSwitch.css('display', 'none');
 		if (self.switchButton) {
-		    $btnPlayerSwitch.show();
+		    $btnPlayerSwitch.css('display', 'block');
 		}
 		
 		self.ballRack.ballsOnTable = parseInt(row['BallsOnTable']);
@@ -1049,7 +1049,7 @@ function StraightPool () {
 	}, 1000);
         
 	self.switchButton = false;
-        $btnPlayerSwitch.hide();
+        $btnPlayerSwitch.css('display', 'none');
         
         // check if rerack is needed
         rerack = $foulDisplayName.data('rerack');
@@ -1070,7 +1070,7 @@ function StraightPool () {
             ret.selectedBall = 15;
             
 	    self.switchButton = true;
-            $btnPlayerSwitch.show();
+            $btnPlayerSwitch.css('display', 'block');
         }
         
         // after a shot has been accepted, the foul and safety displays reset

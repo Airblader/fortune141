@@ -13,14 +13,14 @@ $(document).bind('deviceready', function () {
 	function () {
 	    navigator.splashscreen.hide();
 	    
-	    $('#firstRunMainUser_Picture').hide();
+	    $('#firstRunMainUser_Picture').css('display', 'none');
 	    $('#pageIndexFirstRunMainUser').fadeIn('slow');
 	},
 	function() {
 	    app.updateMainUser();
 	    app.updateIndexBubbles();
 	    
-	    $('#pageIndexHead').show();
+	    $('#pageIndexHead').css('display', 'block');
 	    $('#pageIndexBody').show(function () {
 		setTimeout(navigator.splashscreen.hide, 250);
 	    });
@@ -29,8 +29,8 @@ $(document).bind('deviceready', function () {
 });
 
 $(document).one('pagebeforeshow', '#pageIndex', function () {
-    $('#pageIndexHead').hide();
-    $('#pageIndexBody').hide();
+    $('#pageIndexHead').css('display', 'none');
+    $('#pageIndexBody').css('display', 'none');
 });
 
 $(document).on('pageshow', '#pageIndex', function () {
@@ -79,9 +79,9 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
     app.Players.main = new Player();
     app.Players.main.create(name.name, nickname.name, image, isFavorite, displayNickname, true, function () {
 	app.updateMainUser();
-	$('#pageIndexHead').show();
-	$('#pageIndexBody').show();
-	$('#pageIndexFirstRunMainUser').hide();
+	$('#pageIndexHead').css('display', 'block');
+	$('#pageIndexBody').css('display', 'block');
+	$('#pageIndexFirstRunMainUser').css('display', 'none');
 	
 	// free version information
 	if (app.freeVersionLimit.isLimited()) {
@@ -103,7 +103,7 @@ $(document).off('click', '#firstRunMainUser_PictureTake')
     
     app.getPicture(
 	function (imgURI) {
-	    $('#firstRunMainUser_Picture').attr('src', imgURI).show();
+	    $('#firstRunMainUser_Picture').attr('src', imgURI).css('display', 'block');
 	},
 	function (message) {
 	    app.alertDlg(
@@ -120,5 +120,5 @@ $(document).off('click', '#firstRunMainUser_PictureDelete')
            .on ('click', '#firstRunMainUser_PictureDelete', function (event) {
     event.preventDefault();
     
-    $('#firstRunMainUser_Picture').attr('src', '').hide();
+    $('#firstRunMainUser_Picture').attr('src', '').css('display', 'none');
 });

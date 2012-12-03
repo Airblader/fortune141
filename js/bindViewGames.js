@@ -156,15 +156,15 @@ $(document).on('pagebeforeshow', '#pageView141GamesDetails', function () {
     var $name1 = $('#view141GamesDetailsName1'),
         $name2 = $('#view141GamesDetailsName2');
     
-    $('#view141GamesHandicapTable').hide();
-    $('#view141GamesMultiplicatorTable').hide();
+    $('#view141GamesHandicapTable').css('display', 'none');
+    $('#view141GamesMultiplicatorTable').css('display', 'none');
     
-    $('#view141GamesDetailsScoreTableContainer').hide();
+    $('#view141GamesDetailsScoreTableContainer').css('display', 'none');
     if (fromGame == 1) {
         $('#view141GamesDetailsViewTable').trigger('click');
     }
     
-    $('#view141GamesDetailsCanvasContainer').hide();
+    $('#view141GamesDetailsCanvasContainer').css('display', 'none');
     var canvasSupport = app.checkForCanvasSupport();
     
     var tmpGame = new StraightPool();
@@ -240,13 +240,13 @@ $(document).on('pagebeforeshow', '#pageView141GamesDetails', function () {
         }
         
         if (tmpGame.handicap[0] != 0 || tmpGame.handicap[1] != 0) {
-            $('#view141GamesHandicapTable').show();
+            $('#view141GamesHandicapTable').css('display', 'block');
             
             $('#view141GamesHandicap1').html(tmpGame.handicap[0]);
             $('#view141GamesHandicap2').html(tmpGame.handicap[1]);
         }
         if (tmpGame.multiplicator[0] != 1 || tmpGame.multiplicator[1] != 1) {
-            $('#view141GamesMultiplicatorTable').show();
+            $('#view141GamesMultiplicatorTable').css('display', 'block');
             
             $('#view141GamesMultiplicator1').html(tmpGame.multiplicator[0]);
             $('#view141GamesMultiplicator2').html(tmpGame.multiplicator[1]);
@@ -375,7 +375,7 @@ $(document).on('pagebeforeshow', '#pageView141GamesDetails', function () {
                 context.stroke();
             }
             
-            $('#view141GamesDetailsCanvasContainer').show();
+            $('#view141GamesDetailsCanvasContainer').css('display', 'block');
         }
         
         // Draw Scoreboard
@@ -448,17 +448,17 @@ $(document).off('click', '#view141GamesDetailsViewTable')
         $('#pageView141GamesDetails').data('activePage', 'pageView141GamesDetails_Scoreboard2');
     }
     
-    $('[data-role=content]').hide();
-    $('[data-role=header]') .hide();
-    $('#view141GamesDetailsScoreTableContainer').show();
+    $('[data-role=content]').css('display', 'none');
+    $('[data-role=header]') .css('display', 'none');
+    $('#view141GamesDetailsScoreTableContainer').css('display', 'block');
 });
            
 function view141GamesDetailsHideScoreboard () {
     $('#pageView141GamesDetails').data('activePage', 'pageView141GamesDetails_Main');
     
-    $('[data-role=content]').show();
-    $('[data-role=header]') .show();
-    $('#view141GamesDetailsScoreTableContainer').hide();
+    $('[data-role=content]').css('display', 'block');
+    $('[data-role=header]') .css('display', 'block');
+    $('#view141GamesDetailsScoreTableContainer').css('display', 'none');
 }
 
 $(document).off('click', '#view141GamesDetailsScoreTableContainer')
