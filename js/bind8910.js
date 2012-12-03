@@ -69,7 +69,7 @@ function game8910OnListClick (pID) {
     game8910HidePlayerList();
 }
 
-$(document).on('pageshow', '#pageGame8910Setup', function () {
+$(document).on('pagebeforeshow', '#pageGame8910Setup', function () {
     var $game8910SetupHead = $('#game8910SetupHead'),
 	$game8910Setup1    = $('#game8910Setup1'),
 	$game8910Setup2	   = $('#game8910Setup2'),
@@ -305,6 +305,32 @@ $(document).off('click', '#game8910AnonPlayer_Submit')
     }
 });
 	   
+$(document).off('click', '#game8910SetupLoadProfileButton')
+	   .on ('click', '#game8910SetupLoadProfileButton', function (event) {
+    event.preventDefault();
+    
+    var profileID = parseInt( $('#game8910SetupLoadProfileSelect').val() );
+    app.dbFortune.query(
+	'SELECT * FROM ' + app.dbFortune.tables.Game8910Profile.name + ' WHERE ID="' + profileID + '" LIMIT 1', [],
+	function (tx, result) {
+	    if (result.rows.length == 0) {
+		return false;
+	    }
+	    
+	    var row = result.rows.item(0);
+	    
+	    // TODO Set values
+	    
+	    // increase usage counter
+	    app.dbFortune.query(
+		'UPDATE ' + app.dbFortune.tables.Game8910Profile.name + ' SET Usage="' + (parseInt(row['Usage'])+1) + '" WHERE ID="' + profileID + '"'
+	    );
+	    
+	    return true;
+	}
+    );
+});
+	   
 $(document).off('click', '#game8910SetupSubmitButton')
 	   .on ('click', '#game8910SetupSubmitButton', function (event) {
     event.preventDefault();
@@ -330,7 +356,7 @@ $(document).off('click', '#game8910SetupSubmitButton')
     });
 });
 	   
-$(document).on('pageshow', '#pageGame8910', function () {
+$(document).on('pagebeforeshow', '#pageGame8910', function () {
     var url = $.url( $.url().attr('fragment') );
     
     app.FortuneUtils.setKeepScreenOn(app.settings.getKeepScreenOnDuring8910Game());

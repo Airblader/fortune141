@@ -41,7 +41,7 @@ function game141OnListClick (pID) {
     game141HidePlayerList();
 }
 
-$(document).on('pageshow', '#pageGame141Setup', function () {
+$(document).on('pagebeforeshow', '#pageGame141Setup', function () {
     var url           = $.url( $.url().attr('fragment') ),
 	fromNewPlayer = parseInt(url.param('fromNewPlayer'));
 	
@@ -346,7 +346,7 @@ $(document).off('click', '#game141AnonPlayer_Submit')
     }
 });
 
-$(document).on('pageshow', '#pageGame141', function () {
+$(document).on('pagebeforeshow', '#pageGame141', function () {
     var url = $.url( $.url().attr('fragment') );
     
     app.FortuneUtils.setKeepScreenOn(app.settings.getKeepScreenOnDuring141Game());

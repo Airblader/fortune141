@@ -1,4 +1,4 @@
-$(document).on('pageshow', '#pagePlayersList', function () {    
+$(document).on('pagebeforeshow', '#pagePlayersList', function () {    
     // Create List
     $.mobile.loading('show');
     var listDummy = '<ul data-role="listview" data-filter="true" data-filter-placeholder="Search Players..." data-dividertheme="a">'
@@ -46,7 +46,7 @@ $(document).on('pageshow', '#pagePlayersList', function () {
     });
 });
 
-$(document).on('pageshow', '#pagePlayersAdd', function () {
+$(document).on('pagebeforeshow', '#pagePlayersAdd', function () {
     $('#addPlayer_Picture').hide();
     
     // Check if this page was called from a game setup
@@ -131,11 +131,13 @@ $(document).off('click', '#addPlayer_Submit')
     return true;
 });
 
-$(document).on('pageshow', '#pagePlayerDetails', function () {
+$(document).on('pagebeforeshow', '#pagePlayerDetails', function () {
     var $btnDelete = $('#playerDetailsDeleteButton');
     
     $('#pagePlayerDetailsEditPlayerHead').hide();
     $('#pagePlayerDetailsEditPlayer')    .hide();
+    $('#playerDetails_Image')            .hide();
+    $('#editPlayer_Picture')             .hide();
     
     // This is a weird glitch-workaround for the url being passed in a rather strange way
     var url = $.url( $.url().attr('fragment') ),
@@ -154,10 +156,6 @@ $(document).on('pageshow', '#pagePlayerDetails', function () {
 	                             .attr('src', app.Players.tmp.image);
 	    $('#editPlayer_Picture') .show()
 	                             .attr('src', app.Players.tmp.image);
-	}
-	else{
-	    $('#playerDetails_Image').hide();
-	    $('#editPlayer_Picture') .hide();
 	}
 	
 	$('#playerDetails_Name')           .html(app.Players.tmp.name                            );
@@ -249,7 +247,7 @@ $(document).off('click', '#pagePlayerDetailsEditPlayerBackLink')
     $('#pagePlayerDetailsOverviewHead').show();
     $('#pagePlayerDetailsOverview')    .show();
     
-    $('#pagePlayerDetails').trigger('pageshow');
+    $('#pagePlayerDetails').trigger('pagebeforeshow');
 });
 
 $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', function (event) {
@@ -279,7 +277,7 @@ $(document).off('click', 'editPlayer_Submit').on('click', '#editPlayer_Submit', 
 	$('#pagePlayerDetailsOverviewHead').show();
 	$('#pagePlayerDetailsOverview')    .show();
 	
-	$('#pagePlayerDetails').trigger('pageshow');
+	$('#pagePlayerDetails').trigger('pagebeforeshow');
     });
     return true;
 });

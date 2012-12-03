@@ -1,4 +1,4 @@
-$(document).on('pageshow', '#pageViewGames', function () {
+$(document).on('pagebeforeshow', '#pageViewGames', function () {
     $.mobile.loading('show');
     var $list = $('#viewGamesListContainer');
     
@@ -147,7 +147,7 @@ $(document).on('pageshow', '#pageViewGames', function () {
     );
 });
 
-$(document).on('pageshow', '#pageView141GamesDetails', function () {
+$(document).on('pagebeforeshow', '#pageView141GamesDetails', function () {
     var url         = $.url( $.url().attr('fragment') ),
         gID         = parseInt(url.param('gID')),
         fromGame    = parseInt(url.param('from_game')),
