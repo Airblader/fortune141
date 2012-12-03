@@ -176,7 +176,12 @@ $(document).off('click', '#playerDetailsDeleteButton')
     
     var pID = app.Players.tmp.pID;
     app.dbFortune.query(
-	'SELECT COUNT(*) AS ctr FROM ' + app.dbFortune.tables.Game141.name + ' WHERE Player1="' + pID + '" OR Player2="' + pID + '"',
+	//'SELECT COUNT(*) AS ctr FROM ' + app.dbFortune.tables.Game141.name + ' WHERE Player1="' + pID + '" OR Player2="' + pID + '"',
+	'SELECT COUNT(*) AS ctr FROM ('
+	    + 'SELECT gID FROM ' + app.dbFortune.tables.Game141.name + ' WHERE Player1=' + pID + ' OR Player2=' + pID
+	    + ' UNION ALL '
+	    + 'SELECT gID FROM ' + app.dbFortune.tables.Game8910.name + ' WHERE Player1=' + pID + ' OR Player2=' + pID
+	    + ')',
 	[],
 	function (tx, results) {
 	    var ctr = results.rows.item(0)['ctr'];

@@ -45,7 +45,16 @@ function Game8910 () {
                 
                 self.stringToScore(row['Score']);
                 
-                // TODO Compare score with TempScore from DB
+                var tempScore = row['TempScore'].split('/');
+                if (tempScore[0] != self.players[0].racks || tempScore[2] != self.players[1].racks
+                    || tempScore[1] != self.players[0].sets || tempScore[3] != self.players[1].sets) {
+                    app.alertDlg(
+                        'Uh-Oh! Discrepancy when loading game. Loaded game will not be stable!',
+                        app.dummyFalse,
+                        'OK',
+                        'Error'
+                    );
+                }
                 
                 self.timestamp  = row['StartTimestamp'];
                 self.firstBreak = parseInt(row['firstBreak']);
