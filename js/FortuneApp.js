@@ -19,6 +19,14 @@ function FortuneApp () {
     this.FortuneUtils = new FortuneUtilsClass();
     this.tooltips     = new Tooltips();
     this.freeVersionLimit = new FreeVersionLimit(false); // false : full version
+    
+    this.hasCamera = false;
+    window.featureDetector.hasFeature(
+	window.featureDetector.FEATURE.FEATURE_CAMERA,
+	function (hasFeature) {
+	    self.hasCamera = true;
+	}
+    );
 
     // pID for anonymous player
     this.ANONYMOUSPLAYERPID = -10;
@@ -325,7 +333,16 @@ function FortuneApp () {
 	    self.confirmDlg(
 		'Please choose whether you want to take a new picture or load one from your albums.',
 		function () {
-		    self._getPicture(Camera.PictureSourceType.CAMERA, onSuccess, onError);
+		    if (self.hasCamera) {
+			self._getPicture(Camera.PictureSourceType.CAMERA, onSuccess, onError);
+		    } else {
+			app.alertDlg(
+			    'Sorry, couldn\'t find a camera on your device!',
+			    self.dummyFalse,
+			    'Error',
+			    'OK'
+			);
+		    }
 		},
 		function () {
 		    self._getPicture(Camera.PictureSourceType.SAVEDPHOTOALBUM, onSuccess, onError);
