@@ -861,13 +861,13 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
                 this.winner = 0;
 
                 // TODO
-                alert('Game ended in a tie!');
+                msg = 'Game ended in a tie!';
             } else { // Game ended regularly
                 var idxWinner = (this.players[1].sets > this.players[0].sets) ? 1 : 0;
                 this.winner = this.players[idxWinner].obj.pID;
 
                 // TODO
-                alert(this.players[idxWinner].obj.getDisplayName() + ' has won the game!');
+                msg = this.players[idxWinner].obj.getDisplayName() + ' has won the game!';
             }
             
             $('#btnShotClockCtrl').off('click');

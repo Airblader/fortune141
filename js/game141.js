@@ -1488,6 +1488,9 @@ function StraightPool () {
 	// Bugfix : Force repaint
 	setTimeout(function () {
 	    $panelRackAndMenu.addClass('ForceRepaint');
+	    setTimeout(function () {
+		$panelRackAndMenu.removeClass('ForceRepaint');
+	    }, 100);
 	}, 10);
 	$activePlayer.css('visibility', 'visible');
 	
