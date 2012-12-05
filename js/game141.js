@@ -968,8 +968,9 @@ function StraightPool () {
 	$page.data('activePage', 'pageGame141_MainPanel');
 	
 	$.mobile.loading('show');
-	$page        .find('[data-role="header"]')
-	             .css('display', 'block');
+	$page
+	    .find('[data-role="header"]')
+	    .css('display', 'block');
 			  
         //$panelRackAndMenu.show(function () {
 	$panelRackAndMenu.css('display', 'block');
@@ -1016,8 +1017,9 @@ function StraightPool () {
      *	Sets the marker for which player's turn it is
      */
     this.setActivePlayerMarker = function (activePlayer) {
-	$activePlayer.removeClass('activePlayer' + (1-activePlayer ))
-		     .addClass   ('activePlayer' + (self.currPlayer));
+	$activePlayer
+	    .removeClass('activePlayer' + (1-activePlayer ))
+	    .addClass   ('activePlayer' + (self.currPlayer));
     }
     
     /*
@@ -1150,19 +1152,21 @@ function StraightPool () {
 		}
 	    }
 	    
+	    self.saveHistory();
+	    self.saveGame(function () {
+		// update statistics
+		self.players[0].obj.updateStatistics();
+		self.players[1].obj.updateStatistics();
+		
+		app.currentGame = null;
+	    });
+	    
 	    app.alertDlg(
 		msg,
 		function () {
-		    self.saveHistory();
-		    self.saveGame(function () {
-			// update statistics
-			self.players[0].obj.updateStatistics();
-			self.players[1].obj.updateStatistics();
-			
-			$.mobile.changePage('../viewGames/view141Games_details.html?gID=' + self.gameID + '&from_game=1');
-		    });
+		    $.mobile.changePage('../viewGames/view141Games_details.html?gID=' + self.gameID + '&from_game=1');
 		},
-		'Game over!',
+		'Game Over!',
 		'OK'
 	    );
 	    
@@ -1432,8 +1436,6 @@ function StraightPool () {
      *	Initializes the whole UI
      */
     this.initUI = function () {
-	$.mobile.loading('show');
-	
 	// set score goal, points and player names
 	$('#game141ScoreGoal').html(self.scoreGoal);
 	
@@ -1456,9 +1458,11 @@ function StraightPool () {
 	
 	// set panel sizes
 	var panelHeights = self.getPanelHeights();
-	$panelRackAndMenu.css('height', panelHeights.mainPanel   );
-	$detailsPanel    .css('height', panelHeights.detailsPanel)
-	                 .css('display', 'none');
+	$panelRackAndMenu
+	    .css('height', panelHeights.mainPanel);
+	$detailsPanel
+	    .css('display', 'none')
+	    .css('height', panelHeights.detailsPanel);
 	
 	var bestRadius  = self.getBestBallRadius(),
 	    nearestSize = self.getBallImageSize(bestRadius);
@@ -1476,10 +1480,16 @@ function StraightPool () {
 	for (var i = 0; i <= 15; i++) {
 	    $('#ball' + i).css('background-image',        'url(../../img/rack/rack' + nearestSize + '.png)')
 			  .css('background-size',         (2*bestRadius) + 'px auto'                       )
-			  .css('-webkit-background-size', (2*bestRadius) + 'px auto'                       ) // Bugfix : Android earlier than 2.1
+			  .css('-webkit-background-size', (2*bestRadius) + 'px auto'                       ) // Bugfix : Android earlier than or equal to 2.1
 			  .css('background-repeat',       'no-repeat'                                      )
 			  .css('background-position',     '0 -' + (2*i*bestRadius) + 'px'                  );
 	}
+	
+	// Bugfix : Force repaint
+	setTimeout(function () {
+	    $panelRackAndMenu.addClass('ForceRepaint');
+	}, 10);
+	$activePlayer.css('visibility', 'visible');
 	
 	// now we make the buttons work
 	$btnAccept                  .off('vclick') .on('vclick',  self.handleAcceptButton           );
@@ -1501,8 +1511,5 @@ function StraightPool () {
 				  .on ('vclick', function (event) {
 	    self.handleSevereFoulPlusMinusButton(event, true);
 	});
-	
-	// disable loading panel
-	$.mobile.loading('hide');
     }
 }

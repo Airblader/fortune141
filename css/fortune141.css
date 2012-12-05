@@ -143,6 +143,7 @@ input {
 }
 
 #pageGame141 #panelDetails {
+    display: none;
     overflow: scroll;
 }
 

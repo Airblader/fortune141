@@ -61,7 +61,7 @@ function AppSettings () {
     }
     
     this.getSaveToAlbum = function () {
-        return (self.get(keySaveToAlbum, 'true') == 'true');
+        return (self.get(keySaveToAlbum, 'false') == 'true');
     }
     this.setSaveToAlbum = function (saveToAlbum) {
         self.set(keySaveToAlbum, saveToAlbum);

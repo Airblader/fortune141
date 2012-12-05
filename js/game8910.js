@@ -855,25 +855,48 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
         
         if (this.idxCurrentSet + 1 === this.numberOfSets) { // Game is over
             this.isFinished = true;
+            var msg;
             
             if (this.players[0].sets === this.players[1].sets) { // Game ended tied
                 this.winner = 0;
-                
-                this.saveGame();
-                this.saveHistory();
-                
+
                 // TODO
                 alert('Game ended in a tie!');
             } else { // Game ended regularly
                 var idxWinner = (this.players[1].sets > this.players[0].sets) ? 1 : 0;
                 this.winner = this.players[idxWinner].obj.pID;
-                
-                this.saveGame();
-                this.saveHistory();
-                
+
                 // TODO
                 alert(this.players[idxWinner].obj.getDisplayName() + ' has won the game!');
             }
+            
+            $('#btnShotClockCtrl').off('click');
+            $('#btnShotClockCtrl').off('taphold');
+            $('#btnExtension')    .off('vlick');
+            $('#btnUndo')         .off('vlick');
+            $('.mainPlayer1')     .off('click');
+            $('.mainPlayer2')     .off('click');
+            $('.mainPlayer1')     .off('taphold');
+            $('.mainPlayer2')     .off('taphold');
+            $('.foulWrapper')     .off('tap');
+            
+            this.saveHistory();
+            this.saveGame(function () {
+                // update statistics
+                self.players[0].obj.updateStatistics();
+                self.players[1].obj.updateStatistics();
+                
+                app.currentGame = null;
+            });
+            
+            app.alertDlg(
+                msg,
+                function () {
+                    $.mobile.changePage('../viewGames/view8910Games_details.html?gID=' + self.gameID);
+                },
+                'Game Over!',
+                'OK'
+            );
             
             return;
         } else { // Game not over
