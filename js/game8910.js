@@ -579,10 +579,12 @@ function Game8910 () {
         $('#mainPlayer1Name').html(self.players[0].obj.getDisplayName());
         $('#mainPlayer2Name').html(self.players[1].obj.getDisplayName());
         
-        $('#mainPlayer1Img').attr('src',
-            (self.players[0].obj.image.length > 0) ? self.players[0].obj.image : 'file:///android_asset/www/img/players/playerDummy.jpg');
-        $('#mainPlayer2Img').attr('src',
-            (self.players[1].obj.image.length > 0) ? self.players[1].obj.image : 'file:///android_asset/www/img/players/playerDummy.jpg');
+        if (self.players[0].obj.image.length > 0) {
+            $('#mainPlayer1Img').attr('src', self.players[0].obj.image);
+        }
+        if (self.players[1].obj.image.length > 0) {
+            $('#mainPlayer2Img').attr('src', self.players[1].obj.image);
+        }
         
         var heightImg1   = $('#mainPlayer1Img').height(),
             heightImg2   = $('#mainPlayer2Img').height(),

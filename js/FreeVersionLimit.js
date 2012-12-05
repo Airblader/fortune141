@@ -1,4 +1,4 @@
-function freeVersionLimit (isFreeVersion) {
+function FreeVersionLimit (isFreeVersion) {
     this.limits = {
         GAME141_MAX_INNINGS: 20,
         
