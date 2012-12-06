@@ -1,5 +1,10 @@
 $(document).on('pagebeforeshow', '#pageViewGames', function () {
-    $.mobile.loading('show');
+    $.mobile.loading('show', {
+        text: 'Preparing Game List',
+        textVisible: true,
+        theme: 'a',
+    });
+    
     var $list = $('#viewGamesListContainer');
     
     var readyA = false,
@@ -147,7 +152,13 @@ $(document).on('pagebeforeshow', '#pageViewGames', function () {
     );
 });
 
-$(document).on('pagebeforeshow', '#pageView141GamesDetails', function () {
+$(document).on('pageshow', '#pageView141GamesDetails', function () {
+    $.mobile.loading('show', {
+        text: 'Loading Game Data',
+        textVisible: true,
+        theme: 'a',
+    });
+    
     var url         = $.url( $.url().attr('fragment') ),
         gID         = parseInt(url.param('gID')),
         fromGame    = parseInt(url.param('from_game')),
@@ -156,7 +167,7 @@ $(document).on('pagebeforeshow', '#pageView141GamesDetails', function () {
     var $name1 = $('#view141GamesDetailsName1'),
         $name2 = $('#view141GamesDetailsName2');
     
-    $('#view141GamesHandicapTable').css('display', 'none');
+    $('#view141GamesHandicapTable')     .css('display', 'none');
     $('#view141GamesMultiplicatorTable').css('display', 'none');
     
     $('#view141GamesDetailsScoreTableContainer').css('display', 'none');
@@ -432,6 +443,8 @@ $(document).on('pagebeforeshow', '#pageView141GamesDetails', function () {
         $('#view141GamesDetailsGD2').html(((!isNaN(GDs[1])) ? GDs[1].toFixed(2) : '0.00'));
         $('#view141GamesDetailsHS1').html(HS[0]);
         $('#view141GamesDetailsHS2').html(HS[1]);
+        
+        $.mobile.loading('hide');
     });
 });
 
@@ -448,17 +461,17 @@ $(document).off('click', '#view141GamesDetailsViewTable')
         $('#pageView141GamesDetails').data('activePage', 'pageView141GamesDetails_Scoreboard2');
     }
     
-    $('[data-role=content]').css('display', 'none');
-    $('[data-role=header]') .css('display', 'none');
+    $('#pageView141GamesDetails div[data-role=content]').css('display', 'none');
+    $('#pageView141GamesDetails div[data-role=header]') .css('display', 'none');
     $('#view141GamesDetailsScoreTableContainer').css('display', 'block');
 });
            
 function view141GamesDetailsHideScoreboard () {
     $('#pageView141GamesDetails').data('activePage', 'pageView141GamesDetails_Main');
     
-    $('[data-role=content]').css('display', 'block');
-    $('[data-role=header]') .css('display', 'block');
-    $('#view141GamesDetailsScoreTableContainer').css('display', 'none');
+    $('#pageView141GamesDetails div[data-role=content]').css('display', 'block');
+    $('#pageView141GamesDetails div[data-role=header]') .css('display', 'block');
+    $('#view141GamesDetailsScoreTableContainer')    .css('display', 'none');
 }
 
 $(document).off('click', '#view141GamesDetailsScoreTableContainer')

@@ -1,5 +1,10 @@
 $(document).on('pagebeforeshow', '#pageResumeGame', function () {
-    $.mobile.loading('show');
+    $.mobile.loading('show', {
+        text: 'Preparing Game List',
+        textVisible: true,
+        theme: 'a',
+    });
+    
     var $list = $('#resumeGameListContainer');
     
     var readyA = false,

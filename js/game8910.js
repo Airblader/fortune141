@@ -892,7 +892,7 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
             app.alertDlg(
                 msg,
                 function () {
-                    $.mobile.changePage('../viewGames/view8910Games_details.html?gID=' + self.gameID);
+                    $.mobile.changePage('../../index.html');
                 },
                 'Game Over!',
                 'OK'

@@ -1490,8 +1490,8 @@ function StraightPool () {
 	    $panelRackAndMenu.addClass('ForceRepaint');
 	    setTimeout(function () {
 		$panelRackAndMenu.removeClass('ForceRepaint');
-	    }, 100);
-	}, 10);
+	    }, 500);
+	}, 500);
 	$activePlayer.css('visibility', 'visible');
 	
 	// now we make the buttons work
