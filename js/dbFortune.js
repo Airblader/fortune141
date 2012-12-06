@@ -445,9 +445,15 @@ function dbFortune () {
 		});
 		
 		tx.executeSql( self.getCreateTableStatement(self.tables['Player'])         );
+		
 		tx.executeSql( self.getCreateTableStatement(self.tables['Game141'])        );
 		tx.executeSql( self.getCreateTableStatement(self.tables['Game141History']) );
 		tx.executeSql( self.getCreateTableStatement(self.tables['Game141Profile']) );
+		
+		tx.executeSql( self.getCreateTableStatement(self.tables['Game8910'])       );
+		tx.executeSql( self.getCreateTableStatement(self.tables['Game8910History']));
+		tx.executeSql( self.getCreateTableStatement(self.tables['Game8910Profile']));
+		
 		tx.executeSql( self.getCreateTableStatement(self.tables['GameModes'])      );
 		
 		// Fill with default game profiles
@@ -476,16 +482,6 @@ function dbFortune () {
 		);
 	    }
 	);
-	
-	// Game8910 Tables
-	Migrator.addMigration(
-	    2,
-	    function (tx) {
-		tx.executeSql( self.getCreateTableStatement(self.tables['Game8910'])        );
-		tx.executeSql( self.getCreateTableStatement(self.tables['Game8910History']) );
-		tx.executeSql( self.getCreateTableStatement(self.tables['Game8910Profile']) );
-	    }
-	)
 	
 	
 	Migrator.start(

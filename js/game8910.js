@@ -860,13 +860,11 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
             if (this.players[0].sets === this.players[1].sets) { // Game ended tied
                 this.winner = 0;
 
-                // TODO
                 msg = 'Game ended in a tie!';
             } else { // Game ended regularly
                 var idxWinner = (this.players[1].sets > this.players[0].sets) ? 1 : 0;
                 this.winner = this.players[idxWinner].obj.pID;
 
-                // TODO
                 msg = this.players[idxWinner].obj.getDisplayName() + ' has won the game!';
             }
             
@@ -962,6 +960,8 @@ function ShotClock8910 () {
     this.$game8910ShotClockRemainingTime = $('#game8910ShotClockRemainingTime');
     this.$remainingTime                  = $('#remainingTime');
     this.$game8910ShotClockCurrPlayer    = $('#game8910ShotClockCurrPlayer');
+    
+    this.shotClockSound = new Media('file:///android_asset/www/sounds/beep.wav', null, null);
 }
 
 ShotClock8910.prototype.consts = {
@@ -970,6 +970,7 @@ ShotClock8910.prototype.consts = {
     NO_MORE_EXTENSIONS_ALLOWED : false,
     CLOCK_IS_INACTIVE          : false,
     CLOCK_IS_ALREADY_RUNNING   : false,
+    START_BEEPING_REMAINING    : 10,
 };
 
 ShotClock8910.prototype.init = function (shotTime, extensionTime, extensionsPerRack, useSoundWarning) {
@@ -1039,6 +1040,11 @@ ShotClock8910.prototype.afterClockStep = function () {
 
     this.$game8910ShotClockRemainingTime.html(status.remainingSeconds);
     this.$remainingTime.css('width', status.elapsedRatio + '%');
+    
+    // TODO
+    if (this.useSoundWarning && status.remainingSeconds <= this.consts.START_BEEPING_REMAINING) {
+        this.playWarningSound();
+    }
     
     if (status.outOfTime) {
         var currPlayer = this.currPlayer;
@@ -1124,6 +1130,10 @@ ShotClock8910.prototype.updateCurrPlayerDisplay = function () {
 ShotClock8910.prototype.newRack = function () {
     this.resetCalledExtensions();
     this.pauseClock();
+}
+
+ShotClock8910.prototype.playWarningSound = function () {
+    this.shotClockSound.play();
 }
 
 ShotClock8910.prototype.resetTimes = function () {
