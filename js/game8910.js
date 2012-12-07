@@ -493,15 +493,16 @@ function Game8910 () {
     }
     
     this.handleFoulClick = function (event, elemData) {
+        var currPlayer = parseInt(elemData) - 1;
+        
         if (event !== null) {
             event.preventDefault();
-            this.shotClock.switchPlayer();
+            this.shotClock.switchPlayer(currPlayer === this.shotClock.currPlayer);
         } else {
             this.shotClock.switchPlayer(false);
         }
         this.shotClock.pauseClock();
         
-        var currPlayer = parseInt(elemData) - 1;
         this.players[currPlayer].fouls = (this.players[currPlayer].fouls + 1) % 3;
         
         // TODO Warn three fouls
