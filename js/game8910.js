@@ -3,15 +3,16 @@ function Game8910 () {
     var TEMP_SCORE_DURATION = 1000,
         tmpScoreInUse       = false;
     
-    var $btnShotClockCtrl  = $('#btnShotClockCtrl'),
-        $btnExtension      = $('#btnExtension'),
-        $btnUndo           = $('#btnUndo'),
-        $mainPlayer1Streak = $('#mainPlayer1Streak'),
-        $mainPlayer2Streak = $('#mainPlayer2Streak'),
-        $setScore1Bar      = $('#setScore1Bar'),
-        $setScore2Bar      = $('#setScore2Bar'),
-        $setScore1Value    = $('#setScore1Value'),
-        $setScore2Value    = $('#setScore2Value');
+    var $btnShotClockCtrl   = $('#btnShotClockCtrl'),
+        $btnShotClockSwitch = $('#btnShotClockSwitch'),
+        $btnExtension       = $('#btnExtension'),
+        $btnUndo            = $('#btnUndo'),
+        $mainPlayer1Streak  = $('#mainPlayer1Streak'),
+        $mainPlayer2Streak  = $('#mainPlayer2Streak'),
+        $setScore1Bar       = $('#setScore1Bar'),
+        $setScore2Bar       = $('#setScore2Bar'),
+        $setScore1Value     = $('#setScore1Value'),
+        $setScore2Value     = $('#setScore2Value');
     
     this.gameID       = -1;
     this.historyStack = new Array();
@@ -310,6 +311,23 @@ function Game8910 () {
         );
     }
     
+    this.shotClockPause = function () {
+        var softPause    = (typeof arguments[0] !== 'undefined') ? arguments[0] : false;
+        
+        this.shotClock.pauseClock();
+        
+        if (softPause) {
+            $btnShotClockCtrl.html('Resume');   
+        } else {
+            $btnShotClockCtrl.html('Start');
+        }
+    }
+    
+    this.shotClockResume = function () {
+        this.shotClock.unpauseClock();
+        $btnShotClockCtrl.html('New Shot');
+    }
+    
     this.handleBtnShotClockCtrlTap = function (event) {
         event.preventDefault();
         var $this = $btnShotClockCtrl;
@@ -326,10 +344,10 @@ function Game8910 () {
         );
         
         if (self.shotClock.clockIsRunning) {
-            self.shotClock.switchPlayer();
-            self.shotClock.pauseClock();
+            self.shotClock.switchPlayer(false);
+            self.shotClockPause(false);
         } else {
-            self.shotClock.unpauseClock();
+            self.shotClockResume();
         }
         
         self.saveGame();
@@ -351,19 +369,38 @@ function Game8910 () {
         );
         
         if (self.shotClock.clockIsRunning) {
-            self.shotClock.pauseClock();
+            self.shotClockPause(true);
         } else {
-            if (self.shotClock.firstRun) {
-                self.firstBreak = 1 - self.firstBreak;
-                self.lastBreak  = self.firstBreak;
-                
-                self.shotClock.switchPlayer();
-            } else {
-                // Free
-            }
+            // FREE
         }
         
         self.saveGame();
+    }
+    
+    this.handleBtnShotClockSwitch = function (event) {
+        event.preventDefault();
+        var $this = $btnShotClockSwitch;
+        
+        if ($this.hasClass('btnDown')) {
+            return;
+        }
+        
+        $this.addClass('btnDown');
+        setTimeout(
+            function () {
+                $this.removeClass('btnDown');
+            }, 300
+        );
+        
+        if (self.shotClock.firstRun) {
+            self.firstBreak = 1 - self.firstBreak;
+            self.lastBreak  = self.firstBreak;
+            
+            self.shotClock.switchPlayer();
+        } else {
+            self.shotClock.switchPlayer();
+            self.shotClockPause(false);
+        }
     }
     
     this.handleBtnCallExtension = function (event) {
@@ -574,6 +611,7 @@ function Game8910 () {
         
         $('#shotClockWrapper')  .toggle(self.shotClock.shotTime !== 0);
         $('#setOverviewWrapper').toggle(self.numberOfSets > 1);
+        $btnShotClockSwitch     .toggle(self.shotClock.extensionsPerRack !== 0);
         
         $('#game8910ShotClockRemainingTime').html(self.shotClock.getRemainingSeconds());
         
@@ -607,15 +645,16 @@ function Game8910 () {
         }
         $('#setOverview').html(setMarkerHTML);
         
-        $('#btnShotClockCtrl').off('click')  .on('click',   self.handleBtnShotClockCtrlTap);
-        $('#btnShotClockCtrl').off('taphold').on('taphold', self.handleBtnShotClockCtrlTapHold);
-        $('#btnExtension')    .off('vlick')  .on('vclick',  self.handleBtnCallExtension);
-        $('#btnUndo')         .off('vlick')  .on('vclick',  self.handleBtnUndo);
-        $('.mainPlayer1')     .off('click')  .on('click',   function (event) { self.handleBtnEntry(event, $(this).data('player'), false); });
-        $('.mainPlayer2')     .off('click')  .on('click',   function (event) { self.handleBtnEntry(event, $(this).data('player'), false); });
-        $('.mainPlayer1')     .off('taphold').on('taphold', function (event) { self.handleBtnEntry(event, $(this).data('player'), true);  });
-        $('.mainPlayer2')     .off('taphold').on('taphold', function (event) { self.handleBtnEntry(event, $(this).data('player'), true);  });
-        $('.foulWrapper')     .off('tap')    .on('tap',     function (event) { self.handleFoulClick(event, $(this).data('player')); });
+        $btnShotClockCtrl  .off('click')  .on('click',   self.handleBtnShotClockCtrlTap);
+        $btnShotClockCtrl  .off('taphold').on('taphold', self.handleBtnShotClockCtrlTapHold);
+        $btnShotClockSwitch.off('click')  .on('vclick',  self.handleBtnShotClockSwitch);
+        $btnExtension      .off('vlick')  .on('vclick',  self.handleBtnCallExtension);
+        $btnUndo           .off('vlick')  .on('vclick',  self.handleBtnUndo);
+        $('.mainPlayer1')  .off('click')  .on('click',   function (event) { self.handleBtnEntry(event, $(this).data('player'), false); });
+        $('.mainPlayer2')  .off('click')  .on('click',   function (event) { self.handleBtnEntry(event, $(this).data('player'), false); });
+        $('.mainPlayer1')  .off('taphold').on('taphold', function (event) { self.handleBtnEntry(event, $(this).data('player'), true);  });
+        $('.mainPlayer2')  .off('taphold').on('taphold', function (event) { self.handleBtnEntry(event, $(this).data('player'), true);  });
+        $('.foulWrapper')  .off('tap')    .on('tap',     function (event) { self.handleFoulClick(event, $(this).data('player')); });
         
         self.updateRackScore();
         self.updateSetScore();
@@ -869,15 +908,16 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
                 msg = this.players[idxWinner].obj.getDisplayName() + ' has won the game!';
             }
             
-            $('#btnShotClockCtrl').off('click');
-            $('#btnShotClockCtrl').off('taphold');
-            $('#btnExtension')    .off('vlick');
-            $('#btnUndo')         .off('vlick');
-            $('.mainPlayer1')     .off('click');
-            $('.mainPlayer2')     .off('click');
-            $('.mainPlayer1')     .off('taphold');
-            $('.mainPlayer2')     .off('taphold');
-            $('.foulWrapper')     .off('tap');
+            $btnShotClockCtrl  .off('click');
+            $btnShotClockCtrl  .off('taphold');
+            $btnShotClockSwitch.off('vclick');
+            $btnExtension      .off('vlick');
+            $btnUndo           .off('vlick');
+            $('.mainPlayer1')  .off('click');
+            $('.mainPlayer2')  .off('click');
+            $('.mainPlayer1')  .off('taphold');
+            $('.mainPlayer2')  .off('taphold');
+            $('.foulWrapper')  .off('tap');
             
             this.saveHistory();
             this.saveGame(function () {
@@ -1072,12 +1112,12 @@ ShotClock8910.prototype.killClock = function () {
 }
 
 ShotClock8910.prototype.pauseClock = function () {
-    this.$btnShotClockCtrl.html('Start');
+    //this.$btnShotClockCtrl.html('Start');
     this.clockIsRunning = false;
 }
 
 ShotClock8910.prototype.unpauseClock = function () {
-    this.$btnShotClockCtrl.html('Switch');
+    //this.$btnShotClockCtrl.html('Switch');
     if (this.firstRun) {
         this.startClock();
     } else {

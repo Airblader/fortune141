@@ -399,7 +399,10 @@ input {
     padding: 0;
 }
 
-#pageGame8910 #shotClockWrapper .ui-grid-a {
+#pageGame8910 #shotClockWrapper .ui-grid-a,
+#pageGame8910 #shotClockWrapper .ui-grid-solo
+{
+    width: 100%;
     text-align: center;
 }
 
@@ -471,8 +474,7 @@ input {
     -webkit-box-sizing: border-box; /* Safari */
     
     border: 1px solid #111;
-    border-top: 1px solid #333;
-    border-left-width: 0;
+    border-left-width:   0;
     border-right-width:  0;
     
     color: #fff;
@@ -493,7 +495,25 @@ input {
 }
 
 #pageGame8910 #btnShotClockCtrl {
-    border-right-width: 1px;
+    width: 50%;
+    border-top-color: #333;
+    
+    height:      70px;
+    line-height: 70px;
+}
+
+#pageGame8910 #btnShotClockSwitch {
+    width: 50%;
+    border-top-color: #333;
+    border-left-width: 1px;
+    
+    height:      70px;
+    line-height: 70px;
+}
+
+#pageGame8910 #btnExtension {
+    width: 100%;
+    border-top-width: 0;
 }
 
 #pageGame8910 #mainPanel {

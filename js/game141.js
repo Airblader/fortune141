@@ -912,7 +912,7 @@ function StraightPool () {
      *	Returns an object containing the heights for the main and details panel
      */
     this.getPanelHeights = function () {
-	var viewPortHeight = $(window).height(),
+	var viewPortHeight = $(document).height(),
 	    headerHeight   = $page.find('[data-role="header"]') .height(),
 	    contentHeight  = $page.find('[data-role="content"]').height();
 		    
@@ -930,7 +930,7 @@ function StraightPool () {
 	 		   - parseInt($ballRack.css('bottom').replace('px', ''))   // margin from toolbar
 	 		   - 20                                                    // additional margins
 	 		   - 40,                                                   // margin from detail/switch buttons
-	    maxWidth  = $(window).width() * 0.95;
+	    maxWidth  = $(document).width() * 0.95;
         
         var bestRadius = Math.min(
 	 			  maxWidth  / 10,                             // fit width
@@ -950,14 +950,14 @@ function StraightPool () {
 	}
 	
 	// available sprite sets
-	var availableSizes = new Array(30, 60, 80, 100, 120);
+	var availableSizes = new Array(30, 60, 80, 100, 120, 240, 360);
         var nearestSize    = availableSizes[availableSizes.length-1];
         for (var i = availableSizes.length-1; i >= 0; i--) {
 	    if (2*devicePixelRatio*bestRadius <= availableSizes[i]) {
 	        nearestSize = availableSizes[i];
 	    }
         }
-	
+    	
 	return nearestSize;
     }
     
@@ -1478,11 +1478,13 @@ function StraightPool () {
 	// load images
 	// we use CSS3 sprites as this will reduce both file size and loading time
 	for (var i = 0; i <= 15; i++) {
-	    $('#ball' + i).css('background-image',        'url(../../img/rack/rack' + nearestSize + '.png)')
-			  .css('background-size',         (2*bestRadius) + 'px auto'                       )
-			  .css('-webkit-background-size', (2*bestRadius) + 'px auto'                       ) // Bugfix : Android earlier than or equal to 2.1
-			  .css('background-repeat',       'no-repeat'                                      )
-			  .css('background-position',     '0 -' + (2*i*bestRadius) + 'px'                  );
+	    $('#ball' + i)
+		.css('background-image',        'url(../../img/rack/rack' + nearestSize + '.png)')
+		.css('background-size',         (2*bestRadius) + 'px auto'                       )
+		//.css('background-size',         'cover'                       )
+		.css('-webkit-background-size', (2*bestRadius) + 'px auto'                       ) // Bugfix : Android earlier than or equal to 2.1
+		.css('background-repeat',       'no-repeat'                                      )
+		.css('background-position',     '0 -' + (2*i*bestRadius) + 'px'                  );
 	}
 	
 	// Bugfix : Force repaint
