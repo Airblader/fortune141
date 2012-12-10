@@ -85,8 +85,9 @@ $(document).on('pagebeforeshow', '#pageGame8910Setup', function () {
     
     // Free version limit
     if (app.freeVersionLimit.isLimited()) {
-        $game8910SetupNumberOfSets.attr('max', app.freeVersionLimit.limits.GAME8910_MAX_SETS)         .slider('refresh');
-        $game8910SetupRacksPerSet .attr('max', app.freeVersionLimit.limits.GAME8910_MAX_RACKS_PER_SET).slider('refresh');
+        $game8910SetupNumberOfSets  .attr('max', app.freeVersionLimit.limits.GAME8910_MAX_SETS)         .slider('refresh');
+        $game8910SetupRacksPerSet   .attr('max', app.freeVersionLimit.limits.GAME8910_MAX_RACKS_PER_SET).slider('refresh');
+	$('#game8910SetupShotclock').attr('max', app.freeVersionLimit.limits.GAME8910_MAX_SHOTCLOCK)    .slider('refresh');
     }
     
     // try to load memorized settings

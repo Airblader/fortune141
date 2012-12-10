@@ -74,9 +74,10 @@ $(document).on('change', '#settingsSaveToAlbum', function (event) {
            
            
 $(document).on('pageshow', '#pageFreeVersion', function () {
-    $('#pageFreeVersion141InningsLimit').html(app.freeVersionLimit.limits.GAME141_MAX_INNINGS);
-    $('#pageFreeVersion8910RacksLimit') .html(app.freeVersionLimit.limits.GAME8910_MAX_RACKS_PER_SET);
-    $('#pageFreeVersion8910SetsLimit')  .html(app.freeVersionLimit.limits.GAME8910_MAX_SETS);
+    $('#pageFreeVersion141InningsLimit')   .html(app.freeVersionLimit.limits.GAME141_MAX_INNINGS);
+    $('#pageFreeVersion8910RacksLimit')    .html(app.freeVersionLimit.limits.GAME8910_MAX_RACKS_PER_SET);
+    $('#pageFreeVersion8910SetsLimit')     .html(app.freeVersionLimit.limits.GAME8910_MAX_SETS);
+    $('#pageFreeVersion8910ShotClockLimit').html(app.freeVersionLimit.limits.GAME8910_MAX_SHOTCLOCK);
 });
 
 $(document).off('click', '#pageFreeVersionBtnAccept')

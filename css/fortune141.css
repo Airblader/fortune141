@@ -44,23 +44,23 @@ input {
 }
 
 #pageGame141 .activePlayer0 {
-    background: -moz-linear-gradient(left,  rgba(124,188,10,1) 0%, rgba(137,198,29,1) 40%, rgba(144,203,39,0) 60%, rgba(157,213,58,0) 100%);
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(124,188,10,1)), color-stop(40%,rgba(137,198,29,1)), color-stop(60%,rgba(144,203,39,0)), color-stop(100%,rgba(157,213,58,0)));
-    background: -webkit-linear-gradient(left,  rgba(124,188,10,1) 0%,rgba(137,198,29,1) 40%,rgba(144,203,39,0) 60%,rgba(157,213,58,0) 100%);
-    background: -o-linear-gradient(left,  rgba(124,188,10,1) 0%,rgba(137,198,29,1) 40%,rgba(144,203,39,0) 60%,rgba(157,213,58,0) 100%);
-    background: -ms-linear-gradient(left,  rgba(124,188,10,1) 0%,rgba(137,198,29,1) 40%,rgba(144,203,39,0) 60%,rgba(157,213,58,0) 100%);
-    background: linear-gradient(to right,  rgba(124,188,10,1) 0%,rgba(137,198,29,1) 40%,rgba(144,203,39,0) 60%,rgba(157,213,58,0) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7cbc0a', endColorstr='#009dd53a',GradientType=1 );
+    background: -moz-linear-gradient(left,  rgba(255,208,0,1) 0%, rgba(255,242,0,1) 45%, rgba(255,242,0,0) 85%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,208,0,1)), color-stop(45%,rgba(255,242,0,1)), color-stop(85%,rgba(255,242,0,0)));
+    background: -webkit-linear-gradient(left,  rgba(255,208,0,1) 0%,rgba(255,242,0,1) 45%,rgba(255,242,0,0) 85%);
+    background: -o-linear-gradient(left,  rgba(255,208,0,1) 0%,rgba(255,242,0,1) 45%,rgba(255,242,0,0) 85%);
+    background: -ms-linear-gradient(left,  rgba(255,208,0,1) 0%,rgba(255,242,0,1) 45%,rgba(255,242,0,0) 85%);
+    background: linear-gradient(to right,  rgba(255,208,0,1) 0%,rgba(255,242,0,1) 45%,rgba(255,242,0,0) 85%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffd000', endColorstr='#00fff200',GradientType=1 );
 }
 
 #pageGame141 .activePlayer1 {
-    background: -moz-linear-gradient(left,  rgba(157,213,58,0) 0%, rgba(144,203,39,0) 40%, rgba(137,198,29,1) 60%, rgba(124,188,10,1) 100%);
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(157,213,58,0)), color-stop(40%,rgba(144,203,39,0)), color-stop(60%,rgba(137,198,29,1)), color-stop(100%,rgba(124,188,10,1)));
-    background: -webkit-linear-gradient(left,  rgba(157,213,58,0) 0%,rgba(144,203,39,0) 40%,rgba(137,198,29,1) 60%,rgba(124,188,10,1) 100%);
-    background: -o-linear-gradient(left,  rgba(157,213,58,0) 0%,rgba(144,203,39,0) 40%,rgba(137,198,29,1) 60%,rgba(124,188,10,1) 100%);
-    background: -ms-linear-gradient(left,  rgba(157,213,58,0) 0%,rgba(144,203,39,0) 40%,rgba(137,198,29,1) 60%,rgba(124,188,10,1) 100%);
-    background: linear-gradient(to right,  rgba(157,213,58,0) 0%,rgba(144,203,39,0) 40%,rgba(137,198,29,1) 60%,rgba(124,188,10,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#009dd53a', endColorstr='#7cbc0a',GradientType=1 );
+    background: -moz-linear-gradient(left,  rgba(255,242,0,0) 15%, rgba(255,242,0,1) 55%, rgba(255,208,0,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(15%,rgba(255,242,0,0)), color-stop(55%,rgba(255,242,0,1)), color-stop(100%,rgba(255,208,0,1)));
+    background: -webkit-linear-gradient(left,  rgba(255,242,0,0) 15%,rgba(255,242,0,1) 55%,rgba(255,208,0,1) 100%);
+    background: -o-linear-gradient(left,  rgba(255,242,0,0) 15%,rgba(255,242,0,1) 55%,rgba(255,208,0,1) 100%);
+    background: -ms-linear-gradient(left,  rgba(255,242,0,0) 15%,rgba(255,242,0,1) 55%,rgba(255,208,0,1) 100%);
+    background: linear-gradient(to right,  rgba(255,242,0,0) 15%,rgba(255,242,0,1) 55%,rgba(255,208,0,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00fff200', endColorstr='#ffd000',GradientType=1 );
 }
 
 /* point scores */
@@ -535,25 +535,27 @@ input {
 
 #pageGame8910 #setScore1Bar {
     left: 0;
-	
-    background: rgb(0,200,0);
-    background: -moz-linear-gradient(left,  rgba(0,200,0,1) 0%, rgba(0,255,0,1) 100%);
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,200,0,1)), color-stop(100%,rgba(0,255,0,1)));
-    background: -webkit-linear-gradient(left,  rgba(0,200,0,1) 0%,rgba(0,255,0,1) 100%);
-    background: -o-linear-gradient(left,  rgba(0,200,0,1) 0%,rgba(0,255,0,1) 100%);
-    background: -ms-linear-gradient(left,  rgba(0,200,0,1) 0%,rgba(0,255,0,1) 100%);
-    background: linear-gradient(to right,  rgba(0,200,0,1) 0%,rgba(0,255,0,1) 100%);
+
+    background: rgb(255,246,0);
+    background: -moz-linear-gradient(left,  rgba(255,246,0,1) 0%, rgba(255,208,0,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,246,0,1)), color-stop(100%,rgba(255,208,0,1)));
+    background: -webkit-linear-gradient(left,  rgba(255,246,0,1) 0%,rgba(255,208,0,1) 100%);
+    background: -o-linear-gradient(left,  rgba(255,246,0,1) 0%,rgba(255,208,0,1) 100%);
+    background: -ms-linear-gradient(left,  rgba(255,246,0,1) 0%,rgba(255,208,0,1) 100%);
+    background: linear-gradient(to right,  rgba(255,246,0,1) 0%,rgba(255,208,0,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff600', endColorstr='#ffd000',GradientType=1 );
 }
 #pageGame8910 #setScore2Bar {
     right: 0;
 	
-    background: rgb(0,255,0);
-    background: -moz-linear-gradient(left,  rgba(0,255,0,1) 0%, rgba(0,200,0,1) 100%);
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,255,0,1)), color-stop(100%,rgba(0,200,0,1)));
-    background: -webkit-linear-gradient(left,  rgba(0,255,0,1) 0%,rgba(0,200,0,1) 100%);
-    background: -o-linear-gradient(left,  rgba(0,255,0,1) 0%,rgba(0,200,0,1) 100%);
-    background: -ms-linear-gradient(left,  rgba(0,255,0,1) 0%,rgba(0,200,0,1) 100%);
-    background: linear-gradient(to right,  rgba(0,255,0,1) 0%,rgba(0,200,0,1) 100%);
+    background: rgb(0,13,255);
+    background: -moz-linear-gradient(left,  rgba(0,13,255,1) 0%, rgba(0,111,255,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,13,255,1)), color-stop(100%,rgba(0,111,255,1)));
+    background: -webkit-linear-gradient(left,  rgba(0,13,255,1) 0%,rgba(0,111,255,1) 100%);
+    background: -o-linear-gradient(left,  rgba(0,13,255,1) 0%,rgba(0,111,255,1) 100%);
+    background: -ms-linear-gradient(left,  rgba(0,13,255,1) 0%,rgba(0,111,255,1) 100%);
+    background: linear-gradient(to right,  rgba(0,13,255,1) 0%,rgba(0,111,255,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000dff', endColorstr='#006fff',GradientType=1 );
 }
 
 #pageGame8910 #mainPanel #setScore1,

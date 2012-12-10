@@ -13,8 +13,8 @@ $(document).bind('deviceready', function () {
 	function () {
 	    navigator.splashscreen.hide();
 	    
-	    $('#firstRunMainUser_Picture').css('display', 'none');
-	    $('#pageIndexFirstRunMainUser').fadeIn('slow');
+	    $('#firstRunMainUser_Picture') .css('display', 'none');
+	    $('#pageIndexFirstRunMainUser').css('display', 'block');
 	},
 	function() {
 	    app.updateMainUser();
