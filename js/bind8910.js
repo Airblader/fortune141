@@ -90,12 +90,14 @@ $(document).on('pagebeforeshow', '#pageGame8910Setup', function () {
     }
     
     // try to load memorized settings
-    var gameType    = window.localStorage.getItem('game8910_gameType')    || '9',
-        breakType   = window.localStorage.getItem('game8910_breakType')   || '0',
-        racksPerSet = window.localStorage.getItem('game8910_racksPerSet') || '6';
-    $('#game8910SetupGameType')     .val(gameType)   .selectmenu('refresh');
-    $('#game8910SetupGameBreakType').val(breakType)  .selectmenu('refresh');
-    $game8910SetupRacksPerSet       .val(racksPerSet).slider    ('refresh');
+    var gameType     = window.localStorage.getItem('game8910_gameType')     || '9',
+        breakType    = window.localStorage.getItem('game8910_breakType')    || '0',
+        racksPerSet  = window.localStorage.getItem('game8910_racksPerSet')  || '6',
+	numberOfSets = window.localStorage.getItem('game8910_numberOfSets') || '1';
+    $('#game8910SetupGameType')     .val(gameType)    .selectmenu('refresh');
+    $('#game8910SetupGameBreakType').val(breakType)   .selectmenu('refresh');
+    $game8910SetupRacksPerSet       .val(racksPerSet) .slider    ('refresh')
+    $game8910SetupNumberOfSets      .val(numberOfSets).slider    ('refresh');
     
     // Set up the main player per default
     game8910SetPlayer(0, app.Players.main.pID);
@@ -335,9 +337,10 @@ $(document).off('click', '#game8910SetupSubmitButton')
 	   .on ('click', '#game8910SetupSubmitButton', function (event) {
     event.preventDefault();
     
-    window.localStorage.setItem('game8910_gameType',    $('#game8910SetupGameType').val()),
-    window.localStorage.setItem('game8910_breakType',   $('#game8910SetupGameBreakType').val()),
-    window.localStorage.setItem('game8910_racksPerSet', $('#game8910SetupRacksPerSet').val());
+    window.localStorage.setItem('game8910_gameType',     $('#game8910SetupGameType').val());
+    window.localStorage.setItem('game8910_breakType',    $('#game8910SetupGameBreakType').val());
+    window.localStorage.setItem('game8910_racksPerSet',  $('#game8910SetupRacksPerSet').val());
+    window.localStorage.setItem('game8910_numberOfSets', $('#game8910SetupNumberOfSets').val());
     
     $.mobile.changePage('game8910.html', {
 	data : {
