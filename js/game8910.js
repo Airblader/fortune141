@@ -280,7 +280,7 @@ function Game8910 () {
                 self.players[0].fouls = parseInt(row['FoulsPlayer1']);
                 self.players[1].fouls = parseInt(row['FoulsPlayer2']);
 		
-                self.shotClock.pauseClock();
+                self.shotClockPause();
                 self.shotClock.switchPlayer(self.shotClock.currPlayer !== parseInt(row['CurrPlayer']));
                 self.shotClock.numCalledExtensions = new Array(
                     parseInt(row['ExtensionsCalledPlayer1']),
@@ -439,18 +439,18 @@ function Game8910 () {
         }
         
         if(!self.shotClock.callExtension()) {
-            self.shotClock.pauseClock();
+            self.shotClockPause();
             
             app.confirmDlg(
                 'This player has used up all his extensions. Grant extension anyway?',
                 function () {
                     self.shotClock.callExtension(true);
-                    self.shotClock.unpauseClock();
+                    self.shotClockResume();
                     
                     self.saveGame();
                 },
                 function () {
-                    self.shotClock.unpauseClock();
+                    self.shotClockResume();
                 },
                 'Shot Clock',
                 'Yes,No'
@@ -528,7 +528,7 @@ function Game8910 () {
                     self._handleBtnEntry(currPlayer, runOut);
                 },
                 function () {
-                    self.shotClock.unpauseClock();
+                    self.shotClockResume();
                 },
                 '',
                 'Count Rack,Start Clock'
@@ -547,7 +547,7 @@ function Game8910 () {
         } else {
             this.shotClock.switchPlayer(false);
         }
-        this.shotClock.pauseClock();
+        this.shotClockPause();
         
         this.players[currPlayer].fouls = (this.players[currPlayer].fouls + 1) % 3;
         
@@ -851,8 +851,7 @@ Game8910.prototype.setLastBreak = function (idx) {
 
 Game8910.prototype._updateSetScore = function (idxSet, wonByPlayer) {
     $('#setMarker' + idxSet)
-        .attr('src', '../../img/setmarker/setmarker' + (wonByPlayer+1) + '.png')
-        //.css('opacity', (wonByPlayer === -1) ? '0.0' : '1.0');
+        .attr('src', '../../img/setmarker/setmarker' + (wonByPlayer+1) + '.png');
 }
 
 Game8910.prototype.updateSetScore = function () {
