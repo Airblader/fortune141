@@ -476,6 +476,13 @@ function dbFortune () {
 			+ ' VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 		    ['Default', 60, 0, 1, 0, 0, 1, 1, 0, 0]
 		);
+		tx.executeSql(
+		    'INSERT INTO '
+			+ app.dbFortune.tables.Game8910Profile.name + ' '
+			+ app.dbFortune.getTableFields_String(app.dbFortune.tables.Game8910Profile)
+			+ ' VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+		    ['Default', 9, 0, 1, 5, 0, 30, 1, 1, 0, 0]
+		);
 		
 		// Fill with default game modes
 		tx.executeSql(

@@ -322,7 +322,17 @@ $(document).off('click', '#game8910SetupLoadProfileButton')
 	    
 	    var row = result.rows.item(0);
 	    
-	    // TODO Set values
+	    $('#game8910SetupGameType')         .val(row['GameType'])         .selectmenu('refresh');
+	    $('#game8910SetupGameBreakType')    .val(row['BreakType'])        .selectmenu('refresh');
+	    $('#game8910SetupNumberOfSets')     .val(row['NumberOfSets'])     .slider('refresh');
+	    $('#game8910SetupRacksPerSet')      .val(row['RacksPerSet'])      .slider('refresh');
+	    $('#game8910SetupShotclock')        .val(row['Shotclock'])        .slider('refresh');
+	    $('#game8910SetupExtension')        .val(row['ExtensionTime'])    .slider('refresh');
+	    $('#game8910SetupExtensionsPerRack').val(row['ExtensionsPerRack']).slider('refresh');
+	    $('#game8910SetupShotclockUseSound')
+		.val((row['ShotclockUseSound'] == '1') ? 'true' : 'false')
+		.slider('refresh');
+	    $('#game8910SetupGameMode')         .val(row['GameMode'])         .selectmenu('refresh');
 	    
 	    // increase usage counter
 	    app.dbFortune.query(
