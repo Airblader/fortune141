@@ -497,6 +497,7 @@ input {
 #pageGame8910 #btnShotClockCtrl {
     width: 50%;
     border-top-color: #333;
+    border-right-width: 1px;
     
     height:      70px;
     line-height: 70px;
@@ -505,7 +506,6 @@ input {
 #pageGame8910 #btnShotClockSwitch {
     width: 50%;
     border-top-color: #333;
-    border-left-width: 1px;
     
     height:      70px;
     line-height: 70px;

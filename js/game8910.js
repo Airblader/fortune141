@@ -346,6 +346,10 @@ function Game8910 () {
         if (self.shotClock.clockIsRunning) {
             self.shotClock.switchPlayer(false);
             self.shotClockPause(false);
+            
+            setTimeout(function () {
+                app.triggerTutorial('tutorial8910ShotclockTaphold');
+            }, 500);
         } else {
             self.shotClockResume();
         }
@@ -422,7 +426,7 @@ function Game8910 () {
             app.alertDlg(
                 'You cannot call an extension as long as the clock isn\'t running!',
                 app.dummyFalse,
-                'ShotClock',
+                'Shot Clock',
                 'OK'
             );
             
@@ -443,7 +447,7 @@ function Game8910 () {
                 function () {
                     self.shotClock.unpauseClock();
                 },
-                'ShotClock',
+                'Shot Clock',
                 'Yes,No'
             );
         } else {
@@ -611,7 +615,7 @@ function Game8910 () {
         
         $('#shotClockWrapper')  .toggle(self.shotClock.shotTime !== 0);
         $('#setOverviewWrapper').toggle(self.numberOfSets > 1);
-        $btnShotClockSwitch     .toggle(self.shotClock.extensionsPerRack !== 0);
+        $btnExtension           .toggle(self.shotClock.extensionsPerRack !== 0);
         
         $('#game8910ShotClockRemainingTime').html(self.shotClock.getRemainingSeconds());
         
@@ -675,6 +679,10 @@ function Game8910 () {
                     
                     app.currentGame.saveGame();
                     app.currentGame.saveHistory();
+                    
+                    setTimeout(function () {
+                        app.triggerTutorial('tutorial8910Runout');
+                    }, 1000);
                 }
             );
         }
@@ -1101,7 +1109,7 @@ ShotClock8910.prototype.afterClockStep = function () {
             function () {
                 //
             },
-            'ShotClock',
+            'Shot Clock',
             'Add Foul,Ignore'
         );
     }
@@ -1112,12 +1120,10 @@ ShotClock8910.prototype.killClock = function () {
 }
 
 ShotClock8910.prototype.pauseClock = function () {
-    //this.$btnShotClockCtrl.html('Start');
     this.clockIsRunning = false;
 }
 
 ShotClock8910.prototype.unpauseClock = function () {
-    //this.$btnShotClockCtrl.html('Switch');
     if (this.firstRun) {
         this.startClock();
     } else {
