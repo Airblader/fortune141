@@ -86,6 +86,9 @@ $(document).off('click', '#firstRunMainUser_Submit').on('click', '#firstRunMainU
 	// free version information
 	if (app.freeVersionLimit.isLimited()) {
 	    $.mobile.changePage('pages/settings/freeversion.html');
+	} else {
+	    // Bugfix: scroll to top
+	    window.scrollTo(0, 0);
 	}
     });
     

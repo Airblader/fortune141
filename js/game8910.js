@@ -328,6 +328,11 @@ function Game8910 () {
         $btnShotClockCtrl.html('New Shot');
     }
     
+    this.newRack = function () {
+        this.shotClock.newRack();
+        $btnShotClockCtrl.html('Start');
+    }
+    
     this.handleBtnShotClockCtrlTap = function (event) {
         event.preventDefault();
         var $this = $btnShotClockCtrl;
@@ -638,7 +643,7 @@ function Game8910 () {
         var setMarkerFactor = 0.2;
             setMarkerSize   = self.getSetMarkerSize(1 + 2*setMarkerFactor),
             setMarkerHTML   = '',
-            setMarkerDummy  = '<img src="../../img/setmarker/setmarker1.png" id="setMarker[ID]" style="width: [width]; height: [height]; margin-left: [margin-left]; margin-right: [margin-right];" />';
+            setMarkerDummy  = '<img src="../../img/setmarker/setmarker0.png" id="setMarker[ID]" style="width: [width]; height: [height]; margin-left: [margin-left]; margin-right: [margin-right];" />';
         for (var i = 0; i < self.numberOfSets; i++) {
             setMarkerHTML += setMarkerDummy
                                 .replace('[ID]',           i)
@@ -847,7 +852,7 @@ Game8910.prototype.setLastBreak = function (idx) {
 Game8910.prototype._updateSetScore = function (idxSet, wonByPlayer) {
     $('#setMarker' + idxSet)
         .attr('src', '../../img/setmarker/setmarker' + (wonByPlayer+1) + '.png')
-        .css('opacity', (wonByPlayer === -1) ? '0.0' : '1.0');
+        //.css('opacity', (wonByPlayer === -1) ? '0.0' : '1.0');
 }
 
 Game8910.prototype.updateSetScore = function () {
@@ -857,7 +862,7 @@ Game8910.prototype.updateSetScore = function () {
 }
 
 Game8910.prototype.processInput = function (currPlayer, runOut) {
-    this.shotClock.newRack();
+    this.newRack();
     
     switch (this.breakType) {
         case 0: // Winner
