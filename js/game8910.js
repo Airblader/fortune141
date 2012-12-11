@@ -397,10 +397,10 @@ function Game8910 () {
         );
         
         if (self.shotClock.firstRun) {
-            self.firstBreak = 1 - self.firstBreak;
-            self.lastBreak  = self.firstBreak;
-            
             self.shotClock.switchPlayer();
+            
+            self.firstBreak = self.shotClock.currPlayer;
+            self.lastBreak  = self.firstBreak;
         } else {
             self.shotClock.switchPlayer();
             self.shotClockPause(false);

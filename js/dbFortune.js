@@ -435,6 +435,18 @@ function dbFortune () {
 	var Migrator = new dbFortuneMigrator();
 	Migrator.init(self.db);
 	
+	// TODO This is for forcing new installation. Obviously this shouldnt stay here forever...
+	if (window.localStorage.getItem('requireNewInstallation1') !== '0'
+	    && Migrator.getCurrentVersion() !== 0) {
+	    app.alertDlg(
+		'Please do a complete reinstall of this app first!',
+		navigator.app.exitApp,
+		'Update',
+		'OK'
+	    );
+	    return;
+	}
+	
 	// Initial installation setup
 	Migrator.addMigration(
 	    1,
@@ -480,6 +492,8 @@ function dbFortune () {
 			+ ' VALUES (NULL, ?)',
 		    ['League Game']
 		);
+		
+		window.localStorage.setItem('requireNewInstallation1', '0');
 	    }
 	);
 	
