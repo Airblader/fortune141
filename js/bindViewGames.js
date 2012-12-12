@@ -520,3 +520,108 @@ $(document).off('click', '#view141GamesDetailsDelete')
           'Delete,Cancel'
      );
 });
+           
+           
+$(document).on('pageshow', '#pageView8910GamesDetails', function () {
+    $.mobile.loading('show', {
+        text: 'Loading Game Data',
+        textVisible: true,
+        theme: 'a',
+    });
+    
+    var url         = $.url( $.url().attr('fragment') ),
+        gID         = parseInt(url.param('gID'));
+    
+    var $name1 = $('#view8910GamesDetailsName1'),
+        $name2 = $('#view8910GamesDetailsName2');
+        
+    var tmpGame = new Game8910();
+    tmpGame.loadGame(gID, function () {
+        $('#view8910GamesDetailsGameType').html(tmpGame.gameType);
+        $('#view8910GamesDetailsRacksPerSet').html(tmpGame.racksPerSet);
+        
+        $('#view8910GamesNumberOfSetsWrapper').toggle(tmpGame.numberOfSets > 1);
+        $('#view8910GamesDetailsNumberOfSets').html(tmpGame.numberOfSets);
+        
+        $name1.html(tmpGame.players[0].obj.name)
+              .off('click')
+              .on ('click',
+                function (event) {
+                    event.preventDefault();
+                    $.mobile.changePage('../player/player_details.html?pID' + tmpGame.players[0].obj.pID);
+                }
+              )
+              .removeClass('winner').removeClass('loser');
+        
+        $name2.html(tmpGame.players[1].obj.name)
+              .off('click')
+              .on ('click',
+                function (event) {
+                    event.preventDefault();
+                    $.mobile.changePage('../player/player_details.html?pID=' + tmpGame.players[1].obj.pID);
+                }
+              )
+              .removeClass('winner').removeClass('loser');
+              
+        if (tmpGame.numberOfSets === 1) {
+            $('#view8910GamesDetailsScore1').html(tmpGame.players[0].racks);
+            $('#view8910GamesDetailsScore2').html(tmpGame.players[1].racks);
+        } else {
+            $('#view8910GamesDetailsScore1').html(tmpGame.players[0].sets);
+            $('#view8910GamesDetailsScore2').html(tmpGame.players[1].sets);
+        }
+        
+        if (tmpGame.winner == tmpGame.players[0].obj.pID) {
+            $name1.addClass('winner');
+            $name2.addClass('loser');
+        } else if (tmpGame.winner == tmpGame.players[1].obj.pID) {
+            $name1.addClass('loser');
+            $name2.addClass('winner');
+        } else { // tie game
+            $name1.addClass('winner');
+            $name2.addClass('winner');
+        }
+        
+        var date       = app.convertTimestamp(tmpGame.timestamp),
+            dateFormat = app.settings.getDateFormat();
+        $('#view8910GamesDetailsDate').html(
+            dateFormat.replace('[day]',   date.day)
+                      .replace('[month]', date.month)
+                      .replace('[year]',  date.year)
+        );
+        
+        $.mobile.loading('hide');
+    });
+});
+
+$(document).off('click', '#view8910GamesDetailsDelete')
+           .on ('click', '#view8910GamesDetailsDelete', function (event) {
+    event.preventDefault();
+    
+    var url = $.url( $.url().attr('fragment') ),
+        gID = parseInt(url.param('gID'));
+        
+    app.confirmDlg(
+          'Are you sure you want to delete this game? This action cannot be undone.',
+          function () {
+               app.dbFortune.query(
+                   'DELETE FROM ' + app.dbFortune.tables.Game8910.name + ' WHERE gID="' + gID + '"',
+                   [],
+                   function () {
+                       $.mobile.changePage('viewGames_list.html');
+                   },
+                   function () {
+                       app.alertDlg(
+                           'Oops! Something went wrong :( Deleting failed!',
+                           app.dummyFalse,
+                           'Error',
+                           'OK'
+                       );
+                   }
+               );
+          },
+          app.dummyFalse,
+          'Warning',
+          'Delete,Cancel'
+     );
+});

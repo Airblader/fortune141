@@ -694,11 +694,13 @@ input {
     text-align: right;
 }
 
-#pageView141GamesDetails .winner {
+#pageView141GamesDetails .winner,
+#pageView8910GamesDetails .winner {
     color: #008a00;
 }
 
-#pageView141GamesDetails .loser {
+#pageView141GamesDetails .loser,
+#pageView8910GamesDetails .loser {
     color: #cc0000;
 }
 

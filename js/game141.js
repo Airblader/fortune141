@@ -463,7 +463,7 @@ function StraightPool () {
 	
         self.gameID = gID;
 	
-	var sql = 'SELECT * FROM ' + app.dbFortune.tables.Game141.name + ' WHERE gID="' + gID + '" LIMIT 1';
+	var sql = 'SELECT * FROM ' + app.dbFortune.tables.Game141.name + ' WHERE gID=' + gID + ' LIMIT 1';
 	app.dbFortune.query(sql, [],
 	    function (tx, result) {
 		if (result.rows.length == 0) {

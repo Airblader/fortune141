@@ -23,7 +23,7 @@ function Game8910 () {
 	
         self.gameID = gID;
 	
-	var sql = 'SELECT * FROM ' + app.dbFortune.tables.Game8910.name + ' WHERE gID="' + gID + '" LIMIT 1';
+	var sql = 'SELECT * FROM ' + app.dbFortune.tables.Game8910.name + ' WHERE gID=' + gID + ' LIMIT 1';
 	app.dbFortune.query(sql, [],
 	    function (tx, result) {
 		if (result.rows.length == 0) {
@@ -61,8 +61,8 @@ function Game8910 () {
                 self.firstBreak = parseInt(row['firstBreak']);
                 self.lastBreak  = parseInt(row['CurrPlayer']);
                 
-                self.isFinished = false;
-                self.isWinner   = -1;
+                self.isFinished = (parseInt(row['isFinished']) == 1);
+                self.winner     = parseInt(row['Winner']);
                 
                 self.shotClock = new ShotClock8910();
                 self.shotClock.init(
@@ -920,30 +920,27 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
                 msg = this.players[idxWinner].obj.getDisplayName() + ' has won the game!';
             }
             
-            $btnShotClockCtrl  .off('click');
-            $btnShotClockCtrl  .off('taphold');
-            $btnShotClockSwitch.off('vclick');
-            $btnExtension      .off('vlick');
-            $btnUndo           .off('vlick');
-            $('.mainPlayer1')  .off('click');
-            $('.mainPlayer2')  .off('click');
-            $('.mainPlayer1')  .off('taphold');
-            $('.mainPlayer2')  .off('taphold');
-            $('.foulWrapper')  .off('tap');
+            $('#btnShotClockCtrl')  .off('click');
+            $('#btnShotClockCtrl')  .off('taphold');
+            $('#btnShotClockSwitch').off('vclick');
+            $('#btnExtension')      .off('vlick');
+            $('#btnUndo')           .off('vlick');
+            $('.mainPlayer1')       .off('click');
+            $('.mainPlayer2')       .off('click');
+            $('.mainPlayer1')       .off('taphold');
+            $('.mainPlayer2')       .off('taphold');
+            $('.foulWrapper')       .off('tap');
             
             this.saveHistory();
             this.saveGame(function () {
-                // update statistics
-                self.players[0].obj.updateStatistics();
-                self.players[1].obj.updateStatistics();
-                
                 app.currentGame = null;
             });
             
+            var gID = this.gameID;
             app.alertDlg(
                 msg,
                 function () {
-                    $.mobile.changePage('../../index.html');
+                    $.mobile.changePage('../viewGames/view8910Games_details.html?gID=' + gID);
                 },
                 'Game Over!',
                 'OK'
@@ -1094,7 +1091,6 @@ ShotClock8910.prototype.afterClockStep = function () {
     this.$game8910ShotClockRemainingTime.html(status.remainingSeconds);
     this.$remainingTime.css('width', status.elapsedRatio + '%');
     
-    // TODO
     if (this.useSoundWarning && status.remainingSeconds <= this.consts.START_BEEPING_REMAINING) {
         this.playWarningSound();
     }

@@ -11,9 +11,43 @@
     </div>
     
     <div data-role="content">
-        <p>Sorry, this is not yet implemented!</p>
+        <div style="width: 100%; text-align: center;">
+            <h2 style="margin-bottom: 0; margin-top: 0;">
+                <span id="view8910GamesDetailsGameType"></span>-Ball Match
+            </h2>
+            <p style="margin-top: 0; margin-bottom: 0;">
+                Race to <span id="view8910GamesDetailsRacksPerSet"></span>
+            </p>
+            <p style="margin-top: 0; margin-bottom: 0; display: none;" id="view8910GamesNumberOfSetsWrapper">
+                <span id="view8910GamesDetailsNumberOfSets"></span> Sets
+            </p>
+            <h3 style="margin-top: 0;" id="view8910GamesDetailsDate">&nbsp;</h3>
+        </div>
         
-        <input type="button" onClick="javascript:$.mobile.changePage('../../index.html');" value="Back To Home" />
+        <table cellpadding="0" cellspacing="0" style="width: 100%; text-align: center;">
+            <thead>
+                <tr>
+                    <td id="view8910GamesDetailsName1" style="cursor: pointer; width: 40%;"></td>
+                    <td></td>
+                    <td id="view8910GamesDetailsName2" style="cursor: pointer; width: 40%;"></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="view8910GamesDetailsScore1" style="font-weight: bold; font-size: large;"></td>
+                    <td>Score</td>
+                    <td id="view8910GamesDetailsScore2" style="font-weight: bold; font-size: large;"></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div style="width: 90%; color: #ccc; margin-top: 15px; margin-bottom: 15px;">
+            Note: The next update of Fortune 14/1 will display more information here.
+        </div>
+        
+        <div data-role="fieldcontain">
+            <input type="button" id="view8910GamesDetailsDelete" value="Delete Game" data-theme="e" data-icon="delete" data-corners="false" data-shadow="false" />
+        </div>
     </div>
 </div>
 
