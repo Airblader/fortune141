@@ -967,7 +967,7 @@ function StraightPool () {
     this.closeDetailsPanel = function () {	
 	$page.data('activePage', 'pageGame141_MainPanel');
 	
-	$.mobile.loading('show');
+	//$.mobile.loading('show');
 	$page
 	    .find('[data-role="header"]')
 	    .css('display', 'block');
@@ -978,7 +978,7 @@ function StraightPool () {
             $panelRackAndMenu.css('left', '0');
 	    
             $detailsPanel.css('display', 'none');
-	    $.mobile.loading('hide');
+	    //$.mobile.loading('hide');
         //});
 	
 	return true;
@@ -1268,7 +1268,7 @@ function StraightPool () {
     this.handleMinimizeMainPanelButton = function (event) {
 	event.preventDefault();
 	
-	$.mobile.loading('show');
+	//$.mobile.loading('show');
         $page             .find('[data-role="header"]')
 	                  .css('display', 'none');
         //$detailsPanel.show(function () {
@@ -1333,7 +1333,7 @@ function StraightPool () {
 	    $('#player0hs').html('max ' + HS[0]);
 	    $('#player1hs').html('max ' + HS[1]);
             
-	    $.mobile.loading('hide');
+	    //$.mobile.loading('hide');
         //});
     }
     

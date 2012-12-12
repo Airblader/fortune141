@@ -1,9 +1,9 @@
 $(document).on('pagebeforeshow', '#pageViewGames', function () {
-    $.mobile.loading('show', {
+    /*$.mobile.loading('show', {
         text: 'Preparing Game List',
         textVisible: true,
         theme: 'a',
-    });
+    });*/
     
     var $list = $('#viewGamesListContainer');
     
@@ -94,7 +94,7 @@ $(document).on('pagebeforeshow', '#pageViewGames', function () {
         $list.html(listDummy.replace('[entries]', entries.join('')));
         $('#viewGamesList').listview();
         
-        $.mobile.loading('hide');
+        //$.mobile.loading('hide');
     }
     
     var tblGameA = app.dbFortune.tables.Game141.name,
@@ -153,11 +153,11 @@ $(document).on('pagebeforeshow', '#pageViewGames', function () {
 });
 
 $(document).on('pageshow', '#pageView141GamesDetails', function () {
-    $.mobile.loading('show', {
+    /*$.mobile.loading('show', {
         text: 'Loading Game Data',
         textVisible: true,
         theme: 'a',
-    });
+    });*/
     
     var url         = $.url( $.url().attr('fragment') ),
         gID         = parseInt(url.param('gID')),
@@ -444,7 +444,7 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
         $('#view141GamesDetailsHS1').html(HS[0]);
         $('#view141GamesDetailsHS2').html(HS[1]);
         
-        $.mobile.loading('hide');
+        //$.mobile.loading('hide');
     });
 });
 
@@ -523,11 +523,11 @@ $(document).off('click', '#view141GamesDetailsDelete')
            
            
 $(document).on('pageshow', '#pageView8910GamesDetails', function () {
-    $.mobile.loading('show', {
+    /*$.mobile.loading('show', {
         text: 'Loading Game Data',
         textVisible: true,
         theme: 'a',
-    });
+    });*/
     
     var url         = $.url( $.url().attr('fragment') ),
         gID         = parseInt(url.param('gID'));
@@ -590,7 +590,7 @@ $(document).on('pageshow', '#pageView8910GamesDetails', function () {
                       .replace('[year]',  date.year)
         );
         
-        $.mobile.loading('hide');
+        //$.mobile.loading('hide');
     });
 });
 

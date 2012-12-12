@@ -1,5 +1,10 @@
-$(document).on('pageshow', '#pageProfiles141List', function () {
-     $.mobile.loading('show');
+$(document).on('pagebeforeshow', '#pageProfiles141List', function () {
+     /*$.mobile.loading('show', {
+          text: 'Preparing Profiles List',
+          textVisible: true,
+          theme: 'a',
+     });*/
+     
      var $list = $('#game141ProfilesListContainer');
      
      // Create List
@@ -34,7 +39,7 @@ $(document).on('pageshow', '#pageProfiles141List', function () {
                
                $list.html(listDummy.replace('[entries]', entries.join('')));
                $('#game141ProfilesList').listview();
-               $.mobile.loading('hide');
+               //$.mobile.loading('hide');
           }
      );
 });
