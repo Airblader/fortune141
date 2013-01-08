@@ -1091,7 +1091,10 @@ ShotClock8910.prototype.afterClockStep = function () {
     this.$game8910ShotClockRemainingTime.html(status.remainingSeconds);
     this.$remainingTime.css('width', status.elapsedRatio + '%');
     
-    if (this.useSoundWarning && status.remainingSeconds <= this.consts.START_BEEPING_REMAINING) {
+    if (this.useSoundWarning
+        && this.clockIsRunning
+        && status.remainingSeconds <= this.consts.START_BEEPING_REMAINING) {
+        
         this.playWarningSound();
     }
     

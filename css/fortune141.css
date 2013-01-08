@@ -208,15 +208,13 @@ input {
     bottom: 75px;
     
     background: transparent;
-    z-index: 9;
+    z-index: 2;
 }
 
 #pageGame141 #ballRack div[id^="ball"] {
-    z-index: 10;
 }
 
 #pageGame141 #ballRack div[id^="shadow"] {
-    z-index: 9;
 }
 
 #pageGame141 #ballRack .ballShadow {
