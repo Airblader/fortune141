@@ -6,6 +6,10 @@ FortuneUtilsClass.prototype.setKeepScreenOn = function (mode) {
     cordova.exec(null, null, 'FortuneUtils', 'setKeepScreenOn', [mode]);
 }
 
+FortuneUtilsClass.prototype.turnScreenOn = function () {
+    cordova.exec(null, null, 'FortuneUtils', 'turnScreenOn', []);
+}
+
 FortuneUtilsClass.prototype.openListDialog = function () {
     switch (arguments.length) {
         case 4:

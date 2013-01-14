@@ -1101,6 +1101,9 @@ ShotClock8910.prototype.afterClockStep = function () {
         && status.remainingSeconds <= this.consts.START_BEEPING_REMAINING) {
         
         this.playWarningSound();
+	
+	// make sure screen turns on
+	app.FortuneUtils.turnScreenOn();
     }
     
     if (status.outOfTime) {
