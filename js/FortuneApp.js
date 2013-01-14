@@ -23,6 +23,7 @@ function FortuneApp () {
 	console.log('Free Version: ' + result);
 	self.freeVersionLimit = new FreeVersionLimit(result);	
     });
+    this.informAboutFullVersion = false;
     //this.freeVersionLimit = new FreeVersionLimit(false); // false : full version
     
     this.hasCamera = false;
