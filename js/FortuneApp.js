@@ -18,7 +18,12 @@ function FortuneApp () {
     this.settings     = new AppSettings();
     this.FortuneUtils = new FortuneUtilsClass();
     this.tooltips     = new Tooltips();
-    this.freeVersionLimit = new FreeVersionLimit(false); // false : full version
+    
+    this.FortuneUtils.isFreeVersion(function (result) {
+	console.log('Free Version: ' + result);
+	self.freeVersionLimit = new FreeVersionLimit(result);	
+    });
+    //this.freeVersionLimit = new FreeVersionLimit(false); // false : full version
     
     this.hasCamera = false;
     window.featureDetector.hasFeature(

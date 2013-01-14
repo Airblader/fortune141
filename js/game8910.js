@@ -1031,6 +1031,11 @@ ShotClock8910.prototype.init = function (shotTime, extensionTime, extensionsPerR
     
     this.resetTimes();
     this.resetCalledExtensions();
+    
+    // If the shot clock is used, make sure we have at least a partial wake lock
+    if (this.shotTime !== 0) {
+	app.FortuneUtils.setKeepScreenOn(app.FortuneUtils.WAKELOCK_PARTIAL);
+    }
 }
 
 ShotClock8910.prototype.startClock = function () {

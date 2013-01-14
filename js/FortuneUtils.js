@@ -27,5 +27,12 @@ FortuneUtilsClass.prototype.showWhenLocked = function (mode) {
     cordova.exec(null, null, 'FortuneUtils', 'showWhenLocked', [mode]);
 }
 
+FortuneUtilsClass.prototype.isFreeVersion = function (callback) {
+    cordova.exec(callback, null, 'FortuneUtils', 'isFreeVersion', []);
+}
 
-FortuneUtilsClass.prototype.WAKELOCK_OFF = 0;
+
+FortuneUtilsClass.prototype.WAKELOCK_OFF     = 0;
+FortuneUtilsClass.prototype.WAKELOCK_DIM     = 1;
+FortuneUtilsClass.prototype.WAKELOCK_ON      = 2;
+FortuneUtilsClass.prototype.WAKELOCK_PARTIAL = 3;
