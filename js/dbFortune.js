@@ -504,13 +504,6 @@ function dbFortune () {
 	    }
 	);
 	
-	Migrator.addMigration(
-	    2,
-	    function (tx) {
-		app.informAboutFullVersion = true;
-	    }
-	);
-	
 	
 	Migrator.start(
 	    function (initialVersion) {
