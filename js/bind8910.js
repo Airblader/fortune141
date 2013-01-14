@@ -374,6 +374,7 @@ $(document).on('pagebeforeshow', '#pageGame8910', function () {
     var url = $.url( $.url().attr('fragment') );
     
     app.FortuneUtils.setKeepScreenOn(app.settings.getKeepScreenOnDuring8910Game());
+    app.FortuneUtils.showWhenLocked(app.settings.getShowWhenLocked());
     
     var gID  = parseInt(url.param('gID')),
 	load = true;
@@ -413,6 +414,7 @@ $(document).on('pagebeforeshow', '#pageGame8910', function () {
 
 $(document).on('pagehide', '#pageGame8910', function () {
     app.FortuneUtils.setKeepScreenOn(app.FortuneUtils.WAKELOCK_OFF);
+    app.FortuneUtils.showWhenLocked(false);
 });
 
 $(document).off('click', '#pageGame8910MainBackLink')

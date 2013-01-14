@@ -1,7 +1,9 @@
 function AppSettings () {
     var self = this;
     
-    var keyKeepScreenOnDuring141Game  = 'keepScreenOnDuring141Game',
+    var keyShowWhenLocked             = 'showWhenLocked',
+    
+        keyKeepScreenOnDuring141Game  = 'keepScreenOnDuring141Game',
     
         keyKeepScreenOnDuring8910Game = 'keepScreenOnDuring8910Game',
         key8910NotifyWhoHasToBreak    = 'game8910WhoHasToBreak',
@@ -16,6 +18,15 @@ function AppSettings () {
     }
     this.set = function (key, val) {
         window.localStorage.setItem(key, val);
+    }
+    
+    
+    this.getShowWhenLocked = function () {
+        return (self.get(keyShowWhenLocked, 'true') == 'true');
+    }
+    
+    this.setShowWhenLocked = function (mode) {
+        self.set(keyShowWhenLocked, mode);
     }
     
     this.getKeepScreenOnDuring141Game = function () {

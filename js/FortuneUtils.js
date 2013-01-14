@@ -23,5 +23,9 @@ FortuneUtilsClass.prototype._openListDialog = function (entries, dlgTitle, callb
     cordova.exec(callback, null, 'FortuneUtils', 'openListDialog', [entries, dlgTitle, callback]);
 }
 
+FortuneUtilsClass.prototype.showWhenLocked = function (mode) {
+    cordova.exec(null, null, 'FortuneUtils', 'showWhenLocked', [mode]);
+}
+
 
 FortuneUtilsClass.prototype.WAKELOCK_OFF = 0;

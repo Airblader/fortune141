@@ -350,6 +350,7 @@ $(document).on('pagebeforeshow', '#pageGame141', function () {
     var url = $.url( $.url().attr('fragment') );
     
     app.FortuneUtils.setKeepScreenOn(app.settings.getKeepScreenOnDuring141Game());
+    app.FortuneUtils.showWhenLocked(app.settings.getShowWhenLocked());
     
     var gID  = parseInt(url.param('gID')),
 	load = true;
@@ -391,7 +392,8 @@ $(document).on('pagebeforeshow', '#pageGame141', function () {
 });
 
 $(document).on('pagehide', '#pageGame141', function () {
-    app.FortuneUtils.setKeepScreenOn(app.FortuneUtils.WAKELOCK_OFF);  
+    app.FortuneUtils.setKeepScreenOn(app.FortuneUtils.WAKELOCK_OFF);
+    app.FortuneUtils.showWhenLocked(false);
 });
 
 $(document).off('click', '#game141SetupChoosePlayerNewPlayerLink')

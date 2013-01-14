@@ -1,4 +1,8 @@
 $(document).on('pageshow', '#pageSettings', function () {
+    $('#settingsShowWhenLocked')
+        .val(String(app.settings.getShowWhenLocked()))
+        .selectmenu('refresh');
+    
     $('#settingsKeepScreenOn')
         .val(app.settings.getKeepScreenOnDuring141Game())
         .selectmenu('refresh');
@@ -26,6 +30,10 @@ $(document).on('pageshow', '#pageSettings', function () {
     $('#settingsSaveToAlbum')
         .val(String(app.settings.getSaveToAlbum()))
         .selectmenu('refresh');
+});
+
+$(document).on('change', '#settingsShowWhenLocked', function (event) {
+    app.settings.setShowWhenLocked( String($(this).val()) );
 });
 
 $(document).on('change', '#settingsKeepScreenOn', function (event) {

@@ -1332,6 +1332,9 @@ function StraightPool () {
 	    
 	    $('#player0hs').html('max ' + HS[0]);
 	    $('#player1hs').html('max ' + HS[1]);
+	    
+	    $('#player0name').html(self.players[0].obj.getDisplayName());
+	    $('#player1name').html(self.players[1].obj.getDisplayName());
             
 	    //$.mobile.loading('hide');
         //});
