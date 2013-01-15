@@ -542,7 +542,7 @@ $(document).on('pageshow', '#pageView8910GamesDetails', function () {
         
         $('#view8910GamesNumberOfSetsWrapper').toggle(tmpGame.numberOfSets > 1);
         $('#view8910GamesDetailsNumberOfSets').html(tmpGame.numberOfSets);
-        
+	
         $name1.html(tmpGame.players[0].obj.name)
               .off('click')
               .on ('click',
@@ -566,11 +566,39 @@ $(document).on('pageshow', '#pageView8910GamesDetails', function () {
         if (tmpGame.numberOfSets === 1) {
             $('#view8910GamesDetailsScore1').html(tmpGame.players[0].racks);
             $('#view8910GamesDetailsScore2').html(tmpGame.players[1].racks);
+	    
+	    $('#view8910GamesDetailsSets').css('display', 'none');
         } else {
             $('#view8910GamesDetailsScore1').html(tmpGame.players[0].sets);
             $('#view8910GamesDetailsScore2').html(tmpGame.players[1].sets);
-        }
         
+	    $('#view8910GamesDetailsSets').css('display', 'table');
+	}
+	
+	var entryDummy = '<td class="[class1]">[score1]</td>'
+		       + '<td>[number]</td>'
+		       + '<td class="[class2]">[score2]</td>',
+	    tbodyDummy = '<tbody id="view8910GamesDetailsSetsBody">[entries]</tbody>',
+	    entries    = new Array(tmpGame.numberOfSets);
+	    
+	for (var i = 0; i < tmpGame.numberOfSets; i++) {
+	    var scores = new Array(0, 0);
+	    for (var j = 0; j < tmpGame.sets[i].racks.length; j++) {
+		scores[tmpGame.sets[i].racks[j].wonByPlayer]++;
+	    }
+	    
+	    entries[i] = entryDummy.replace('[score1]', scores[0])
+				   .replace('[score2]', scores[1])
+				   .replace('[class1]', (scores[0] === tmpGame.racksPerSet) ? 'winner' : 'loser')
+				   .replace('[class2]', (scores[1] === tmpGame.racksPerSet) ? 'winner' : 'loser')
+				   .replace('[number]', i+1);
+	}
+	
+	$('#view8910GamesDetailsSetsBody').remove();
+	$('#view8910GamesDetailsSets')    .append(
+	    tbodyDummy.replace('[entries]', '<tr>' + entries.join('</tr><tr>') + '</tr>')
+	);
+	
         if (tmpGame.winner == tmpGame.players[0].obj.pID) {
             $name1.addClass('winner');
             $name2.addClass('loser');
