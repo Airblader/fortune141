@@ -172,7 +172,7 @@ function Player () {
      *		cbSuccess (optional),
      *		cbError (optional)    : callback functions
      */
-    this.loadBy141Game = function (pID, idx, gID) {
+    /*this.loadBy141Game = function (pID, idx, gID) {
 	var cbSuccess = (typeof arguments[3] !== 'undefined') ? arguments[3] : app.dummyFalse,
 	    cbError   = (typeof arguments[4] !== 'undefined') ? arguments[4] : app.dummyFalse;
 	    
@@ -201,7 +201,7 @@ function Player () {
 	    },
 	    cbError
 	);
-    }
+    }*/
     
     /*
      *	Returns either name or nickname depending on whether the nickname should

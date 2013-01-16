@@ -570,8 +570,12 @@ function Game8910 () {
     }
     
     this.updateStreak = function () {
-        $mainPlayer1Streak.html(self.players[0].streak);
-        $mainPlayer2Streak.html(self.players[1].streak);
+        $mainPlayer1Streak
+	    .css('display', (self.players[0].streak === 0) ? 'none' : 'block')
+	    .html(self.players[0].streak);
+        $mainPlayer2Streak
+	    .css('display', (self.players[1].streak === 0) ? 'none' : 'block')
+	    .html(self.players[1].streak);
     }
     
     this.updateRackScoreBars = function () {
