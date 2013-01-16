@@ -13,7 +13,7 @@ function dbFortune () {
      *  Definition of database tables
      */
     this.tables = {
-        Player : {
+        Player : { // outdated as of v1.0.0
             name : 'Player',
             fields : new Array(
                 'pID',
@@ -50,6 +50,36 @@ function dbFortune () {
 		'0',
 		'0',
 		'0'
+	    ),
+        },
+	Player2 : { // included as of v1.0.0
+            name : 'Player',
+            fields : new Array(
+                'pID',
+                'Name',
+                'Nickname',
+                'Image',
+                'isFavorite',
+                'displayNickname',
+		'Stats'
+            ),
+            types : new Array(
+		'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
+                'TEXT NOT NULL',
+                'TEXT',
+                'TEXT',
+                'BIT',
+                'BIT',
+		'TEXT'
+	    ),
+            defaults : new Array(
+		undefined,
+                '""',
+                undefined,
+                undefined,
+                '0',
+                '0',
+		''
 	    ),
         },
 	Game141 : {
@@ -503,6 +533,42 @@ function dbFortune () {
 		//window.localStorage.setItem('requireNewInstallation1', '0');
 	    }
 	);
+	
+	// switch to new statistics system
+	/*Migrator.addMigration(
+	    2,
+	    function (tx) {
+		var tempName = 'Player_outdated';
+		
+		// Step 1: Rename old players table
+		tx.executeSql(
+		    'ALTER TABLE '
+			+ app.dbFortune.tables.Player.name
+			+ ' RENAME TO '
+			+ tempName
+		);
+		
+		// Step 2: Create new players table
+		tx.executeSql( self.getCreateTableStatement( self.tables['Player2']) );
+		
+		// Step 3: Migrate data
+		tx.executeSql(
+		    'INSERT INTO '
+			+ app.dbFortune.tables.Player2.name
+			+ ' SELECT pID, Name, Nickname, Image, isFavorite, displayNickname, "" FROM '
+			+ app.dbFortune.tables.Player.name
+		);
+		
+		// Step 4: Delete old table
+		tx.executeSql(
+		    'DROP TABLE '
+			+ tempName
+		);
+		
+		// Step 5: Alias variable to be new scheme
+		app.dbFortune.tables.Player = app.dbFortune.tables.Player2;
+	    }
+	);*/
 	
 	
 	Migrator.start(
