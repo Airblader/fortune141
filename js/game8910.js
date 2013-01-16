@@ -1098,7 +1098,8 @@ ShotClock8910.prototype.afterClockStep = function () {
     
     if (this.useSoundWarning
         && this.clockIsRunning
-        && status.remainingSeconds <= this.consts.START_BEEPING_REMAINING) {
+        && status.remainingSeconds <= this.consts.START_BEEPING_REMAINING
+	&& this.shotTime > this.consts.START_BEEPING_REMAINING) {
         
         this.playWarningSound();
 	
