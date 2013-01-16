@@ -3,16 +3,18 @@ function Game8910 () {
     var TEMP_SCORE_DURATION = 1000,
         tmpScoreInUse       = false;
     
-    var $btnShotClockCtrl   = $('#btnShotClockCtrl'),
-        $btnShotClockSwitch = $('#btnShotClockSwitch'),
-        $btnExtension       = $('#btnExtension'),
-        $btnUndo            = $('#btnUndo'),
-        $mainPlayer1Streak  = $('#mainPlayer1Streak'),
-        $mainPlayer2Streak  = $('#mainPlayer2Streak'),
-        $setScore1Bar       = $('#setScore1Bar'),
-        $setScore2Bar       = $('#setScore2Bar'),
-        $setScore1Value     = $('#setScore1Value'),
-        $setScore2Value     = $('#setScore2Value');
+    var $btnShotClockCtrl         = $('#btnShotClockCtrl'),
+        $btnShotClockSwitch       = $('#btnShotClockSwitch'),
+        $btnExtension             = $('#btnExtension'),
+        $btnUndo                  = $('#btnUndo'),
+        $mainPlayer1Streak        = $('#mainPlayer1Streak'),
+        $mainPlayer2Streak        = $('#mainPlayer2Streak'),
+	$mainPlayer1StreakWrapper = $('#mainPlayer1StreakWrapper'),
+	$mainPlayer2StreakWrapper = $('#mainPlayer2StreakWrapper'),
+        $setScore1Bar             = $('#setScore1Bar'),
+        $setScore2Bar             = $('#setScore2Bar'),
+        $setScore1Value           = $('#setScore1Value'),
+        $setScore2Value           = $('#setScore2Value');
     
     this.gameID       = -1;
     this.historyStack = new Array();
@@ -570,12 +572,11 @@ function Game8910 () {
     }
     
     this.updateStreak = function () {
-        $mainPlayer1Streak
-	    .css('display', (self.players[0].streak === 0) ? 'none' : 'block')
-	    .html(self.players[0].streak);
-        $mainPlayer2Streak
-	    .css('display', (self.players[1].streak === 0) ? 'none' : 'block')
-	    .html(self.players[1].streak);
+        $mainPlayer1StreakWrapper.css('visibility', (self.players[0].streak === 0) ? 'hidden' : 'visible');
+	$mainPlayer1Streak.html(self.players[0].streak);
+	
+        $mainPlayer2StreakWrapper.css('visibility', (self.players[1].streak === 0) ? 'hidden' : 'visible');
+	$mainPlayer2Streak.html(self.players[1].streak);
     }
     
     this.updateRackScoreBars = function () {
