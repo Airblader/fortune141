@@ -147,22 +147,23 @@ $(document).on('pageshow', '#pageProfiles141Details', function () {
                     'Error',
                     'OK'
                 );
-            return false;
-        }
-              
-        var row = result.rows.item(0);
-        $('#edit141Profile_Name')            .val(row['Name']);
-        $('#edit141Profile_ScoreGoal')       .val(row['ScoreGoal'])           .slider('refresh');
-        $('#edit141Profile_InningsLimit')    .val(row['MaxInnings'])          .slider('refresh');
-        $('#edit141Profile_InningsExtension').val(row['InningsExtension'])    .slider('refresh');
-        $('#edit141Profile_Handicap1')       .val(row['HandicapPlayer1'])     .slider('refresh');
-        $('#edit141Profile_Handicap2')       .val(row['HandicapPlayer2'])     .slider('refresh');
-        $('#edit141Profile_Multiplicator1')  .val(row['MultiplicatorPlayer1']).slider('refresh');
-        $('#edit141Profile_Multiplicator2')  .val(row['MultiplicatorPlayer2']).slider('refresh');
-              
-        // create game modes list and select entry
-        var gameModeIDs = new Array(),
-            mode        = parseInt(row['GameMode']);;
+                return false;
+            }
+                  
+            var row = result.rows.item(0);
+            $('#edit141Profile_Name')            .val(row['Name']);
+            $('#edit141Profile_ScoreGoal')       .val(row['ScoreGoal'])           .slider('refresh');
+            $('#edit141Profile_InningsLimit')    .val(row['MaxInnings'])          .slider('refresh');
+            $('#edit141Profile_InningsExtension').val(row['InningsExtension'])    .slider('refresh');
+            $('#edit141Profile_Handicap1')       .val(row['HandicapPlayer1'])     .slider('refresh');
+            $('#edit141Profile_Handicap2')       .val(row['HandicapPlayer2'])     .slider('refresh');
+            $('#edit141Profile_Multiplicator1')  .val(row['MultiplicatorPlayer1']).slider('refresh');
+            $('#edit141Profile_Multiplicator2')  .val(row['MultiplicatorPlayer2']).slider('refresh');
+                  
+            // create game modes list and select entry
+            var gameModeIDs = new Array(),
+                mode        = parseInt(row['GameMode']);
+                
             app.dbFortune.query(
                 'SELECT * FROM ' + app.dbFortune.tables.GameModes.name + ' ORDER BY ID ASC',
                 [],
@@ -322,4 +323,93 @@ $(document).off('click', '#add141Profile_Submit')
             );     
         }
     );
+});
+           
+$(document).on('pageshow', '#pageProfiles8910Details', function () {
+    $btnSubmit = $('#edit8910Profile_Submit');
+    $btnDelete = $('#edit8910Profile_Delete');
+     
+    var url = $.url( $.url().attr('fragment') ),
+        ID  = parseInt(url.param('id')) || -1;
+        
+    function createGameModesList (preSelected) {
+        var gameModeIDs = new Array();
+            
+        app.dbFortune.query(
+            'SELECT * FROM ' + app.dbFortune.tables.GameModes.name + ' ORDER BY ID ASC',
+            [],
+            function (tx, results) {
+                if (results.rows.length == 0) {
+                    $('#edit8910Profile_GameMode').html(
+                        '<option value="-1">None</option>'
+                    ).trigger('change');
+    
+                    return false;
+                }
+    
+                var entryDummy = '<option value="[id]">[name]</option>',
+                    entries    = new Array(results.rows.length);
+                    
+                if (preSelected !== -1) {
+                    for (var i = 0; i < results.rows.length; i++) {
+                        var row = results.rows.item(i);
+                        gameModeIDs.push(parseInt(row['ID']));
+        
+                        entries[i] = entryDummy
+                            .replace('[id]',   row['ID'])
+                            .replace('[name]', row['Name']);
+                    }
+                }
+                
+                var selectedID = (gameModeIDs.indexOf(preSelected) > -1) ? preSelected : 1;
+                $('#edit8910Profile_GameMode').html(entries.join('')).val(selectedID).trigger('change');
+                return true;
+            }
+        );
+    }
+    
+    $btnSubmit.button('disable').data('ID', ID);
+    $btnDelete.button('disable').data('ID', ID);    
+    if (ID > 1) {
+        $btnSubmit.button('enable')
+        $btnDelete.button('enable');
+    } else if (ID === -1) {
+        $btnSubmit.button('enable');
+        $('#edit8910Profile_DeleteWrapper').css('display', 'none');
+    }
+    
+    if (ID > 0) {   
+        app.dbFortune.query(
+            'SELECT * FROM ' + app.dbFortune.tables.Game8910Profile.name + ' WHERE ID="' + ID + '" LIMIT 1',
+            [],
+            function (tx, result) {
+                if (result.rows.length == 0) {
+                    app.alertDlg(
+                        'Invalid Profile ID',
+                        app.dummyFalse,
+                        'Error',
+                        'OK'
+                    );
+                    return false;
+                }
+                      
+                var row = result.rows.item(0);
+                $('#edit8910Profile_Name')             .val(row['Name']);
+                $('#edit8910Profile_GameType')         .val(row['GameType'])         .selectmenu('refresh');
+                $('#edit8910Profile_BreakType')        .val(row['BreakType'])        .selectmenu('refresh');
+                $('#edit8910Profile_RacksPerSet')      .val(row['RacksPerSet'])      .slider('refresh');
+                $('#edit8910Profile_NumberOfSets')     .val(row['NumberOfSets'])     .slider('refresh');
+                $('#edit8910Profile_Shotclock')        .val(row['Shotclock'])        .slider('refresh');
+                $('#edit8910Profile_Extension')        .val(row['ExtensionTime'])    .slider('refresh');
+                $('#edit8910Profile_ExtensionsPerRack').val(row['ExtensionsPerRack']).slider('refresh');
+                $('#edit8910Profile_UseSound')         .val(row['ShotclockUseSound']).slider('refresh');
+                
+                      
+                createGameModesList(parseInt(row['GameMode']));
+                return true;
+            }
+        );
+    } else if (ID === -1) {
+        createGameModesList(-1);
+    }
 });
