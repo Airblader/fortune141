@@ -55,7 +55,7 @@ $(document).on('pagebeforeshow', '#pageViewGames', function () {
             var gID  = parseInt(currentEntry['gID']),
 		date = app.convertTimestamp(currentEntry['StartTimestamp']);
 	    
-	    if (currentEntry['gameType'] === '141') { // 14/1
+	    if (currentEntry['GameType'] === '141') { // 14/1
 		entries[i] = entryDummyA.replace('[gID]',        gID)
 		                        .replace('[name1]',      currentEntry['Player1Name'])
 				        .replace('[name2]',      currentEntry['Player2Name'])
@@ -105,7 +105,7 @@ $(document).on('pagebeforeshow', '#pageViewGames', function () {
         'SELECT '
             + tblGameA + '.gID AS gID, '
             + tblGameA + '.Timestamp AS StartTimestamp, '
-            + '\'141\' AS gameType, '
+            + '\'141\' AS GameType, '
             + tblGameA + '.Player1Name AS Player1Name, '
             + tblGameA + '.Player2Name AS Player2Name, '
             + tblGameA + '.PointsPlayer1 AS PointsPlayer1, '
@@ -130,7 +130,7 @@ $(document).on('pagebeforeshow', '#pageViewGames', function () {
         'SELECT '
             + tblGameB + '.gID AS gID, '
             + tblGameB + '.StartTimestamp AS StartTimestamp, '
-            + tblGameB + '.gameType AS gameType, '
+            + tblGameB + '.GameType AS GameType, '
             + tblGameB + '.Player1Name AS Player1Name, '
             + tblGameB + '.Player2Name AS Player2Name, '
             + tblGameB + '.TempScore AS TempScore, '

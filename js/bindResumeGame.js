@@ -70,7 +70,7 @@ $(document).on('pagebeforeshow', '#pageResumeGame', function () {
 	    var gID  = parseInt(currentEntry['gID']),
 		date = app.convertTimestamp(currentEntry['StartTimestamp']);
 	    
-	    if (currentEntry['gameType'] === '141') { // 14/1
+	    if (currentEntry['GameType'] === '141') { // 14/1
 		entries[i] = entryDummyA.replace('[gID]',        gID)
 		                        .replace('[name1]',      currentEntry['Player1Name'])
 				        .replace('[name2]',      currentEntry['Player2Name'])
@@ -116,7 +116,7 @@ $(document).on('pagebeforeshow', '#pageResumeGame', function () {
     }
     
     app.dbFortune.query(
-	'SELECT gID, Timestamp AS StartTimestamp, \'141\' AS gameType, Player1Name, Player2Name, PointsPlayer1, PointsPlayer2, ScoreGoal FROM '
+	'SELECT gID, Timestamp AS StartTimestamp, \'141\' AS GameType, Player1Name, Player2Name, PointsPlayer1, PointsPlayer2, ScoreGoal FROM '
 	    + app.dbFortune.tables.Game141.name
 	    + ' WHERE isFinished=0',
 	[],
@@ -132,7 +132,7 @@ $(document).on('pagebeforeshow', '#pageResumeGame', function () {
     );
     
     app.dbFortune.query(
-	'SELECT gID, StartTimestamp, gameType, Player1Name, Player2Name, TempScore, RacksPerSet, NumberOfSets FROM '
+	'SELECT gID, StartTimestamp, GameType, Player1Name, Player2Name, TempScore, RacksPerSet, NumberOfSets FROM '
 	    + app.dbFortune.tables.Game8910.name
 	    + ' WHERE isFinished=0',
 	[],
