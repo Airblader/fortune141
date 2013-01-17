@@ -218,7 +218,7 @@ $(document).off('click', '#edit141Profile_Submit')
          $('#edit141Profile_Multiplicator2')  .val(),
          $('#edit141Profile_GameMode')        .val()],
         function () {
-            $.mobile.changePage('profiles141_list.html');
+            $.mobile.changePage('profiles_list.html');
         },
         function () {
             app.alertDlg(
@@ -312,7 +312,7 @@ $(document).off('click', '#add141Profile_Submit')
          parseInt($('#add141Profile_GameMode')        .val()),
          0],
         function () {
-            $.mobile.changePage('profiles141_list.html');
+            $.mobile.changePage('profiles_list.html');
         },
         function () {
             app.alertDlg(
@@ -350,17 +350,15 @@ $(document).on('pageshow', '#pageProfiles8910Details', function () {
                 var entryDummy = '<option value="[id]">[name]</option>',
                     entries    = new Array(results.rows.length);
                     
-                if (preSelected !== -1) {
-                    for (var i = 0; i < results.rows.length; i++) {
-                        var row = results.rows.item(i);
-                        gameModeIDs.push(parseInt(row['ID']));
-        
-                        entries[i] = entryDummy
-                            .replace('[id]',   row['ID'])
-                            .replace('[name]', row['Name']);
-                    }
+                for (var i = 0; i < results.rows.length; i++) {
+                    var row = results.rows.item(i);
+                    gameModeIDs.push(parseInt(row['ID']));
+    
+                    entries[i] = entryDummy
+                        .replace('[id]',   row['ID'])
+                        .replace('[name]', row['Name']);
                 }
-                
+            
                 var selectedID = (gameModeIDs.indexOf(preSelected) > -1) ? preSelected : 1;
                 $('#edit8910Profile_GameMode').html(entries.join('')).val(selectedID).trigger('change');
                 return true;
@@ -411,5 +409,77 @@ $(document).on('pageshow', '#pageProfiles8910Details', function () {
         );
     } else if (ID === -1) {
         createGameModesList(-1);
+    }
+});
+
+$(document).off('click', '#edit8910Profile_Submit')
+           .on ('click', '#edit8910Profile_Submit', function (event) {
+    event.preventDefault();
+    
+    var ID = $('#edit8910Profile_Submit').data('ID');
+    
+    if (ID === -1) { // new profile
+        app.dbFortune.query(
+            'INSERT INTO '
+                + app.dbFortune.tables.Game8910Profile.name + ' '
+                + app.dbFortune.getTableFields_String(app.dbFortune.tables.Game8910Profile, false, false) + ' '
+                + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [
+             $('#edit8910Profile_Name').val(),
+             $('#edit8910Profile_GameType').val(),
+             $('#edit8910Profile_BreakType').val(),
+             $('#edit8910Profile_NumberOfSets').val(),
+             $('#edit8910Profile_RacksPerSet').val(),
+             $('#edit8910Profile_Shotclock').val(),
+             $('#edit8910Profile_Extension').val(),
+             $('#edit8910Profile_ExtensionsPerRack').val(),
+             $('#edit8910Profile_UseSound').val(),
+             $('#edit8910Profile_GameMode').val(),
+             0
+            ],
+            function () {
+                $.mobile.changePage('profiles_list.html');
+            },
+            function () {
+                app.alertDlg(
+                    'Oops! Something went wrong :( Saving failed!',
+                    app.dummyFalse,
+                    'Error',
+                    'OK'
+                );     
+            }
+        );
+    } else { // update profile
+        app.dbFortune.query(
+            'UPDATE '
+                + app.dbFortune.tables.Game8910Profile.name
+                + ' SET Name=?, GameType=?, BreakType=?, NumberOfSets=?, RacksPerSet=?, '
+                + 'Shotclock=?, ExtensionTime=?, ExtensionsPerRack=?, ShotclockUseSound=?, GameMode=? '
+                + 'WHERE ID='
+                + ID,
+            [
+             $('#edit8910Profile_Name').val(),
+             $('#edit8910Profile_GameType').val(),
+             $('#edit8910Profile_BreakType').val(),
+             $('#edit8910Profile_NumberOfSets').val(),
+             $('#edit8910Profile_RacksPerSet').val(),
+             $('#edit8910Profile_Shotclock').val(),
+             $('#edit8910Profile_Extension').val(),
+             $('#edit8910Profile_ExtensionsPerRack').val(),
+             $('#edit8910Profile_UseSound').val(),
+             $('#edit8910Profile_GameMode').val()
+            ],
+            function () {
+                $.mobile.changePage('profiles_list.html');
+            },
+            function () {
+                app.alertDlg(
+                    'Oops! Something went wrong :( Saving failed!',
+                    app.dummyFalse,
+                    'Error',
+                    'OK'
+                );
+            }
+        );
     }
 });
