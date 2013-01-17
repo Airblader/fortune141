@@ -244,7 +244,7 @@ $(document).off('click', '#edit141Profile_Delete')
                 'DELETE FROM ' + app.dbFortune.tables.Game141Profile.name + ' WHERE ID="' + ID + '"',
                 [],
                 function () {
-                    $.mobile.changePage('profiles141_list.html');
+                    $.mobile.changePage('profiles_list.html');
                 },
                 function () {
                     app.alertDlg(
@@ -482,4 +482,35 @@ $(document).off('click', '#edit8910Profile_Submit')
             }
         );
     }
+});
+           
+$(document).off('click', '#edit8910Profile_Delete')
+           .on ('click', '#edit8910Profile_Delete', function (event) {
+    event.preventDefault();
+    
+    var ID = $('#edit8910Profile_Delete').data('ID');
+    
+    app.confirmDlg(
+        'Are you sure you want to delete this profile? This action cannot be undone.',
+        function () {
+            app.dbFortune.query(
+                'DELETE FROM ' + app.dbFortune.tables.Game8910Profile.name + ' WHERE ID=' + ID,
+                [],
+                function () {
+                    $.mobile.changePage('profiles_list.html');
+                },
+                function () {
+                    app.alertDlg(
+                        'Oops! Something went wrong :( Deleting failed!',
+                        app.dummyFalse,
+                        'Error',
+                        'OK'
+                    );
+                }
+            );
+        },
+        app.dummyFalse,
+        'Warning',
+        'Delete,Cancel'
+    );
 });
