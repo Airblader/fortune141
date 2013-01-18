@@ -549,7 +549,9 @@ function dbFortune () {
 		);
 		
 		// Step 2: Create new players table
-		tx.executeSql( self.getCreateTableStatement( self.tables['Player']) );
+		tx.executeSql(
+		    self.getCreateTableStatement( self.tables['Player'])
+		);
 		
 		// Step 3: Migrate data
 		tx.executeSql(
@@ -564,9 +566,6 @@ function dbFortune () {
 		    'DROP TABLE '
 			+ tempName
 		);
-		
-		// Step 5: Alias variable to be new scheme
-		//app.dbFortune.tables.Player = app.dbFortune.tables.Player2;
 	    }
 	);
 	

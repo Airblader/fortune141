@@ -426,6 +426,7 @@ function FortuneApp () {
 	    self.confirmDlg(
 		'Do you really want to quit?',
 		navigator.app.exitApp,
+		app.dummyFalse,
 		'Quit',
 		'Yes,No'
 	    );
