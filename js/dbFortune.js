@@ -713,38 +713,4 @@ function dbFortune () {
 	
 	query.execute(cbSuccess, cbError);
     }
-    
-    /*
-     *	Checks whether the app has been started for the first time
-     *		cbFirstRun,
-     *		cbNotFirstRun      : callback functions
-     *		cbError (optional) : callback function in case of an error
-     *				     (if not defined, cbFirstRun will be used instead)
-     */
-    this.checkForFirstRun = function (cbFirstRun, cbNotFirstRun) {
-        var cbError = (typeof arguments[2] !== 'undefined') ? arguments[2] : cbFirstRun;
-
-        //self.query('SELECT COUNT(*) AS firstRun FROM sqlite_master WHERE type="table" AND name="' + self.tables.Player.name + '"',
-	self.query('SELECT COUNT(*) AS firstRun FROM ' + self.tables.Player.name + ' WHERE pID="1"',
-                    [],
-                    
-                    function (tx, res) {
-                        var row = res.rows.item(0);
-                        
-                        if (parseInt(row['firstRun']) != 0) {
-                            cbNotFirstRun();
-                            return false;
-                        }
-                        
-                        cbFirstRun();
-                        return false;
-                    },
-                    function (error) {
-                        cbError();
-                        return false;
-                    }
-        );
-	
-	return true;
-    }
 }

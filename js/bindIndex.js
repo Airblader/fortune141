@@ -22,7 +22,10 @@ $(document).bind('deviceready', function () {
 	    
 	    $('#pageIndexHead').css('display', 'block');
 	    $('#pageIndexBody').show(function () {
-		setTimeout(navigator.splashscreen.hide, 250);
+		setTimeout(function () {
+		    navigator.splashscreen.hide();
+		    app.informAboutFullVersion();
+		}, 250);
 	    });
 	}
     );

@@ -20,10 +20,8 @@ function FortuneApp () {
     this.tooltips     = new Tooltips();
     
     this.FortuneUtils.isFreeVersion(function (result) {
-	console.log('Free Version: ' + result);
-	self.freeVersionLimit = new FreeVersionLimit(result);	
+	self.freeVersionLimit = new FreeVersionLimit(result);
     });
-    //this.freeVersionLimit = new FreeVersionLimit(false); // false : full version
     
     this.hasCamera = false;
     window.featureDetector.hasFeature(
@@ -391,6 +389,30 @@ function FortuneApp () {
 	    success: function () { cb(true);  },
 	    error:   function () { cb(false); },
 	});
+    }
+    
+    this.informAboutFullVersion = function () {
+	if (window.localStorage.getItem('informedAboutFullVersion') === '1') {
+	    return;
+	}
+	
+	if (typeof self.freeVersionLimit === 'undefined') {
+	    setTimeout(self.informAboutFullVersion, 100);
+	    return;
+	}
+	
+	if (self.freeVersionLimit.isLimited) {
+	    self.confirmDlg(
+		'Fortune 14/1 is now available as a full version! Do you want to open it in the Play Store?',
+		function () {
+		    window.location = 'market://details?id=de.fortune141.fortune141Full';
+		},
+		app.dummyFalse,
+		'Fortune 14/1',
+		'Yes,No'
+	    );
+	    window.localStorage.setItem('informedAboutFullVersion', '1');
+	}
     }
     
     /*
