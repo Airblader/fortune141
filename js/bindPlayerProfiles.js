@@ -168,10 +168,10 @@ $(document).on('pagebeforeshow', '#pagePlayerDetails', function () {
         $('#playerDetails_IsFavorite')     .html((app.Players.tmp.isFavorite)      ? "Yes" : "No");
 	$('#playerDetails_DisplayNickname').html((app.Players.tmp.displayNickname) ? "Yes" : "No");
 	
-	$('#playerDetails_HS')   .html(app.Players.tmp.hs                                            );
-	$('#playerDetails_GD')   .html(parseFloat(app.Players.tmp.gd)       .toFixed(2)              );
-	$('#playerDetails_HGD')  .html(parseFloat(app.Players.tmp.hgd)      .toFixed(2)              );
-	$('#playerDetails_Quota').html(parseFloat(100*app.Players.tmp.quota).toFixed(0) + '&thinsp;%');
+	$('#playerDetails_HS')   .html(app.Players.tmp.stats.game141.HS                                            );
+	$('#playerDetails_GD')   .html(parseFloat(app.Players.tmp.stats.game141.GD)       .toFixed(2)              );
+	$('#playerDetails_HGD')  .html(parseFloat(app.Players.tmp.stats.game141.HGD)      .toFixed(2)              );
+	$('#playerDetails_Quota').html(parseFloat(100*app.Players.tmp.stats.game141.quota).toFixed(0) + '&thinsp;%');
     });
 });
 	   

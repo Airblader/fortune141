@@ -13,10 +13,6 @@ function Player () {
     this.image 		 = '';
     this.isFavorite 	 = false;
     this.displayNickname = false;
-    this.hs		 = 0;
-    this.gd		 = 0;
-    this.hgd             = 0;
-    this.quota		 = 0;
     
     /*
      *	Create a new player and add to database
@@ -40,6 +36,7 @@ function Player () {
 	self.image 	     = image;
 	self.isFavorite      = isFavorite;
 	self.displayNickname = displayNickname;
+	self.stats           = self.dummyStats();
 
 	// If the flag to create the main user is set, reinit the whole database
 	if (mainUser) {
@@ -54,10 +51,10 @@ function Player () {
 	var sql = 'INSERT INTO '
 		    + self.db.tables.Player.name + ' '
 		    + self.db.getTableFields_String(self.db.tables.Player, false, false) + ' '
-		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+		    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?)';
 	
 	query.add(sql,
-		[name, nickname, image, isFavorite, displayNickname, 0, 0, 0, 0],
+		[name, nickname, image, isFavorite, displayNickname, self.statsToString()],
 		function (tx, result) {
 		    // assign pID to object
 		    self.pID = result.insertId;
@@ -125,10 +122,7 @@ function Player () {
 	    self.image           = '';
 	    self.isFavorite      = false;
 	    self.displayNickname = false;
-	    self.hs              = 0;
-	    self.gd              = 0;
-	    self.hgd             = 0;
-	    self.quota           = 0;
+	    self.stats           = self.dummyStats();
 	    
 	    cbSuccess();
 	    return true;
@@ -151,10 +145,7 @@ function Player () {
 	    self.image           = row['Image'];
 	    self.isFavorite      = (row['isFavorite']      == "true");
 	    self.displayNickname = (row['displayNickname'] == "true");
-	    self.hs		 = parseInt(row['HS']);
-	    self.gd		 = row['GD'];
-	    self.hgd             = row['HGD'];
-	    self.quota		 = row['Quota'];
+	    self.stats           = self.stringToStats(row['Stats']);
 	    
 	    cbSuccess();
 	    return true;
@@ -163,45 +154,38 @@ function Player () {
 	return true;
     }
     
-    /*
-     *	Load a player by his pID, but if it's an anonymous player, get his name
-     *	from a 14/1 game.
-     *		pID                   : pID of player to load
-     *		idx                   : whether player is player 1 or 2 in the game
-     *		gID                   : ID of game
-     *		cbSuccess (optional),
-     *		cbError (optional)    : callback functions
-     */
-    /*this.loadBy141Game = function (pID, idx, gID) {
-	var cbSuccess = (typeof arguments[3] !== 'undefined') ? arguments[3] : app.dummyFalse,
-	    cbError   = (typeof arguments[4] !== 'undefined') ? arguments[4] : app.dummyFalse;
-	    
-	self.load(
-	    pID,
-	    function () {
-		// if anonymous player, load name from game
-		if (self.pID == app.ANONYMOUSPLAYERPID) {
-		    app.dbFortune.query(
-			'SELECT Player' + idx + 'Name AS name FROM ' + app.dbFortune.tables.Game141.name + ' WHERE gID="' + gID + '" LIMIT 1',
-			[],
-			function (tx, result) {
-			    if (result.rows.length == 0) {
-				cbError();
-			    }
-			    
-			    var row = result.rows.item(0);
-			    self.name = row['name'];
-			    cbSuccess();    
-			},
-			cbError
-		    );    
-		} else {
-		    cbSuccess();
-		}
+    this.dummyStats = function () {
+	return {
+	    game141 : {
+		gamesPlayed : 0,
+		gamesWon    : 0,
+		gamesPlayedForGD : 0,
+		gamesWonForGD : 0,
+		totalPoints : 0,
+		totalInnings : 0,
+		HS : 0,
+		GD : 0.0,
+		HGD : 0.0,
+		quota : 0,
 	    },
-	    cbError
-	);
-    }*/
+	    game8910 : {
+		gamesPlayed : 0,
+		gamesWon : 0,
+		HS : 0,
+		HSRunouts : 0,
+		maxRunoutsInGame : 0,
+		quota : 0,
+	    }
+	};
+    }
+    
+    this.stringToStats = function (str) {
+	return JSON.parse(str);
+    }
+    
+    this.statsToString = function () {
+	return JSON.stringify(self.stats);
+    }
     
     /*
      *	Returns either name or nickname depending on whether the nickname should
@@ -211,121 +195,85 @@ function Player () {
 	return (self.displayNickname && self.nickname.length != 0) ? self.nickname : self.name;
     }
     
-    /*
-     *	Returns an object with statistics about the player
-     *		cbSuccess          : callback functions that will be called with an object
-     *			             containing the calculated information
-     *		cbError (optional) : error callback
+    /**
+     *	Force-recompute all statistics based on the games stored
      */
-    this.getStatistics = function (cbSuccess) {
-	var cbError       = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse,
-	    HS            = 0,
-	    PointsMade    = 0,
-	    InningsPlayed = 0,
-	    HGD           = 0,
-	    GamesWon      = 0,
-	    GamesPlayed   = 0,
-	    hadData       = false;
-	
-	function goThroughInnings (str_innings, handicap) {
-	    var innings = str_innings.split(';'),
-		num     = 0,
-		hs      = 0;
-	    
-	    for (var i = 0; i < innings.length; i++) {
-		var inning = innings[i].split(',');
-		
-		// subtract handicap
-		if (i == 0) {
-		    inning[0] = parseInt(inning[0]) - handicap;
-		}
-		
-		// check for HS
-		hs = Math.max(hs, parseInt(inning[0]));
-		
-		// count innings
-		if (parseInt(inning[2]) == -1) {
-		    num++;
-		}
-	    }
-	    
-	    return {
-		num : num,
-		hs  : hs,
-	    };
-	}
-	
-	function handleResult (tx, results) {
-	    for (var i = 0; i < results.rows.length; i++) {
-		hadData = true;
-		var row = results.rows.item(i);
-		
-		var data = goThroughInnings(row['innings'], parseInt(row['handicap']));
-		
-		GamesPlayed++;
-		HS = Math.max(HS, data.hs);
-		if (parseInt(row['Winner']) == self.pID) {
-		    GamesWon++;
-		}
-		PointsMade    += parseInt(row['points']);
-		InningsPlayed += parseInt(data.num);
-		HGD = (data.num > 0) ? Math.max(HGD, parseInt(row['points'])/data.num) : HGD;
-	    }
-	}
-	
-	var query = new dbFortuneQuery();
-	
-	query.add(
-	    'SELECT PointsPlayer1 AS points, HandicapPlayer1 AS handicap, InningsPlayer1 AS innings, Winner '
-	    + 'FROM ' + app.dbFortune.tables.Game141.name + ' WHERE '
-	    + 'Player1="' + self.pID + '" AND MultiplicatorPlayer1="1" AND isFinished="1"',
-	    [],
-	    handleResult,
-	    cbError
-	);
-	
-	query.add(
-	    'SELECT PointsPlayer2 AS points, HandicapPlayer2 AS handicap, InningsPlayer2 AS innings, Winner '
-	    + 'FROM ' + app.dbFortune.tables.Game141.name + ' WHERE '
-	    + 'Player2="' + self.pID + '" AND MultiplicatorPlayer2="1" AND isFinished="1"',
-	    [],
-	    handleResult,
-	    cbError
-	);
-	
-	query.execute(
-	    function () {
-		var statistics = {
-		    hs      : HS,
-		    gd      : PointsMade/InningsPlayed,
-		    hgd     : HGD,
-		    quota   : GamesWon/GamesPlayed,
-		    hadData : hadData,
-		};
-		
-		cbSuccess(statistics);
-	    },
-	    cbError
-	);
+    this.recalculateAllStatistics = function () {
+	// TODO
     }
     
-    /*
-     *	Update player statistics in database
-     *		cbSuccess (optional),
-     *		cbError (optional)    : callback functions
+    /**
+     *	Add information of a game to players' statistics
      */
-    this.updateStatistics = function () {
-	var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
-	    cbError   = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
+    this.addGameToStatistics = function (gID, gType) {
+	var cbSuccess = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse,
+	    cbError   = (typeof arguments[3] !== 'undefined') ? arguments[3] : app.dummyFalse;
 	
-	self.getStatistics(function (stats) {
-	    if (stats.hadData) {
-		self.modify(['HS', 'GD', 'HGD', 'Quota'],
-			    [stats.hs, stats.gd, stats.hgd, stats.quota],
+	var tmpGame;
+	
+	switch (gType) {
+	    case '141':
+		tmpGame = new StraightPool();
+		tmpGame.loadGame(gID, function () {
+		    if (tmpGame.isFinished) {
+			var idxPlayer  = (tmpGame.players[0].obj.pID == self.pID) ? 0 : 1,
+			    isFinished = tmpGame.isFinished,
+			    isWinner   = (tmpGame.winner == self.pID),
+			    isApplicableForGD = (   tmpGame.multiplicator[0] == 1
+						 && tmpGame.multiplicator[1] == 1
+						 && tmpGame.handicap[0] == 0
+						 && tmpGame.handicap[1] == 0);
+			
+			if (!isFinished) {
+			    return;
+			}
+			
+			self.stats.game141.gamesPlayed++;
+			if (isWinner) {
+			    self.stats.game141.gamesWon++;
+			}
+			self.stats.game141.quota = self.stats.game141.gamesWon / self.stats.game141.gamesPlayed;
+			
+			if (isApplicableForGD) {
+			    self.stats.game141.gamesPlayedForGD++;
+			    if (isWinner) {
+				self.stats.game141.gamesWonForGD++;
+			    }
+			}
+			
+			self.stats.game141.totalPoints  += tmpGame.players[idxPlayer].points;
+			
+			var inningsThisGame = tmpGame.innings.length;
+			if (tmpGame.innings[tmpGame.innings.length-1].ptsToAdd[idxPlayer] != -1) {
+			    inningsThisGame--;
+			}
+			self.stats.game141.totalInnings += inningsThisGame;
+			
+			if (isApplicableForGD) {
+			    for (var i = 0; i < tmpGame.innings.length; i++) {
+				self.stats.game141.HS = Math.max(self.stats.game141.HS, tmpGame.innings[i].points[idxPlayer]);
+			    }
+			    var GDThisGame = 0;
+			    if (inningsThisGame != 0) {
+				GDThisGame = tmpGame.players[idxPlayer].points / inningsThisGame;
+			    }
+			    
+			    self.stats.game141.GD  = (self.stats.game141.GD * (self.stats.game141.gamesPlayedForGD-1) + GDThisGame) / (self.stats.game141.gamesPlayedForGD);
+			    self.stats.game141.HGD = Math.max(self.stats.game141.HGD, GDThisGame);
+			}
+			
+			self.modify(
+			    ['Stats'],
+			    [self.statsToString()],
 			    cbSuccess,
 			    cbError
-		);
-	    }
-	});
+			);
+		    }
+		});
+		break;
+	    case '8910':
+		// TODO
+		break;
+	}
     }
 }

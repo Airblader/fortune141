@@ -13,7 +13,7 @@ function dbFortune () {
      *  Definition of database tables
      */
     this.tables = {
-        Player : { // outdated as of v1.0.0
+        PlayerOLD : { // outdated as of v1.0.0
             name : 'Player',
             fields : new Array(
                 'pID',
@@ -52,7 +52,7 @@ function dbFortune () {
 		'0'
 	    ),
         },
-	Player2 : { // included as of v1.0.0
+	Player : { // included as of v1.0.0
             name : 'Player',
             fields : new Array(
                 'pID',
@@ -79,7 +79,7 @@ function dbFortune () {
                 undefined,
                 '0',
                 '0',
-		''
+		undefined
 	    ),
         },
 	Game141 : {
@@ -486,7 +486,7 @@ function dbFortune () {
 		    tx.executeSql( self.getDropTableStatement(self.tables[name]) );
 		});
 		
-		tx.executeSql( self.getCreateTableStatement(self.tables['Player'])         );
+		tx.executeSql( self.getCreateTableStatement(self.tables['PlayerOLD'])      );
 		
 		tx.executeSql( self.getCreateTableStatement(self.tables['Game141'])        );
 		tx.executeSql( self.getCreateTableStatement(self.tables['Game141History']) );
@@ -535,7 +535,7 @@ function dbFortune () {
 	);
 	
 	// switch to new statistics system
-	/*Migrator.addMigration(
+	Migrator.addMigration(
 	    2,
 	    function (tx) {
 		var tempName = 'Player_outdated';
@@ -543,20 +543,20 @@ function dbFortune () {
 		// Step 1: Rename old players table
 		tx.executeSql(
 		    'ALTER TABLE '
-			+ app.dbFortune.tables.Player.name
+			+ app.dbFortune.tables.PlayerOLD.name
 			+ ' RENAME TO '
 			+ tempName
 		);
 		
 		// Step 2: Create new players table
-		tx.executeSql( self.getCreateTableStatement( self.tables['Player2']) );
+		tx.executeSql( self.getCreateTableStatement( self.tables['Player']) );
 		
 		// Step 3: Migrate data
 		tx.executeSql(
 		    'INSERT INTO '
-			+ app.dbFortune.tables.Player2.name
-			+ ' SELECT pID, Name, Nickname, Image, isFavorite, displayNickname, "" FROM '
 			+ app.dbFortune.tables.Player.name
+			+ ' SELECT pID, Name, Nickname, Image, isFavorite, displayNickname, "" FROM '
+			+ app.dbFortune.tables.PlayerOLD.name
 		);
 		
 		// Step 4: Delete old table
@@ -566,9 +566,9 @@ function dbFortune () {
 		);
 		
 		// Step 5: Alias variable to be new scheme
-		app.dbFortune.tables.Player = app.dbFortune.tables.Player2;
+		//app.dbFortune.tables.Player = app.dbFortune.tables.Player2;
 	    }
-	);*/
+	);
 	
 	
 	Migrator.start(

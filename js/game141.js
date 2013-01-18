@@ -1155,8 +1155,8 @@ function StraightPool () {
 	    self.saveHistory();
 	    self.saveGame(function () {
 		// update statistics
-		self.players[0].obj.updateStatistics();
-		self.players[1].obj.updateStatistics();
+		self.players[0].obj.addGameToStatistics(self.gameID, '141');
+		self.players[1].obj.addGameToStatistics(self.gameID, '141');
 		
 		app.currentGame = null;
 	    });
