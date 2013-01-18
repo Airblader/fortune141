@@ -180,7 +180,11 @@ function Player () {
     }
     
     this.stringToStats = function (str) {
-	return JSON.parse(str);
+	if (str.length > 0) {
+	    return JSON.parse(str);
+	} else {
+	    return this.dummyStats();
+	}
     }
     
     this.statsToString = function () {

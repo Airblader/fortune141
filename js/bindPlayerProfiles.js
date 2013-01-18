@@ -168,10 +168,15 @@ $(document).on('pagebeforeshow', '#pagePlayerDetails', function () {
         $('#playerDetails_IsFavorite')     .html((app.Players.tmp.isFavorite)      ? "Yes" : "No");
 	$('#playerDetails_DisplayNickname').html((app.Players.tmp.displayNickname) ? "Yes" : "No");
 	
-	$('#playerDetails_HS')   .html(app.Players.tmp.stats.game141.HS                                            );
-	$('#playerDetails_GD')   .html(parseFloat(app.Players.tmp.stats.game141.GD)       .toFixed(2)              );
-	$('#playerDetails_HGD')  .html(parseFloat(app.Players.tmp.stats.game141.HGD)      .toFixed(2)              );
-	$('#playerDetails_Quota').html(parseFloat(100*app.Players.tmp.stats.game141.quota).toFixed(0) + '&thinsp;%');
+	$('#playerDetails_141_HS')          .html(app.Players.tmp.stats.game141.HS                                            );
+	$('#playerDetails_141_GD')          .html(parseFloat(app.Players.tmp.stats.game141.GD)       .toFixed(2)              );
+	$('#playerDetails_141_HGD')         .html(parseFloat(app.Players.tmp.stats.game141.HGD)      .toFixed(2)              );
+	$('#playerDetails_141_GamesPlayed') .html(app.Players.tmp.stats.game141.gamesPlayed                                   );
+	$('#playerDetails_141_Quota')       .html(parseFloat(100*app.Players.tmp.stats.game141.quota).toFixed(0) + '&thinsp;%');
+	$('#playerDetails_141_TotalPoints') .html(app.Players.tmp.stats.game141.totalPoints                                   );
+	$('#playerDetails_141_TotalInnings').html(app.Players.tmp.stats.game141.totalInnings                                  );
+	
+	// TODO Game8910 Stats
     });
 });
 	   

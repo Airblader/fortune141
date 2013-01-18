@@ -26,16 +26,20 @@ function dbFortuneMigrator () {
             database.transaction(
                 function (tx) {
                     self.setCurrentVersion(toVersion);
-    
-                    // call migration function and execute the next migration
+                    
                     migrationFuncs[toVersion](tx);
+                },
+                function () {
+                    return;
+                },
+                function () {
                     executeMigration(toVersion + 1);
                 }
             );
         }
         // Migration to toVersion is not available,
         // i.e. we reached the end
-        else {
+        else {            
             currentState = consts.MIGRATION_FINISHED;
             endMigration();
         }
