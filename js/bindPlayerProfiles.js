@@ -176,7 +176,13 @@ $(document).on('pagebeforeshow', '#pagePlayerDetails', function () {
 	$('#playerDetails_141_TotalPoints') .html(app.Players.tmp.stats.game141.totalPoints                                   );
 	$('#playerDetails_141_TotalInnings').html(app.Players.tmp.stats.game141.totalInnings                                  );
 	
-	// TODO Game8910 Stats
+	$('#playerDetails_8910_GamesPlayed')         .html(app.Players.tmp.stats.game8910.gamesPlayed                                   );
+	$('#playerDetails_8910_Quota')               .html(parseFloat(100*app.Players.tmp.stats.game8910.quota).toFixed(0) + '&thinsp;%');
+	$('#playerDetails_8910_HighestStreak')       .html(app.Players.tmp.stats.game8910.HS                                            );
+	$('#playerDetails_8910_HighestStreakRunouts').html(app.Players.tmp.stats.game8910.HSRunouts                                     );
+	$('#playerDetails_8910_TotalRunouts')        .html(app.Players.tmp.stats.game8910.totalRunouts                                  );
+	$('#playerDetails_8910_RacksPlayed')         .html(app.Players.tmp.stats.game8910.racksPlayed                                   );
+	$('#playerDetails_8910_RacksWon')            .html(app.Players.tmp.stats.game8910.racksWon                                      );
     });
 });
 	   

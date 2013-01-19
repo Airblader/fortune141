@@ -937,7 +937,12 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
             $('.foulWrapper')       .off('tap');
             
             this.saveHistory();
+	    var self = this;
             this.saveGame(function () {
+		// update statistics
+		self.players[0].obj.addGameToStatistics(self.gameID, '8910');
+		self.players[1].obj.addGameToStatistics(self.gameID, '8910');
+		
                 app.currentGame = null;
             });
             

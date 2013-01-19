@@ -171,9 +171,11 @@ function Player () {
 	    game8910 : {
 		gamesPlayed : 0,
 		gamesWon : 0,
+		racksPlayed : 0,
+		racksWon : 0,
+		totalRunouts : 0,
 		HS : 0,
 		HSRunouts : 0,
-		maxRunoutsInGame : 0,
 		quota : 0,
 	    }
 	};
@@ -219,64 +221,112 @@ function Player () {
 	    case '141':
 		tmpGame = new StraightPool();
 		tmpGame.loadGame(gID, function () {
-		    if (tmpGame.isFinished) {
-			var idxPlayer  = (tmpGame.players[0].obj.pID == self.pID) ? 0 : 1,
-			    isFinished = tmpGame.isFinished,
-			    isWinner   = (tmpGame.winner == self.pID),
-			    isApplicableForGD = (   tmpGame.multiplicator[0] == 1
-						 && tmpGame.multiplicator[1] == 1
-						 && tmpGame.handicap[0] == 0
-						 && tmpGame.handicap[1] == 0);
-			
-			if (!isFinished) {
-			    return;
-			}
-			
-			self.stats.game141.gamesPlayed++;
-			if (isWinner) {
-			    self.stats.game141.gamesWon++;
-			}
-			self.stats.game141.quota = self.stats.game141.gamesWon / self.stats.game141.gamesPlayed;
-			
-			if (isApplicableForGD) {
-			    self.stats.game141.gamesPlayedForGD++;
-			    if (isWinner) {
-				self.stats.game141.gamesWonForGD++;
-			    }
-			}
-			
-			self.stats.game141.totalPoints  += tmpGame.players[idxPlayer].points;
-			
-			var inningsThisGame = tmpGame.innings.length;
-			if (tmpGame.innings[tmpGame.innings.length-1].ptsToAdd[idxPlayer] != -1) {
-			    inningsThisGame--;
-			}
-			self.stats.game141.totalInnings += inningsThisGame;
-			
-			if (isApplicableForGD) {
-			    for (var i = 0; i < tmpGame.innings.length; i++) {
-				self.stats.game141.HS = Math.max(self.stats.game141.HS, tmpGame.innings[i].points[idxPlayer]);
-			    }
-			    var GDThisGame = 0;
-			    if (inningsThisGame != 0) {
-				GDThisGame = tmpGame.players[idxPlayer].points / inningsThisGame;
-			    }
-			    
-			    self.stats.game141.GD  = (self.stats.game141.GD * (self.stats.game141.gamesPlayedForGD-1) + GDThisGame) / (self.stats.game141.gamesPlayedForGD);
-			    self.stats.game141.HGD = Math.max(self.stats.game141.HGD, GDThisGame);
-			}
-			
-			self.modify(
-			    ['Stats'],
-			    [self.statsToString()],
-			    cbSuccess,
-			    cbError
-			);
+		    var idxPlayer  = (tmpGame.players[0].obj.pID == self.pID) ? 0 : 1,
+			isFinished = tmpGame.isFinished,
+			isWinner   = (tmpGame.winner == self.pID),
+			isApplicableForGD = (   tmpGame.multiplicator[0] == 1
+					     && tmpGame.multiplicator[1] == 1
+					     && tmpGame.handicap[0] == 0
+					     && tmpGame.handicap[1] == 0);
+		    
+		    if (!isFinished) {
+			return;
 		    }
+		    
+		    self.stats.game141.gamesPlayed++;
+		    if (isWinner) {
+			self.stats.game141.gamesWon++;
+		    }
+		    self.stats.game141.quota = self.stats.game141.gamesWon / self.stats.game141.gamesPlayed;
+		    
+		    if (isApplicableForGD) {
+			self.stats.game141.gamesPlayedForGD++;
+			if (isWinner) {
+			    self.stats.game141.gamesWonForGD++;
+			}
+		    }
+		    
+		    self.stats.game141.totalPoints  += tmpGame.players[idxPlayer].points;
+		    
+		    var inningsThisGame = tmpGame.innings.length;
+		    if (tmpGame.innings[tmpGame.innings.length-1].ptsToAdd[idxPlayer] != -1) {
+			inningsThisGame--;
+		    }
+		    self.stats.game141.totalInnings += inningsThisGame;
+		    
+		    if (isApplicableForGD) {
+			for (var i = 0; i < tmpGame.innings.length; i++) {
+			    self.stats.game141.HS = Math.max(self.stats.game141.HS, tmpGame.innings[i].points[idxPlayer]);
+			}
+			var GDThisGame = 0;
+			if (inningsThisGame != 0) {
+			    GDThisGame = tmpGame.players[idxPlayer].points / inningsThisGame;
+			}
+			
+			self.stats.game141.GD  = (self.stats.game141.GD * (self.stats.game141.gamesPlayedForGD-1) + GDThisGame) / (self.stats.game141.gamesPlayedForGD);
+			self.stats.game141.HGD = Math.max(self.stats.game141.HGD, GDThisGame);
+		    }
+		    
+		    self.modify(
+			['Stats'],
+			[self.statsToString()],
+			cbSuccess,
+			cbError
+		    );
 		});
 		break;
 	    case '8910':
-		// TODO
+		tmpGame = new Game8910();
+		tmpGame.loadGame(gID, function () {
+		    var idxPlayer  = (tmpGame.players[0].obj.pID == self.pID) ? 0 : 1,
+			isFinished = tmpGame.isFinished,
+			isWinner   = (tmpGame.winner == self.pID);
+			
+		    if (!isFinished) {
+			return;
+		    }
+		    
+		    self.stats.game8910.gamesPlayed++;
+		    if (isWinner) {
+			self.stats.game8910.gamesWon++;
+		    }
+		    self.stats.game8910.quota = self.stats.game8910.gamesWon / self.stats.game8910.gamesPlayed;
+		    
+		    var HS        = 0,
+			HSRunouts = 0;
+		    for (var i = 0; i < tmpGame.sets.length; i++) {
+			for (var j = 0; j < tmpGame.sets[i].racks.length; j++) {
+			    if (tmpGame.sets[i].racks[j].wonByPlayer === -1) {
+				break;
+			    }
+			    
+			    self.stats.game8910.racksPlayed++;
+			    if (idxPlayer === tmpGame.sets[i].racks[j].wonByPlayer) {
+				self.stats.game8910.racksWon++;
+				HS++;
+				
+				if (tmpGame.sets[i].racks[j].runOut) {
+				    self.stats.game8910.totalRunouts++;
+				    HSRunouts++;
+				} else {
+				    HSRunouts = 0;
+				}
+			    } else {
+				HS = 0;
+			    }
+			}
+		    }
+		    
+		    self.stats.game8910.HS        = Math.max(self.stats.game8910.HS,        HS);
+		    self.stats.game8910.HSRunouts = Math.max(self.stats.game8910.HSRunouts, HSRunouts);
+		    
+		    self.modify(
+			['Stats'],
+			[self.statsToString()],
+			cbSuccess,
+			cbError
+		    );
+		});
 		break;
 	}
     }
