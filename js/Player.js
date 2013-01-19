@@ -205,7 +205,35 @@ function Player () {
      *	Force-recompute all statistics based on the games stored
      */
     this.recalculateAllStatistics = function () {
-	// TODO
+	self.stats = self.dummyStats();
+	
+	app.dbFortune.query(
+	    'SELECT gID FROM '
+		+ app.dbFortune.tables.Game141.name
+		+ ' WHERE isFinished=1',
+	    [],
+	    function (tx, results) {
+		for (var i = 0; i < results.rows.length; i++) {
+		    var row = results.rows.item(i);
+		    
+		    self.addGameToStatistics(parseInt(row['gID']), '141');
+		}
+	    }
+	);
+	
+	app.dbFortune.query(
+	    'SELECT gID FROM '
+		+ app.dbFortune.tables.Game8910.name
+		+ ' WHERE isFinished=1',
+	    [],
+	    function (tx, results) {
+		for (var i = 0; i < results.rows.length; i++) {
+		    var row = results.rows.item(i);
+		    
+		    self.addGameToStatistics(parseInt(row['gID']), '8910');
+		}
+	    }
+	);
     }
     
     /**

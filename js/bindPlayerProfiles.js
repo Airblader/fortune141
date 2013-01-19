@@ -137,7 +137,8 @@ $(document).off('click', '#addPlayer_Submit')
 });
 
 $(document).on('pagebeforeshow', '#pagePlayerDetails', function () {
-    var $btnDelete = $('#playerDetailsDeleteButton');
+    var $btnDelete  = $('#playerDetailsDeleteButton'),
+	$btnRefresh = $('#playerDetails_refreshStats');
     
     $('#pagePlayerDetailsEditPlayerHead').css('display', 'none');
     $('#pagePlayerDetailsEditPlayer')    .css('display', 'none');
@@ -149,13 +150,16 @@ $(document).on('pagebeforeshow', '#pagePlayerDetails', function () {
 	pID = parseInt(url.param('pID'));
 	
     // Hide delete button if it's the main user profile
-    $btnDelete.button('enable');
+    $btnDelete .button('enable');
+    $btnRefresh.button('disable');
     if (pID == 1) {
 	$btnDelete.button('disable');
     }
     
     app.Players.tmp = new Player();
     app.Players.tmp.load(pID, function () {
+	$btnRefresh.button('enable');
+	
 	if (app.Players.tmp.image !== '') {
 	    $('#playerDetails_Image').css('display', 'block')
 	                             .attr('src', app.Players.tmp.image);
@@ -184,6 +188,27 @@ $(document).on('pagebeforeshow', '#pagePlayerDetails', function () {
 	$('#playerDetails_8910_RacksPlayed')         .html(app.Players.tmp.stats.game8910.racksPlayed                                   );
 	$('#playerDetails_8910_RacksWon')            .html(app.Players.tmp.stats.game8910.racksWon                                      );
     });
+});
+
+$(document).off('click', '#playerDetails_refreshStats')
+           .on ('click', '#playerDetails_refreshStats', function (event) {
+    event.preventDefault();
+    
+    app.confirmDlg(
+	'This will recalculate all statistics based on only the games currently stored on your phone. Proceed?',
+	function () {
+	    app.Players.tmp.recalculateAllStatistics();
+	    app.alertDlg(
+		'This may take a moment. You need to navigate away and back to this page manually to see changes.',
+		app.dummyFalse,
+		'Recalculating',
+		'OK'
+	    );
+	},
+	app.dummyFalse,
+	'Warning',
+	'Yes,No'
+    );
 });
 	   
 $(document).off('click', '#playerDetailsDeleteButton')
