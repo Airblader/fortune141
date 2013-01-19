@@ -322,7 +322,7 @@ function Player () {
 		    if (!isFinished) {
 			return;
 		    }
-		    console.log('GameType: ' + tmpGame.gameType);
+
 		    switch (tmpGame.gameType) {
 			case 8:
 			    stats = self.stats.game8;
@@ -334,7 +334,6 @@ function Player () {
 			    stats = self.stats.game10;
 			    break;
 		    }
-		    console.log(JSON.stringify(stats));
 		    
 		    stats.gamesPlayed++;
 		    if (isWinner) {
@@ -381,9 +380,6 @@ function Player () {
 			    self.stats.game10 = stats;
 			    break;
 		    }
-		    console.log(JSON.stringify(self.stats.game8));
-		    console.log(JSON.stringify(self.stats.game9));
-		    console.log(JSON.stringify(self.stats.game10));
 		    
 		    self.modify(
 			['Stats'],

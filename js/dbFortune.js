@@ -534,11 +534,16 @@ function dbFortune () {
 	    }
 	);
 	
-	// switch to new statistics system
+	// VERSION 1.0.0
+	//
+	// - Migrate to new Player scheme for statistics update
+	// - Recalculate statistics
+	//
+	
+	// Step 1: Rename old players table
 	Migrator.addMigration(
 	    2,
 	    function (tx) {
-		// Step 1: Rename old players table
 		tx.executeSql(
 		    'ALTER TABLE '
 			+ app.dbFortune.tables.PlayerOLD.name
@@ -547,20 +552,20 @@ function dbFortune () {
 	    }
 	);
 	
+	// Step 2: Create new players table
 	Migrator.addMigration(
 	    3,
 	    function (tx) {
-		// Step 2: Create new players table
 		tx.executeSql(
 		    self.getCreateTableStatement( self.tables['Player'] )
 		);
 	    }
 	);
 	
+	// Step 3: Migrate data
 	Migrator.addMigration(
 	    4,
 	    function (tx) {	
-		// Step 3: Migrate data
 		tx.executeSql(
 		    'INSERT INTO '
 			+ app.dbFortune.tables.Player.name
@@ -569,15 +574,40 @@ function dbFortune () {
 	    }
 	);
 	  
+	// Step 4: Delete old table
 	Migrator.addMigration(
 	    5,
 	    function (tx) {  
-		// Step 4: Delete old table
 		tx.executeSql(
 		    'DROP TABLE Player_outdated'
 		);
 	    }
 	);
+	
+	// Step 5: Recalculate statistics
+	Migrator.addMigration(
+	    6,
+	    function (tx) {
+		app.dbFortune.query(
+		    'SELECT pID FROM '
+			+ app.dbFortune.tables.Player.name,
+		    [],
+		    function (itx, results) {
+			for (var i = 0; i < results.rows.length; i++) {
+			    var row = results.rows.item(i),
+				pID = parseInt( row['pID'] );
+			    var tmpPlayer = new Player();
+			    
+			    tmpPlayer.load(pID, tmpPlayer.recalculateAllStatistics);
+			}
+		    }
+		);
+	    }
+	);
+	
+	//
+	// END VERSION 1.0.0
+	//
 	
 	
 	Migrator.start(
