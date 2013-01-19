@@ -180,13 +180,29 @@ $(document).on('pagebeforeshow', '#pagePlayerDetails', function () {
 	$('#playerDetails_141_TotalPoints') .html(app.Players.tmp.stats.game141.totalPoints                                   );
 	$('#playerDetails_141_TotalInnings').html(app.Players.tmp.stats.game141.totalInnings                                  );
 	
-	$('#playerDetails_8910_GamesPlayed')         .html(app.Players.tmp.stats.game8910.gamesPlayed                                   );
-	$('#playerDetails_8910_Quota')               .html(parseFloat(100*app.Players.tmp.stats.game8910.quota).toFixed(0) + '&thinsp;%');
-	$('#playerDetails_8910_HighestStreak')       .html(app.Players.tmp.stats.game8910.HS                                            );
-	$('#playerDetails_8910_HighestStreakRunouts').html(app.Players.tmp.stats.game8910.HSRunouts                                     );
-	$('#playerDetails_8910_TotalRunouts')        .html(app.Players.tmp.stats.game8910.totalRunouts                                  );
-	$('#playerDetails_8910_RacksPlayed')         .html(app.Players.tmp.stats.game8910.racksPlayed                                   );
-	$('#playerDetails_8910_RacksWon')            .html(app.Players.tmp.stats.game8910.racksWon                                      );
+	$('#playerDetails_8_GamesPlayed')         .html(app.Players.tmp.stats.game8.gamesPlayed                                   );
+	$('#playerDetails_8_Quota')               .html(parseFloat(100*app.Players.tmp.stats.game8.quota).toFixed(0) + '&thinsp;%');
+	$('#playerDetails_8_HighestStreak')       .html(app.Players.tmp.stats.game8.HS                                            );
+	$('#playerDetails_8_HighestStreakRunouts').html(app.Players.tmp.stats.game8.HSRunouts                                     );
+	$('#playerDetails_8_TotalRunouts')        .html(app.Players.tmp.stats.game8.totalRunouts                                  );
+	$('#playerDetails_8_RacksPlayed')         .html(app.Players.tmp.stats.game8.racksPlayed                                   );
+	$('#playerDetails_8_RacksWon')            .html(app.Players.tmp.stats.game8.racksWon                                      );
+	
+	$('#playerDetails_9_GamesPlayed')         .html(app.Players.tmp.stats.game9.gamesPlayed                                   );
+	$('#playerDetails_9_Quota')               .html(parseFloat(100*app.Players.tmp.stats.game9.quota).toFixed(0) + '&thinsp;%');
+	$('#playerDetails_9_HighestStreak')       .html(app.Players.tmp.stats.game9.HS                                            );
+	$('#playerDetails_9_HighestStreakRunouts').html(app.Players.tmp.stats.game9.HSRunouts                                     );
+	$('#playerDetails_9_TotalRunouts')        .html(app.Players.tmp.stats.game9.totalRunouts                                  );
+	$('#playerDetails_9_RacksPlayed')         .html(app.Players.tmp.stats.game9.racksPlayed                                   );
+	$('#playerDetails_9_RacksWon')            .html(app.Players.tmp.stats.game9.racksWon                                      );
+	
+	$('#playerDetails_10_GamesPlayed')         .html(app.Players.tmp.stats.game10.gamesPlayed                                   );
+	$('#playerDetails_10_Quota')               .html(parseFloat(100*app.Players.tmp.stats.game10.quota).toFixed(0) + '&thinsp;%');
+	$('#playerDetails_10_HighestStreak')       .html(app.Players.tmp.stats.game10.HS                                            );
+	$('#playerDetails_10_HighestStreakRunouts').html(app.Players.tmp.stats.game10.HSRunouts                                     );
+	$('#playerDetails_10_TotalRunouts')        .html(app.Players.tmp.stats.game10.totalRunouts                                  );
+	$('#playerDetails_10_RacksPlayed')         .html(app.Players.tmp.stats.game10.racksPlayed                                   );
+	$('#playerDetails_10_RacksWon')            .html(app.Players.tmp.stats.game10.racksWon                                      );
     });
 });
 

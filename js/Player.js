@@ -168,16 +168,22 @@ function Player () {
 		HGD : 0.0,
 		quota : 0,
 	    },
-	    game8910 : {
-		gamesPlayed : 0,
-		gamesWon : 0,
-		racksPlayed : 0,
-		racksWon : 0,
-		totalRunouts : 0,
-		HS : 0,
-		HSRunouts : 0,
-		quota : 0,
-	    }
+	    game8  : this.dummy8910Stats(),
+	    game9  : this.dummy8910Stats(),
+	    game10 : this.dummy8910Stats(),
+	};
+    }
+    
+    this.dummy8910Stats = function () {
+	return {
+	    gamesPlayed : 0,
+	    gamesWon : 0,
+	    racksPlayed : 0,
+	    racksWon : 0,
+	    totalRunouts : 0,
+	    HS : 0,
+	    HSRunouts : 0,
+	    quota : 0,  
 	};
     }
     
@@ -248,6 +254,7 @@ function Player () {
 	switch (gType) {
 	    case '141':
 		tmpGame = new StraightPool();
+		
 		tmpGame.loadGame(gID, function () {
 		    var idxPlayer  = (tmpGame.players[0].obj.pID == self.pID) ? 0 : 1,
 			isFinished = tmpGame.isFinished,
@@ -305,6 +312,8 @@ function Player () {
 		break;
 	    case '8910':
 		tmpGame = new Game8910();
+		var stats;
+		
 		tmpGame.loadGame(gID, function () {
 		    var idxPlayer  = (tmpGame.players[0].obj.pID == self.pID) ? 0 : 1,
 			isFinished = tmpGame.isFinished,
@@ -313,12 +322,25 @@ function Player () {
 		    if (!isFinished) {
 			return;
 		    }
-		    
-		    self.stats.game8910.gamesPlayed++;
-		    if (isWinner) {
-			self.stats.game8910.gamesWon++;
+		    console.log('GameType: ' + tmpGame.gameType);
+		    switch (tmpGame.gameType) {
+			case 8:
+			    stats = self.stats.game8;
+			    break;
+			case 9:
+			    stats = self.stats.game9;
+			    break;
+			case 10:
+			    stats = self.stats.game10;
+			    break;
 		    }
-		    self.stats.game8910.quota = self.stats.game8910.gamesWon / self.stats.game8910.gamesPlayed;
+		    console.log(JSON.stringify(stats));
+		    
+		    stats.gamesPlayed++;
+		    if (isWinner) {
+			stats.gamesWon++;
+		    }
+		    stats.quota = stats.gamesWon / stats.gamesPlayed;
 		    
 		    var HS        = 0,
 			HSRunouts = 0;
@@ -328,13 +350,13 @@ function Player () {
 				break;
 			    }
 			    
-			    self.stats.game8910.racksPlayed++;
+			    stats.racksPlayed++;
 			    if (idxPlayer === tmpGame.sets[i].racks[j].wonByPlayer) {
-				self.stats.game8910.racksWon++;
+				stats.racksWon++;
 				HS++;
 				
 				if (tmpGame.sets[i].racks[j].runOut) {
-				    self.stats.game8910.totalRunouts++;
+				    stats.totalRunouts++;
 				    HSRunouts++;
 				} else {
 				    HSRunouts = 0;
@@ -345,8 +367,23 @@ function Player () {
 			}
 		    }
 		    
-		    self.stats.game8910.HS        = Math.max(self.stats.game8910.HS,        HS);
-		    self.stats.game8910.HSRunouts = Math.max(self.stats.game8910.HSRunouts, HSRunouts);
+		    stats.HS        = Math.max(stats.HS,        HS);
+		    stats.HSRunouts = Math.max(stats.HSRunouts, HSRunouts);
+		    
+		    switch (tmpGame.gameType) {
+			case 8:
+			    self.stats.game8 = stats;
+			    break;
+			case 9:
+			    self.stats.game9 = stats;
+			    break;
+			case 10:
+			    self.stats.game10 = stats;
+			    break;
+		    }
+		    console.log(JSON.stringify(self.stats.game8));
+		    console.log(JSON.stringify(self.stats.game9));
+		    console.log(JSON.stringify(self.stats.game10));
 		    
 		    self.modify(
 			['Stats'],
