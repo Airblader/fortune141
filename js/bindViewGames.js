@@ -185,7 +185,7 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
               .on ('click',
                 function (event) {
                     event.preventDefault();
-                    $.mobile.changePage('../player/player_details.html?pID' + tmpGame.players[0].obj.pID);
+                    $.mobile.changePage('../player/player_details.html?pID=' + tmpGame.players[0].obj.pID);
                 }
               )
               .removeClass('winner').removeClass('loser');
@@ -529,8 +529,8 @@ $(document).on('pageshow', '#pageView8910GamesDetails', function () {
         theme: 'a',
     });*/
     
-    var url         = $.url( $.url().attr('fragment') ),
-        gID         = parseInt(url.param('gID'));
+    var url = $.url( $.url().attr('fragment') ),
+        gID = parseInt(url.param('gID'));
     
     var $name1 = $('#view8910GamesDetailsName1'),
         $name2 = $('#view8910GamesDetailsName2');
@@ -548,7 +548,7 @@ $(document).on('pageshow', '#pageView8910GamesDetails', function () {
               .on ('click',
                 function (event) {
                     event.preventDefault();
-                    $.mobile.changePage('../player/player_details.html?pID' + tmpGame.players[0].obj.pID);
+                    $.mobile.changePage('../player/player_details.html?pID=' + tmpGame.players[0].obj.pID);
                 }
               )
               .removeClass('winner').removeClass('loser');
