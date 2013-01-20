@@ -400,8 +400,8 @@ function FortuneApp () {
 	    setTimeout(self.informAboutFullVersion, 100);
 	    return;
 	}
-	
-	if (self.freeVersionLimit.isLimited) {
+
+	if (self.freeVersionLimit.isLimited()) {
 	    self.confirmDlg(
 		'Fortune 14/1 is now available as a full version! Do you want to open it in the Play Store?',
 		function () {
@@ -411,8 +411,8 @@ function FortuneApp () {
 		'Fortune 14/1',
 		'Yes,No'
 	    );
-	    window.localStorage.setItem('informedAboutFullVersion', '1');
 	}
+	window.localStorage.setItem('informedAboutFullVersion', '1');
     }
     
     /*
