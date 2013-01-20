@@ -1191,8 +1191,8 @@ ShotClock8910.prototype.setCurrPlayer = function (currPlayer) {
 
 ShotClock8910.prototype.updateCurrPlayerDisplay = function () {
     this.$game8910ShotClockCurrPlayer.html(
-        ((this.currPlayer === 0) ? 'Left' : 'Right')
-        + ' Player'
+        app.currentGame.players[this.currPlayer].obj.getDisplayName()
+	    + '\'s Turn'
     );
 }
 
