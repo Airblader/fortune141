@@ -649,7 +649,7 @@ function Game8910 () {
             setMarkerSize   = self.getSetMarkerSize(1 + 2*setMarkerFactor),
             setMarkerHTML   = '',
             setMarkerDummy  = '<img src="../../img/setmarker/setmarker0.png" id="setMarker[ID]" style="width: [width]; height: [height]; margin-left: [margin-left]; margin-right: [margin-right];" />';
-        for (var i = 0; i < self.numberOfSets; i++) {
+        for (var i = 0; i < 2*self.numberOfSets-1; i++) {
             setMarkerHTML += setMarkerDummy
                                 .replace('[ID]',           i)
                                 .replace('[width]',                         setMarkerSize  + 'px')
@@ -807,7 +807,7 @@ Game8910.prototype.addSetToGame = function () {
 Game8910.prototype.getSetMarkerSize = function (factor) {
     var windowWidth = $(window).width();
     
-    return Math.min(30, windowWidth / (factor*this.numberOfSets));
+    return 30;//Math.min(30, windowWidth / (factor*(2*this.numberOfSets-1)));
 }
 
 Game8910.prototype.getDummyPlayer = function () {
@@ -860,7 +860,7 @@ Game8910.prototype._updateSetScore = function (idxSet, wonByPlayer) {
 }
 
 Game8910.prototype.updateSetScore = function () {
-    for (var i = 0; i < this.numberOfSets; i++) {
+    for (var i = 0; i < 2*this.numberOfSets-1; i++) {
         this._updateSetScore(i, (typeof this.sets[i] !== 'undefined') ? this.sets[i].wonByPlayer : -1);
     }
 }
@@ -910,8 +910,8 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
         this.players[currPlayer].sets++;
         this.sets[this.idxCurrentSet].wonByPlayer = currPlayer;
         
-        if (this.idxCurrentSet + 1 === this.numberOfSets) { // Game is over
-            this.isFinished = true;
+        if (this.players[currPlayer].sets === this.numberOfSets) {
+	    this.isFinished = true;
             var msg;
             
             if (this.players[0].sets === this.players[1].sets) { // Game ended tied
@@ -1190,10 +1190,14 @@ ShotClock8910.prototype.setCurrPlayer = function (currPlayer) {
 }
 
 ShotClock8910.prototype.updateCurrPlayerDisplay = function () {
-    this.$game8910ShotClockCurrPlayer.html(
-        app.currentGame.players[this.currPlayer].obj.getDisplayName()
-	    + '\'s Turn'
-    );
+    var disp;
+    try {
+	disp = app.currentGame.players[this.currPlayer].obj.getDisplayName() + '\'s Turn';
+    } catch (e) {
+	disp = ((this.currPlayer === 0) ? 'Left' : 'Right') + ' Player';
+    }
+    
+    this.$game8910ShotClockCurrPlayer.html(disp);
 }
 
 ShotClock8910.prototype.newRack = function () {

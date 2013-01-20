@@ -579,9 +579,9 @@ $(document).on('pageshow', '#pageView8910GamesDetails', function () {
 		       + '<td>[number]</td>'
 		       + '<td class="[class2]">[score2]</td>',
 	    tbodyDummy = '<tbody id="view8910GamesDetailsSetsBody">[entries]</tbody>',
-	    entries    = new Array(tmpGame.numberOfSets);
+	    entries    = new Array(tmpGame.sets.length);
 	    
-	for (var i = 0; i < tmpGame.numberOfSets; i++) {
+	for (var i = 0; i < tmpGame.sets.length; i++) {
 	    var scores = new Array(0, 0);
 	    for (var j = 0; j < tmpGame.sets[i].racks.length; j++) {
 		scores[tmpGame.sets[i].racks[j].wonByPlayer]++;
