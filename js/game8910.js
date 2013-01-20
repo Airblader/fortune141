@@ -1124,7 +1124,7 @@ ShotClock8910.prototype.afterClockStep = function () {
         this.pauseClock();
         
         app.confirmDlg(
-            app.currentGame.players[this.currPlayer].obj.getDisplayName() + ' ran out of time!',
+            app.currentGame.players[currPlayer].obj.getDisplayName() + ' ran out of time!',
             function () {
                 app.currentGame.handleFoulClick(null, currPlayer+1);
             },
