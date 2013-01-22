@@ -1,10 +1,4 @@
 $(document).on('pagebeforeshow', '#pageResumeGame', function () {
-    /*$.mobile.loading('show', {
-        text: 'Preparing Game List',
-        textVisible: true,
-        theme: 'a',
-    });*/
-    
     var $list = $('#resumeGameListContainer');
     
     var readyA = false,
@@ -111,8 +105,6 @@ $(document).on('pagebeforeshow', '#pageResumeGame', function () {
 	
 	$list.html(listDummy.replace('[entries]', entries.join('')));
 	$('#resumeGameList').listview();
-	
-	//$.mobile.loading('hide');
     }
     
     app.dbFortune.query(

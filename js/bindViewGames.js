@@ -1,10 +1,4 @@
 $(document).on('pagebeforeshow', '#pageViewGames', function () {
-    /*$.mobile.loading('show', {
-        text: 'Preparing Game List',
-        textVisible: true,
-        theme: 'a',
-    });*/
-    
     var $list = $('#viewGamesListContainer');
     
     var readyA = false,
@@ -93,8 +87,6 @@ $(document).on('pagebeforeshow', '#pageViewGames', function () {
         
         $list.html(listDummy.replace('[entries]', entries.join('')));
         $('#viewGamesList').listview();
-        
-        //$.mobile.loading('hide');
     }
     
     var tblGameA = app.dbFortune.tables.Game141.name,
@@ -153,12 +145,6 @@ $(document).on('pagebeforeshow', '#pageViewGames', function () {
 });
 
 $(document).on('pageshow', '#pageView141GamesDetails', function () {
-    /*$.mobile.loading('show', {
-        text: 'Loading Game Data',
-        textVisible: true,
-        theme: 'a',
-    });*/
-    
     var url         = $.url( $.url().attr('fragment') ),
         gID         = parseInt(url.param('gID')),
         fromGame    = parseInt(url.param('from_game')),
@@ -443,8 +429,6 @@ $(document).on('pageshow', '#pageView141GamesDetails', function () {
         $('#view141GamesDetailsGD2').html(((!isNaN(GDs[1])) ? GDs[1].toFixed(2) : '0.00'));
         $('#view141GamesDetailsHS1').html(HS[0]);
         $('#view141GamesDetailsHS2').html(HS[1]);
-        
-        //$.mobile.loading('hide');
     });
 });
 
@@ -617,8 +601,6 @@ $(document).on('pageshow', '#pageView8910GamesDetails', function () {
                       .replace('[month]', date.month)
                       .replace('[year]',  date.year)
         );
-        
-        //$.mobile.loading('hide');
     });
 });
 

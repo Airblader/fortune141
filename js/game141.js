@@ -752,6 +752,10 @@ function StraightPool () {
 	);
     }
     
+    this.changeSettingsDuringRuntime = function () {
+	// TODO
+    }
+    
     /*
      *	Sets the foul display
      *		fouls                : number of foul points the display should be set to
@@ -966,20 +970,16 @@ function StraightPool () {
      */
     this.closeDetailsPanel = function () {	
 	$page.data('activePage', 'pageGame141_MainPanel');
-	
-	//$.mobile.loading('show');
 	$page
 	    .find('[data-role="header"]')
 	    .css('display', 'block');
 			  
-        //$panelRackAndMenu.show(function () {
 	$panelRackAndMenu.css('display', 'block');
-	    // Bugfix : Panel moved to the right because of the (even if invisible) scrollbars
-            $panelRackAndMenu.css('left', '0');
-	    
-            $detailsPanel.css('display', 'none');
-	    //$.mobile.loading('hide');
-        //});
+	// Bugfix : Panel moved to the right because of the (even if invisible) scrollbars
+	$panelRackAndMenu.css('left', '0');
+	
+	$detailsPanel.css('display', 'none');
+
 	
 	return true;
     }
@@ -1268,76 +1268,71 @@ function StraightPool () {
     this.handleMinimizeMainPanelButton = function (event) {
 	event.preventDefault();
 	
-	//$.mobile.loading('show');
         $page             .find('[data-role="header"]')
 	                  .css('display', 'none');
-        //$detailsPanel.show(function () {
 	$detailsPanel.css('display', 'block');
-	    $page.data('activePage', 'pageGame141_DetailsPanel');
+	$page.data('activePage', 'pageGame141_DetailsPanel');
+	
+	$panelRackAndMenu.css('display', 'none');
+	
+	var totalPts     = new Array(self.handicap[0], self.handicap[1]),
+	    totalInnings = new Array(0, 0),
+	    HS           = new Array(0, 0),
+	    safety       = new Array(2),
+	    foul         = new Array(2),
+	    entryDummy   = '<td class="[safety]">[points]</td>'
+			 + '<td class="[safety][foul]">[foulPts]</td>'
+			 + '<td class="[safety]totals">[totalPts]</td>',
+	    inningDummy  = '<td class="">[inning]</td>',
+	    tbodyDummy   = '<tbody id="detailsScoreBoardTableBody">[entries]</tbody>',
+	    entries      = new Array(self.innings.length);
+	for (var i = 0; i < self.innings.length; i++) {
+	    totalPts[0] += self.innings[i].points[0];
+	    totalPts[1] += self.innings[i].points[1];
 	    
-            $panelRackAndMenu.css('display', 'none');
-            
-            var totalPts     = new Array(self.handicap[0], self.handicap[1]),
-                totalInnings = new Array(0, 0),
-		HS           = new Array(0, 0),
-		safety       = new Array(2),
-		foul         = new Array(2),
-		entryDummy   = '<td class="[safety]">[points]</td>'
-			     + '<td class="[safety][foul]">[foulPts]</td>'
-			     + '<td class="[safety]totals">[totalPts]</td>',
-	        inningDummy  = '<td class="">[inning]</td>',
-	        tbodyDummy   = '<tbody id="detailsScoreBoardTableBody">[entries]</tbody>',
-	        entries      = new Array(self.innings.length);
-            for (var i = 0; i < self.innings.length; i++) {
-                totalPts[0] += self.innings[i].points[0];
-                totalPts[1] += self.innings[i].points[1];
-		
-		HS[0] = Math.max(HS[0], self.innings[i].points[0]);
-		HS[1] = Math.max(HS[1], self.innings[i].points[1]);
-                
-                totalInnings[0] += (self.innings[i].ptsToAdd[0] == -1) ? 1 : 0;
-                totalInnings[1] += (self.innings[i].ptsToAdd[1] == -1) ? 1 : 0;
+	    HS[0] = Math.max(HS[0], self.innings[i].points[0]);
+	    HS[1] = Math.max(HS[1], self.innings[i].points[1]);
+	    
+	    totalInnings[0] += (self.innings[i].ptsToAdd[0] == -1) ? 1 : 0;
+	    totalInnings[1] += (self.innings[i].ptsToAdd[1] == -1) ? 1 : 0;
 
-		safety[0] = (self.innings[i].safety[0]) ? 'safety ' : '';
-		safety[1] = (self.innings[i].safety[1]) ? 'safety ' : '';
-                
-		foul[0] = (self.innings[i].foulPts[0] != 0) ? 'foul ' : 'nofoul ';
-		foul[1] = (self.innings[i].foulPts[1] != 0) ? 'foul ' : 'nofoul ';
-                
+	    safety[0] = (self.innings[i].safety[0]) ? 'safety ' : '';
+	    safety[1] = (self.innings[i].safety[1]) ? 'safety ' : '';
+	    
+	    foul[0] = (self.innings[i].foulPts[0] != 0) ? 'foul ' : 'nofoul ';
+	    foul[1] = (self.innings[i].foulPts[1] != 0) ? 'foul ' : 'nofoul ';
+	    
 
-		entries[i] = entryDummy.replace (/\[safety\]/g,  safety[0])
-				       .replace ('[points]',   ((self.innings[i].ptsToAdd[0] == -1) ? (self.innings[i].points[0]+self.innings[i].foulPts[0]) : '&ndash;'))
-				       .replace ('[foul]',       foul[0])
-				       .replace ('[foulPts]',  ((self.innings[i].foulPts[0]) ? self.innings[i].foulPts[0] : ''))
-				       .replace ('[totalPts]', ((self.innings[i].ptsToAdd[0] == -1) ? totalPts[0] : '&ndash;'))
-			   + inningDummy.replace('[inning]', self.innings[i].number)
-			   + entryDummy.replace (/\[safety\]/g,  safety[1])
-				       .replace ('[points]',   ((self.innings[i].ptsToAdd[1] == -1) ? (self.innings[i].points[1]+self.innings[i].foulPts[1]) : '&ndash;'))
-				       .replace ('[foul]',       foul[1])
-				       .replace ('[foulPts]',  ((self.innings[i].foulPts[1]) ? self.innings[i].foulPts[1] : ''))
-				       .replace ('[totalPts]', ((self.innings[i].ptsToAdd[1] == -1) ? totalPts[1] : '&ndash;'));
-            }
-            
-	    $('#detailsScoreBoardTableBody').remove();
-            $('#detailsScoreBoardTable')    .append(
-						tbodyDummy.replace('[entries]', '<tr>' + entries.join('</tr><tr>') + '</tr>')
-					    );
-            
-            var GDs = new Array(
-                                Math.round(100 * (totalPts[0] - self.handicap[0]) / (totalInnings[0] * self.multiplicator[0])) / 100,
-                                Math.round(100 * (totalPts[1] - self.handicap[1]) / (totalInnings[1] * self.multiplicator[1])) / 100
-                                );
-            $('#player0gd').html('&#216;&thinsp;' + ((!isNaN(GDs[0])) ? GDs[0].toFixed(2) : '0.00'));
-            $('#player1gd').html('&#216;&thinsp;' + ((!isNaN(GDs[1])) ? GDs[1].toFixed(2) : '0.00'));
-	    
-	    $('#player0hs').html('max ' + HS[0]);
-	    $('#player1hs').html('max ' + HS[1]);
-	    
-	    $('#player0name').html(self.players[0].obj.getDisplayName());
-	    $('#player1name').html(self.players[1].obj.getDisplayName());
-            
-	    //$.mobile.loading('hide');
-        //});
+	    entries[i] = entryDummy.replace (/\[safety\]/g,  safety[0])
+				   .replace ('[points]',   ((self.innings[i].ptsToAdd[0] == -1) ? (self.innings[i].points[0]+self.innings[i].foulPts[0]) : '&ndash;'))
+				   .replace ('[foul]',       foul[0])
+				   .replace ('[foulPts]',  ((self.innings[i].foulPts[0]) ? self.innings[i].foulPts[0] : ''))
+				   .replace ('[totalPts]', ((self.innings[i].ptsToAdd[0] == -1) ? totalPts[0] : '&ndash;'))
+		       + inningDummy.replace('[inning]', self.innings[i].number)
+		       + entryDummy.replace (/\[safety\]/g,  safety[1])
+				   .replace ('[points]',   ((self.innings[i].ptsToAdd[1] == -1) ? (self.innings[i].points[1]+self.innings[i].foulPts[1]) : '&ndash;'))
+				   .replace ('[foul]',       foul[1])
+				   .replace ('[foulPts]',  ((self.innings[i].foulPts[1]) ? self.innings[i].foulPts[1] : ''))
+				   .replace ('[totalPts]', ((self.innings[i].ptsToAdd[1] == -1) ? totalPts[1] : '&ndash;'));
+	}
+	
+	$('#detailsScoreBoardTableBody').remove();
+	$('#detailsScoreBoardTable')    .append(
+					    tbodyDummy.replace('[entries]', '<tr>' + entries.join('</tr><tr>') + '</tr>')
+					);
+	
+	var GDs = new Array(
+			    Math.round(100 * (totalPts[0] - self.handicap[0]) / (totalInnings[0] * self.multiplicator[0])) / 100,
+			    Math.round(100 * (totalPts[1] - self.handicap[1]) / (totalInnings[1] * self.multiplicator[1])) / 100
+			    );
+	$('#player0gd').html('&#216;&thinsp;' + ((!isNaN(GDs[0])) ? GDs[0].toFixed(2) : '0.00'));
+	$('#player1gd').html('&#216;&thinsp;' + ((!isNaN(GDs[1])) ? GDs[1].toFixed(2) : '0.00'));
+	
+	$('#player0hs').html('max ' + HS[0]);
+	$('#player1hs').html('max ' + HS[1]);
+	
+	$('#player0name').html(self.players[0].obj.getDisplayName());
+	$('#player1name').html(self.players[1].obj.getDisplayName());
     }
     
     /*
