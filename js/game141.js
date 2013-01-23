@@ -753,7 +753,42 @@ function StraightPool () {
     }
     
     this.changeSettingsDuringRuntime = function () {
-	// TODO
+	$('#game141ChangeScoreGoal').val(self.scoreGoal).slider('refresh');
+	$('#game141ChangeInningsLimit').val(self.maxInnings).slider('refresh');
+	
+	$('#popupChangeSettings').popup('open');
+    }
+    
+    this.submitChangeSettings = function () {
+	var newScoreGoal    = parseInt( $('#game141ChangeScoreGoal').val() ),
+	    newInningsLimit = parseInt( $('#game141ChangeInningsLimit').val() );
+	
+	if (Math.max(self.players[0].points, self.players[1].points) >= newScoreGoal) {
+	    app.alertDlg(
+		'You cannot set the score goal to this value.',
+		app.dummyFalse,
+		'Error',
+		'OK'
+	    );
+	    return;
+	}
+	
+	if (newInningsLimit !== 0 && self.innings.length-1 >= newInningsLimit) {
+	    app.alertDlg(
+		'You cannot set the innings limit to this value.',
+		app.dummyFalse,
+		'Error',
+		'OK'
+	    );
+	    return;
+	}
+	
+	self.scoreGoal = newScoreGoal;
+	$('#game141ScoreGoal').html(newScoreGoal);
+	
+	self.maxInnings = newInningsLimit;
+	
+	$('#popupChangeSettings').popup('close');
     }
     
     /*
@@ -813,7 +848,6 @@ function StraightPool () {
             current++;
         }
         
-	//self.oldCurrPlayer.push(self.currPlayer);
 	var currPlayer = self.currPlayer;
         
         // we will return this value to provide information on the processed inning
@@ -1495,15 +1529,16 @@ function StraightPool () {
 	$activePlayer.css('visibility', 'visible');
 	
 	// now we make the buttons work
-	$btnAccept                  .off('vclick') .on('vclick',  self.handleAcceptButton           );
-	$btnFoul                    .off('vclick') .on('vclick',  self.handleFoulButtonTap          );
-	$btnFoul                    .off('taphold').on('taphold', self.handleFoulButtonHold         );
-	$btnSafety                  .off('vclick') .on('vclick',  self.handleSafetyButton           );
-	$('.minimizePanel')         .off('click')  .on('click',   self.handleMinimizeMainPanelButton);
-	$btnPlayerSwitch            .off('click')  .on('click',   self.handlePlayerSwitchButton     );
-	$('#severeFoulSubmitButton').off('click')  .on('click',   self.handleSevereFoulSubmitButton );
-	$('#detailsScoreBoard')     .off('click')  .on('click',   self.closeDetailsPanel            );
-	$btnUndo                    .off('vclick') .on('vclick',  self.handleUndoButton             );
+	$btnAccept                   .off('vclick') .on('vclick',  self.handleAcceptButton           );
+	$btnFoul                     .off('vclick') .on('vclick',  self.handleFoulButtonTap          );
+	$btnFoul                     .off('taphold').on('taphold', self.handleFoulButtonHold         );
+	$btnSafety                   .off('vclick') .on('vclick',  self.handleSafetyButton           );
+	$('.minimizePanel')          .off('click')  .on('click',   self.handleMinimizeMainPanelButton);
+	$btnPlayerSwitch             .off('click')  .on('click',   self.handlePlayerSwitchButton     );
+	$('#severeFoulSubmitButton') .off('click')  .on('click',   self.handleSevereFoulSubmitButton );
+	$('#btnSubmitChangeSettings').off('click')  .on('click', self.submitChangeSettings);
+	$('#detailsScoreBoard')      .off('click')  .on('click',   self.closeDetailsPanel            );
+	$btnUndo                     .off('vclick') .on('vclick',  self.handleUndoButton             );
 	
 	$('#severeFoulMinusButton').off('vclick')
 				   .on ('vclick', function (event) {
