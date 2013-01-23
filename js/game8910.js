@@ -1061,7 +1061,10 @@ ShotClock8910.prototype.startClock = function () {
     this.clockIsRunning = true;
     this.resetTimes();
     
-    window.setTimeout(this.clockStep.bind(this), this.consts.REFRESH_INTERVAL);
+    var _this = this;
+    window.setTimeout(function () {
+	_this.clockStep.call(_this);
+    }, this.consts.REFRESH_INTERVAL);
     return true;
 }
 
@@ -1089,7 +1092,10 @@ ShotClock8910.prototype.clockStep = function () {
         diffTime = 0;
     }
     
-    window.setTimeout(this.clockStep.bind(this), this.consts.REFRESH_INTERVAL - diffTime);
+    var _this = this;
+    window.setTimeout(function () {
+	_this.clockStep.call(_this);
+    }, this.consts.REFRESH_INTERVAL - diffTime);
     return true;
 }
 
