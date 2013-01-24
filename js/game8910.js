@@ -1061,9 +1061,10 @@ ShotClock8910.prototype.startClock = function () {
     this.clockIsRunning = true;
     this.resetTimes();
     
+    // BUGFIX: DEFECT-ANDROID-2.3
     var _this = this;
     window.setTimeout(function () {
-	_this.clockStep.call(_this);
+	_this.clockStep();
     }, this.consts.REFRESH_INTERVAL);
     return true;
 }
@@ -1092,9 +1093,10 @@ ShotClock8910.prototype.clockStep = function () {
         diffTime = 0;
     }
     
+    // BUGFIX: DEFECT-ANDROID-2.3
     var _this = this;
     window.setTimeout(function () {
-	_this.clockStep.call(_this);
+	_this.clockStep();
     }, this.consts.REFRESH_INTERVAL - diffTime);
     return true;
 }
