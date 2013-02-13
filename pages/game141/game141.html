@@ -10,22 +10,22 @@
 	<a href="#" id="pageGame141MainBackLink" data-icon="arrow-l">Back</a>
         <h1>Game to <span id="game141ScoreGoal"></span></h1>
     </div>
-    
+
     <div id="activePlayer" class="activePlayer0" style="position: absolute; z-index: 0; width: 100%; margin: 0 auto; height: 100%; top: 0; visibility: hidden;">
     </div>
-    
+
     <div data-role="content">
-        <div class="ui-grid-b" id="overviewTable" style="position: relative; z-index: 1">            
+        <div class="ui-grid-b" id="overviewTable" style="position: relative; z-index: 1">
             <div class="ui-block-a">
                 <span id="game141Player0Name" style="font-size: 12pt; text-shadow: none;"></span>
             </div>
             <div class="ui-block-b">
-                
+
             </div>
             <div class="ui-block-c">
                 <span id="game141Player1Name" style="font-size: 12pt; text-shadow: none;"></span>
             </div>
-            
+
             <!-- Score display -->
             <div class="ui-block-a">
                 <span id="ptsPlayer0" class="score">0</span>
@@ -36,7 +36,7 @@
             <div class="ui-block-c">
                 <span id="ptsPlayer1" class="score">0</span>
             </div>
-            
+
             <!-- Consecutive Fouls display -->
             <div class="ui-block-a">
                 <div class="consecFoulMarkerWrapper">
@@ -44,7 +44,7 @@
                     <img src="../../img/foul.png" id="player0foul2" class="consecFoulMarker" />
                 </div>
             </div>
-            <div class="ui-block-b">    
+            <div class="ui-block-b">
             </div>
             <div class="ui-block-c">
                 <div class="consecFoulMarkerWrapper">
@@ -54,12 +54,12 @@
             </div>
         </div>
     </div>
-    
+
     <div id="panelDetails" class="panel">
         <div id="btnDetailsUndo" class="panelButton" style="right: 0; clear: both; z-index: 2;  cursor: pointer;">
             Undo
         </div>
-        
+
         <div style="width: 100%; position: relative; top: 50px;">
             <div id="detailsScoreBoard" style="width: 100%; cursor: pointer;">
 		<table id="detailsScoreBoardTable" cellspacing="0" cellpadding="0">
@@ -97,15 +97,15 @@
 	    </div>
         </div>
     </div>
-    
+
     <div id="panelRackAndMenu" class="panel" style="height: 100%;">
         <!-- Displays details -->
         <div class="minimizePanel" style="left:  0; border-left-width:  0;">Details</div>
         <div class="minimizePanel" style="right: 0; border-right-width: 0;">Details</div>
-        
+
         <!-- Player Switch -->
         <div id="playerSwitch">Switch Turn</div>
-        
+
         <div id="ballRack">
 	    <div id="shadow0" class="ballShadow"></div>
 	    <div id="shadow1" class="ballShadow"></div>
@@ -126,7 +126,7 @@
 
 	    <div style="z-index: 10;">
 		<div id="ball0"></div>
-		
+
 		<div id="ball1"></div>
 		<div id="ball2"></div>
 		<div id="ball3"></div>
@@ -144,7 +144,7 @@
 		<div id="ball15"></div>
 	    </div>
         </div>
-    
+
         <div style="z-index: 2; position: fixed; bottom: 0; width: 100%;">
             <div class="navbarButton" id="usrFoulDisplay">
                 <span id="foulDisplayString">Fouls</span>
@@ -161,19 +161,19 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Severe Foul input -->
     <div data-role="popup" id="popupSevereFoul" data-overlay-theme="a" data-dismissable="false">
         <div data-role="content">
             <h2>Severe Foul</h2>
-            
+
             <p>You have chosen the manual entry mode for a severe foul. Please enter the amount of penalty points.</p>
             <div data-role="controlgroup" data-type="horizontal" style="width: 50%; float: left; clear: left;">
                     <input type="button" id="severeFoulMinusButton" data-corners="false" data-shadow="false" data-icon="minus" data-iconpos="notext" />
                     <input type="button" id="severeFoulPlusButton" data-corners="false" data-shadow="false" data-icon="plus" data-iconpos="notext" />
             </div>
             <input type="number" pattern="[0-9]*" value="2" id="popupSevereFoulPoints" style="width: 50%; float: left; clear: right; height: 42px" />
-            
+
             <div data-role="fieldcontain">
                 <fieldset data-role="controlgroup">
                     <legend>Seve Fouls may require the balls to be reracked:</legend>
@@ -181,28 +181,28 @@
                     <label for="popupSevereFoulRerack">Rerack</label>
                 </fieldset>
             </div>
-                
+
             <a href="#" id="severeFoulSubmitButton" data-role="button" style="clear: both;">Enter</a>
         </div>
     </div>
-    
+
     <!-- Change Settings -->
     <div data-role="popup" id="popupChangeSettings" data-overlay-theme="a">
         <div data-role="content">
             <h2>Change Settings</h2>
-            
+
             <p>You have chosen the manual entry mode for a severe foul. Please enter the amount of penalty points.</p>
-	    
+
             <div data-role="fieldcontain">
 		<label for="game141ChangeScoreGoal">Score Goal</label>
 		<input type="range" name="game141ChangeScoreGoal" id="game141ChangeScoreGoal" value="60" min="10" max="500" step="5" />
 	    </div>
-	    
+
 	    <div data-role="fieldcontain">
 		<label for="game141ChangeInningsLimit">Innings Limit</label>
 		<input type="range" name="game141ChangeInningsLimit" id="game141ChangeInningsLimit" value="0" min="0" max="100" step="5" />
 	    </div>
-                
+
             <a href="#" id="btnSubmitChangeSettings" data-role="button" style="clear: both;">Accept</a>
         </div>
     </div>

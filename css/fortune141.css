@@ -73,7 +73,7 @@ input {
 #pageGame141 #overviewTable .consecFoulMarkerWrapper {
     position: relative;
     left: 50%;
-    
+
     width:        40px;
     margin-left: -20px;
 }
@@ -92,9 +92,9 @@ input {
     bottom:   0;
     width:    100%;
     height:   60%;
-  
+
     border-top: 1px solid black;
-	
+
     background: rgb(0,110,46);
     background: -moz-linear-gradient(top,  rgba(0,110,46,1) 0%, rgba(0,91,45,1) 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,110,46,1)), color-stop(100%,rgba(0,91,45,1)));
@@ -107,13 +107,13 @@ input {
 
 #pageGame141 .minimizePanel,
 #pageGame141 #playerSwitch {
-    position: absolute; 
-    top: 0; 
+    position: absolute;
+    top: 0;
 
-    width:       60px; 
+    width:       60px;
     height:      25px;
     line-height: 25px;
-    
+
     color: white;
     font-size:   11px;
     font-weight: bold;
@@ -137,7 +137,7 @@ input {
 
 #pageGame141 #playerSwitch {
     left: 50%;
-    
+
     width:        80px;
     margin-left: -40px;
 }
@@ -152,7 +152,7 @@ input {
     width: 100%;
     background: white;
     text-align: center;
-    
+
     border-collapse: collapse;
     border: 1px solid black;
     border-left-width:  0;
@@ -206,7 +206,7 @@ input {
 #pageGame141 #ballRack {
     position: absolute;
     bottom: 75px;
-    
+
     background: transparent;
     z-index: 2;
 }
@@ -231,19 +231,19 @@ input {
     z-index: 10;
     float: left;
     clear: left;
-    
+
     box-sizing:         border-box;
     -moz-box-sizing:    border-box; /* Firefox */
     -webkit-box-sizing: border-box; /* Safari */
-    
+
     margin:  0;
     padding: 0;
-    
+
     height: 52px; /* also change line-height! */
-    
+
     /* centers text vertically */
     text-align: center;
-    
+
     background: #333;
 
     background-image: -webkit-gradient(linear, left top, left bottom, from( #444 /*{a-bup-background-start}*/), to( #2d2d2d /*{a-bup-background-end}*/)); /* Saf4+, Chrome */
@@ -252,14 +252,14 @@ input {
     background-image:     -ms-linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/); /* IE10 */
     background-image:      -o-linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/); /* Opera 11.10+ */
     background-image:         linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/);
-    
+
     border: 1px solid #111;
     border-bottom-width: 0;
     border-right-width:  0;
-    
+
     color: #fff;
     text-shadow: 0 1px 1px #111;
-    
+
     cursor: pointer;
 }
 
@@ -267,44 +267,48 @@ input {
     border: 1px solid #000;
     border-bottom-width: 0;
     border-right-width:  0;
-    
+
     background: #222;
-    
+
     background-image: -webkit-gradient(linear, left top, left bottom, from( #202020 /*{a-bdown-background-start}*/), to( #2c2c2c /*{a-bdown-background-end}*/)); /* Saf4+, Chrome */
     background-image: -webkit-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* Chrome 10+, Saf5.1+ */
     background-image:    -moz-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* FF3.6 */
     background-image:     -ms-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* IE10 */
     background-image:      -o-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* Opera 11.10+ */
-    background-image:         linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/);    
+    background-image:         linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/);
 }
 
 #pageGame141 #usrFoulDisplay {
     border-left-width: 0;
     clear: left;
     line-height: 25px;
-    
-    width: 30%;
+
+    /*width: 30%;*/
+    width: 50%;
 }
 
 #pageGame141 #usrSafeDisplay {
     clear: none;
     line-height: 25px;
-    
-    width: 30%;
+
+    /*width: 30%;*/
+    width: 50%;
 }
 
 #pageGame141 #usrAccept {
     clear: right;
     margin-right: -.5px;
     line-height: 52px;
-    
-    width: 40%;
+
+    /*width: 40%;*/
+    width: 0;
+    display: none !important;
 }
 
 #pageGame141 #usrFoulDisplay #foulDisplayString,
 #pageGame141 #usrSafeDisplay #safetyString {
     font-weight: bold;
-    
+
     position: relative;
     top: 2px;
 }
@@ -322,19 +326,19 @@ input {
     position: fixed;
     top:  0;
     float: left;
-    
+
     width:       100%;
     height:      50px;
     line-height: 50px;
-    
+
     box-sizing:         border-box;
     -moz-box-sizing:    border-box; /* Firefox */
     -webkit-box-sizing: border-box; /* Safari */
-    
+
     margin:  0;
     padding: 0;
     text-align: center;
-    
+
     background: #333;
 
     background-image: -webkit-gradient(linear, left top, left bottom, from( #444 /*{a-bup-background-start}*/), to( #2d2d2d /*{a-bup-background-end}*/)); /* Saf4+, Chrome */
@@ -343,29 +347,29 @@ input {
     background-image:     -ms-linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/); /* IE10 */
     background-image:      -o-linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/); /* Opera 11.10+ */
     background-image:         linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/);
-    
+
     border: 1px solid #111;
     border-top-width:   0;
     border-right-width: 0;
     border-left-width:  0;
-    
+
     color: #fff;
     text-shadow: 0 1px 1px #111;
-    
+
     cursor: pointer;
 }
 
 #pageGame141 #panelDetails .panelButtonDown {
     border: 1px solid #000;
-    
+
     background: #222;
-    
+
     background-image: -webkit-gradient(linear, left top, left bottom, from( #202020 /*{a-bdown-background-start}*/), to( #2c2c2c /*{a-bdown-background-end}*/)); /* Saf4+, Chrome */
     background-image: -webkit-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* Chrome 10+, Saf5.1+ */
     background-image:    -moz-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* FF3.6 */
     background-image:     -ms-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* IE10 */
     background-image:      -o-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* Opera 11.10+ */
-    background-image:         linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/);    
+    background-image:         linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/);
 }
 
 
@@ -378,7 +382,7 @@ input {
 #pageGame8910 .ui-grid-solo {
     width: 100%;
     margin-top: 0;
-    
+
     text-align: center;
 }
 
@@ -406,24 +410,24 @@ input {
 
 #pageGame8910 #shotClock {
     position: relative;
-    
+
     height:      30px;
     line-height: 30px;
-    
+
     text-align: right;
 }
 
 #pageGame8910 #shotClock #remainingTime {
     height: 100%;
     width:  0%;
-    
+
     position: absolute;
     z-index: 1;
     left: 0;
     top:  0;
-    
+
     background: rgb(207,4,4);
-    
+
     background: -moz-linear-gradient(left,  rgba(207,4,4,1) 0%, rgba(255,48,25,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(207,4,4,1)), color-stop(100%,rgba(255,48,25,1)));
     background: -webkit-linear-gradient(left,  rgba(207,4,4,1) 0%,rgba(255,48,25,1) 100%);
@@ -435,7 +439,7 @@ input {
 #pageGame8910 #shotClock #game8910ShotClockRemainingTime,
 #pageGame8910 #shotClock #game8910ShotClockRemainingTimeSuffix {
     position: relative;
-    
+
     z-index: 2;
     text-shadow: none;
 }
@@ -448,7 +452,7 @@ input {
     position: absolute;
     height:   100%;
     width:    100%;
-    
+
     text-align: center;
     z-index: 2;
     text-shadow: none;
@@ -457,46 +461,46 @@ input {
 #pageGame8910 .btnUp {
     height:      50px;
     line-height: 50px;
-    
+
     backgroumd: #333;
-    
+
     background-image: -webkit-gradient(linear, left top, left bottom, from( #444 /*{a-bup-background-start}*/), to( #2d2d2d /*{a-bup-background-end}*/)); /* Saf4+, Chrome */
     background-image: -webkit-linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/); /* Chrome 10+, Saf5.1+ */
     background-image:    -moz-linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/); /* FF3.6 */
     background-image:     -ms-linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/); /* IE10 */
     background-image:      -o-linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/); /* Opera 11.10+ */
     background-image:         linear-gradient( #444 /*{a-bup-background-start}*/, #2d2d2d /*{a-bup-background-end}*/);
-    
+
     box-sizing:         border-box;
     -moz-box-sizing:    border-box; /* Firefox */
     -webkit-box-sizing: border-box; /* Safari */
-    
+
     border: 1px solid #111;
     border-left-width:   0;
     border-right-width:  0;
-    
+
     color: #fff;
     text-shadow: 0 1px 1px #111;
-    
+
     cursor: pointer;
 }
 
 #pageGame8910 .btnDown {
     background: #222;
-    
+
     background-image: -webkit-gradient(linear, left top, left bottom, from( #202020 /*{a-bdown-background-start}*/), to( #2c2c2c /*{a-bdown-background-end}*/)); /* Saf4+, Chrome */
     background-image: -webkit-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* Chrome 10+, Saf5.1+ */
     background-image:    -moz-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* FF3.6 */
     background-image:     -ms-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* IE10 */
     background-image:      -o-linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); /* Opera 11.10+ */
-    background-image:         linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/); 
+    background-image:         linear-gradient( #202020 /*{a-bdown-background-start}*/, #2c2c2c /*{a-bdown-background-end}*/);
 }
 
 #pageGame8910 #btnShotClockCtrl {
     width: 50%;
     border-top-color: #333;
     border-right-width: 1px;
-    
+
     height:      70px;
     line-height: 70px;
 }
@@ -504,7 +508,7 @@ input {
 #pageGame8910 #btnShotClockSwitch {
     width: 50%;
     border-top-color: #333;
-    
+
     height:      70px;
     line-height: 70px;
 }
@@ -525,7 +529,7 @@ input {
 #pageGame8910 #setScore2Bar {
     height: 100%;
     width:  0%;
-    
+
     position: absolute;
     z-index: 1;
     top: 0;
@@ -545,7 +549,7 @@ input {
 }
 #pageGame8910 #setScore2Bar {
     right: 0;
-	
+
     background: rgb(0,13,255);
     background: -moz-linear-gradient(left,  rgba(0,13,255,1) 0%, rgba(0,111,255,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,13,255,1)), color-stop(100%,rgba(0,111,255,1)));
@@ -559,10 +563,10 @@ input {
 #pageGame8910 #mainPanel #setScore1,
 #pageGame8910 #mainPanel #setScore2 {
     position: relative;
-    
+
     height: 40px;
     line-height: 40px;
-    
+
     border-bottom: 1px solid black;
 }
 
@@ -570,13 +574,13 @@ input {
 #pageGame8910 #mainPanel #setScore2 span {
     position: relative;
     z-index: 2;
-    
+
     font-size: large;
     font-weight: bold;
 }
 
 #pageGame8910 #mainPanel #setScore1 span {
-    margin-right: 10px;    
+    margin-right: 10px;
 }
 
 #pageGame8910 #mainPanel #setScore2 span {
@@ -632,14 +636,14 @@ input {
 #pageGame8910 #setOverviewWrapper {
     margin:  0;
     padding: 0;
-    
+
     border-bottom: 1px solid black;
 }
 
 #pageGame8910 #setOverview {
     margin:  0 auto;
     padding: 0;
-    
+
     width: auto;
 }
 
@@ -662,7 +666,7 @@ input {
 
 .userPictureSmall, .userPictureMedium, .userPictureBig {
     border: 1px solid black;
-    
+
     width:  auto;
     height: auto;
 }
@@ -706,10 +710,10 @@ input {
 *.ui-listview *.ui-btn-down-c,
 *.ui-listview *.ui-btn-hover-c {
     color: black;
-    
+
     background: #eee;
     background-image: none;
-    
+
     text-shadow: none;
 }
 
