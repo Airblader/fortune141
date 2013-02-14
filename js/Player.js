@@ -368,6 +368,7 @@ function Player () {
                                 }
                             } else {
                                 HS = 0;
+                                HSRunouts = 0;
                             }
                         }
                     }
