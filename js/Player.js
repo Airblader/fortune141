@@ -359,10 +359,12 @@ function Player () {
                             if ( idxPlayer === tmpGame.sets[i].racks[j].wonByPlayer ) {
                                 stats.racksWon++;
                                 HS++;
+                                stats.HS = Math.max( stats.HS, HS );
 
                                 if ( tmpGame.sets[i].racks[j].runOut ) {
                                     stats.totalRunouts++;
                                     HSRunouts++;
+                                    stats.HSRunouts = Math.max( stats.HSRunouts, HSRunouts );
                                 } else {
                                     HSRunouts = 0;
                                 }
@@ -372,9 +374,6 @@ function Player () {
                             }
                         }
                     }
-
-                    stats.HS = Math.max( stats.HS, HS );
-                    stats.HSRunouts = Math.max( stats.HSRunouts, HSRunouts );
 
                     switch ( tmpGame.gameType ) {
                         case 8:
