@@ -26,7 +26,7 @@ $( document ).on( 'pagebeforeshow', '#pageProfilesList', function () {
     var entryDummyBSetsDummy = ' ([num] sets)';
 
     function doIt () {
-        if ( !readyA || !readyB ) {
+        if( !readyA || !readyB ) {
             return;
         }
 
@@ -36,7 +36,7 @@ $( document ).on( 'pagebeforeshow', '#pageProfilesList', function () {
             var usageA = parseInt( a['Usage'] ),
                 usageB = parseInt( b['Usage'] );
 
-            if ( usageA === usageB ) {
+            if( usageA === usageB ) {
                 return 0;
             }
 
@@ -45,11 +45,11 @@ $( document ).on( 'pagebeforeshow', '#pageProfilesList', function () {
 
         var entries = new Array( res.length );
 
-        for ( var i = 0; i < res.length; i++ ) {
+        for( var i = 0; i < res.length; i++ ) {
             var currentEntry = res[i],
                 ID = parseInt( currentEntry['ID'] );
 
-            if ( currentEntry['GameType'] === '141' ) {
+            if( currentEntry['GameType'] === '141' ) {
                 var limits = 'Limits: ' + currentEntry['ScoreGoal'] + ' Points / '
                         + ((parseInt( currentEntry['MaxInnings'] ) !== 0) ? (currentEntry['MaxInnings'] + ' Innings') : 'none'),
                     handicap = (parseInt( currentEntry['HandicapPlayer1'] ) == 0
@@ -97,7 +97,7 @@ $( document ).on( 'pagebeforeshow', '#pageProfilesList', function () {
         [],
         function (tx, results) {
             resA = new Array( results.rows.length );
-            for ( var i = 0; i < results.rows.length; i++ ) {
+            for( var i = 0; i < results.rows.length; i++ ) {
                 resA[i] = results.rows.item( i );
             }
 
@@ -112,7 +112,7 @@ $( document ).on( 'pagebeforeshow', '#pageProfilesList', function () {
         [],
         function (tx, results) {
             resB = new Array( results.rows.length );
-            for ( var i = 0; i < results.rows.length; i++ ) {
+            for( var i = 0; i < results.rows.length; i++ ) {
                 resB[i] = results.rows.item( i );
             }
 
@@ -131,7 +131,7 @@ $( document ).on( 'pageshow', '#pageProfiles141Details', function () {
 
     $btnSubmit.button( 'disable' ).data( 'ID', ID );
     $btnDelete.button( 'disable' ).data( 'ID', ID );
-    if ( ID > 1 ) {
+    if( ID > 1 ) {
         $btnSubmit.button( 'enable' )
         $btnDelete.button( 'enable' );
     }
@@ -140,7 +140,7 @@ $( document ).on( 'pageshow', '#pageProfiles141Details', function () {
         'SELECT * FROM ' + app.dbFortune.tables.Game141Profile.name + ' WHERE ID="' + ID + '" LIMIT 1',
         [],
         function (tx, result) {
-            if ( result.rows.length == 0 ) {
+            if( result.rows.length == 0 ) {
                 app.alertDlg(
                     'Invalid Profile ID',
                     app.dummyFalse,
@@ -168,7 +168,7 @@ $( document ).on( 'pageshow', '#pageProfiles141Details', function () {
                 'SELECT * FROM ' + app.dbFortune.tables.GameModes.name + ' ORDER BY ID ASC',
                 [],
                 function (tx, results) {
-                    if ( results.rows.length == 0 ) {
+                    if( results.rows.length == 0 ) {
                         $( '#edit141Profile_GameMode' ).html(
                             '<option value="-1">None</option>'
                         ).trigger( 'change' );
@@ -178,7 +178,7 @@ $( document ).on( 'pageshow', '#pageProfiles141Details', function () {
 
                     var entryDummy = '<option value="[id]">[name]</option>',
                         entries = new Array( results.rows.length );
-                    for ( var i = 0; i < results.rows.length; i++ ) {
+                    for( var i = 0; i < results.rows.length; i++ ) {
                         var row = results.rows.item( i );
                         gameModeIDs.push( parseInt( row['ID'] ) );
 
@@ -200,74 +200,74 @@ $( document ).on( 'pageshow', '#pageProfiles141Details', function () {
 
 $( document ).off( 'click', '#edit141Profile_Submit' )
     .on( 'click', '#edit141Profile_Submit', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    var ID = $( '#edit141Profile_Submit' ).data( 'ID' );
+        var ID = $( '#edit141Profile_Submit' ).data( 'ID' );
 
-    app.dbFortune.query(
-        'UPDATE ' + app.dbFortune.tables.Game141Profile.name + ' SET '
-            + 'Name=?, ScoreGoal=?, MaxInnings=?, InningsExtension=?, HandicapPlayer1=?, HandicapPlayer2=?, MultiplicatorPlayer1=?, MultiplicatorPlayer2=?, GameMode=? '
-            + 'WHERE ID="' + ID + '"',
-        [$( '#edit141Profile_Name' ).val(),
-            $( '#edit141Profile_ScoreGoal' ).val(),
-            $( '#edit141Profile_InningsLimit' ).val(),
-            $( '#edit141Profile_InningsExtension' ).val(),
-            $( '#edit141Profile_Handicap1' ).val(),
-            $( '#edit141Profile_Handicap2' ).val(),
-            $( '#edit141Profile_Multiplicator1' ).val(),
-            $( '#edit141Profile_Multiplicator2' ).val(),
-            $( '#edit141Profile_GameMode' ).val()],
-        function () {
-            $.mobile.changePage( 'profiles_list.html' );
-        },
-        function () {
-            app.alertDlg(
-                'Oops! Something went wrong :( Saving failed!',
-                app.dummyFalse,
-                'Error',
-                'OK'
-            );
-        }
-    );
-} );
+        app.dbFortune.query(
+            'UPDATE ' + app.dbFortune.tables.Game141Profile.name + ' SET '
+                + 'Name=?, ScoreGoal=?, MaxInnings=?, InningsExtension=?, HandicapPlayer1=?, HandicapPlayer2=?, MultiplicatorPlayer1=?, MultiplicatorPlayer2=?, GameMode=? '
+                + 'WHERE ID="' + ID + '"',
+            [$( '#edit141Profile_Name' ).val(),
+                $( '#edit141Profile_ScoreGoal' ).val(),
+                $( '#edit141Profile_InningsLimit' ).val(),
+                $( '#edit141Profile_InningsExtension' ).val(),
+                $( '#edit141Profile_Handicap1' ).val(),
+                $( '#edit141Profile_Handicap2' ).val(),
+                $( '#edit141Profile_Multiplicator1' ).val(),
+                $( '#edit141Profile_Multiplicator2' ).val(),
+                $( '#edit141Profile_GameMode' ).val()],
+            function () {
+                $.mobile.changePage( 'profiles_list.html' );
+            },
+            function () {
+                app.alertDlg(
+                    'Oops! Something went wrong :( Saving failed!',
+                    app.dummyFalse,
+                    'Error',
+                    'OK'
+                );
+            }
+        );
+    } );
 
 $( document ).off( 'click', '#edit141Profile_Delete' )
     .on( 'click', '#edit141Profile_Delete', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    var ID = $( '#edit141Profile_Delete' ).data( 'ID' );
+        var ID = $( '#edit141Profile_Delete' ).data( 'ID' );
 
-    app.confirmDlg(
-        'Are you sure you want to delete this profile? This action cannot be undone.',
-        function () {
-            app.dbFortune.query(
-                'DELETE FROM ' + app.dbFortune.tables.Game141Profile.name + ' WHERE ID="' + ID + '"',
-                [],
-                function () {
-                    $.mobile.changePage( 'profiles_list.html' );
-                },
-                function () {
-                    app.alertDlg(
-                        'Oops! Something went wrong :( Deleting failed!',
-                        app.dummyFalse,
-                        'Error',
-                        'OK'
-                    );
-                }
-            );
-        },
-        app.dummyFalse,
-        'Warning',
-        'Delete,Cancel'
-    );
-} );
+        app.confirmDlg(
+            'Are you sure you want to delete this profile? This action cannot be undone.',
+            function () {
+                app.dbFortune.query(
+                    'DELETE FROM ' + app.dbFortune.tables.Game141Profile.name + ' WHERE ID="' + ID + '"',
+                    [],
+                    function () {
+                        $.mobile.changePage( 'profiles_list.html' );
+                    },
+                    function () {
+                        app.alertDlg(
+                            'Oops! Something went wrong :( Deleting failed!',
+                            app.dummyFalse,
+                            'Error',
+                            'OK'
+                        );
+                    }
+                );
+            },
+            app.dummyFalse,
+            'Warning',
+            'Delete,Cancel'
+        );
+    } );
 
 $( document ).on( 'pageshow', '#pageProfiles141Add', function () {
     app.dbFortune.query(
         'SELECT * FROM ' + app.dbFortune.tables.GameModes.name + ' ORDER BY ID ASC',
         [],
         function (tx, results) {
-            if ( results.rows.length == 0 ) {
+            if( results.rows.length == 0 ) {
                 $( '#add141Profile_GameMode' ).append(
                     '<option value="-1">None</option>'
                 ).trigger( 'change' );
@@ -277,7 +277,7 @@ $( document ).on( 'pageshow', '#pageProfiles141Add', function () {
 
             var entryDummy = '<option value="[id]">[name]</option>',
                 entries = new Array( results.rows.length );
-            for ( var i = 0; i < results.rows.length; i++ ) {
+            for( var i = 0; i < results.rows.length; i++ ) {
                 var row = results.rows.item( i );
 
                 entries[i] = entryDummy
@@ -295,35 +295,35 @@ $( document ).on( 'pageshow', '#pageProfiles141Add', function () {
 
 $( document ).off( 'click', '#add141Profile_Submit' )
     .on( 'click', '#add141Profile_Submit', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    app.dbFortune.query(
-        'INSERT INTO ' + app.dbFortune.tables.Game141Profile.name + ' '
-            + app.dbFortune.getTableFields_String( app.dbFortune.tables.Game141Profile, false, false ) + ' '
-            + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [         $( '#add141Profile_Name' ).val() ,
-            parseInt( $( '#add141Profile_ScoreGoal' ).val() ),
-            parseInt( $( '#add141Profile_InningsLimit' ).val() ),
-            parseInt( $( '#add141Profile_InningsExtension' ).val() ),
-            parseInt( $( '#add141Profile_Handicap1' ).val() ),
-            parseInt( $( '#add141Profile_Handicap2' ).val() ),
-            parseInt( $( '#add141Profile_Multiplicator1' ).val() ),
-            parseInt( $( '#add141Profile_Multiplicator2' ).val() ),
-            parseInt( $( '#add141Profile_GameMode' ).val() ),
-            0],
-        function () {
-            $.mobile.changePage( 'profiles_list.html' );
-        },
-        function () {
-            app.alertDlg(
-                'Oops! Something went wrong :( Saving failed!',
-                app.dummyFalse,
-                'Error',
-                'OK'
-            );
-        }
-    );
-} );
+        app.dbFortune.query(
+            'INSERT INTO ' + app.dbFortune.tables.Game141Profile.name + ' '
+                + app.dbFortune.getTableFields_String( app.dbFortune.tables.Game141Profile, false, false ) + ' '
+                + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [         $( '#add141Profile_Name' ).val() ,
+                parseInt( $( '#add141Profile_ScoreGoal' ).val() ),
+                parseInt( $( '#add141Profile_InningsLimit' ).val() ),
+                parseInt( $( '#add141Profile_InningsExtension' ).val() ),
+                parseInt( $( '#add141Profile_Handicap1' ).val() ),
+                parseInt( $( '#add141Profile_Handicap2' ).val() ),
+                parseInt( $( '#add141Profile_Multiplicator1' ).val() ),
+                parseInt( $( '#add141Profile_Multiplicator2' ).val() ),
+                parseInt( $( '#add141Profile_GameMode' ).val() ),
+                0],
+            function () {
+                $.mobile.changePage( 'profiles_list.html' );
+            },
+            function () {
+                app.alertDlg(
+                    'Oops! Something went wrong :( Saving failed!',
+                    app.dummyFalse,
+                    'Error',
+                    'OK'
+                );
+            }
+        );
+    } );
 
 $( document ).on( 'pageshow', '#pageProfiles8910Details', function () {
     $btnSubmit = $( '#edit8910Profile_Submit' );
@@ -339,7 +339,7 @@ $( document ).on( 'pageshow', '#pageProfiles8910Details', function () {
             'SELECT * FROM ' + app.dbFortune.tables.GameModes.name + ' ORDER BY ID ASC',
             [],
             function (tx, results) {
-                if ( results.rows.length == 0 ) {
+                if( results.rows.length == 0 ) {
                     $( '#edit8910Profile_GameMode' ).html(
                         '<option value="-1">None</option>'
                     ).trigger( 'change' );
@@ -350,7 +350,7 @@ $( document ).on( 'pageshow', '#pageProfiles8910Details', function () {
                 var entryDummy = '<option value="[id]">[name]</option>',
                     entries = new Array( results.rows.length );
 
-                for ( var i = 0; i < results.rows.length; i++ ) {
+                for( var i = 0; i < results.rows.length; i++ ) {
                     var row = results.rows.item( i );
                     gameModeIDs.push( parseInt( row['ID'] ) );
 
@@ -368,20 +368,20 @@ $( document ).on( 'pageshow', '#pageProfiles8910Details', function () {
 
     $btnSubmit.button( 'disable' ).data( 'ID', ID );
     $btnDelete.button( 'disable' ).data( 'ID', ID );
-    if ( ID > 1 ) {
+    if( ID > 1 ) {
         $btnSubmit.button( 'enable' )
         $btnDelete.button( 'enable' );
-    } else if ( ID === -1 ) {
+    } else if( ID === -1 ) {
         $btnSubmit.button( 'enable' );
         $( '#edit8910Profile_DeleteWrapper' ).css( 'display', 'none' );
     }
 
-    if ( ID > 0 ) {
+    if( ID > 0 ) {
         app.dbFortune.query(
             'SELECT * FROM ' + app.dbFortune.tables.Game8910Profile.name + ' WHERE ID="' + ID + '" LIMIT 1',
             [],
             function (tx, result) {
-                if ( result.rows.length == 0 ) {
+                if( result.rows.length == 0 ) {
                     app.alertDlg(
                         'Invalid Profile ID',
                         app.dummyFalse,
@@ -407,110 +407,110 @@ $( document ).on( 'pageshow', '#pageProfiles8910Details', function () {
                 return true;
             }
         );
-    } else if ( ID === -1 ) {
+    } else if( ID === -1 ) {
         createGameModesList( -1 );
     }
 } );
 
 $( document ).off( 'click', '#edit8910Profile_Submit' )
     .on( 'click', '#edit8910Profile_Submit', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    var ID = $( '#edit8910Profile_Submit' ).data( 'ID' );
+        var ID = $( '#edit8910Profile_Submit' ).data( 'ID' );
 
-    if ( ID === -1 ) { // new profile
-        app.dbFortune.query(
-            'INSERT INTO '
-                + app.dbFortune.tables.Game8910Profile.name + ' '
-                + app.dbFortune.getTableFields_String( app.dbFortune.tables.Game8910Profile, false, false ) + ' '
-                + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [
-                $( '#edit8910Profile_Name' ).val(),
-                $( '#edit8910Profile_GameType' ).val(),
-                $( '#edit8910Profile_BreakType' ).val(),
-                $( '#edit8910Profile_NumberOfSets' ).val(),
-                $( '#edit8910Profile_RacksPerSet' ).val(),
-                $( '#edit8910Profile_Shotclock' ).val(),
-                $( '#edit8910Profile_Extension' ).val(),
-                $( '#edit8910Profile_ExtensionsPerRack' ).val(),
-                $( '#edit8910Profile_UseSound' ).val(),
-                $( '#edit8910Profile_GameMode' ).val(),
-                0
-            ],
-            function () {
-                $.mobile.changePage( 'profiles_list.html' );
-            },
-            function () {
-                app.alertDlg(
-                    'Oops! Something went wrong :( Saving failed!',
-                    app.dummyFalse,
-                    'Error',
-                    'OK'
-                );
-            }
-        );
-    } else { // update profile
-        app.dbFortune.query(
-            'UPDATE '
-                + app.dbFortune.tables.Game8910Profile.name
-                + ' SET Name=?, GameType=?, BreakType=?, NumberOfSets=?, RacksPerSet=?, '
-                + 'Shotclock=?, ExtensionTime=?, ExtensionsPerRack=?, ShotclockUseSound=?, GameMode=? '
-                + 'WHERE ID='
-                + ID,
-            [
-                $( '#edit8910Profile_Name' ).val(),
-                $( '#edit8910Profile_GameType' ).val(),
-                $( '#edit8910Profile_BreakType' ).val(),
-                $( '#edit8910Profile_NumberOfSets' ).val(),
-                $( '#edit8910Profile_RacksPerSet' ).val(),
-                $( '#edit8910Profile_Shotclock' ).val(),
-                $( '#edit8910Profile_Extension' ).val(),
-                $( '#edit8910Profile_ExtensionsPerRack' ).val(),
-                $( '#edit8910Profile_UseSound' ).val(),
-                $( '#edit8910Profile_GameMode' ).val()
-            ],
-            function () {
-                $.mobile.changePage( 'profiles_list.html' );
-            },
-            function () {
-                app.alertDlg(
-                    'Oops! Something went wrong :( Saving failed!',
-                    app.dummyFalse,
-                    'Error',
-                    'OK'
-                );
-            }
-        );
-    }
-} );
-
-$( document ).off( 'click', '#edit8910Profile_Delete' )
-    .on( 'click', '#edit8910Profile_Delete', function (event) {
-    event.preventDefault();
-
-    var ID = $( '#edit8910Profile_Delete' ).data( 'ID' );
-
-    app.confirmDlg(
-        'Are you sure you want to delete this profile? This action cannot be undone.',
-        function () {
+        if( ID === -1 ) { // new profile
             app.dbFortune.query(
-                'DELETE FROM ' + app.dbFortune.tables.Game8910Profile.name + ' WHERE ID=' + ID,
-                [],
+                'INSERT INTO '
+                    + app.dbFortune.tables.Game8910Profile.name + ' '
+                    + app.dbFortune.getTableFields_String( app.dbFortune.tables.Game8910Profile, false, false ) + ' '
+                    + 'VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                [
+                    $( '#edit8910Profile_Name' ).val(),
+                    $( '#edit8910Profile_GameType' ).val(),
+                    $( '#edit8910Profile_BreakType' ).val(),
+                    $( '#edit8910Profile_NumberOfSets' ).val(),
+                    $( '#edit8910Profile_RacksPerSet' ).val(),
+                    $( '#edit8910Profile_Shotclock' ).val(),
+                    $( '#edit8910Profile_Extension' ).val(),
+                    $( '#edit8910Profile_ExtensionsPerRack' ).val(),
+                    $( '#edit8910Profile_UseSound' ).val(),
+                    $( '#edit8910Profile_GameMode' ).val(),
+                    0
+                ],
                 function () {
                     $.mobile.changePage( 'profiles_list.html' );
                 },
                 function () {
                     app.alertDlg(
-                        'Oops! Something went wrong :( Deleting failed!',
+                        'Oops! Something went wrong :( Saving failed!',
                         app.dummyFalse,
                         'Error',
                         'OK'
                     );
                 }
             );
-        },
-        app.dummyFalse,
-        'Warning',
-        'Delete,Cancel'
-    );
-} );
+        } else { // update profile
+            app.dbFortune.query(
+                'UPDATE '
+                    + app.dbFortune.tables.Game8910Profile.name
+                    + ' SET Name=?, GameType=?, BreakType=?, NumberOfSets=?, RacksPerSet=?, '
+                    + 'Shotclock=?, ExtensionTime=?, ExtensionsPerRack=?, ShotclockUseSound=?, GameMode=? '
+                    + 'WHERE ID='
+                    + ID,
+                [
+                    $( '#edit8910Profile_Name' ).val(),
+                    $( '#edit8910Profile_GameType' ).val(),
+                    $( '#edit8910Profile_BreakType' ).val(),
+                    $( '#edit8910Profile_NumberOfSets' ).val(),
+                    $( '#edit8910Profile_RacksPerSet' ).val(),
+                    $( '#edit8910Profile_Shotclock' ).val(),
+                    $( '#edit8910Profile_Extension' ).val(),
+                    $( '#edit8910Profile_ExtensionsPerRack' ).val(),
+                    $( '#edit8910Profile_UseSound' ).val(),
+                    $( '#edit8910Profile_GameMode' ).val()
+                ],
+                function () {
+                    $.mobile.changePage( 'profiles_list.html' );
+                },
+                function () {
+                    app.alertDlg(
+                        'Oops! Something went wrong :( Saving failed!',
+                        app.dummyFalse,
+                        'Error',
+                        'OK'
+                    );
+                }
+            );
+        }
+    } );
+
+$( document ).off( 'click', '#edit8910Profile_Delete' )
+    .on( 'click', '#edit8910Profile_Delete', function (event) {
+        event.preventDefault();
+
+        var ID = $( '#edit8910Profile_Delete' ).data( 'ID' );
+
+        app.confirmDlg(
+            'Are you sure you want to delete this profile? This action cannot be undone.',
+            function () {
+                app.dbFortune.query(
+                    'DELETE FROM ' + app.dbFortune.tables.Game8910Profile.name + ' WHERE ID=' + ID,
+                    [],
+                    function () {
+                        $.mobile.changePage( 'profiles_list.html' );
+                    },
+                    function () {
+                        app.alertDlg(
+                            'Oops! Something went wrong :( Deleting failed!',
+                            app.dummyFalse,
+                            'Error',
+                            'OK'
+                        );
+                    }
+                );
+            },
+            app.dummyFalse,
+            'Warning',
+            'Delete,Cancel'
+        );
+    } );

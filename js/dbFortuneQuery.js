@@ -38,7 +38,7 @@ function dbFortuneQuery () {
             cbError = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 
         self.db.transaction( function (tx) {
-            for ( var i = 0; i < self.statements.length; i++ ) {
+            for( var i = 0; i < self.statements.length; i++ ) {
                 tx.executeSql(
                     self.statements[i].sql,
                     self.statements[i].args,

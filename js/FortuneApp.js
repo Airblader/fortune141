@@ -51,7 +51,7 @@ function FortuneApp () {
     this.triggerTutorial = function (key) {
         var tooltip = self.tooltips.get( key );
 
-        if ( tooltip.length === 0 || !self.settings.getTooltipsEnabled() ) {
+        if( tooltip.length === 0 || !self.settings.getTooltipsEnabled() ) {
             return false;
         }
 
@@ -75,7 +75,7 @@ function FortuneApp () {
             1,
             function () {
                 // Image
-                if ( self.Players.main.image.length > 0 ) {
+                if( self.Players.main.image.length > 0 ) {
                     $( '#indexMainUserImg' ).attr( 'src', self.Players.main.image );
                 }
                 else {
@@ -105,7 +105,7 @@ function FortuneApp () {
                 + app.dbFortune.tables.Game8910.name + ' WHERE isFinished=0)',
             [],
             function (tx, result) {
-                if ( result.rows.length == 0 ) {
+                if( result.rows.length == 0 ) {
                     return false;
                 }
 
@@ -127,7 +127,7 @@ function FortuneApp () {
                 + app.dbFortune.tables.Game8910.name + ' WHERE isFinished=1)',
             [],
             function (tx, result) {
-                if ( result.rows.length == 0 ) {
+                if( result.rows.length == 0 ) {
                     return false;
                 }
 
@@ -142,7 +142,7 @@ function FortuneApp () {
             'SELECT COUNT(*) AS numPlayers FROM ' + app.dbFortune.tables.Player.name,
             [],
             function (tx, result) {
-                if ( result.rows.length == 0 ) {
+                if( result.rows.length == 0 ) {
                     return false;
                 }
 
@@ -162,7 +162,7 @@ function FortuneApp () {
                 + app.dbFortune.tables.Game8910Profile.name + ')',
             [],
             function (tx, result) {
-                if ( result.rows.length == 0 ) {
+                if( result.rows.length == 0 ) {
                     return false;
                 }
 
@@ -181,7 +181,7 @@ function FortuneApp () {
         var forceCheck = (typeof arguments[0] !== 'undefined') ? arguments[0] : false;
         lsVarName = 'supportsCanvas';
 
-        if ( window.localStorage.getItem( lsVarName ) == 'true' && !forceCheck ) {
+        if( window.localStorage.getItem( lsVarName ) == 'true' && !forceCheck ) {
             return window.localStorage.getItem( lsVarName );
         }
 
@@ -226,10 +226,10 @@ function FortuneApp () {
             valid:true,
         };
 
-        if ( required && validated.name.length == 0 ) {
+        if( required && validated.name.length == 0 ) {
             validated.valid = false;
         }
-        else if ( validated.name.length != 0 && validated.name.length < 3 ) {
+        else if( validated.name.length != 0 && validated.name.length < 3 ) {
             validated.valid = false;
         }
 
@@ -248,9 +248,9 @@ function FortuneApp () {
         var cbSuccess = arguments[1],
             cbDenied = arguments[2];
 
-        if ( self.debugMode ) {
+        if( self.debugMode ) {
             var response = confirm( arguments[0] );
-            if ( response ) {
+            if( response ) {
                 cbSuccess();
             } else {
                 cbDenied();
@@ -259,7 +259,7 @@ function FortuneApp () {
             navigator.notification.confirm(
                 arguments[0],
                 function (response) {
-                    if ( response == 1 ) {
+                    if( response == 1 ) {
                         cbSuccess();
                     } else {
                         cbDenied();
@@ -281,7 +281,7 @@ function FortuneApp () {
     this.alertDlg = function () {
         var cbSuccess = arguments[1];
 
-        if ( self.debugMode ) {
+        if( self.debugMode ) {
             alert( arguments[0] );
             cbSuccess();
         } else {
@@ -317,7 +317,7 @@ function FortuneApp () {
      *		duration : duration of vibration
      */
     this.vibrate = function () {
-        if ( self.debugMode ) {
+        if( self.debugMode ) {
             //
         } else {
             //navigator.notification.vibrate(duration);
@@ -331,7 +331,7 @@ function FortuneApp () {
         var onSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
             onError = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 
-        if ( self.debugMode ) {
+        if( self.debugMode ) {
             self.alertDlg(
                 'Sorry, pictures cannot be taken on a computer!',
                 app.dummyFalse,
@@ -342,7 +342,7 @@ function FortuneApp () {
             self.confirmDlg(
                 'Please choose whether you want to take a new picture or load one from your albums.',
                 function () {
-                    if ( self.hasCamera ) {
+                    if( self.hasCamera ) {
                         self._getPicture( Camera.PictureSourceType.CAMERA, onSuccess, onError );
                     } else {
                         app.alertDlg(
@@ -366,7 +366,7 @@ function FortuneApp () {
         navigator.camera.getPicture(
             onSuccess,
             function (msg) {
-                if ( msg.toLowerCase().indexOf( 'cancelled' ) == -1 ) {
+                if( msg.toLowerCase().indexOf( 'cancelled' ) == -1 ) {
                     onError( msg );
                 }
             },
@@ -402,16 +402,16 @@ function FortuneApp () {
     }
 
     this.informAboutFullVersion = function () {
-        if ( window.localStorage.getItem( 'informedAboutFullVersion' ) === '1' ) {
+        if( window.localStorage.getItem( 'informedAboutFullVersion' ) === '1' ) {
             return;
         }
 
-        if ( typeof self.freeVersionLimit === 'undefined' ) {
+        if( typeof self.freeVersionLimit === 'undefined' ) {
             setTimeout( self.informAboutFullVersion, 100 );
             return;
         }
 
-        if ( self.freeVersionLimit.isLimited() ) {
+        if( self.freeVersionLimit.isLimited() ) {
             self.confirmDlg(
                 'Fortune 14/1 is now available as a full version! Do you want to open it in the Play Store?',
                 function () {
@@ -430,7 +430,7 @@ function FortuneApp () {
      *		force: boolean whether to ask for confirmation first
      */
     this.exitApp = function (force) {
-        if ( force ) {
+        if( force ) {
             navigator.app.exitApp();
         }
         else {

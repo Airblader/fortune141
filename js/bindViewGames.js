@@ -23,7 +23,7 @@ $( document ).on( 'pagebeforeshow', '#pageViewGames', function () {
         + '</a></li>';
 
     function doIt () {
-        if ( !readyA || !readyB ) {
+        if( !readyA || !readyB ) {
             return;
         }
 
@@ -34,7 +34,7 @@ $( document ).on( 'pagebeforeshow', '#pageViewGames', function () {
         res.sort( function (a, b) {
             var timeA = parseInt( a['StartTimestamp'] ),
                 timeB = parseInt( b['StartTimestamp'] );
-            if ( timeA === timeB ) {
+            if( timeA === timeB ) {
                 return 0;
             }
 
@@ -43,13 +43,13 @@ $( document ).on( 'pagebeforeshow', '#pageViewGames', function () {
 
         var entries = new Array( res.length );
 
-        for ( var i = 0; i < res.length; i++ ) {
+        for( var i = 0; i < res.length; i++ ) {
             var currentEntry = res[i];
 
             var gID = parseInt( currentEntry['gID'] ),
                 date = app.convertTimestamp( currentEntry['StartTimestamp'] );
 
-            if ( currentEntry['GameType'] === '141' ) { // 14/1
+            if( currentEntry['GameType'] === '141' ) { // 14/1
                 entries[i] = entryDummyA.replace( '[gID]', gID )
                     .replace( '[name1]', currentEntry['Player1Name'] )
                     .replace( '[name2]', currentEntry['Player2Name'] )
@@ -65,7 +65,7 @@ $( document ).on( 'pagebeforeshow', '#pageViewGames', function () {
 
                 var score1,
                     score2;
-                if ( numberOfSets > 1 ) { // display set scores
+                if( numberOfSets > 1 ) { // display set scores
                     score1 = tempScore[1];
                     score2 = tempScore[3];
                 } else { // display rack scores
@@ -109,7 +109,7 @@ $( document ).on( 'pagebeforeshow', '#pageViewGames', function () {
         [],
         function (tx, results) {
             resA = new Array( results.rows.length );
-            for ( var i = 0; i < results.rows.length; i++ ) {
+            for( var i = 0; i < results.rows.length; i++ ) {
                 resA[i] = results.rows.item( i );
             }
 
@@ -134,7 +134,7 @@ $( document ).on( 'pagebeforeshow', '#pageViewGames', function () {
         [],
         function (tx, results) {
             resB = new Array( results.rows.length );
-            for ( var i = 0; i < results.rows.length; i++ ) {
+            for( var i = 0; i < results.rows.length; i++ ) {
                 resB[i] = results.rows.item( i );
             }
 
@@ -157,7 +157,7 @@ $( document ).on( 'pageshow', '#pageView141GamesDetails', function () {
     $( '#view141GamesMultiplicatorTable' ).css( 'display', 'none' );
 
     $( '#view141GamesDetailsScoreTableContainer' ).css( 'display', 'none' );
-    if ( fromGame == 1 ) {
+    if( fromGame == 1 ) {
         $( '#view141GamesDetailsViewTable' ).trigger( 'click' );
     }
 
@@ -221,12 +221,12 @@ $( document ).on( 'pageshow', '#pageView141GamesDetails', function () {
         );
 
         var idxWinner = 0;
-        if ( tmpGame.winner == tmpGame.players[0].obj.pID ) {
+        if( tmpGame.winner == tmpGame.players[0].obj.pID ) {
             idxWinner = 0;
 
             $name1.addClass( 'winner' );
             $name2.addClass( 'loser' );
-        } else if ( tmpGame.winner == tmpGame.players[1].obj.pID ) {
+        } else if( tmpGame.winner == tmpGame.players[1].obj.pID ) {
             idxWinner = 1;
 
             $name1.addClass( 'loser' );
@@ -236,13 +236,13 @@ $( document ).on( 'pageshow', '#pageView141GamesDetails', function () {
             $name2.addClass( 'winner' );
         }
 
-        if ( tmpGame.handicap[0] != 0 || tmpGame.handicap[1] != 0 ) {
+        if( tmpGame.handicap[0] != 0 || tmpGame.handicap[1] != 0 ) {
             $( '#view141GamesHandicapTable' ).css( 'display', 'block' );
 
             $( '#view141GamesHandicap1' ).html( tmpGame.handicap[0] );
             $( '#view141GamesHandicap2' ).html( tmpGame.handicap[1] );
         }
-        if ( tmpGame.multiplicator[0] != 1 || tmpGame.multiplicator[1] != 1 ) {
+        if( tmpGame.multiplicator[0] != 1 || tmpGame.multiplicator[1] != 1 ) {
             $( '#view141GamesMultiplicatorTable' ).css( 'display', 'block' );
 
             $( '#view141GamesMultiplicator1' ).html( tmpGame.multiplicator[0] );
@@ -250,9 +250,9 @@ $( document ).on( 'pageshow', '#pageView141GamesDetails', function () {
         }
 
         // Draw graph
-        if ( canvasSupport ) {
+        if( canvasSupport ) {
             var pixelRatio = 1;
-            if ( typeof window.devicePixelRatio !== 'undefined' ) {
+            if( typeof window.devicePixelRatio !== 'undefined' ) {
                 pixelRatio = Math.min( 2, Math.max( 0, window.devicePixelRatio ) );
             }
 
@@ -270,7 +270,7 @@ $( document ).on( 'pageshow', '#pageView141GamesDetails', function () {
             // for scaling, look for potentially negative scores
             var tmpPts = new Array( tmpGame.handicap[0], tmpGame.handicap[1] );
             var minPoints = 0;
-            for ( var i = 0; i < tmpGame.innings.length; i++ ) {
+            for( var i = 0; i < tmpGame.innings.length; i++ ) {
                 tmpPts[0] += tmpGame.innings[i].points[0];
                 tmpPts[1] += tmpGame.innings[i].points[1];
 
@@ -296,7 +296,7 @@ $( document ).on( 'pageshow', '#pageView141GamesDetails', function () {
             context.fillRect( 0, 0, canvas.width, canvas.height );
 
             // zero line
-            if ( minPoints < 0 ) {
+            if( minPoints < 0 ) {
                 var point = convertToCanvasPoint( 0, 0 );
                 context.save();
                 context.strokeStyle = 'black';
@@ -314,7 +314,7 @@ $( document ).on( 'pageshow', '#pageView141GamesDetails', function () {
             context.lineWidth = 1;
             context.globalAlpha = 0.5;
             context.beginPath();
-            for ( var k = canvas.height - 30; k > 0; k = k - 30 ) {
+            for( var k = canvas.height - 30; k > 0; k = k - 30 ) {
                 context.moveTo( 20 - 0.5, k + 0.5 );
                 context.lineTo( canvas.width - 20 + 0.5, k + 0.5 );
             }
@@ -340,7 +340,7 @@ $( document ).on( 'pageshow', '#pageView141GamesDetails', function () {
             context.lineWidth = 2;
 
             // draw vertical line to show max innings
-            if ( tmpGame.maxInnings > 0 && tmpGame.maxInnings < tmpGame.innings.length ) {
+            if( tmpGame.maxInnings > 0 && tmpGame.maxInnings < tmpGame.innings.length ) {
                 context.save();
 
                 context.strokeStyle = '#ff9900';
@@ -354,7 +354,7 @@ $( document ).on( 'pageshow', '#pageView141GamesDetails', function () {
             }
 
             // draw lines representing the players' points
-            for ( var j = 0; j <= 1; j++ ) {
+            for( var j = 0; j <= 1; j++ ) {
                 context.beginPath();
                 context.strokeStyle = (idxWinner == j) ? '#008a00' : '#cc0000';
 
@@ -362,7 +362,7 @@ $( document ).on( 'pageshow', '#pageView141GamesDetails', function () {
                     pts = tmpGame.handicap[j];
 
                 context.moveTo( -0.5, ptStart.y );
-                for ( var i = 0; i <= tmpGame.innings.length; i++ ) {
+                for( var i = 0; i <= tmpGame.innings.length; i++ ) {
                     var point = convertToCanvasPoint( i, pts );
 
                     context.lineTo( point.x, point.y );
@@ -387,7 +387,7 @@ $( document ).on( 'pageshow', '#pageView141GamesDetails', function () {
             inningDummy = '<td class="">[inning]</td>',
             tbodyDummy = '<tbody id="view141GamesDetailsScoreTableBody">[entries]</tbody>',
             entries = new Array( tmpGame.innings.length );
-        for ( var i = 0; i < tmpGame.innings.length; i++ ) {
+        for( var i = 0; i < tmpGame.innings.length; i++ ) {
             totalPts[0] += tmpGame.innings[i].points[0];
             totalPts[1] += tmpGame.innings[i].points[1];
 
@@ -434,21 +434,21 @@ $( document ).on( 'pageshow', '#pageView141GamesDetails', function () {
 
 $( document ).off( 'click', '#view141GamesDetailsViewTable' )
     .on( 'click', '#view141GamesDetailsViewTable', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    var url = $.url( $.url().attr( 'fragment' ) ),
-        fromGame = parseInt( url.param( 'from_game' ) );
+        var url = $.url( $.url().attr( 'fragment' ) ),
+            fromGame = parseInt( url.param( 'from_game' ) );
 
-    if ( fromGame == 1 ) {
-        $( '#pageView141GamesDetails' ).data( 'activePage', 'pageView141GamesDetails_Scoreboard1' );
-    } else {
-        $( '#pageView141GamesDetails' ).data( 'activePage', 'pageView141GamesDetails_Scoreboard2' );
-    }
+        if( fromGame == 1 ) {
+            $( '#pageView141GamesDetails' ).data( 'activePage', 'pageView141GamesDetails_Scoreboard1' );
+        } else {
+            $( '#pageView141GamesDetails' ).data( 'activePage', 'pageView141GamesDetails_Scoreboard2' );
+        }
 
-    $( '#pageView141GamesDetails div[data-role=content]' ).css( 'display', 'none' );
-    $( '#pageView141GamesDetails div[data-role=header]' ).css( 'display', 'none' );
-    $( '#view141GamesDetailsScoreTableContainer' ).css( 'display', 'block' );
-} );
+        $( '#pageView141GamesDetails div[data-role=content]' ).css( 'display', 'none' );
+        $( '#pageView141GamesDetails div[data-role=header]' ).css( 'display', 'none' );
+        $( '#view141GamesDetailsScoreTableContainer' ).css( 'display', 'block' );
+    } );
 
 function view141GamesDetailsHideScoreboard () {
     $( '#pageView141GamesDetails' ).data( 'activePage', 'pageView141GamesDetails_Main' );
@@ -460,50 +460,50 @@ function view141GamesDetailsHideScoreboard () {
 
 $( document ).off( 'click', '#view141GamesDetailsScoreTableContainer' )
     .on( 'click', '#view141GamesDetailsScoreTableContainer', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    var url = $.url( $.url().attr( 'fragment' ) ),
-        fromGame = parseInt( url.param( 'from_game' ) );
+        var url = $.url( $.url().attr( 'fragment' ) ),
+            fromGame = parseInt( url.param( 'from_game' ) );
 
-    if ( fromGame == 1 ) {
-        view141GamesDetailsHideScoreboard();
-        $.mobile.changePage( '../../index.html' );
-    } else {
-        view141GamesDetailsHideScoreboard();
-    }
-} );
+        if( fromGame == 1 ) {
+            view141GamesDetailsHideScoreboard();
+            $.mobile.changePage( '../../index.html' );
+        } else {
+            view141GamesDetailsHideScoreboard();
+        }
+    } );
 
 $( document ).off( 'click', '#view141GamesDetailsDelete' )
     .on( 'click', '#view141GamesDetailsDelete', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    var url = $.url( $.url().attr( 'fragment' ) ),
-        gID = parseInt( url.param( 'gID' ) );
+        var url = $.url( $.url().attr( 'fragment' ) ),
+            gID = parseInt( url.param( 'gID' ) );
 
-    app.confirmDlg(
-        'Are you sure you want to delete this game? This action cannot be undone.',
-        function () {
-            app.dbFortune.query(
-                'DELETE FROM ' + app.dbFortune.tables.Game141.name + ' WHERE gID="' + gID + '"',
-                [],
-                function () {
-                    $.mobile.changePage( 'viewGames_list.html' );
-                },
-                function () {
-                    app.alertDlg(
-                        'Oops! Something went wrong :( Deleting failed!',
-                        app.dummyFalse,
-                        'Error',
-                        'OK'
-                    );
-                }
-            );
-        },
-        app.dummyFalse,
-        'Warning',
-        'Delete,Cancel'
-    );
-} );
+        app.confirmDlg(
+            'Are you sure you want to delete this game? This action cannot be undone.',
+            function () {
+                app.dbFortune.query(
+                    'DELETE FROM ' + app.dbFortune.tables.Game141.name + ' WHERE gID="' + gID + '"',
+                    [],
+                    function () {
+                        $.mobile.changePage( 'viewGames_list.html' );
+                    },
+                    function () {
+                        app.alertDlg(
+                            'Oops! Something went wrong :( Deleting failed!',
+                            app.dummyFalse,
+                            'Error',
+                            'OK'
+                        );
+                    }
+                );
+            },
+            app.dummyFalse,
+            'Warning',
+            'Delete,Cancel'
+        );
+    } );
 
 
 $( document ).on( 'pageshow', '#pageView8910GamesDetails', function () {
@@ -547,7 +547,7 @@ $( document ).on( 'pageshow', '#pageView8910GamesDetails', function () {
         )
             .removeClass( 'winner' ).removeClass( 'loser' );
 
-        if ( tmpGame.numberOfSets === 1 ) {
+        if( tmpGame.numberOfSets === 1 ) {
             $( '#view8910GamesDetailsScore1' ).html( tmpGame.players[0].racks );
             $( '#view8910GamesDetailsScore2' ).html( tmpGame.players[1].racks );
 
@@ -565,9 +565,9 @@ $( document ).on( 'pageshow', '#pageView8910GamesDetails', function () {
             tbodyDummy = '<tbody id="view8910GamesDetailsSetsBody">[entries]</tbody>',
             entries = new Array( tmpGame.sets.length );
 
-        for ( var i = 0; i < tmpGame.sets.length; i++ ) {
+        for( var i = 0; i < tmpGame.sets.length; i++ ) {
             var scores = new Array( 0, 0 );
-            for ( var j = 0; j < tmpGame.sets[i].racks.length; j++ ) {
+            for( var j = 0; j < tmpGame.sets[i].racks.length; j++ ) {
                 scores[tmpGame.sets[i].racks[j].wonByPlayer]++;
             }
 
@@ -583,10 +583,10 @@ $( document ).on( 'pageshow', '#pageView8910GamesDetails', function () {
             tbodyDummy.replace( '[entries]', '<tr>' + entries.join( '</tr><tr>' ) + '</tr>' )
         );
 
-        if ( tmpGame.winner == tmpGame.players[0].obj.pID ) {
+        if( tmpGame.winner == tmpGame.players[0].obj.pID ) {
             $name1.addClass( 'winner' );
             $name2.addClass( 'loser' );
-        } else if ( tmpGame.winner == tmpGame.players[1].obj.pID ) {
+        } else if( tmpGame.winner == tmpGame.players[1].obj.pID ) {
             $name1.addClass( 'loser' );
             $name2.addClass( 'winner' );
         } else { // tie game
@@ -606,32 +606,32 @@ $( document ).on( 'pageshow', '#pageView8910GamesDetails', function () {
 
 $( document ).off( 'click', '#view8910GamesDetailsDelete' )
     .on( 'click', '#view8910GamesDetailsDelete', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    var url = $.url( $.url().attr( 'fragment' ) ),
-        gID = parseInt( url.param( 'gID' ) );
+        var url = $.url( $.url().attr( 'fragment' ) ),
+            gID = parseInt( url.param( 'gID' ) );
 
-    app.confirmDlg(
-        'Are you sure you want to delete this game? This action cannot be undone.',
-        function () {
-            app.dbFortune.query(
-                'DELETE FROM ' + app.dbFortune.tables.Game8910.name + ' WHERE gID="' + gID + '"',
-                [],
-                function () {
-                    $.mobile.changePage( 'viewGames_list.html' );
-                },
-                function () {
-                    app.alertDlg(
-                        'Oops! Something went wrong :( Deleting failed!',
-                        app.dummyFalse,
-                        'Error',
-                        'OK'
-                    );
-                }
-            );
-        },
-        app.dummyFalse,
-        'Warning',
-        'Delete,Cancel'
-    );
-} );
+        app.confirmDlg(
+            'Are you sure you want to delete this game? This action cannot be undone.',
+            function () {
+                app.dbFortune.query(
+                    'DELETE FROM ' + app.dbFortune.tables.Game8910.name + ' WHERE gID="' + gID + '"',
+                    [],
+                    function () {
+                        $.mobile.changePage( 'viewGames_list.html' );
+                    },
+                    function () {
+                        app.alertDlg(
+                            'Oops! Something went wrong :( Deleting failed!',
+                            app.dummyFalse,
+                            'Error',
+                            'OK'
+                        );
+                    }
+                );
+            },
+            app.dummyFalse,
+            'Warning',
+            'Delete,Cancel'
+        );
+    } );

@@ -29,10 +29,10 @@ cordova.define( 'cordova/plugin/FeatureDetector', function (require, exports, mo
      *  @param callback Callback function that will be invoked with a boolean value representing the response
      */
     FeatureDetector.prototype.hasFeature = function (feature, callback) {
-        if ( typeof feature === 'string' ) {
+        if( typeof feature === 'string' ) {
             exec( callback, null, 'FeatureDetector', 'hasFeature', [feature] );
         } else { // Unknown argument type
-            if ( window.console && window.console.log ) {
+            if( window.console && window.console.log ) {
                 window.console.log( 'FeatureDetector (JS): Unknown/Invalid argument type "' + typeof feature + '"' );
             }
 
@@ -107,6 +107,6 @@ cordova.define( 'cordova/plugin/FeatureDetector', function (require, exports, mo
 } );
 
 // Attach FeatureDetector to global window scope
-if ( !window.featureDetector ) {
+if( !window.featureDetector ) {
     window.featureDetector = cordova.require( 'cordova/plugin/FeatureDetector' );
 }

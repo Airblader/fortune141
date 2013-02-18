@@ -26,12 +26,12 @@ function BallRack () {
     // caching for better performance
     var $balls = new Array( 16 ),
         $shadows = new Array( 16 );
-    for ( var i = 0; i <= 15; i++ ) {
+    for( var i = 0; i <= 15; i++ ) {
         $balls[i] = $( '#ball' + i );
         $shadows[i] = $( '#shadow' + i );
     }
 
-    if ( this.debugMode ) {
+    if( this.debugMode ) {
         var touchCommands = "mousedown";
     } else {
         var touchCommands = 'touchstart touchmove touchend';
@@ -42,7 +42,7 @@ function BallRack () {
      */
     this.calcBallPositions = function () {
         // we only need to calculate these positions once
-        if ( ballPositions.length > 0 ) {
+        if( ballPositions.length > 0 ) {
             return;
         }
 
@@ -61,10 +61,10 @@ function BallRack () {
         // positions, so we just create a dummy entry for it for now
         ballPositions.push( {x:0, y:0} );
 
-        for ( var i = 1; i <= 15; i++ ) {
+        for( var i = 1; i <= 15; i++ ) {
             // check whether we have to begin a new row
             var idxOf = idxRowBreaks.indexOf( i );
-            if ( idxOf != -1 ) {
+            if( idxOf != -1 ) {
                 currX = 2 * stepX - idxOf * ballRadiusSmall;
                 currY += stepY;
             }
@@ -95,7 +95,7 @@ function BallRack () {
         // this factor defines how much the shadow is spread around the balls
         var shadowFactor = 1.35;
 
-        for ( var i = 0; i <= 15; i++ ) {
+        for( var i = 0; i <= 15; i++ ) {
             $balls[i].css( 'position', 'absolute' )
                 .css( 'width', self.ballSizeSmall + 'px' )
                 .css( 'height', self.ballSizeSmall + 'px' )
@@ -121,14 +121,14 @@ function BallRack () {
      */
     this.setActiveBall = function (idx) {
         var active = true;
-        if ( typeof arguments[1] !== 'undefined' ) {
+        if( typeof arguments[1] !== 'undefined' ) {
             active = arguments[1];
         }
 
         var opacity = (active) ? '1.0' : '0.4';
         $balls[idx].css( 'opacity', opacity );
 
-        if ( active ) {
+        if( active ) {
             $shadows[idx].addClass( 'ballShadow' );
         } else {
             $shadows[idx].removeClass( 'ballShadow' );
@@ -139,9 +139,9 @@ function BallRack () {
      *	Update all balls
      */
     this.redraw = function () {
-        for ( var i = 0; i <= 15; i++ ) {
+        for( var i = 0; i <= 15; i++ ) {
             var isActive = false;
-            if ( i <= self.selectedBall ) {
+            if( i <= self.selectedBall ) {
                 isActive = true;
             }
 
@@ -186,7 +186,7 @@ function BallRack () {
             id = $( currElement ).attr( 'id' );
 
         // check if it was actually a ball that was clicked
-        if ( typeof id !== 'undefined' && id.substr( 0, 4 ) == 'ball' ) {
+        if( typeof id !== 'undefined' && id.substr( 0, 4 ) == 'ball' ) {
             // either use the selected ball (if accessible) or the highest accessible ball
             self.selectedBall = (parseInt( id.substr( 4 ) ) <= self.ballsOnTable) ? parseInt( id.substr( 4 ) ) : self.ballsOnTable;
         }
@@ -196,7 +196,7 @@ function BallRack () {
         // Bugfix : Undo what we did above
         self.setHandler();
 
-        if ( self.fastMode && event.type === 'touchend' && id.substr( 4 ) <= self.ballsOnTable ) {
+        if( self.fastMode && event.type === 'touchend' && id.substr( 4 ) <= self.ballsOnTable ) {
             app.currentGame.handleAcceptButton( event );
         }
     }
@@ -311,7 +311,7 @@ function StraightPool () {
     this.newInning = function () {
         // if last inning wasn't processed correctly, we throw an error
         var current = self.innings.length - 1;
-        if ( self.innings[current].ptsToAdd[0] != -1 || self.innings[current].ptsToAdd[1] != -1 ) {
+        if( self.innings[current].ptsToAdd[0] != -1 || self.innings[current].ptsToAdd[1] != -1 ) {
             throw new Error( 'StraightPool.newInning : Cannot create new inning. Last inning has unprocessed points!' );
         }
 
@@ -373,7 +373,7 @@ function StraightPool () {
         self.currPlayer = (self.currPlayer == 0) ? 1 : 0;
 
         // trigger 3-foul-rule warning if needed
-        if ( self.players[self.currPlayer].fouls == 2 ) {
+        if( self.players[self.currPlayer].fouls == 2 ) {
             self.warnConsecutiveFouls();
         }
     }
@@ -406,7 +406,7 @@ function StraightPool () {
     this.inningsToString = function () {
         var inning = new Array( '', '' );
 
-        for ( var i = 0; i < self.innings.length; i++ ) {
+        for( var i = 0; i < self.innings.length; i++ ) {
             inning[0] += self.innings[i].points[0] + ','
                 + self.innings[i].foulPts[0] + ','
                 + self.innings[i].ptsToAdd[0] + ','
@@ -436,7 +436,7 @@ function StraightPool () {
             ret = new Array( innings1.length );
 
         // now we fill our array
-        for ( var i = 0; i < ret.length; i++ ) {
+        for( var i = 0; i < ret.length; i++ ) {
             var data1 = innings1[i].split( ',' ) || new Array( '0', '0', '0', '0' ),
                 data2 = innings2[i].split( ',' ) || new Array( '0', '0', '0', '0' );
 
@@ -474,7 +474,7 @@ function StraightPool () {
         var sql = 'SELECT * FROM ' + app.dbFortune.tables.Game141.name + ' WHERE gID=' + gID + ' LIMIT 1';
         app.dbFortune.query( sql, [],
             function (tx, result) {
-                if ( result.rows.length == 0 ) {
+                if( result.rows.length == 0 ) {
                     cbError();
                     return false;
                 }
@@ -520,7 +520,7 @@ function StraightPool () {
                 self.ballRack.redraw();
 
                 $btnPlayerSwitch.css( 'display', 'none' );
-                if ( self.switchButton ) {
+                if( self.switchButton ) {
                     $btnPlayerSwitch.css( 'display', 'block' );
                 }
 
@@ -530,13 +530,13 @@ function StraightPool () {
                 app.Players.ingame[0].load(
                     parseInt( row['Player1'] ),
                     function () {
-                        if ( app.Players.ingame[0].pID == app.ANONYMOUSPLAYERPID ) {
+                        if( app.Players.ingame[0].pID == app.ANONYMOUSPLAYERPID ) {
                             app.Players.ingame[0].name = row['Player1Name'];
                         }
                         app.Players.ingame[1].load(
                             parseInt( row['Player2'] ),
                             function () {
-                                if ( app.Players.ingame[1].pID == app.ANONYMOUSPLAYERPID ) {
+                                if( app.Players.ingame[1].pID == app.ANONYMOUSPLAYERPID ) {
                                     app.Players.ingame[1].name = row['Player2Name'];
                                 }
                                 self.setPlayers(
@@ -564,7 +564,7 @@ function StraightPool () {
         var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse;
 
         // no entry exists yet
-        if ( self.gameID == -1 ) {
+        if( self.gameID == -1 ) {
             var sql = 'INSERT INTO '
                 + app.dbFortune.tables.Game141.name + ' '
                 + app.dbFortune.getTableFields_String( app.dbFortune.tables.Game141, false, false ) + ' '
@@ -679,7 +679,7 @@ function StraightPool () {
         var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
             cbError = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 
-        if ( self.historyStack.length <= 1 ) {
+        if( self.historyStack.length <= 1 ) {
             cbError();
             return;
         }
@@ -690,7 +690,7 @@ function StraightPool () {
             'SELECT * FROM ' + app.dbFortune.tables.Game141History.name + ' WHERE ID="' + id + '" LIMIT 1',
             [],
             function (tx, result) {
-                if ( result.rows.length == 0 ) {
+                if( result.rows.length == 0 ) {
                     return false;
                 }
                 var row = result.rows.item( 0 );
@@ -709,7 +709,7 @@ function StraightPool () {
                 self.switchButton = (parseInt( row['SwitchButton'] ) == 1);
 
                 $btnPlayerSwitch.css( 'display', 'none' );
-                if ( self.switchButton ) {
+                if( self.switchButton ) {
                     $btnPlayerSwitch.css( 'display', 'block' );
                 }
 
@@ -771,7 +771,7 @@ function StraightPool () {
         var newScoreGoal = parseInt( $( '#game141ChangeScoreGoal' ).val() ),
             newInningsLimit = parseInt( $( '#game141ChangeInningsLimit' ).val() );
 
-        if ( Math.max( self.players[0].points, self.players[1].points ) >= newScoreGoal ) {
+        if( Math.max( self.players[0].points, self.players[1].points ) >= newScoreGoal ) {
             app.alertDlg(
                 'You cannot set the score goal to this value.',
                 app.dummyFalse,
@@ -781,7 +781,7 @@ function StraightPool () {
             return;
         }
 
-        if ( newInningsLimit !== 0 && self.innings.length - 1 >= newInningsLimit ) {
+        if( newInningsLimit !== 0 && self.innings.length - 1 >= newInningsLimit ) {
             app.alertDlg(
                 'You cannot set the innings limit to this value.',
                 app.dummyFalse,
@@ -814,11 +814,11 @@ function StraightPool () {
             foulCount = (severe) ? fouls : (fouls % (maxFouls + 1));
 
         var foulName = "None";
-        if ( foulCount == 1 && !severe ) {
+        if( foulCount == 1 && !severe ) {
             foulName = "Normal";
             $foulDisplayName.data( 'rerack', false );
         }
-        else if ( foulCount > 1 || severe ) {
+        else if( foulCount > 1 || severe ) {
             foulName = "Severe";
 
             // Setting rerack to true might not always be technically correct, as a player after
@@ -830,7 +830,7 @@ function StraightPool () {
         }
 
         // check for valid number
-        if ( $.isNumeric( foulCount ) ) {
+        if( $.isNumeric( foulCount ) ) {
             $foulDisplay.html( foulCount );
             $foulDisplayName.html( foulName );
         }
@@ -851,7 +851,7 @@ function StraightPool () {
             hasToRerack = rerack;
 
         // create new inning if neccessary
-        if ( self.innings[current].ptsToAdd[0] == -1 && self.innings[current].ptsToAdd[1] == -1 ) {
+        if( self.innings[current].ptsToAdd[0] == -1 && self.innings[current].ptsToAdd[1] == -1 ) {
             self.newInning();
             current++;
         }
@@ -872,12 +872,12 @@ function StraightPool () {
         self.innings[current].ptsToAdd[currPlayer] += parseInt( ballsOnTable ) - parseInt( selectedBall );
 
         // if points were made, there has been a shout without a foul, thus resetting the counter
-        if ( self.innings[current].ptsToAdd[currPlayer] > 0 ) {
+        if( self.innings[current].ptsToAdd[currPlayer] > 0 ) {
             self.players[currPlayer].fouls = 0;
         }
 
         // inning ended with a foul
-        if ( parseInt( foulPts ) != 0 ) {
+        if( parseInt( foulPts ) != 0 ) {
             // will definitely cause player switch
             switchPlayer = true;
 
@@ -886,14 +886,14 @@ function StraightPool () {
 
             // still only counts as one foul, though
             // only standard fouls count
-            if ( parseInt( foulPts ) == 1 ) {
+            if( parseInt( foulPts ) == 1 ) {
                 self.players[currPlayer].fouls++;
             } else {
                 self.players[currPlayer].fouls = 0;
             }
 
             // 3 foul rule
-            if ( self.players[currPlayer].fouls == 3 ) {
+            if( self.players[currPlayer].fouls == 3 ) {
                 // divide by multiplicator because it should always only be -15
                 self.innings[current].foulPts[currPlayer] += 15 / self.multiplicator[currPlayer];
                 self.players[currPlayer].fouls = 0;
@@ -909,17 +909,17 @@ function StraightPool () {
         }
 
         // inning ended with safety
-        if ( safety ) {
+        if( safety ) {
             self.innings[current].safety[currPlayer] = true;
             switchPlayer = true;
         }
 
-        switch ( parseInt( selectedBall ) ) {
+        switch( parseInt( selectedBall ) ) {
             case 0: // same as case 1
             case 1:
                 // if fouls were made or inning ended with a safety, the turn switches to the other player,
                 // unless a rerack takes place
-                if ( switchPlayer && !hasToRerack ) {
+                if( switchPlayer && !hasToRerack ) {
                     self.innings[current].points[currPlayer] += self.multiplicator[currPlayer] * (self.innings[current].ptsToAdd[currPlayer] - self.innings[current].foulPts[currPlayer]);
 
                     self.innings[current].ptsToAdd[currPlayer] = -1;
@@ -930,7 +930,7 @@ function StraightPool () {
                 break;
 
             default:
-                if ( !hasToRerack ) {
+                if( !hasToRerack ) {
                     self.innings[current].points[currPlayer] += self.multiplicator[currPlayer] * (self.innings[current].ptsToAdd[currPlayer] - self.innings[current].foulPts[currPlayer]);
 
                     self.innings[current].ptsToAdd[currPlayer] = -1;
@@ -940,7 +940,7 @@ function StraightPool () {
                 ret.firstShot = false;
         }
 
-        if ( switchPlayer && !hasToRerack ) {
+        if( switchPlayer && !hasToRerack ) {
             self.switchPlayer();
         }
 
@@ -991,15 +991,15 @@ function StraightPool () {
      */
     this.getBallImageSize = function (bestRadius) {
         var devicePixelRatio = 1;
-        if ( typeof window.devicePixelRatio !== 'undefined' ) {
+        if( typeof window.devicePixelRatio !== 'undefined' ) {
             devicePixelRatio = Math.max( 1, Math.min( 2, window.devicePixelRatio ) );
         }
 
         // available sprite sets
         var availableSizes = new Array( 30, 60, 80, 100, 120, 240, 360 );
         var nearestSize = availableSizes[availableSizes.length - 1];
-        for ( var i = availableSizes.length - 1; i >= 0; i-- ) {
-            if ( 2 * devicePixelRatio * bestRadius <= availableSizes[i] ) {
+        for( var i = availableSizes.length - 1; i >= 0; i-- ) {
+            if( 2 * devicePixelRatio * bestRadius <= availableSizes[i] ) {
                 nearestSize = availableSizes[i];
             }
         }
@@ -1030,9 +1030,9 @@ function StraightPool () {
      *	Updates display for consecutive fouls
      */
     this.updateConsecutiveFoulsDisplay = function () {
-        for ( var player = 0; player <= 1; player++ ) {
-            for ( var foul = 1; foul <= 2; foul++ ) {
-                if ( foul <= self.players[player].fouls ) {
+        for( var player = 0; player <= 1; player++ ) {
+            for( var foul = 1; foul <= 2; foul++ ) {
+                if( foul <= self.players[player].fouls ) {
                     $( '#player' + player + 'foul' + foul ).css( 'visibility', 'visible' );
                     continue;
                 }
@@ -1071,7 +1071,7 @@ function StraightPool () {
         event.preventDefault();
 
         // if button is still active from last click, abort
-        if ( btnAcceptPressed ) {
+        if( btnAcceptPressed ) {
             return false;
         }
 
@@ -1108,7 +1108,7 @@ function StraightPool () {
         );
 
         // handle rerack
-        if ( rerack || ret.rerack ) {
+        if( rerack || ret.rerack ) {
             ret.firstShot = true;
             ret.ballsOnTable = 15;
             ret.selectedBall = 15;
@@ -1124,7 +1124,7 @@ function StraightPool () {
 
         // this displays the change of points (if neccessary), e.g. "+3" or "-1".
         var tmpDisplay;
-        if ( self.innings[ret.current].ptsToAdd[ret.currPlayer] == -1 ) {
+        if( self.innings[ret.current].ptsToAdd[ret.currPlayer] == -1 ) {
             tmpDisplay = self.innings[ret.current].points[ret.currPlayer];
         } else {
             tmpDisplay = self.multiplicator[ret.currPlayer] * (self.innings[ret.current].ptsToAdd[ret.currPlayer] - self.innings[ret.current].foulPts[ret.currPlayer]);
@@ -1143,12 +1143,12 @@ function StraightPool () {
             && (self.players[0].points != self.players[1].points                        // game not tied ...
             || self.inningsExtension == 0);									// ... except no innings extension is set
 
-        if ( wonByPoints || wonByInnings ) {
+        if( wonByPoints || wonByInnings ) {
             self.isFinished = true;
 
             // determine winner
             var ptsDiff = self.players[1].points - self.players[0].points;
-            if ( ptsDiff != 0 ) {
+            if( ptsDiff != 0 ) {
                 var idxWinner = (ptsDiff > 0) ? 1 : 0;
                 self.winner = self.players[idxWinner].obj.pID;
             }
@@ -1178,16 +1178,16 @@ function StraightPool () {
                 .removeClass( 'activePlayer1' );
 
             // cap off last inning and total points to be no larger than the score goal
-            if ( self.winner != 0 ) {
+            if( self.winner != 0 ) {
                 self.innings[self.innings.length - 1].points[idxWinner] -= Math.max( 0, self.players[idxWinner].points - self.scoreGoal );
                 self.players[idxWinner].points = Math.min( self.players[idxWinner].points, self.scoreGoal );
             }
 
             var msg;
-            if ( wonByPoints ) {
+            if( wonByPoints ) {
                 msg = (self.players[idxWinner].obj.getDisplayName()) + ' has won the game!';
             } else {
-                if ( self.winner === 0 ) { // ended in a tie
+                if( self.winner === 0 ) { // ended in a tie
                     msg = 'The game ended tie due to reaching the maximum number of innings!';
                 } else { // ended because innings limit was reached
                     msg = (self.players[idxWinner].obj.getDisplayName()) + ' has won the game because the maximum number of innings was reached!';
@@ -1241,7 +1241,7 @@ function StraightPool () {
         event.preventDefault();
 
         // if button is still active, ignore
-        if ( $btnFoul.hasClass( 'navbarButtonDown' ) ) {
+        if( $btnFoul.hasClass( 'navbarButtonDown' ) ) {
             return false;
         }
 
@@ -1266,7 +1266,7 @@ function StraightPool () {
         event.preventDefault();
 
         // if button is still active, ignore
-        if ( $btnFoul.hasClass( 'navbarButtonDown' ) ) {
+        if( $btnFoul.hasClass( 'navbarButtonDown' ) ) {
             return false;
         }
 
@@ -1289,7 +1289,7 @@ function StraightPool () {
         event.preventDefault();
 
         // if button is still active, ignore
-        if ( $btnSafety.hasClass( 'navbarButtonDown' ) ) {
+        if( $btnSafety.hasClass( 'navbarButtonDown' ) ) {
             return false;
         }
 
@@ -1328,7 +1328,7 @@ function StraightPool () {
             inningDummy = '<td class="">[inning]</td>',
             tbodyDummy = '<tbody id="detailsScoreBoardTableBody">[entries]</tbody>',
             entries = new Array( self.innings.length );
-        for ( var i = 0; i < self.innings.length; i++ ) {
+        for( var i = 0; i < self.innings.length; i++ ) {
             totalPts[0] += self.innings[i].points[0];
             totalPts[1] += self.innings[i].points[1];
 
@@ -1382,7 +1382,7 @@ function StraightPool () {
      */
     this.handlePlayerSwitchButton = function (event) {
         // if there is unprocessed business, let's take care of it
-        if ( self.innings[self.innings.length - 1].ptsToAdd[self.currPlayer] != -1 && self.innings[self.innings.length - 1].foulPts[self.currPlayer] != 0 ) {
+        if( self.innings[self.innings.length - 1].ptsToAdd[self.currPlayer] != -1 && self.innings[self.innings.length - 1].foulPts[self.currPlayer] != 0 ) {
             self.processInput( 15, 15, 0, false, false );
 
             $ptsPlayer[0].html( self.players[0].points );
@@ -1407,7 +1407,7 @@ function StraightPool () {
             newVal = currVal + diff;
 
         // we don't allow negative values
-        if ( newVal < 0 ) {
+        if( newVal < 0 ) {
             newVal = 0;
         }
 
@@ -1443,7 +1443,7 @@ function StraightPool () {
         event.preventDefault();
 
         // if button is still active, ignore
-        if ( $btnUndo.hasClass( 'panelButtonDown' ) ) {
+        if( $btnUndo.hasClass( 'panelButtonDown' ) ) {
             return false;
         }
 
@@ -1517,7 +1517,7 @@ function StraightPool () {
 
         // load images
         // we use CSS3 sprites as this will reduce both file size and loading time
-        for ( var i = 0; i <= 15; i++ ) {
+        for( var i = 0; i <= 15; i++ ) {
             $( '#ball' + i )
                 .css( 'background-image', 'url(../../img/rack/rack' + nearestSize + '.png)' )
                 .css( 'background-size', (2 * bestRadius) + 'px auto' )

@@ -8,7 +8,7 @@ $( document ).on( 'pagebeforeshow', '#pagePlayersList', function () {
         [],
         function (tx, results) {
             var entries1 = new Array( results.rows.length );
-            for ( var i = 0; i < results.rows.length; i++ ) {
+            for( var i = 0; i < results.rows.length; i++ ) {
                 var row = results.rows.item( i ),
                     filter = row['Name'] + ' ' + row['Nickname'],
                     dispName = ((row['displayNickname'] == 'true' && row['Nickname'].length != 0) ? row['Nickname'] : row['Name']),
@@ -24,7 +24,7 @@ $( document ).on( 'pagebeforeshow', '#pagePlayersList', function () {
                 [],
                 function (tx, results) {
                     var entries2 = new Array( results.rows.length );
-                    for ( var i = 0; i < results.rows.length; i++ ) {
+                    for( var i = 0; i < results.rows.length; i++ ) {
                         var row = results.rows.item( i ),
                             dispName = ((row['displayNickname'] == 'true' && row['Nickname'].length != 0) ? row['Nickname'] : row['Name']),
                             filter = row['Name'] + ' ' + row['Nickname'];
@@ -52,7 +52,7 @@ $( document ).on( 'pagebeforeshow', '#pagePlayersAdd', function () {
         fromNewPlayer = url.param( 'fromNewPlayer' ),
         redirect = 'player_list.html';
 
-    switch ( setup ) {
+    switch( setup ) {
         case '141':
             redirect = '../game141/game141_Setup.html?fromNewPlayer=' + fromNewPlayer;
             break;
@@ -63,29 +63,29 @@ $( document ).on( 'pagebeforeshow', '#pagePlayersAdd', function () {
 
 $( document ).off( 'click', '#addPlayer_PictureTake' )
     .on( 'click', '#addPlayer_PictureTake', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    app.getPicture(
-        function (imgURI) {
-            $( '#addPlayer_Picture' ).attr( 'src', imgURI ).css( 'display', 'block' );
-        },
-        function (message) {
-            app.alertDlg(
-                'Oops! Something went wrong :( The message is: ' + message,
-                app.dummyFalse,
-                'Error',
-                'OK'
-            );
-        }
-    );
-} );
+        app.getPicture(
+            function (imgURI) {
+                $( '#addPlayer_Picture' ).attr( 'src', imgURI ).css( 'display', 'block' );
+            },
+            function (message) {
+                app.alertDlg(
+                    'Oops! Something went wrong :( The message is: ' + message,
+                    app.dummyFalse,
+                    'Error',
+                    'OK'
+                );
+            }
+        );
+    } );
 
 $( document ).off( 'click', '#addPlayer_PictureDelete' )
     .on( 'click', '#addPlayer_PictureDelete', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    $( '#addPlayer_Picture' ).attr( 'src', '' ).css( 'display', 'none' );
-} );
+        $( '#addPlayer_Picture' ).attr( 'src', '' ).css( 'display', 'none' );
+    } );
 
 $( document ).off( 'click', '#addPlayer_Submit' )
     .on( 'click', '#addPlayer_Submit', function (event) {
@@ -102,14 +102,14 @@ $( document ).off( 'click', '#addPlayer_Submit' )
         nickname = app.validateName( nickname, false );
 
         var msg = '';
-        if ( !name.valid ) {
+        if( !name.valid ) {
             msg = 'The name you entered is invalid! Your name has to be at least 3 characters long and should consist of both your first and last name.';
         }
-        if ( !nickname.valid ) {
+        if( !nickname.valid ) {
             msg = 'The nickname you entered is invalid. Nicknames are optional. However, if you choose to use one, it has to be at least 3 characters long.';
         }
 
-        if ( msg.length > 0 ) {
+        if( msg.length > 0 ) {
             app.alertDlg(
                 msg,
                 app.dummyFalse,
@@ -144,7 +144,7 @@ $( document ).on( 'pagebeforeshow', '#pagePlayerDetails', function () {
     // Hide delete button if it's the main user profile
     $btnDelete.button( 'enable' );
     $btnRefresh.button( 'disable' );
-    if ( pID == 1 ) {
+    if( pID == 1 ) {
         $btnDelete.button( 'disable' );
     }
 
@@ -152,7 +152,7 @@ $( document ).on( 'pagebeforeshow', '#pagePlayerDetails', function () {
     app.Players.tmp.load( pID, function () {
         $btnRefresh.button( 'enable' );
 
-        if ( app.Players.tmp.image !== '' ) {
+        if( app.Players.tmp.image !== '' ) {
             $( '#playerDetails_Image' ).css( 'display', 'block' )
                 .attr( 'src', app.Players.tmp.image );
             $( '#editPlayer_Picture' ).css( 'display', 'block' )
@@ -200,104 +200,104 @@ $( document ).on( 'pagebeforeshow', '#pagePlayerDetails', function () {
 
 $( document ).off( 'click', '#playerDetails_refreshStats' )
     .on( 'click', '#playerDetails_refreshStats', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    app.confirmDlg(
-        'This will recalculate all statistics based on only the games currently stored on your phone. Proceed?',
-        function () {
-            app.Players.tmp.recalculateAllStatistics();
-            app.alertDlg(
-                'This may take a moment. You need to navigate away and back to this page manually to see changes.',
-                app.dummyFalse,
-                'Recalculating',
-                'OK'
-            );
-        },
-        app.dummyFalse,
-        'Warning',
-        'Yes,No'
-    );
-} );
+        app.confirmDlg(
+            'This will recalculate all statistics based on only the games currently stored on your phone. Proceed?',
+            function () {
+                app.Players.tmp.recalculateAllStatistics();
+                app.alertDlg(
+                    'This may take a moment. You need to navigate away and back to this page manually to see changes.',
+                    app.dummyFalse,
+                    'Recalculating',
+                    'OK'
+                );
+            },
+            app.dummyFalse,
+            'Warning',
+            'Yes,No'
+        );
+    } );
 
 $( document ).off( 'click', '#playerDetailsDeleteButton' )
     .on( 'click', '#playerDetailsDeleteButton', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    var pID = app.Players.tmp.pID;
-    app.dbFortune.query(
-        //'SELECT COUNT(*) AS ctr FROM ' + app.dbFortune.tables.Game141.name + ' WHERE Player1="' + pID + '" OR Player2="' + pID + '"',
-        'SELECT COUNT(*) AS ctr FROM ('
-            + 'SELECT gID FROM ' + app.dbFortune.tables.Game141.name + ' WHERE Player1=' + pID + ' OR Player2=' + pID
-            + ' UNION ALL '
-            + 'SELECT gID FROM ' + app.dbFortune.tables.Game8910.name + ' WHERE Player1=' + pID + ' OR Player2=' + pID
-            + ')',
-        [],
-        function (tx, results) {
-            var ctr = results.rows.item( 0 )['ctr'];
+        var pID = app.Players.tmp.pID;
+        app.dbFortune.query(
+            //'SELECT COUNT(*) AS ctr FROM ' + app.dbFortune.tables.Game141.name + ' WHERE Player1="' + pID + '" OR Player2="' + pID + '"',
+            'SELECT COUNT(*) AS ctr FROM ('
+                + 'SELECT gID FROM ' + app.dbFortune.tables.Game141.name + ' WHERE Player1=' + pID + ' OR Player2=' + pID
+                + ' UNION ALL '
+                + 'SELECT gID FROM ' + app.dbFortune.tables.Game8910.name + ' WHERE Player1=' + pID + ' OR Player2=' + pID
+                + ')',
+            [],
+            function (tx, results) {
+                var ctr = results.rows.item( 0 )['ctr'];
 
-            if ( ctr == 0 ) {
-                app.confirmDlg(
-                    'Are you sure you want to delete this player? This action cannot be undone!',
-                    function () {
-                        app.Players.tmp.remove( function () {
-                            app.Players.tmp = undefined;
+                if( ctr == 0 ) {
+                    app.confirmDlg(
+                        'Are you sure you want to delete this player? This action cannot be undone!',
+                        function () {
+                            app.Players.tmp.remove( function () {
+                                app.Players.tmp = undefined;
 
-                            $.mobile.changePage( 'player_list.html' );
-                        } );
-                    },
-                    app.dummyFalse,
-                    'Confirm',
-                    'Delete,Cancel'
-                );
-            } else {
-                app.alertDlg(
-                    'Sorry, you cannot delete this player as long as you have games stored on your phone in which this person played!',
-                    app.dummyFalse,
-                    'Error',
-                    'OK'
-                );
+                                $.mobile.changePage( 'player_list.html' );
+                            } );
+                        },
+                        app.dummyFalse,
+                        'Confirm',
+                        'Delete,Cancel'
+                    );
+                } else {
+                    app.alertDlg(
+                        'Sorry, you cannot delete this player as long as you have games stored on your phone in which this person played!',
+                        app.dummyFalse,
+                        'Error',
+                        'OK'
+                    );
+                }
             }
-        }
-    );
-} );
+        );
+    } );
 
 $( document ).off( 'click', '#pagePlayerDetailsEditLink' )
     .on( 'click', '#pagePlayerDetailsEditLink', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    $( '#pagePlayerDetailsOverviewHead' ).css( 'display', 'none' );
-    $( '#pagePlayerDetailsOverview' ).css( 'display', 'none' );
+        $( '#pagePlayerDetailsOverviewHead' ).css( 'display', 'none' );
+        $( '#pagePlayerDetailsOverview' ).css( 'display', 'none' );
 
-    $( '#pagePlayerDetailsEditPlayerHead' ).css( 'display', 'block' );
-    $( '#pagePlayerDetailsEditPlayer' ).css( 'display', 'block' );
+        $( '#pagePlayerDetailsEditPlayerHead' ).css( 'display', 'block' );
+        $( '#pagePlayerDetailsEditPlayer' ).css( 'display', 'block' );
 
-    $( '#editPlayer_Name' ).val( app.Players.tmp.name );
-    $( '#editPlayer_Nickname' ).val( app.Players.tmp.nickname );
-    $( '#editPlayer_IsFavorite' ).val( String( app.Players.tmp.isFavorite ) ).slider( 'refresh' );
-    $( '#editPlayer_DisplayNickname' ).val( String( app.Players.tmp.displayNickname ) ).slider( 'refresh' );
-    $( '#editPlayer_Picture' ).attr( 'src', app.Players.tmp.image );
+        $( '#editPlayer_Name' ).val( app.Players.tmp.name );
+        $( '#editPlayer_Nickname' ).val( app.Players.tmp.nickname );
+        $( '#editPlayer_IsFavorite' ).val( String( app.Players.tmp.isFavorite ) ).slider( 'refresh' );
+        $( '#editPlayer_DisplayNickname' ).val( String( app.Players.tmp.displayNickname ) ).slider( 'refresh' );
+        $( '#editPlayer_Picture' ).attr( 'src', app.Players.tmp.image );
 
-    // Main player is always a favorite
-    var $isFavorite = $( '#editPlayer_IsFavorite' );
+        // Main player is always a favorite
+        var $isFavorite = $( '#editPlayer_IsFavorite' );
 
-    $isFavorite.slider( 'enable' );
-    if ( app.Players.tmp.pID == 1 ) {
-        $isFavorite.slider( 'disable' );
-    }
-} );
+        $isFavorite.slider( 'enable' );
+        if( app.Players.tmp.pID == 1 ) {
+            $isFavorite.slider( 'disable' );
+        }
+    } );
 
 $( document ).off( 'click', '#pagePlayerDetailsEditPlayerBackLink' )
     .on( 'click', '#pagePlayerDetailsEditPlayerBackLink', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    $( '#pagePlayerDetailsEditPlayerHead' ).css( 'display', 'none' );
-    $( '#pagePlayerDetailsEditPlayer' ).css( 'display', 'none' );
+        $( '#pagePlayerDetailsEditPlayerHead' ).css( 'display', 'none' );
+        $( '#pagePlayerDetailsEditPlayer' ).css( 'display', 'none' );
 
-    $( '#pagePlayerDetailsOverviewHead' ).css( 'display', 'block' );
-    $( '#pagePlayerDetailsOverview' ).css( 'display', 'block' );
+        $( '#pagePlayerDetailsOverviewHead' ).css( 'display', 'block' );
+        $( '#pagePlayerDetailsOverview' ).css( 'display', 'block' );
 
-    $( '#pagePlayerDetails' ).trigger( 'pagebeforeshow' );
-} );
+        $( '#pagePlayerDetails' ).trigger( 'pagebeforeshow' );
+    } );
 
 $( document ).off( 'click', 'editPlayer_Submit' ).on( 'click', '#editPlayer_Submit', function (event) {
     event.preventDefault();
@@ -312,7 +312,7 @@ $( document ).off( 'click', 'editPlayer_Submit' ).on( 'click', '#editPlayer_Subm
     name = app.validateName( name, true );
     nickname = app.validateName( nickname, false );
 
-    if ( !name.valid || !nickname.valid ) {
+    if( !name.valid || !nickname.valid ) {
         app.alertDlg( 'A name must consist of at least 3 characters.', app.dummyTrue, 'Invalid name', 'OK' );
         return false;
     }
@@ -333,26 +333,26 @@ $( document ).off( 'click', 'editPlayer_Submit' ).on( 'click', '#editPlayer_Subm
 
 $( document ).off( 'click', '#editPlayer_PictureTake' )
     .on( 'click', '#editPlayer_PictureTake', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    app.getPicture(
-        function (imgURI) {
-            $( '#editPlayer_Picture' ).attr( 'src', imgURI ).css( 'display', 'block' );
-        },
-        function (message) {
-            app.alertDlg(
-                'Oops! Something went wrong :( The message is: ' + message,
-                app.dummyFalse,
-                'Error',
-                'OK'
-            );
-        }
-    );
-} );
+        app.getPicture(
+            function (imgURI) {
+                $( '#editPlayer_Picture' ).attr( 'src', imgURI ).css( 'display', 'block' );
+            },
+            function (message) {
+                app.alertDlg(
+                    'Oops! Something went wrong :( The message is: ' + message,
+                    app.dummyFalse,
+                    'Error',
+                    'OK'
+                );
+            }
+        );
+    } );
 
 $( document ).off( 'click', '#editPlayer_PictureDelete' )
     .on( 'click', '#editPlayer_PictureDelete', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    $( '#editPlayer_Picture' ).attr( 'src', '' ).css( 'display', 'none' );
-} );
+        $( '#editPlayer_Picture' ).attr( 'src', '' ).css( 'display', 'none' );
+    } );

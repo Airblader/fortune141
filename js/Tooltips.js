@@ -15,7 +15,7 @@ function Tooltips () {
     }
 
     this.set = function (key, val) {
-        if ( val != '1' && val != '0' ) {
+        if( val != '1' && val != '0' ) {
             val = (val) ? '1' : '0';
         }
 
@@ -23,7 +23,7 @@ function Tooltips () {
     }
 
     this.resetAll = function () {
-        for ( var key in self.tooltips ) {
+        for( var key in self.tooltips ) {
             window.localStorage.setItem( key, '0' );
         }
     }

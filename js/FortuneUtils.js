@@ -11,7 +11,7 @@ FortuneUtilsClass.prototype.turnScreenOn = function () {
 }
 
 FortuneUtilsClass.prototype.openListDialog = function () {
-    switch ( arguments.length ) {
+    switch( arguments.length ) {
         case 4:
             this._openListDialog( [arguments[0], arguments[1]], arguments[2], arguments[3] );
             break;

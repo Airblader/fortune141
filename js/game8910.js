@@ -28,7 +28,7 @@ function Game8910 () {
         var sql = 'SELECT * FROM ' + app.dbFortune.tables.Game8910.name + ' WHERE gID=' + gID + ' LIMIT 1';
         app.dbFortune.query( sql, [],
             function (tx, result) {
-                if ( result.rows.length == 0 ) {
+                if( result.rows.length == 0 ) {
                     cbError();
                     return false;
                 }
@@ -49,7 +49,7 @@ function Game8910 () {
                 self.stringToScore( row['Score'] );
 
                 var tempScore = row['TempScore'].split( '/' );
-                if ( tempScore[0] != self.players[0].racks || tempScore[2] != self.players[1].racks
+                if( tempScore[0] != self.players[0].racks || tempScore[2] != self.players[1].racks
                     || tempScore[1] != self.players[0].sets || tempScore[3] != self.players[1].sets ) {
                     app.alertDlg(
                         'Uh-Oh! Discrepancy when loading game. Loaded game will not be stable!',
@@ -86,13 +86,13 @@ function Game8910 () {
                 app.Players.ingame[0].load(
                     parseInt( row['Player1'] ),
                     function () {
-                        if ( app.Players.ingame[0].pID == app.ANONYMOUSPLAYERPID ) {
+                        if( app.Players.ingame[0].pID == app.ANONYMOUSPLAYERPID ) {
                             app.Players.ingame[0].name = row['Player1Name'];
                         }
                         app.Players.ingame[1].load(
                             parseInt( row['Player2'] ),
                             function () {
-                                if ( app.Players.ingame[1].pID == app.ANONYMOUSPLAYERPID ) {
+                                if( app.Players.ingame[1].pID == app.ANONYMOUSPLAYERPID ) {
                                     app.Players.ingame[1].name = row['Player2Name'];
                                 }
                                 self.setPlayers(
@@ -115,7 +115,7 @@ function Game8910 () {
         var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse;
 
         // no entry exists yet
-        if ( self.gameID == -1 ) {
+        if( self.gameID == -1 ) {
             var sql = 'INSERT INTO '
                 + app.dbFortune.tables.Game8910.name + ' '
                 + app.dbFortune.getTableFields_String( app.dbFortune.tables.Game8910, false, false ) + ' '
@@ -261,7 +261,7 @@ function Game8910 () {
         var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse,
             cbError = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 
-        if ( self.historyStack.length <= 1 ) {
+        if( self.historyStack.length <= 1 ) {
             cbError();
             return;
         }
@@ -272,7 +272,7 @@ function Game8910 () {
             'SELECT * FROM ' + app.dbFortune.tables.Game8910History.name + ' WHERE ID="' + id + '" LIMIT 1',
             [],
             function (tx, result) {
-                if ( result.rows.length == 0 ) {
+                if( result.rows.length == 0 ) {
                     return false;
                 }
                 var row = result.rows.item( 0 );
@@ -318,7 +318,7 @@ function Game8910 () {
 
         this.shotClock.pauseClock();
 
-        if ( softPause ) {
+        if( softPause ) {
             $btnShotClockCtrl.html( 'Resume' );
         } else {
             $btnShotClockCtrl.html( 'Start' );
@@ -339,7 +339,7 @@ function Game8910 () {
         event.preventDefault();
         var $this = $btnShotClockCtrl;
 
-        if ( $this.hasClass( 'btnDown' ) ) {
+        if( $this.hasClass( 'btnDown' ) ) {
             return;
         }
 
@@ -350,7 +350,7 @@ function Game8910 () {
             }, 300
         );
 
-        if ( self.shotClock.clockIsRunning ) {
+        if( self.shotClock.clockIsRunning ) {
             self.shotClock.switchPlayer( false );
             self.shotClockPause( false );
 
@@ -368,7 +368,7 @@ function Game8910 () {
         event.preventDefault();
         var $this = $btnShotClockCtrl;
 
-        if ( $this.hasClass( 'btnDown' ) ) {
+        if( $this.hasClass( 'btnDown' ) ) {
             return;
         }
 
@@ -379,7 +379,7 @@ function Game8910 () {
             }, 300
         );
 
-        if ( self.shotClock.clockIsRunning ) {
+        if( self.shotClock.clockIsRunning ) {
             self.shotClockPause( true );
         } else {
             // FREE
@@ -392,7 +392,7 @@ function Game8910 () {
         event.preventDefault();
         var $this = $btnShotClockSwitch;
 
-        if ( $this.hasClass( 'btnDown' ) ) {
+        if( $this.hasClass( 'btnDown' ) ) {
             return;
         }
 
@@ -403,7 +403,7 @@ function Game8910 () {
             }, 300
         );
 
-        if ( self.shotClock.firstRun ) {
+        if( self.shotClock.firstRun ) {
             self.shotClock.switchPlayer();
 
             self.firstBreak = self.shotClock.currPlayer;
@@ -418,7 +418,7 @@ function Game8910 () {
         event.preventDefault();
         var $this = $btnExtension;
 
-        if ( $this.hasClass( 'btnDown' ) ) {
+        if( $this.hasClass( 'btnDown' ) ) {
             return;
         }
 
@@ -429,7 +429,7 @@ function Game8910 () {
             }, 300
         );
 
-        if ( !self.shotClock.clockIsRunning ) {
+        if( !self.shotClock.clockIsRunning ) {
             app.alertDlg(
                 'You cannot call an extension as long as the clock isn\'t running!',
                 app.dummyFalse,
@@ -440,7 +440,7 @@ function Game8910 () {
             return;
         }
 
-        if ( !self.shotClock.callExtension() ) {
+        if( !self.shotClock.callExtension() ) {
             self.shotClockPause();
 
             app.confirmDlg(
@@ -466,7 +466,7 @@ function Game8910 () {
         event.preventDefault();
         var $this = $btnUndo;
 
-        if ( $this.hasClass( 'btnDown' ) ) {
+        if( $this.hasClass( 'btnDown' ) ) {
             return;
         }
 
@@ -510,7 +510,7 @@ function Game8910 () {
     this.handleBtnEntry = function (event, elemData, runOut) {
         event.preventDefault();
 
-        if ( $.mobile.activePage.data( 'handleBtnEntryPressed' ) === '1' ) {
+        if( $.mobile.activePage.data( 'handleBtnEntryPressed' ) === '1' ) {
             return;
         }
 
@@ -523,7 +523,7 @@ function Game8910 () {
 
         var currPlayer = parseInt( elemData ) - 1;
 
-        if ( self.shotClock.shotTime !== 0 && !self.shotClock.clockIsRunning ) {
+        if( self.shotClock.shotTime !== 0 && !self.shotClock.clockIsRunning ) {
             app.confirmDlg(
                 'The shot clock isn\'t running. Do you want to count this rack or start the clock?',
                 function () {
@@ -543,7 +543,7 @@ function Game8910 () {
     this.handleFoulClick = function (event, elemData) {
         var currPlayer = parseInt( elemData ) - 1;
 
-        if ( event !== null ) {
+        if( event !== null ) {
             event.preventDefault();
             this.shotClock.switchPlayer( currPlayer === this.shotClock.currPlayer );
         } else {
@@ -563,9 +563,9 @@ function Game8910 () {
     }
 
     this.updateFoulDisplay = function () {
-        for ( var p = 0; p <= 1; p++ ) {
+        for( var p = 0; p <= 1; p++ ) {
             $foulObjs = $( '#mainPlayer' + (p + 1) + 'FoulWrapper img' );
-            for ( var f = 0; f <= 3; f++ ) {
+            for( var f = 0; f <= 3; f++ ) {
                 $foulObjs.eq( f ).css( 'opacity', (this.players[p].fouls > f) ? '1' : '0.1' );
             }
         }
@@ -585,7 +585,7 @@ function Game8910 () {
     }
 
     this.updateRackScore = function () {
-        if ( !tmpScoreInUse ) {
+        if( !tmpScoreInUse ) {
             tmpScoreInUse = true;
 
             $setScore1Value.html( self.players[0].racks );
@@ -632,10 +632,10 @@ function Game8910 () {
         $( '#mainPlayer1Name' ).html( self.players[0].obj.getDisplayName() );
         $( '#mainPlayer2Name' ).html( self.players[1].obj.getDisplayName() );
 
-        if ( self.players[0].obj.image.length > 0 ) {
+        if( self.players[0].obj.image.length > 0 ) {
             $( '#mainPlayer1Img' ).attr( 'src', self.players[0].obj.image );
         }
-        if ( self.players[1].obj.image.length > 0 ) {
+        if( self.players[1].obj.image.length > 0 ) {
             $( '#mainPlayer2Img' ).attr( 'src', self.players[1].obj.image );
         }
 
@@ -649,7 +649,7 @@ function Game8910 () {
         setMarkerSize = self.getSetMarkerSize( 1 + 2 * setMarkerFactor ),
             setMarkerHTML = '',
             setMarkerDummy = '<img src="../../img/setmarker/setmarker0.png" id="setMarker[ID]" style="width: [width]; height: [height]; margin-left: [margin-left]; margin-right: [margin-right];" />';
-        for ( var i = 0; i < 2 * self.numberOfSets - 1; i++ ) {
+        for( var i = 0; i < 2 * self.numberOfSets - 1; i++ ) {
             setMarkerHTML += setMarkerDummy
                 .replace( '[ID]', i )
                 .replace( '[width]', setMarkerSize + 'px' )
@@ -685,7 +685,7 @@ function Game8910 () {
         self.updateStreak();
         self.updateFoulDisplay();
 
-        if ( self.firstBreak !== -1 ) {
+        if( self.firstBreak !== -1 ) {
             self.saveGame();
             self.saveHistory();
         } else {
@@ -739,10 +739,10 @@ Game8910.prototype.initNewGame = function (gameType, breakType, mode, racksPerSe
 Game8910.prototype.scoreToString = function () {
     var toReturnArray = new Array( this.sets.length );
 
-    for ( var i = 0; i < this.sets.length; i++ ) {
+    for( var i = 0; i < this.sets.length; i++ ) {
         toReturnArray[i] = '';
 
-        for ( var j = 0; j < this.sets[i].racks.length; j++ ) {
+        for( var j = 0; j < this.sets[i].racks.length; j++ ) {
             toReturnArray[i] += this.sets[i].racks[j].wonByPlayer + ','
                 + ((this.sets[i].racks[j].runOut) ? '1' : '0') + ';';
         }
@@ -769,19 +769,19 @@ Game8910.prototype.stringToScore = function (str) {
     this.idxCurrentRack = 0;
     this.idxCurrentSet = 0;
 
-    for ( var i = 0; i < sets.length; i++ ) {
+    for( var i = 0; i < sets.length; i++ ) {
         this.sets[i] = this.getDummySet();
         var racks = sets[i].split( ';' );
 
         this.players[0].racks = 0;
         this.players[1].racks = 0;
 
-        for ( var j = 0; j < 2 * this.racksPerSet - 1; j++ ) {
+        for( var j = 0; j < 2 * this.racksPerSet - 1; j++ ) {
             this.sets[i].racks[j] = this.getDummyRack();
             var currentRack = racks[j].split( ',' );
             var idxWinner = parseInt( currentRack[0] );
 
-            if ( idxWinner !== -1 ) {
+            if( idxWinner !== -1 ) {
                 this.sets[i].racks[j].wonByPlayer = idxWinner;
                 this.sets[i].racks[j].runOut = (currentRack[1] === '1');
 
@@ -790,7 +790,7 @@ Game8910.prototype.stringToScore = function (str) {
 
                 this.players[1 - idxWinner].streak = 0;
 
-                if ( this.players[idxWinner].racks >= this.racksPerSet ) {
+                if( this.players[idxWinner].racks >= this.racksPerSet ) {
                     this.sets[i].wonByPlayer = idxWinner;
                     this.players[idxWinner].sets++;
 
@@ -807,7 +807,7 @@ Game8910.prototype.stringToScore = function (str) {
 Game8910.prototype.addSetToGame = function () {
     var setsLength = this.sets.push( this.getDummySet() );
 
-    for ( var i = 0; i < 2 * this.racksPerSet - 1; i++ ) {
+    for( var i = 0; i < 2 * this.racksPerSet - 1; i++ ) {
         this.sets[setsLength - 1].racks[i] = this.getDummyRack();
     }
 
@@ -859,7 +859,7 @@ Game8910.prototype.setPlayers = function () {
 Game8910.prototype.setLastBreak = function (idx) {
     this.lastBreak = idx;
 
-    if ( this.firstBreak === -1 ) {
+    if( this.firstBreak === -1 ) {
         this.firstBreak = idx;
     }
 }
@@ -870,7 +870,7 @@ Game8910.prototype._updateSetScore = function (idxSet, wonByPlayer) {
 }
 
 Game8910.prototype.updateSetScore = function () {
-    for ( var i = 0; i < 2 * this.numberOfSets - 1; i++ ) {
+    for( var i = 0; i < 2 * this.numberOfSets - 1; i++ ) {
         this._updateSetScore( i, (typeof this.sets[i] !== 'undefined') ? this.sets[i].wonByPlayer : -1 );
     }
 }
@@ -878,7 +878,7 @@ Game8910.prototype.updateSetScore = function () {
 Game8910.prototype.processInput = function (currPlayer, runOut) {
     this.newRack();
 
-    switch ( this.breakType ) {
+    switch( this.breakType ) {
         case 0: // Winner
             this.setLastBreak( currPlayer );
             this.shotClock.switchPlayer( this.shotClock.currPlayer !== currPlayer );
@@ -903,28 +903,28 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
     this.players[0].fouls = 0;
     this.players[1].fouls = 0;
 
-    if ( runOut ) {
+    if( runOut ) {
         this.sets[this.idxCurrentSet].racks[this.idxCurrentRack].runOut = true;
         tmpScoreMessage = 'RUNOUT!';
     }
 
     var newRackScore = ++this.players[currPlayer].racks;
 
-    if ( tmpScoreMessage.length !== 0 ) {
+    if( tmpScoreMessage.length !== 0 ) {
         this.tempRackScore( currPlayer, tmpScoreMessage );
     } else {
         this.updateRackScore();
     }
 
-    if ( newRackScore >= this.racksPerSet ) {
+    if( newRackScore >= this.racksPerSet ) {
         this.players[currPlayer].sets++;
         this.sets[this.idxCurrentSet].wonByPlayer = currPlayer;
 
-        if ( this.players[currPlayer].sets === this.numberOfSets ) {
+        if( this.players[currPlayer].sets === this.numberOfSets ) {
             this.isFinished = true;
             var msg;
 
-            if ( this.players[0].sets === this.players[1].sets ) { // Game ended tied
+            if( this.players[0].sets === this.players[1].sets ) { // Game ended tied
                 this.winner = 0;
 
                 msg = 'Game ended in a tie!';
@@ -987,7 +987,7 @@ Game8910.prototype.processInput = function (currPlayer, runOut) {
     } else {
         this.idxCurrentRack++;
 
-        if ( this.breakType === 2 && app.settings.get8910NotifyWhoHasToBreak() ) {
+        if( this.breakType === 2 && app.settings.get8910NotifyWhoHasToBreak() ) {
             var nextBreakPlayerName = this.players[this.shotClock.currPlayer].obj.getDisplayName();
             app.alertDlg(
                 nextBreakPlayerName + ' has to break now.',
@@ -1052,17 +1052,17 @@ ShotClock8910.prototype.init = function (shotTime, extensionTime, extensionsPerR
     this.resetCalledExtensions();
 
     // If the shot clock is used, make sure we have at least a partial wake lock
-    if ( this.shotTime !== 0 ) {
+    if( this.shotTime !== 0 ) {
         app.FortuneUtils.setKeepScreenOn( app.FortuneUtils.WAKELOCK_PARTIAL );
     }
 }
 
 ShotClock8910.prototype.startClock = function () {
-    if ( this.shotTime === 0 ) {
+    if( this.shotTime === 0 ) {
         return this.consts.CLOCK_IS_INACTIVE;
     }
 
-    if ( this.clockIsRunning ) {
+    if( this.clockIsRunning ) {
         return this.consts.CLOCK_IS_ALREADY_RUNNING;
     }
 
@@ -1079,26 +1079,26 @@ ShotClock8910.prototype.startClock = function () {
 }
 
 ShotClock8910.prototype.clockStep = function () {
-    if ( this.kill || $.mobile.activePage.attr( 'id' ) != 'pageGame8910' ) {
+    if( this.kill || $.mobile.activePage.attr( 'id' ) != 'pageGame8910' ) {
         return false;
     }
 
-    if ( this.hadSwitch ) {
+    if( this.hadSwitch ) {
         this.hadSwitch = false;
 
         this.resetTimes();
         this.afterClockStep();
-    } else if ( this.clockIsRunning ) {
+    } else if( this.clockIsRunning ) {
         this.elapsedTime += this.consts.REFRESH_INTERVAL;
         this.afterClockStep();
-    } else if ( !this.clockIsRunning ) {
+    } else if( !this.clockIsRunning ) {
         this.referenceTime += this.consts.REFRESH_INTERVAL;
     }
 
     var diffTime = (Date.now() - this.referenceTime) - this.elapsedTime;
 
     // Fix: Prevent setTimeout from going crazy
-    if ( diffTime >= this.consts.REFRESH_INTERVAL ) {
+    if( diffTime >= this.consts.REFRESH_INTERVAL ) {
         diffTime = 0;
     }
 
@@ -1123,7 +1123,7 @@ ShotClock8910.prototype.afterClockStep = function () {
     this.$game8910ShotClockRemainingTime.html( status.remainingSeconds );
     this.$remainingTime.css( 'width', status.elapsedRatio + '%' );
 
-    if ( this.useSoundWarning
+    if( this.useSoundWarning
         && this.clockIsRunning
         && status.remainingSeconds <= this.consts.START_BEEPING_REMAINING
         && this.shotTime > this.consts.START_BEEPING_REMAINING ) {
@@ -1134,7 +1134,7 @@ ShotClock8910.prototype.afterClockStep = function () {
         app.FortuneUtils.turnScreenOn();
     }
 
-    if ( status.outOfTime ) {
+    if( status.outOfTime ) {
         var currPlayer = this.currPlayer;
 
         this.switchPlayer();
@@ -1163,7 +1163,7 @@ ShotClock8910.prototype.pauseClock = function () {
 }
 
 ShotClock8910.prototype.unpauseClock = function () {
-    if ( this.firstRun ) {
+    if( this.firstRun ) {
         this.startClock();
     } else {
         this.clockIsRunning = true;
@@ -1171,7 +1171,7 @@ ShotClock8910.prototype.unpauseClock = function () {
 }
 
 ShotClock8910.prototype.togglePause = function () {
-    if ( this.clockIsRunning ) {
+    if( this.clockIsRunning ) {
         this.pauseClock();
     } else {
         this.unpauseClock();
@@ -1181,7 +1181,7 @@ ShotClock8910.prototype.togglePause = function () {
 ShotClock8910.prototype.callExtension = function () {
     var force = (typeof arguments[0] !== 'undefined') ? arguments[0] : false;
 
-    if ( (this.numCalledExtensions[this.currPlayer] >= this.extensionsPerRack) && !force ) {
+    if( (this.numCalledExtensions[this.currPlayer] >= this.extensionsPerRack) && !force ) {
         return this.consts.NO_MORE_EXTENSIONS_ALLOWED;
     }
 
@@ -1194,7 +1194,7 @@ ShotClock8910.prototype.callExtension = function () {
 ShotClock8910.prototype.switchPlayer = function () {
     var doSwitch = (typeof arguments[0] !== 'undefined') ? arguments[0] : true;
 
-    if ( doSwitch ) {
+    if( doSwitch ) {
         this.setCurrPlayer( 1 - this.currPlayer );
     }
 
@@ -1210,7 +1210,7 @@ ShotClock8910.prototype.updateCurrPlayerDisplay = function () {
     var disp;
     try {
         disp = app.currentGame.players[this.currPlayer].obj.getDisplayName() + '\'s Turn';
-    } catch ( e ) {
+    } catch( e ) {
         disp = ((this.currPlayer === 0) ? 'Left' : 'Right') + ' Player';
     }
 

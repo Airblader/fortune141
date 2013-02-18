@@ -62,18 +62,18 @@ $( document ).on( 'change', '#settingsTooltips', function (event) {
 
 $( document ).off( 'click', '#settingsTooltipsReset' )
     .on( 'click', '#settingsTooltipsReset', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    app.confirmDlg(
-        'This will show all tooltips again when they\'re being triggered. Are you sure you want to reset?',
-        function () {
-            app.tooltips.resetAll();
-        },
-        app.dummyFalse,
-        'Confirm',
-        'Reset,Cancel'
-    );
-} );
+        app.confirmDlg(
+            'This will show all tooltips again when they\'re being triggered. Are you sure you want to reset?',
+            function () {
+                app.tooltips.resetAll();
+            },
+            app.dummyFalse,
+            'Confirm',
+            'Reset,Cancel'
+        );
+    } );
 
 $( document ).on( 'change', '#settingsSaveToAlbum', function (event) {
     app.settings.setSaveToAlbum( String( $( this ).val() ) );
@@ -89,7 +89,7 @@ $( document ).on( 'pageshow', '#pageFreeVersion', function () {
 
 $( document ).off( 'click', '#pageFreeVersionBtnAccept' )
     .on( 'click', '#pageFreeVersionBtnAccept', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    $.mobile.changePage( '../../index.html' );
-} );
+        $.mobile.changePage( '../../index.html' );
+    } );

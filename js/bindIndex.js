@@ -40,7 +40,7 @@ $( document ).on( 'pageshow', '#pageIndex', function () {
     try {
         app.updateMainUser();
         app.updateIndexBubbles();
-    } catch ( e ) {
+    } catch( e ) {
         //
     }
 } );
@@ -61,14 +61,14 @@ $( document ).off( 'click', '#firstRunMainUser_Submit' ).on( 'click', '#firstRun
     nickname = app.validateName( nickname, false );
 
     var msg = '';
-    if ( !name.valid ) {
+    if( !name.valid ) {
         msg = 'The name you entered is invalid! Your name has to be at least 3 characters long and should consist of both your first and last name.';
     }
-    if ( !nickname.valid ) {
+    if( !nickname.valid ) {
         msg = 'The nickname you entered is invalid. Nicknames are optional. However, if you choose to use one, it has to be at least 3 characters long.';
     }
 
-    if ( msg.length > 0 ) {
+    if( msg.length > 0 ) {
         app.alertDlg(
             msg,
             app.dummyFalse,
@@ -87,7 +87,7 @@ $( document ).off( 'click', '#firstRunMainUser_Submit' ).on( 'click', '#firstRun
         $( '#pageIndexFirstRunMainUser' ).css( 'display', 'none' );
 
         // free version information
-        if ( app.freeVersionLimit.isLimited() ) {
+        if( app.freeVersionLimit.isLimited() ) {
             $.mobile.changePage( 'pages/settings/freeversion.html' );
         } else {
             // Bugfix: scroll to top
@@ -105,26 +105,26 @@ $( document ).off( 'click', '#firstRunMainUser_Submit' ).on( 'click', '#firstRun
 
 $( document ).off( 'click', '#firstRunMainUser_PictureTake' )
     .on( 'click', '#firstRunMainUser_PictureTake', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    app.getPicture(
-        function (imgURI) {
-            $( '#firstRunMainUser_Picture' ).attr( 'src', imgURI ).css( 'display', 'block' );
-        },
-        function (message) {
-            app.alertDlg(
-                'Oops! Something went wrong :( The message is: ' + message,
-                app.dummyFalse,
-                'Error',
-                'OK'
-            );
-        }
-    );
-} );
+        app.getPicture(
+            function (imgURI) {
+                $( '#firstRunMainUser_Picture' ).attr( 'src', imgURI ).css( 'display', 'block' );
+            },
+            function (message) {
+                app.alertDlg(
+                    'Oops! Something went wrong :( The message is: ' + message,
+                    app.dummyFalse,
+                    'Error',
+                    'OK'
+                );
+            }
+        );
+    } );
 
 $( document ).off( 'click', '#firstRunMainUser_PictureDelete' )
     .on( 'click', '#firstRunMainUser_PictureDelete', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    $( '#firstRunMainUser_Picture' ).attr( 'src', '' ).css( 'display', 'none' );
-} );
+        $( '#firstRunMainUser_Picture' ).attr( 'src', '' ).css( 'display', 'none' );
+    } );

@@ -29,14 +29,14 @@ $( document ).on( 'pagebeforeshow', '#pageResumeGame', function () {
         entryDummyBSetsDummyB = ' ([num] sets)';
 
     function doIt () {
-        if ( !readyA || !readyB ) {
+        if( !readyA || !readyB ) {
             return;
         }
 
         var res = resA.concat( resB );
 
         var max_entries = 20;
-        if ( res.length > max_entries ) {
+        if( res.length > max_entries ) {
             app.alertDlg(
                 'You have more than ' + max_entries + ' unfinished games. Please consider '
                     + 'emptying this area.',
@@ -50,7 +50,7 @@ $( document ).on( 'pagebeforeshow', '#pageResumeGame', function () {
             var timeA = parseInt( a['StartTimestamp'] ),
                 timeB = parseInt( b['StartTimestamp'] );
 
-            if ( timeA === timeB ) {
+            if( timeA === timeB ) {
                 return 0;
             }
 
@@ -59,13 +59,13 @@ $( document ).on( 'pagebeforeshow', '#pageResumeGame', function () {
 
         var entries = new Array( res.length );
 
-        for ( var i = 0; i < res.length; i++ ) {
+        for( var i = 0; i < res.length; i++ ) {
             var currentEntry = res[i];
 
             var gID = parseInt( currentEntry['gID'] ),
                 date = app.convertTimestamp( currentEntry['StartTimestamp'] );
 
-            if ( currentEntry['GameType'] === '141' ) { // 14/1
+            if( currentEntry['GameType'] === '141' ) { // 14/1
                 entries[i] = entryDummyA.replace( '[gID]', gID )
                     .replace( '[name1]', currentEntry['Player1Name'] )
                     .replace( '[name2]', currentEntry['Player2Name'] )
@@ -82,7 +82,7 @@ $( document ).on( 'pagebeforeshow', '#pageResumeGame', function () {
                 var setsPlayer1 = '',
                     setsPlayer2 = '',
                     setsTotal = '';
-                if ( numberOfSets > 1 ) {
+                if( numberOfSets > 1 ) {
                     setsPlayer1 = entryDummyBSetsDummyA.replace( '[num]', tempScore[1] );
                     setsPlayer2 = entryDummyBSetsDummyA.replace( '[num]', tempScore[3] );
 
@@ -115,7 +115,7 @@ $( document ).on( 'pagebeforeshow', '#pageResumeGame', function () {
         [],
         function (tx, results) {
             resA = new Array( results.rows.length );
-            for ( var i = 0; i < results.rows.length; i++ ) {
+            for( var i = 0; i < results.rows.length; i++ ) {
                 resA[i] = results.rows.item( i );
             }
 
@@ -131,7 +131,7 @@ $( document ).on( 'pagebeforeshow', '#pageResumeGame', function () {
         [],
         function (tx, results) {
             resB = new Array( results.rows.length );
-            for ( var i = 0; i < results.rows.length; i++ ) {
+            for( var i = 0; i < results.rows.length; i++ ) {
                 resB[i] = results.rows.item( i );
             }
 
@@ -143,93 +143,93 @@ $( document ).on( 'pagebeforeshow', '#pageResumeGame', function () {
 
 $( document ).off( 'click', '#pageResumeGameEmptyLink' )
     .on( 'click', '#pageResumeGameEmptyLink', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    app.confirmDlg(
-        'Are you sure you want to delete all unfinished games?',
-        function () {
-            var query = new dbFortuneQuery();
+        app.confirmDlg(
+            'Are you sure you want to delete all unfinished games?',
+            function () {
+                var query = new dbFortuneQuery();
 
-            query.add( 'DELETE FROM ' + app.dbFortune.tables.Game141.name + ' WHERE isFinished=0' );
-            query.add( 'DELETE FROM ' + app.dbFortune.tables.Game8910.name + ' WHERE isFinished=0' );
+                query.add( 'DELETE FROM ' + app.dbFortune.tables.Game141.name + ' WHERE isFinished=0' );
+                query.add( 'DELETE FROM ' + app.dbFortune.tables.Game8910.name + ' WHERE isFinished=0' );
 
-            query.execute(
-                function () {
-                    $.mobile.changePage( '../../index.html' );
-                },
-                function () {
-                    app.alertDlg(
-                        'Oops! Something went wrong :( Deleting failed!',
-                        app.dummyFalse,
-                        'Error',
-                        'OK'
-                    );
-                }
-            );
-        },
-        app.dummyFalse,
-        'Confirm',
-        'Delete,Cancel'
-    );
-} );
+                query.execute(
+                    function () {
+                        $.mobile.changePage( '../../index.html' );
+                    },
+                    function () {
+                        app.alertDlg(
+                            'Oops! Something went wrong :( Deleting failed!',
+                            app.dummyFalse,
+                            'Error',
+                            'OK'
+                        );
+                    }
+                );
+            },
+            app.dummyFalse,
+            'Confirm',
+            'Delete,Cancel'
+        );
+    } );
 
 $( document ).off( 'click', '#resumeGameResumeButton' )
     .on( 'click', '#resumeGameResumeButton', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    var gType = $( '#resumeGamePopup' ).data( 'gType' );
+        var gType = $( '#resumeGamePopup' ).data( 'gType' );
 
-    var href = '../../index.html';
-    switch ( gType ) {
-        case '141':
-            var href = '../game141/game141.html';
-            break;
-        case '8910':
-            var href = '../game8910/game8910.html';
-            break;
-    }
-
-    $.mobile.changePage( href, {
-        data:{
-            gID:parseInt( $( '#resumeGamePopup' ).data( 'gID' ) ),
+        var href = '../../index.html';
+        switch( gType ) {
+            case '141':
+                var href = '../game141/game141.html';
+                break;
+            case '8910':
+                var href = '../game8910/game8910.html';
+                break;
         }
-    } );
 
-    return true;
-} );
+        $.mobile.changePage( href, {
+            data:{
+                gID:parseInt( $( '#resumeGamePopup' ).data( 'gID' ) ),
+            }
+        } );
+
+        return true;
+    } );
 
 $( document ).off( 'click', '#resumeGameDeleteButton' )
     .on( 'click', '#resumeGameDeleteButton', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    var $popup = $( '#resumeGamePopup' ),
-        gType = $popup.data( 'gType' ),
-        gID = parseInt( $popup.data( 'gID' ) );
-    $popup.popup( 'close' );
+        var $popup = $( '#resumeGamePopup' ),
+            gType = $popup.data( 'gType' ),
+            gID = parseInt( $popup.data( 'gID' ) );
+        $popup.popup( 'close' );
 
-    switch ( gType ) {
-        case '141':
-            var table = app.dbFortune.tables.Game141.name;
-            break;
-        case '8910':
-            var table = app.dbFortune.tables.Game8910.name;
-            break;
-    }
+        switch( gType ) {
+            case '141':
+                var table = app.dbFortune.tables.Game141.name;
+                break;
+            case '8910':
+                var table = app.dbFortune.tables.Game8910.name;
+                break;
+        }
 
-    app.confirmDlg(
-        'Are you sure that you want to delete this game?',
-        function () {
-            app.dbFortune.query(
-                'DELETE FROM ' + table + ' WHERE gID="' + gID + '"',
-                [],
-                function () {
-                    $( '#pageResumeGame' ).trigger( 'pagebeforeshow' );
-                },
-                app.dummyFalse
-            );
-        },
-        app.dummyFalse,
-        'Delete Game',
-        'Delete, Cancel'
-    );
-} );
+        app.confirmDlg(
+            'Are you sure that you want to delete this game?',
+            function () {
+                app.dbFortune.query(
+                    'DELETE FROM ' + table + ' WHERE gID="' + gID + '"',
+                    [],
+                    function () {
+                        $( '#pageResumeGame' ).trigger( 'pagebeforeshow' );
+                    },
+                    app.dummyFalse
+                );
+            },
+            app.dummyFalse,
+            'Delete Game',
+            'Delete, Cancel'
+        );
+    } );

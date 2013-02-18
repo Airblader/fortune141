@@ -6,7 +6,7 @@ function game141SetPlayer (idx, pID) {
         var dispName = app.Players.ingame[idx].getDisplayName(),
             image = (app.Players.ingame[idx].image.length > 0) ? app.Players.ingame[idx].image : 'file:///android_asset/www/img/players/playerDummy.jpg';
 
-        if ( pID == app.ANONYMOUSPLAYERPID ) {
+        if( pID == app.ANONYMOUSPLAYERPID ) {
             app.Players.ingame[idx].name = anonName;
             dispName = anonName;
         }
@@ -17,7 +17,7 @@ function game141SetPlayer (idx, pID) {
 
         var $btnSubmit = $( '#game141SetupSubmitButton' );
         $btnSubmit.button( 'disable' );
-        if ( ($( '#game141SetupPlayer0Name' ).data( 'pid' ) != '-1' && $( '#game141SetupPlayer1Name' ).data( 'pid' ) != '-1') &&
+        if( ($( '#game141SetupPlayer0Name' ).data( 'pid' ) != '-1' && $( '#game141SetupPlayer1Name' ).data( 'pid' ) != '-1') &&
             ((app.Players.ingame[1 - idx].pID != pID) || (app.Players.ingame[idx].pID == app.ANONYMOUSPLAYERPID)) ) {
 
             $btnSubmit.button( 'enable' );
@@ -51,7 +51,7 @@ $( document ).on( 'pagebeforeshow', '#pageGame141Setup', function () {
         $game141SetupChoosePlayerHead = $( '#game141SetupChoosePlayerHead' ),
         $game141SetupMaxInnings = $( '#game141SetupMaxInnings' );
 
-    if ( !isNaN( fromNewPlayer ) ) {
+    if( !isNaN( fromNewPlayer ) ) {
         $( '#game141Setup2' ).data( 'player', fromNewPlayer );
 
         $game141SetupHead.css( 'display', 'none' );
@@ -74,7 +74,7 @@ $( document ).on( 'pagebeforeshow', '#pageGame141Setup', function () {
 
     // free version limit
     $game141SetupMaxInnings.slider( 'enable' );
-    if ( app.freeVersionLimit.isLimited() ) {
+    if( app.freeVersionLimit.isLimited() ) {
         $game141SetupMaxInnings.slider( 'disable' );
     }
 
@@ -93,7 +93,7 @@ $( document ).on( 'pagebeforeshow', '#pageGame141Setup', function () {
     var entryDummy1 = '<option value="[id]">[name]</option>';
     app.dbFortune.query( 'SELECT ID, Name FROM ' + app.dbFortune.tables.Game141Profile.name + ' ORDER BY Usage DESC', [],
         function (tx, results) {
-            if ( results.rows.length == 0 ) {
+            if( results.rows.length == 0 ) {
                 $( '#game141SetupLoadProfileSelect' ).html(
                     '<option value="-1">None</option>'
                 ).trigger( 'change' );
@@ -102,7 +102,7 @@ $( document ).on( 'pagebeforeshow', '#pageGame141Setup', function () {
             }
 
             var entries = new Array( results.rows.length );
-            for ( var i = 0; i < results.rows.length; i++ ) {
+            for( var i = 0; i < results.rows.length; i++ ) {
                 var row = results.rows.item( i );
 
                 entries[i] = entryDummy1.replace( '[id]', row['ID'] )
@@ -120,7 +120,7 @@ $( document ).on( 'pagebeforeshow', '#pageGame141Setup', function () {
         'SELECT ID, Name FROM ' + app.dbFortune.tables.GameModes.name + ' ORDER BY ID ASC',
         [],
         function (tx, results) {
-            if ( results.rows.length == 0 ) {
+            if( results.rows.length == 0 ) {
                 $( '#game141SetupGameMode' ).html(
                     '<option value="-1">None</option>'
                 ).trigger( 'change' );
@@ -129,7 +129,7 @@ $( document ).on( 'pagebeforeshow', '#pageGame141Setup', function () {
             }
 
             var entries = new Array( results.rows.length );
-            for ( var i = 0; i < results.rows.length; i++ ) {
+            for( var i = 0; i < results.rows.length; i++ ) {
                 var row = results.rows.item( i );
 
                 entries[i] = entryDummy2.replace( '[id]', row['ID'] )
@@ -158,7 +158,7 @@ $( document ).on( 'pagebeforeshow', '#pageGame141Setup', function () {
         [],
         function (tx, results) {
             var entries1 = new Array( results.rows.length );
-            for ( var i = 0; i < results.rows.length; i++ ) {
+            for( var i = 0; i < results.rows.length; i++ ) {
                 var row = results.rows.item( i ),
                     filter = row['Name'] + ' ' + row['Nickname'],
                     dispName = ((row['displayNickname'] == 'true' && row['Nickname'].length != 0) ? row['Nickname'] : row['Name']),
@@ -175,7 +175,7 @@ $( document ).on( 'pagebeforeshow', '#pageGame141Setup', function () {
                 [],
                 function (tx, results) {
                     var entries2 = new Array( results.rows.length );
-                    for ( var i = 0; i < results.rows.length; i++ ) {
+                    for( var i = 0; i < results.rows.length; i++ ) {
                         var row = results.rows.item( i ),
                             dispName = ((row['displayNickname'] == 'true' && row['Nickname'].length != 0) ? row['Nickname'] : row['Name']),
                             filter = row['Name'] + ' ' + row['Nickname'];
@@ -198,98 +198,98 @@ $( document ).on( 'pagebeforeshow', '#pageGame141Setup', function () {
 
 $( document ).off( 'click', '#game141SetupChoosePlayerHeadBackLink' )
     .on( 'click', '#game141SetupChoosePlayerHeadBackLink', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    $( '#game141SetupChoosePlayerHead' ).css( 'display', 'none' );
-    $( '#game141Setup2' ).css( 'display', 'none' );
-    $( '#game141SetupAnonPlayer' ).css( 'display', 'none' );
+        $( '#game141SetupChoosePlayerHead' ).css( 'display', 'none' );
+        $( '#game141Setup2' ).css( 'display', 'none' );
+        $( '#game141SetupAnonPlayer' ).css( 'display', 'none' );
 
-    $( '#game141SetupHead' ).css( 'display', 'block' );
-    $( '#game141Setup1' ).css( 'display', 'block' );
-} );
+        $( '#game141SetupHead' ).css( 'display', 'block' );
+        $( '#game141Setup1' ).css( 'display', 'block' );
+    } );
 
 $( document ).off( 'click', '#pageGame141MainBackLink' )
     .on( 'click', '#pageGame141MainBackLink', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    app.currentGame.warnLeaveGame();
-} );
+        app.currentGame.warnLeaveGame();
+    } );
 
 $( document ).off( 'click', '#game141SetupLoadProfileButton' )
     .on( 'click', '#game141SetupLoadProfileButton', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    var profileID = parseInt( $( '#game141SetupLoadProfileSelect' ).val() );
-    app.dbFortune.query(
-        'SELECT * FROM ' + app.dbFortune.tables.Game141Profile.name + ' WHERE ID="' + profileID + '" LIMIT 1', [],
-        function (tx, result) {
-            if ( result.rows.length == 0 ) {
-                return false;
+        var profileID = parseInt( $( '#game141SetupLoadProfileSelect' ).val() );
+        app.dbFortune.query(
+            'SELECT * FROM ' + app.dbFortune.tables.Game141Profile.name + ' WHERE ID="' + profileID + '" LIMIT 1', [],
+            function (tx, result) {
+                if( result.rows.length == 0 ) {
+                    return false;
+                }
+
+                var row = result.rows.item( 0 );
+                $( '#game141SetupScoreGoal' ).val( row['ScoreGoal'] ).slider( 'refresh' );
+                $( '#game141SetupMaxInnings' ).val( row['MaxInnings'] ).slider( 'refresh' );
+                $( '#game141SetupInningsExtension' ).val( row['InningsExtension'] ).slider( 'refresh' );
+                $( '#game141SetupGameMode' ).val( row['GameMode'] ).trigger( 'change' );
+                $( '#game141SetupHandicap1' ).val( row['HandicapPlayer1'] ).slider( 'refresh' );
+                $( '#game141SetupHandicap2' ).val( row['HandicapPlayer2'] ).slider( 'refresh' );
+                $( '#game141SetupMultiplicator1' ).val( row['MultiplicatorPlayer1'] ).slider( 'refresh' );
+                $( '#game141SetupMultiplicator2' ).val( row['MultiplicatorPlayer2'] ).slider( 'refresh' );
+
+                // increase usage counter
+                app.dbFortune.query(
+                    'UPDATE ' + app.dbFortune.tables.Game141Profile.name + ' SET Usage="' + (parseInt( row['Usage'] ) + 1) + '" WHERE ID="' + profileID + '"'
+                );
+
+                return true;
             }
-
-            var row = result.rows.item( 0 );
-            $( '#game141SetupScoreGoal' ).val( row['ScoreGoal'] ).slider( 'refresh' );
-            $( '#game141SetupMaxInnings' ).val( row['MaxInnings'] ).slider( 'refresh' );
-            $( '#game141SetupInningsExtension' ).val( row['InningsExtension'] ).slider( 'refresh' );
-            $( '#game141SetupGameMode' ).val( row['GameMode'] ).trigger( 'change' );
-            $( '#game141SetupHandicap1' ).val( row['HandicapPlayer1'] ).slider( 'refresh' );
-            $( '#game141SetupHandicap2' ).val( row['HandicapPlayer2'] ).slider( 'refresh' );
-            $( '#game141SetupMultiplicator1' ).val( row['MultiplicatorPlayer1'] ).slider( 'refresh' );
-            $( '#game141SetupMultiplicator2' ).val( row['MultiplicatorPlayer2'] ).slider( 'refresh' );
-
-            // increase usage counter
-            app.dbFortune.query(
-                'UPDATE ' + app.dbFortune.tables.Game141Profile.name + ' SET Usage="' + (parseInt( row['Usage'] ) + 1) + '" WHERE ID="' + profileID + '"'
-            );
-
-            return true;
-        }
-    );
-} );
+        );
+    } );
 
 $( document ).off( 'click', '#game141SetupSubmitButton' )
     .on( 'click', '#game141SetupSubmitButton', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    // save score goal locally to remember it upon next loading
-    window.localStorage.setItem( 'game141_ScoreGoal', $( '#game141SetupScoreGoal' ).val() );
+        // save score goal locally to remember it upon next loading
+        window.localStorage.setItem( 'game141_ScoreGoal', $( '#game141SetupScoreGoal' ).val() );
 
-    // free version limits
-    var maxInnings = (app.freeVersionLimit.isLimited())
-        ? app.freeVersionLimit.limits.GAME141_MAX_INNINGS
-        : $( '#game141SetupMaxInnings' ).val();
+        // free version limits
+        var maxInnings = (app.freeVersionLimit.isLimited())
+            ? app.freeVersionLimit.limits.GAME141_MAX_INNINGS
+            : $( '#game141SetupMaxInnings' ).val();
 
-    $.mobile.changePage( 'game141.html', {
-        data:{
-            player0:$( '#game141SetupPlayer0Name' ).data( 'pid' ),
-            player1:$( '#game141SetupPlayer1Name' ).data( 'pid' ),
-            scoreGoal:$( '#game141SetupScoreGoal' ).val(),
-            maxInnings:maxInnings,
-            inningsExtension:$( '#game141SetupInningsExtension' ).val(),
-            gameMode:$( '#game141SetupGameMode' ).val(),
-            handicap0:$( '#game141SetupHandicap1' ).val(),
-            handicap1:$( '#game141SetupHandicap2' ).val(),
-            multiplicator0:$( '#game141SetupMultiplicator1' ).val(),
-            multiplicator1:$( '#game141SetupMultiplicator2' ).val(),
-        }
+        $.mobile.changePage( 'game141.html', {
+            data:{
+                player0:$( '#game141SetupPlayer0Name' ).data( 'pid' ),
+                player1:$( '#game141SetupPlayer1Name' ).data( 'pid' ),
+                scoreGoal:$( '#game141SetupScoreGoal' ).val(),
+                maxInnings:maxInnings,
+                inningsExtension:$( '#game141SetupInningsExtension' ).val(),
+                gameMode:$( '#game141SetupGameMode' ).val(),
+                handicap0:$( '#game141SetupHandicap1' ).val(),
+                handicap1:$( '#game141SetupHandicap2' ).val(),
+                multiplicator0:$( '#game141SetupMultiplicator1' ).val(),
+                multiplicator1:$( '#game141SetupMultiplicator2' ).val(),
+            }
+        } );
     } );
-} );
 
 $( document ).off( 'click', '#game141SetupPlayerGrid div' )
     .on( 'click', '#game141SetupPlayerGrid div', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    $( '#pageGame141Setup' ).data( 'activePage', 'pageGame141Setup_PlayerList' );
+        $( '#pageGame141Setup' ).data( 'activePage', 'pageGame141Setup_PlayerList' );
 
-    var element_id = $( this ).attr( 'id' ),
-        idx = element_id.substr( element_id.length - 1, 1 );
+        var element_id = $( this ).attr( 'id' ),
+            idx = element_id.substr( element_id.length - 1, 1 );
 
-    $( '#game141Setup1' ).css( 'display', 'none' );
-    $( '#game141SetupHead' ).css( 'display', 'none' );
-    $( '#game141Setup2' ).data( 'player', idx )
-        .css( 'display', 'block' );
-    $( '#game141SetupChoosePlayerHead' ).css( 'display', 'block' );
-} );
+        $( '#game141Setup1' ).css( 'display', 'none' );
+        $( '#game141SetupHead' ).css( 'display', 'none' );
+        $( '#game141Setup2' ).data( 'player', idx )
+            .css( 'display', 'block' );
+        $( '#game141SetupChoosePlayerHead' ).css( 'display', 'block' );
+    } );
 
 
 /*
@@ -323,28 +323,28 @@ function game141HideAnonPlayer () {
 
 $( document ).off( 'click', '#game141AnonPlayer_Submit' )
     .on( 'click', '#game141AnonPlayer_Submit', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    var name = app.validateName( $( '#game141AnonPlayer_Name' ).val(), true );
+        var name = app.validateName( $( '#game141AnonPlayer_Name' ).val(), true );
 
-    if ( name.valid ) {
-        game141HideAnonPlayer();
+        if( name.valid ) {
+            game141HideAnonPlayer();
 
-        var idx = parseInt( $( '#game141SetupAnonPlayer' ).data( 'player' ) );
-        game141SetPlayer(
-            idx,
-            app.ANONYMOUSPLAYERPID,
-            name.name
-        );
-    } else {
-        app.alertDlg(
-            'The name you entered is invalid. A valid name consists of at least three characters.',
-            app.dummyFalse,
-            'Error',
-            'OK'
-        );
-    }
-} );
+            var idx = parseInt( $( '#game141SetupAnonPlayer' ).data( 'player' ) );
+            game141SetPlayer(
+                idx,
+                app.ANONYMOUSPLAYERPID,
+                name.name
+            );
+        } else {
+            app.alertDlg(
+                'The name you entered is invalid. A valid name consists of at least three characters.',
+                app.dummyFalse,
+                'Error',
+                'OK'
+            );
+        }
+    } );
 
 $( document ).on( 'pagebeforeshow', '#pageGame141', function () {
     var url = $.url( $.url().attr( 'fragment' ) );
@@ -354,7 +354,7 @@ $( document ).on( 'pagebeforeshow', '#pageGame141', function () {
 
     var gID = parseInt( url.param( 'gID' ) ),
         load = true;
-    if ( typeof gID === 'undefined' || isNaN( gID ) ) {
+    if( typeof gID === 'undefined' || isNaN( gID ) ) {
         load = false;
 
         var pID0 = parseInt( url.param( 'player0' ) ),
@@ -370,7 +370,7 @@ $( document ).on( 'pagebeforeshow', '#pageGame141', function () {
     }
 
     app.currentGame = new StraightPool();
-    if ( load ) {
+    if( load ) {
         app.currentGame.loadGame(
             gID,
             app.currentGame.initUI
@@ -398,7 +398,7 @@ $( document ).on( 'pagehide', '#pageGame141', function () {
 
 $( document ).off( 'click', '#game141SetupChoosePlayerNewPlayerLink' )
     .on( 'click', '#game141SetupChoosePlayerNewPlayerLink', function (event) {
-    event.preventDefault();
+        event.preventDefault();
 
-    $.mobile.changePage( '../player/player_add.html?setup=141&fromNewPlayer=' + $( '#game141Setup2' ).data( 'player' ) );
-} );
+        $.mobile.changePage( '../player/player_add.html?setup=141&fromNewPlayer=' + $( '#game141Setup2' ).data( 'player' ) );
+    } );

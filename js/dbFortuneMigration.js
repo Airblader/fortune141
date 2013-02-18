@@ -22,7 +22,7 @@ function dbFortuneMigrator () {
      */
     function executeMigration (toVersion) {
         // Migration to toVersion is available
-        if ( typeof migrationFuncs[toVersion] !== 'undefined' ) {
+        if( typeof migrationFuncs[toVersion] !== 'undefined' ) {
             database.transaction(
                 function (tx) {
                     self.setCurrentVersion( toVersion );
@@ -75,7 +75,7 @@ function dbFortuneMigrator () {
      *             (will be called with the version installed before migration started)
      */
     this.start = function (func) {
-        if ( currentState != consts.MIGRATION_PENDING || initialVersion === -1 ) {
+        if( currentState != consts.MIGRATION_PENDING || initialVersion === -1 ) {
             return false;
         }
 

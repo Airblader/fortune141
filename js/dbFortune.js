@@ -593,7 +593,7 @@ function dbFortune () {
                         + app.dbFortune.tables.Player.name,
                     [],
                     function (itx, results) {
-                        for ( var i = 0; i < results.rows.length; i++ ) {
+                        for( var i = 0; i < results.rows.length; i++ ) {
                             var row = results.rows.item( i ),
                                 pID = parseInt( row['pID'] );
                             var tmpPlayer = new Player();
@@ -609,10 +609,55 @@ function dbFortune () {
         // END VERSION 1.0.0
         //
 
+        //
+        // START VERSION 1.0.4
+        //
+
+        // Force recalculation of statistics
+        Migrator.addMigration(
+            7,
+            function (tx) {
+                app.dbFortune.query(
+                    'SELECT pID FROM '
+                        + app.dbFortune.tables.Player.name,
+                    [],
+                    function (tx, results) {
+                        var tmpPlayer = null,
+                            queue = [];
+
+                        function doUpdate (ids) {
+                            if( ids.length === 0 ) {
+                                return;
+                            }
+
+                            tmpPlayer = new Player();
+                            tmpPlayer.load( ids.pop(), function () {
+                                tmpPlayer.recalculateAllStatistics( function () {
+                                    doUpdate( ids );
+                                } );
+                            } );
+                        }
+
+                        for( var i = 0; i < results.rows.length; i++ ) {
+                            var row = results.rows.item( i );
+
+                            queue.push( parseInt( row['pID'] ) );
+                        }
+
+                        doUpdate( queue );
+                    }
+                );
+            }
+        );
+
+        //
+        // END VERSION 1.0.4
+        //
+
 
         Migrator.start(
             function (initialVersion) {
-                switch ( initialVersion ) {
+                switch( initialVersion ) {
                     case 0:
                         app.tooltips.resetAll();
                         cbFirstRun();
@@ -661,7 +706,7 @@ function dbFortune () {
             defaults = (typeof arguments[2] !== 'undefined' && types) ? arguments[2] : false;
 
         var desc = '(';
-        for ( var i = 0; i < table.fields.length; i++ ) {
+        for( var i = 0; i < table.fields.length; i++ ) {
             desc += table.fields[i]
                 + ((types) ? (' ' + table.types[i]) : '')
                 + ((defaults && typeof table.defaults[i] !== 'undefined') ? (' DEFAULT ' + table.defaults[i]) : '')

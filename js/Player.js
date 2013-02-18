@@ -39,7 +39,7 @@ function Player () {
         self.stats = self.dummyStats();
 
         // If the flag to create the main user is set, reinit the whole database
-        if ( mainUser ) {
+        if( mainUser ) {
             query.add(
                 self.db.getDropTableStatement( self.db.tables.Player )
             );
@@ -92,7 +92,7 @@ function Player () {
             cbError = (typeof arguments[1] !== 'undefined') ? arguments[1] : app.dummyFalse;
 
         // We don't allow deleting the main user
-        if ( self.pID == 1 ) {
+        if( self.pID == 1 ) {
             cbError();
             return false;
         }
@@ -114,7 +114,7 @@ function Player () {
             cbError = (typeof arguments[2] !== 'undefined') ? arguments[2] : app.dummyFalse;
 
         // anonymous player
-        if ( pID == app.ANONYMOUSPLAYERPID ) {
+        if( pID == app.ANONYMOUSPLAYERPID ) {
             self.pID = app.ANONYMOUSPLAYERPID;
 
             self.name = 'Anonymous';
@@ -131,7 +131,7 @@ function Player () {
         self.db.query( 'SELECT * FROM ' + self.db.tables.Player.name + ' WHERE pID = "' + pID + '" LIMIT 1', [],
             function (tx, results) {
                 // If the user doesn't exist, we call the error callback
-                if ( results.rows.length == 0 ) {
+                if( results.rows.length == 0 ) {
                     cbError();
                     return false;
                 }
@@ -188,7 +188,7 @@ function Player () {
     }
 
     this.stringToStats = function (str) {
-        if ( str.length > 0 ) {
+        if( str.length > 0 ) {
             return JSON.parse( str );
         } else {
             return this.dummyStats();
@@ -211,7 +211,26 @@ function Player () {
      *    Force-recompute all statistics based on the games stored
      */
     this.recalculateAllStatistics = function () {
+        var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse();
+
         self.stats = self.dummyStats();
+
+        var queueA = [],
+            queueB = [];
+
+        function doUpdate (ids, type) {
+            if( ids.length === 0 ) {
+                if( queueA.length === 0 && queueB.length === 0 ) {
+                    cbSuccess();
+                }
+
+                return;
+            }
+
+            self.addGameToStatistics( ids.pop(), type, function () {
+                doUpdate( ids, type );
+            } );
+        }
 
         self.modify(
             ['Stats'],
@@ -223,11 +242,13 @@ function Player () {
                         + ' WHERE isFinished=1',
                     [],
                     function (tx, results) {
-                        for ( var i = 0; i < results.rows.length; i++ ) {
+                        for( var i = 0; i < results.rows.length; i++ ) {
                             var row = results.rows.item( i );
 
-                            self.addGameToStatistics( parseInt( row['gID'] ), '141' );
+                            queueA.push( parseInt( row['gID'] ) );
                         }
+
+                        doUpdate( queueA, '141' );
                     }
                 );
 
@@ -237,11 +258,13 @@ function Player () {
                         + ' WHERE isFinished=1',
                     [],
                     function (tx, results) {
-                        for ( var i = 0; i < results.rows.length; i++ ) {
+                        for( var i = 0; i < results.rows.length; i++ ) {
                             var row = results.rows.item( i );
 
-                            self.addGameToStatistics( parseInt( row['gID'] ), '8910' );
+                            queueB.push( parseInt( row['gID'] ) );
                         }
+
+                        doUpdate( queueB, '8910' );
                     }
                 );
             }
@@ -257,7 +280,7 @@ function Player () {
 
         var tmpGame;
 
-        switch ( gType ) {
+        switch( gType ) {
             case '141':
                 tmpGame = new StraightPool();
 
@@ -265,24 +288,24 @@ function Player () {
                     var idxPlayer = (tmpGame.players[0].obj.pID == self.pID) ? 0 : 1,
                         isFinished = tmpGame.isFinished,
                         isWinner = (tmpGame.winner == self.pID),
-                        isApplicableForGD = (   tmpGame.multiplicator[0] == 1
+                        isApplicableForGD = ( tmpGame.multiplicator[0] == 1
                             && tmpGame.multiplicator[1] == 1
                             && tmpGame.handicap[0] == 0
-                            && tmpGame.handicap[1] == 0);
+                            && tmpGame.handicap[1] == 0 );
 
-                    if ( !isFinished ) {
+                    if( !isFinished ) {
                         return;
                     }
 
                     self.stats.game141.gamesPlayed++;
-                    if ( isWinner ) {
+                    if( isWinner ) {
                         self.stats.game141.gamesWon++;
                     }
                     self.stats.game141.quota = self.stats.game141.gamesWon / self.stats.game141.gamesPlayed;
 
-                    if ( isApplicableForGD ) {
+                    if( isApplicableForGD ) {
                         self.stats.game141.gamesPlayedForGD++;
-                        if ( isWinner ) {
+                        if( isWinner ) {
                             self.stats.game141.gamesWonForGD++;
                         }
                     }
@@ -290,17 +313,17 @@ function Player () {
                     self.stats.game141.totalPoints += tmpGame.players[idxPlayer].points;
 
                     var inningsThisGame = tmpGame.innings.length;
-                    if ( tmpGame.innings[tmpGame.innings.length - 1].ptsToAdd[idxPlayer] != -1 ) {
+                    if( tmpGame.innings[tmpGame.innings.length - 1].ptsToAdd[idxPlayer] != -1 ) {
                         inningsThisGame--;
                     }
                     self.stats.game141.totalInnings += inningsThisGame;
 
-                    if ( isApplicableForGD ) {
-                        for ( var i = 0; i < tmpGame.innings.length; i++ ) {
+                    if( isApplicableForGD ) {
+                        for( var i = 0; i < tmpGame.innings.length; i++ ) {
                             self.stats.game141.HS = Math.max( self.stats.game141.HS, tmpGame.innings[i].points[idxPlayer] );
                         }
                         var GDThisGame = 0;
-                        if ( inningsThisGame != 0 ) {
+                        if( inningsThisGame != 0 ) {
                             GDThisGame = tmpGame.players[idxPlayer].points / inningsThisGame;
                         }
 
@@ -325,11 +348,11 @@ function Player () {
                         isFinished = tmpGame.isFinished,
                         isWinner = (tmpGame.winner == self.pID);
 
-                    if ( !isFinished ) {
+                    if( !isFinished ) {
                         return;
                     }
 
-                    switch ( tmpGame.gameType ) {
+                    switch( tmpGame.gameType ) {
                         case 8:
                             stats = self.stats.game8;
                             break;
@@ -342,26 +365,26 @@ function Player () {
                     }
 
                     stats.gamesPlayed++;
-                    if ( isWinner ) {
+                    if( isWinner ) {
                         stats.gamesWon++;
                     }
                     stats.quota = stats.gamesWon / stats.gamesPlayed;
 
                     var HS = 0,
                         HSRunouts = 0;
-                    for ( var i = 0; i < tmpGame.sets.length; i++ ) {
-                        for ( var j = 0; j < tmpGame.sets[i].racks.length; j++ ) {
-                            if ( tmpGame.sets[i].racks[j].wonByPlayer === -1 ) {
+                    for( var i = 0; i < tmpGame.sets.length; i++ ) {
+                        for( var j = 0; j < tmpGame.sets[i].racks.length; j++ ) {
+                            if( tmpGame.sets[i].racks[j].wonByPlayer === -1 ) {
                                 break;
                             }
 
                             stats.racksPlayed++;
-                            if ( idxPlayer === tmpGame.sets[i].racks[j].wonByPlayer ) {
+                            if( idxPlayer === tmpGame.sets[i].racks[j].wonByPlayer ) {
                                 stats.racksWon++;
                                 HS++;
                                 stats.HS = Math.max( stats.HS, HS );
 
-                                if ( tmpGame.sets[i].racks[j].runOut ) {
+                                if( tmpGame.sets[i].racks[j].runOut ) {
                                     stats.totalRunouts++;
                                     HSRunouts++;
                                     stats.HSRunouts = Math.max( stats.HSRunouts, HSRunouts );
@@ -375,7 +398,7 @@ function Player () {
                         }
                     }
 
-                    switch ( tmpGame.gameType ) {
+                    switch( tmpGame.gameType ) {
                         case 8:
                             self.stats.game8 = stats;
                             break;

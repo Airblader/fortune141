@@ -21,13 +21,13 @@ function onBackButtonPress () {
     var pageID = $.mobile.activePage.attr( 'id' ),
         subID = $.mobile.activePage.data( 'activePage' );
 
-    switch ( pageID ) {
+    switch( pageID ) {
         case 'pageIndex':
             app.exitApp( true );
             break;
 
         case 'pageGame141':
-            switch ( subID ) {
+            switch( subID ) {
                 case 'pageGame141_DetailsPanel':
                     app.currentGame.closeDetailsPanel();
                     break;
@@ -40,7 +40,7 @@ function onBackButtonPress () {
             break;
 
         case 'pageGame141Setup':
-            switch ( subID ) {
+            switch( subID ) {
                 case 'pageGame141Setup_PlayerList':
                     game141HidePlayerList();
                     break;
@@ -56,7 +56,7 @@ function onBackButtonPress () {
             break;
 
         case 'pageView141GamesDetails':
-            switch ( subID ) {
+            switch( subID ) {
                 case 'pageView141GamesDetails_Scoreboard2':
                     view141GamesDetailsHideScoreboard();
                     break;
@@ -73,7 +73,7 @@ function onBackButtonPress () {
             break;
 
         case 'pageGame8910Setup':
-            switch ( subID ) {
+            switch( subID ) {
                 case 'pageGame8910Setup_PlayerList':
                     game8910HidePlayerList();
                     break;
@@ -88,7 +88,7 @@ function onBackButtonPress () {
             break;
 
         case 'pageGame8910':
-            switch ( subID ) {
+            switch( subID ) {
                 default:
                     app.currentGame.warnLeaveGame();
                     break;
