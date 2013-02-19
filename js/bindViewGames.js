@@ -258,13 +258,13 @@ $( document ).on( 'pageshow', '#pageView141GamesDetails', function () {
 
             $( '#view141GamesDetailsCanvasContainer' ).html( '<h2>Graph</h2>' );
             $( '<canvas>' ).attr( {
-                id:'view141GamesDetailsCanvas',
-                width:Math.round( 0.975 * pixelRatio * windowWidth ),
-                height:Math.round( pixelRatio * 150 ),
+                id: 'view141GamesDetailsCanvas',
+                width: Math.round( 0.975 * pixelRatio * windowWidth ),
+                height: Math.round( pixelRatio * 150 ),
             } ).css( {
-                    width:Math.round( 0.975 * windowWidth ) + 'px',
-                    height:'150px',
-                    border:'1px solid black',
+                    width: Math.round( 0.975 * windowWidth ) + 'px',
+                    height: '150px',
+                    border: '1px solid black',
                 } ).appendTo( '#view141GamesDetailsCanvasContainer' );
 
             // for scaling, look for potentially negative scores
@@ -283,8 +283,8 @@ $( document ).on( 'pageshow', '#pageView141GamesDetails', function () {
 
             function convertToCanvasPoint (inning, points) {
                 return {
-                    x:Math.round( canvas.width * inning / tmpGame.innings.length ) + 0.5,
-                    y:canvas.height - Math.round( canvas.height * (points - minPoints) / (tmpGame.scoreGoal - minPoints) ) + 0.5,
+                    x: Math.round( canvas.width * inning / tmpGame.innings.length ) + 0.5,
+                    y: canvas.height - Math.round( canvas.height * (points - minPoints) / (tmpGame.scoreGoal - minPoints) ) + 0.5,
                 };
             }
 

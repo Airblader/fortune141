@@ -21,10 +21,10 @@ function dbFortuneQuery () {
             cbError = (typeof arguments[3] !== 'undefined') ? arguments[3] : app.dummyFalse;
 
         self.statements.push( {
-            sql:sql,
-            args:args,
-            cbSuccess:cbSuccess,
-            cbError:cbError,
+            sql: sql,
+            args: args,
+            cbSuccess: cbSuccess,
+            cbError: cbError,
         } );
     }
 

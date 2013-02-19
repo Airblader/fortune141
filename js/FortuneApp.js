@@ -10,9 +10,9 @@ function FortuneApp () {
     self.debugMode = !(navigator.userAgent.toLowerCase().indexOf( 'android' ) > -1);
 
     this.Players = {
-        main:undefined, // Main User
-        tmp:undefined, // Temporarily used user (modifying users, ...)
-        ingame:new Array(), // for games
+        main: undefined, // Main User
+        tmp: undefined, // Temporarily used user (modifying users, ...)
+        ingame: new Array(), // for games
     };
 
     this.settings = new AppSettings();
@@ -202,12 +202,12 @@ function FortuneApp () {
         }
 
         return {
-            year:date.getFullYear(),
-            month:addZeros( date.getMonth() + 1 ),
-            day:addZeros( date.getDate() ),
-            hours:addZeros( date.getHours() ),
-            minutes:addZeros( date.getMinutes() ),
-            seconds:addZeros( date.getSeconds() ),
+            year: date.getFullYear(),
+            month: addZeros( date.getMonth() + 1 ),
+            day: addZeros( date.getDate() ),
+            hours: addZeros( date.getHours() ),
+            minutes: addZeros( date.getMinutes() ),
+            seconds: addZeros( date.getSeconds() ),
         };
     }
 
@@ -222,8 +222,8 @@ function FortuneApp () {
      */
     this.validateName = function (name, required) {
         var validated = {
-            name:self.trim( name ),
-            valid:true,
+            name: self.trim( name ),
+            valid: true,
         };
 
         if( required && validated.name.length == 0 ) {
@@ -371,16 +371,16 @@ function FortuneApp () {
                 }
             },
             {
-                quality:100,
-                destinationType:Camera.DestinationType.FILE_URI,
-                mediaType:navigator.camera.MediaType.PICTURE,
-                sourceType:mode,
-                allowEdit:true,
-                encodingType:Camera.EncodingType.JPEG,
-                targetWidth:200,
-                targeHeight:200,
-                saveToPhotoAlbum:self.settings.getSaveToAlbum(),
-                correctOrientation:true,
+                quality: 100,
+                destinationType: Camera.DestinationType.FILE_URI,
+                mediaType: navigator.camera.MediaType.PICTURE,
+                sourceType: mode,
+                allowEdit: true,
+                encodingType: Camera.EncodingType.JPEG,
+                targetWidth: 200,
+                targeHeight: 200,
+                saveToPhotoAlbum: self.settings.getSaveToAlbum(),
+                correctOrientation: true,
             }
         );
     }
@@ -390,12 +390,12 @@ function FortuneApp () {
      */
     this.checkImage = function (uri, cb) {
         $.ajax( {
-            url:uri,
-            type:'HEAD',
-            success:function () {
+            url: uri,
+            type: 'HEAD',
+            success: function () {
                 cb( true );
             },
-            error:function () {
+            error: function () {
                 cb( false );
             },
         } );

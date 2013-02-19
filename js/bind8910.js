@@ -354,18 +354,18 @@ $( document ).off( 'click', '#game8910SetupSubmitButton' )
         window.localStorage.setItem( 'game8910_numberOfSets', $( '#game8910SetupNumberOfSets' ).val() );
 
         $.mobile.changePage( 'game8910.html', {
-            data:{
-                player0:$( '#game8910SetupPlayer0Name' ).data( 'pid' ),
-                player1:$( '#game8910SetupPlayer1Name' ).data( 'pid' ),
-                gameType:$( '#game8910SetupGameType' ).val(),
-                breakType:$( '#game8910SetupGameBreakType' ).val(),
-                mode:$( '#game8910SetupGameMode' ).val(),
-                racksPerSet:$( '#game8910SetupRacksPerSet' ).val(),
-                numberOfSets:$( '#game8910SetupNumberOfSets' ).val(),
-                shotClock:$( '#game8910SetupShotclock' ).val(),
-                extensionTime:$( '#game8910SetupExtension' ).val(),
-                extensionsPerRack:$( '#game8910SetupExtensionsPerRack' ).val(),
-                useSoundWarning:$( '#game8910SetupShotclockUseSound' ).val() === 'true',
+            data: {
+                player0: $( '#game8910SetupPlayer0Name' ).data( 'pid' ),
+                player1: $( '#game8910SetupPlayer1Name' ).data( 'pid' ),
+                gameType: $( '#game8910SetupGameType' ).val(),
+                breakType: $( '#game8910SetupGameBreakType' ).val(),
+                mode: $( '#game8910SetupGameMode' ).val(),
+                racksPerSet: $( '#game8910SetupRacksPerSet' ).val(),
+                numberOfSets: $( '#game8910SetupNumberOfSets' ).val(),
+                shotClock: $( '#game8910SetupShotclock' ).val(),
+                extensionTime: $( '#game8910SetupExtension' ).val(),
+                extensionsPerRack: $( '#game8910SetupExtensionsPerRack' ).val(),
+                useSoundWarning: $( '#game8910SetupShotclockUseSound' ).val() === 'true',
             }
         } );
     } );

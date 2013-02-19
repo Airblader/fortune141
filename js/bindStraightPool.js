@@ -260,17 +260,17 @@ $( document ).off( 'click', '#game141SetupSubmitButton' )
             : $( '#game141SetupMaxInnings' ).val();
 
         $.mobile.changePage( 'game141.html', {
-            data:{
-                player0:$( '#game141SetupPlayer0Name' ).data( 'pid' ),
-                player1:$( '#game141SetupPlayer1Name' ).data( 'pid' ),
-                scoreGoal:$( '#game141SetupScoreGoal' ).val(),
-                maxInnings:maxInnings,
-                inningsExtension:$( '#game141SetupInningsExtension' ).val(),
-                gameMode:$( '#game141SetupGameMode' ).val(),
-                handicap0:$( '#game141SetupHandicap1' ).val(),
-                handicap1:$( '#game141SetupHandicap2' ).val(),
-                multiplicator0:$( '#game141SetupMultiplicator1' ).val(),
-                multiplicator1:$( '#game141SetupMultiplicator2' ).val(),
+            data: {
+                player0: $( '#game141SetupPlayer0Name' ).data( 'pid' ),
+                player1: $( '#game141SetupPlayer1Name' ).data( 'pid' ),
+                scoreGoal: $( '#game141SetupScoreGoal' ).val(),
+                maxInnings: maxInnings,
+                inningsExtension: $( '#game141SetupInningsExtension' ).val(),
+                gameMode: $( '#game141SetupGameMode' ).val(),
+                handicap0: $( '#game141SetupHandicap1' ).val(),
+                handicap1: $( '#game141SetupHandicap2' ).val(),
+                multiplicator0: $( '#game141SetupMultiplicator1' ).val(),
+                multiplicator1: $( '#game141SetupMultiplicator2' ).val(),
             }
         } );
     } );

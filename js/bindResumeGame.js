@@ -190,8 +190,8 @@ $( document ).off( 'click', '#resumeGameResumeButton' )
         }
 
         $.mobile.changePage( href, {
-            data:{
-                gID:parseInt( $( '#resumeGamePopup' ).data( 'gID' ) ),
+            data: {
+                gID: parseInt( $( '#resumeGamePopup' ).data( 'gID' ) ),
             }
         } );
 

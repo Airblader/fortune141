@@ -5,9 +5,9 @@ function dbFortuneMigrator () {
     var self = this;
 
     var consts = {
-        MIGRATION_PENDING:0,
-        MIGRATION_STARTED:1,
-        MIGRATION_FINISHED:2,
+        MIGRATION_PENDING: 0,
+        MIGRATION_STARTED: 1,
+        MIGRATION_FINISHED: 2,
     };
 
     var database = undefined,

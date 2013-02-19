@@ -59,7 +59,7 @@ function BallRack () {
 
         // the 0-th ball will be the cue ball, but its position depends on other balls'
         // positions, so we just create a dummy entry for it for now
-        ballPositions.push( {x:0, y:0} );
+        ballPositions.push( {x: 0, y: 0} );
 
         for( var i = 1; i <= 15; i++ ) {
             // check whether we have to begin a new row
@@ -69,7 +69,7 @@ function BallRack () {
                 currY += stepY;
             }
 
-            ballPositions.push( {x:currX, y:currY} );
+            ballPositions.push( {x: currX, y: currY} );
             currX += stepX;
         }
 
@@ -250,9 +250,9 @@ function StraightPool () {
      */
     this.dummyPlayer = function () {
         return {
-            fouls:0,
-            points:0,
-            obj:undefined, // holds the Player object
+            fouls: 0,
+            points: 0,
+            obj: undefined, // holds the Player object
         };
     }
 
@@ -261,11 +261,11 @@ function StraightPool () {
      */
     this.dummyInning = function () {
         return {
-            number:1, // number of the inning
-            points:new Array( 0, 0 ), // points made in this inning
-            foulPts:new Array( 0, 0 ), // foul points in this inning
-            ptsToAdd:new Array( 0, 0 ), // unprocessed/non-final points
-            safety:new Array( false, false ), // whether this inning ended in a safety
+            number: 1, // number of the inning
+            points: new Array( 0, 0 ), // points made in this inning
+            foulPts: new Array( 0, 0 ), // foul points in this inning
+            ptsToAdd: new Array( 0, 0 ), // unprocessed/non-final points
+            safety: new Array( false, false ), // whether this inning ended in a safety
         };
     }
 
@@ -860,12 +860,12 @@ function StraightPool () {
 
         // we will return this value to provide information on the processed inning
         var ret = {
-            ballsOnTable:parseInt( selectedBall ),
-            firstShot:false,
-            currPlayer:currPlayer,
-            current:current,
-            safety:safety,
-            rerack:hasToRerack,
+            ballsOnTable: parseInt( selectedBall ),
+            firstShot: false,
+            currPlayer: currPlayer,
+            current: current,
+            safety: safety,
+            rerack: hasToRerack,
         };
 
         // points that were made and need to be added or saved
@@ -963,8 +963,8 @@ function StraightPool () {
             contentHeight = $page.find( '[data-role="content"]' ).height();
 
         return {
-            mainPanel:viewPortHeight - headerHeight - contentHeight - 25,
-            detailsPanel:viewPortHeight,
+            mainPanel: viewPortHeight - headerHeight - contentHeight - 25,
+            detailsPanel: viewPortHeight,
         }
     }
 

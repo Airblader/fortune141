@@ -25,22 +25,22 @@
 })( function ($, undefined) {
 
     var tag2attr = {
-            a:'href',
-            img:'src',
-            form:'action',
-            base:'href',
-            script:'src',
-            iframe:'src',
-            link:'href'
+            a: 'href',
+            img: 'src',
+            form: 'action',
+            base: 'href',
+            script: 'src',
+            iframe: 'src',
+            link: 'href'
         },
 
         key = ['source', 'protocol', 'authority', 'userInfo', 'user', 'password', 'host', 'port', 'relative', 'path', 'directory', 'file', 'query', 'fragment'], // keys available to query
 
-        aliases = { 'anchor':'fragment' }, // aliases for backwards compatability
+        aliases = { 'anchor': 'fragment' }, // aliases for backwards compatability
 
         parser = {
-            strict:/^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/, //less intuitive, more accurate to the specs
-            loose:/^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/ // more intuitive, fails on relative paths and deviates from specs
+            strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/, //less intuitive, more accurate to the specs
+            loose: /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/ // more intuitive, fails on relative paths and deviates from specs
         },
 
         toString = Object.prototype.toString,
@@ -50,7 +50,7 @@
     function parseUri (url, strictMode) {
         var str = decodeURI( url ),
             res = parser[ strictMode || false ? 'strict' : 'loose' ].exec( str ),
-            uri = { attr:{}, param:{}, seg:{} },
+            uri = { attr: {}, param: {}, seg: {} },
             i = 14;
 
         while( i-- ) {
@@ -168,7 +168,7 @@
             }
 
             return merge( ret, key, val );
-        }, { base:{} } ).base;
+        }, { base: {} } ).base;
     }
 
     function set(obj, key, val) {
@@ -236,26 +236,26 @@
 
         return {
 
-            data:parseUri( url, strictMode ),
+            data: parseUri( url, strictMode ),
 
             // get various attributes from the URI
-            attr:function (attr) {
+            attr: function (attr) {
                 attr = aliases[attr] || attr;
                 return typeof attr !== 'undefined' ? this.data.attr[attr] : this.data.attr;
             },
 
             // return query string parameters
-            param:function (param) {
+            param: function (param) {
                 return typeof param !== 'undefined' ? this.data.param.query[param] : this.data.param.query;
             },
 
             // return fragment parameters
-            fparam:function (param) {
+            fparam: function (param) {
                 return typeof param !== 'undefined' ? this.data.param.fragment[param] : this.data.param.fragment;
             },
 
             // return path segments
-            segment:function (seg) {
+            segment: function (seg) {
                 if( typeof seg === 'undefined' ) {
                     return this.data.seg.path;
                 } else {
@@ -265,7 +265,7 @@
             },
 
             // return fragment segments
-            fsegment:function (seg) {
+            fsegment: function (seg) {
                 if( typeof seg === 'undefined' ) {
                     return this.data.seg.fragment;
                 } else {

@@ -156,34 +156,34 @@ function Player () {
 
     this.dummyStats = function () {
         return {
-            game141:{
-                gamesPlayed:0,
-                gamesWon:0,
-                gamesPlayedForGD:0,
-                gamesWonForGD:0,
-                totalPoints:0,
-                totalInnings:0,
-                HS:0,
-                GD:0.0,
-                HGD:0.0,
-                quota:0,
+            game141: {
+                gamesPlayed: 0,
+                gamesWon: 0,
+                gamesPlayedForGD: 0,
+                gamesWonForGD: 0,
+                totalPoints: 0,
+                totalInnings: 0,
+                HS: 0,
+                GD: 0.0,
+                HGD: 0.0,
+                quota: 0,
             },
-            game8:this.dummy8910Stats(),
-            game9:this.dummy8910Stats(),
-            game10:this.dummy8910Stats(),
+            game8: this.dummy8910Stats(),
+            game9: this.dummy8910Stats(),
+            game10: this.dummy8910Stats(),
         };
     }
 
     this.dummy8910Stats = function () {
         return {
-            gamesPlayed:0,
-            gamesWon:0,
-            racksPlayed:0,
-            racksWon:0,
-            totalRunouts:0,
-            HS:0,
-            HSRunouts:0,
-            quota:0,
+            gamesPlayed: 0,
+            gamesWon: 0,
+            racksPlayed: 0,
+            racksWon: 0,
+            totalRunouts: 0,
+            HS: 0,
+            HSRunouts: 0,
+            quota: 0,
         };
     }
 

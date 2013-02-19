@@ -301,7 +301,14 @@ function Game8910 () {
         var callback = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse;
 
         this.loadHistory(
-            callback,
+            function () {
+                // alternate break: switch breaking player again
+                if( self.breakType === 2 && self.lastBreak !== -1 ) {
+                    self.setLastBreak( 1 - self.lastBreak );
+                }
+
+                callback();
+            },
             function () {
                 app.alertDlg(
                     'Sorry, the last action couldn\'t be undone!',
@@ -822,33 +829,33 @@ Game8910.prototype.getSetMarkerSize = function (factor) {
 
 Game8910.prototype.getDummyPlayer = function () {
     return {
-        fouls:0,
-        sets:0,
-        racks:0,
-        streak:0,
-        obj:undefined,
+        fouls: 0,
+        sets: 0,
+        racks: 0,
+        streak: 0,
+        obj: undefined,
     };
 }
 
 Game8910.prototype.getDummySet = function () {
     return {
-        wonByPlayer:-1,
-        racks:new Array( 2 * this.racksPerSet - 1 ),
+        wonByPlayer: -1,
+        racks: new Array( 2 * this.racksPerSet - 1 ),
     };
 }
 
 Game8910.prototype.getDummyRack = function () {
     return {
-        wonByPlayer:-1,
-        runOut:false,
+        wonByPlayer: -1,
+        runOut: false,
     };
 }
 
 Game8910.prototype.setPlayers = function () {
     var cbSuccess = (typeof arguments[0] !== 'undefined') ? arguments[0] : app.dummyFalse;
 
-    this.players[0].obj = undefined;
-    this.players[1].obj = undefined;
+    this.players[0].obj = null;
+    this.players[1].obj = null;
 
     this.players[0].obj = app.Players.ingame[0];
     this.players[1].obj = app.Players.ingame[1];
@@ -1034,12 +1041,12 @@ function ShotClock8910 () {
 }
 
 ShotClock8910.prototype.consts = {
-    REFRESH_INTERVAL:1000,
-    MILLISECONDS_PER_SECOND:1000,
-    NO_MORE_EXTENSIONS_ALLOWED:false,
-    CLOCK_IS_INACTIVE:false,
-    CLOCK_IS_ALREADY_RUNNING:false,
-    START_BEEPING_REMAINING:10,
+    REFRESH_INTERVAL: 1000,
+    MILLISECONDS_PER_SECOND: 1000,
+    NO_MORE_EXTENSIONS_ALLOWED: false,
+    CLOCK_IS_INACTIVE: false,
+    CLOCK_IS_ALREADY_RUNNING: false,
+    START_BEEPING_REMAINING: 10,
 };
 
 ShotClock8910.prototype.init = function (shotTime, extensionTime, extensionsPerRack, useSoundWarning) {
@@ -1112,12 +1119,12 @@ ShotClock8910.prototype.clockStep = function () {
 
 ShotClock8910.prototype.afterClockStep = function () {
     var status = {
-        elapsedTime:this.getElapsedTime(),
-        elapsedSeconds:this.getElapsedSeconds(),
-        elapsedRatio:Math.min( 100, 100 * this.getElapsedTime() / this.allowedTime ),
-        remainingSeconds:Math.max( 0, this.getRemainingSeconds() ),
-        outOfTime:(this.getElapsedTime() >= this.allowedTime),
-        extensionsCalled:this.numCalledExtensions[this.currPlayer],
+        elapsedTime: this.getElapsedTime(),
+        elapsedSeconds: this.getElapsedSeconds(),
+        elapsedRatio: Math.min( 100, 100 * this.getElapsedTime() / this.allowedTime ),
+        remainingSeconds: Math.max( 0, this.getRemainingSeconds() ),
+        outOfTime: (this.getElapsedTime() >= this.allowedTime),
+        extensionsCalled: this.numCalledExtensions[this.currPlayer],
     };
 
     this.$game8910ShotClockRemainingTime.html( status.remainingSeconds );

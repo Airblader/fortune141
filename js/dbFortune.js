@@ -13,9 +13,9 @@ function dbFortune () {
      *  Definition of database tables
      */
     this.tables = {
-        PlayerOLD:{ // outdated as of v1.0.0
-            name:'Player',
-            fields:new Array(
+        PlayerOLD: { // outdated as of v1.0.0
+            name: 'Player',
+            fields: new Array(
                 'pID',
                 'Name',
                 'Nickname',
@@ -27,7 +27,7 @@ function dbFortune () {
                 'HGD',
                 'Quota'
             ),
-            types:new Array(
+            types: new Array(
                 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
                 'TEXT NOT NULL',
                 'TEXT',
@@ -39,7 +39,7 @@ function dbFortune () {
                 'REAL',
                 'REAL'
             ),
-            defaults:new Array(
+            defaults: new Array(
                 undefined,
                 '""',
                 undefined,
@@ -52,9 +52,9 @@ function dbFortune () {
                 '0'
             ),
         },
-        Player:{ // included as of v1.0.0
-            name:'Player',
-            fields:new Array(
+        Player: { // included as of v1.0.0
+            name: 'Player',
+            fields: new Array(
                 'pID',
                 'Name',
                 'Nickname',
@@ -63,7 +63,7 @@ function dbFortune () {
                 'displayNickname',
                 'Stats'
             ),
-            types:new Array(
+            types: new Array(
                 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
                 'TEXT NOT NULL',
                 'TEXT',
@@ -72,7 +72,7 @@ function dbFortune () {
                 'BIT',
                 'TEXT'
             ),
-            defaults:new Array(
+            defaults: new Array(
                 undefined,
                 '""',
                 undefined,
@@ -82,9 +82,9 @@ function dbFortune () {
                 undefined
             ),
         },
-        Game141:{
-            name:'Game141',
-            fields:new Array(
+        Game141: {
+            name: 'Game141',
+            fields: new Array(
                 'gID',
                 'Timestamp',
                 'Player1',
@@ -115,7 +115,7 @@ function dbFortune () {
                 'isUploaded',
                 'isReadyForDeletion'
             ),
-            types:new Array(
+            types: new Array(
                 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
                 'TEXT',
                 'INTEGER NOT NULL',
@@ -146,7 +146,7 @@ function dbFortune () {
                 'BIT',
                 'BIT'
             ),
-            defaults:new Array(
+            defaults: new Array(
                 undefined,
                 undefined,
                 '-1',
@@ -178,9 +178,9 @@ function dbFortune () {
                 '0'
             ),
         },
-        Game141History:{
-            name:'Game141History',
-            fields:new Array(
+        Game141History: {
+            name: 'Game141History',
+            fields: new Array(
                 'ID',
                 'PointsPlayer1',
                 'PointsPlayer2',
@@ -193,7 +193,7 @@ function dbFortune () {
                 'FirstShot',
                 'SwitchButton'
             ),
-            types:new Array(
+            types: new Array(
                 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
                 'INTEGER',
                 'INTEGER',
@@ -206,7 +206,7 @@ function dbFortune () {
                 'BIT',
                 'BIT'
             ),
-            defaults:new Array(
+            defaults: new Array(
                 undefined,
                 undefined,
                 undefined,
@@ -220,9 +220,9 @@ function dbFortune () {
                 undefined
             ),
         },
-        Game141Profile:{
-            name:'Game141Profile',
-            fields:new Array(
+        Game141Profile: {
+            name: 'Game141Profile',
+            fields: new Array(
                 'ID',
                 'Name',
                 'ScoreGoal',
@@ -235,7 +235,7 @@ function dbFortune () {
                 'GameMode',
                 'Usage'
             ),
-            types:new Array(
+            types: new Array(
                 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
                 'TEXT NOT NULL',
                 'INTEGER',
@@ -248,7 +248,7 @@ function dbFortune () {
                 'INTEGER',
                 'INTEGER'
             ),
-            defaults:new Array(
+            defaults: new Array(
                 undefined,
                 '"PROFILE"',
                 undefined,
@@ -262,9 +262,9 @@ function dbFortune () {
                 '0'
             ),
         },
-        Game8910:{
-            name:'Game8910',
-            fields:new Array(
+        Game8910: {
+            name: 'Game8910',
+            fields: new Array(
                 'gID',
                 'gameType',
                 'StartTimestamp',
@@ -295,7 +295,7 @@ function dbFortune () {
                 'ExtensionsCalledPlayer1',
                 'ExtensionsCalledPlayer2'
             ),
-            types:new Array(
+            types: new Array(
                 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
                 'INTEGER',
                 'TEXT',
@@ -326,7 +326,7 @@ function dbFortune () {
                 'INTEGER',
                 'INTEGER'
             ),
-            defaults:new Array(
+            defaults: new Array(
                 undefined,
                 undefined,
                 undefined,
@@ -358,9 +358,9 @@ function dbFortune () {
                 undefined
             ),
         },
-        Game8910History:{
-            name:'Game8910History',
-            fields:new Array(
+        Game8910History: {
+            name: 'Game8910History',
+            fields: new Array(
                 'ID',
                 'Score',
                 'FoulsPlayer1',
@@ -369,7 +369,7 @@ function dbFortune () {
                 'ExtensionsCalledPlayer1',
                 'ExtensionsCalledPlayer2'
             ),
-            types:new Array(
+            types: new Array(
                 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
                 'TEXT',
                 'INTEGER',
@@ -378,7 +378,7 @@ function dbFortune () {
                 'INTEGER',
                 'INTEGER'
             ),
-            defaults:new Array(
+            defaults: new Array(
                 undefined,
                 undefined,
                 undefined,
@@ -388,9 +388,9 @@ function dbFortune () {
                 undefined
             )
         },
-        Game8910Profile:{
-            name:'Game8910Profile',
-            fields:new Array(
+        Game8910Profile: {
+            name: 'Game8910Profile',
+            fields: new Array(
                 'ID',
                 'Name',
                 'GameType',
@@ -404,7 +404,7 @@ function dbFortune () {
                 'GameMode',
                 'Usage'
             ),
-            types:new Array(
+            types: new Array(
                 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
                 'TEXT',
                 'INTEGER',
@@ -418,7 +418,7 @@ function dbFortune () {
                 'INTEGER',
                 'INTEGER'
             ),
-            defaults:new Array(
+            defaults: new Array(
                 undefined,
                 undefined,
                 undefined,
@@ -433,17 +433,17 @@ function dbFortune () {
                 undefined
             )
         },
-        GameModes:{
-            name:'GameModes',
-            fields:new Array(
+        GameModes: {
+            name: 'GameModes',
+            fields: new Array(
                 'ID',
                 'Name'
             ),
-            types:new Array(
+            types: new Array(
                 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
                 'TEXT'
             ),
-            defaults:new Array(
+            defaults: new Array(
                 undefined,
                 '""'
             ),
