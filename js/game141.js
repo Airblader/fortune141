@@ -1070,6 +1070,8 @@ function StraightPool () {
     this.handleAcceptButton = function (event) {
         event.preventDefault();
 
+        var gameClone = $.extend( true, {}, self );
+
         // if button is still active from last click, abort
         if( btnAcceptPressed ) {
             return false;
@@ -1133,6 +1135,24 @@ function StraightPool () {
         tmpDisplay = (tmpDisplay >= 0) ? ('+' + tmpDisplay) : tmpDisplay;
         $ptsPlayer[ret.currPlayer].html( tmpDisplay );
 
+        function lastStep () {
+            setTimeout( function () {
+                self.updateScoreDisplay();
+            }, 1000 );
+            self.setActivePlayerMarker( self.currPlayer );
+
+            self.updateConsecutiveFoulsDisplay();
+
+            // communicate the new settings to the rack
+            self.firstShot = ret.firstShot;
+            self.ballRack.ballsOnTable = ret.ballsOnTable;
+            self.ballRack.selectedBall = ret.ballsOnTable;
+
+            self.ballRack.redraw();
+            self.saveHistory();
+            self.saveGame();
+        }
+
         // check for end of game
         var wonByPoints = (self.players[0].points >= self.scoreGoal || self.players[1].points >= self.scoreGoal);
         var wonByInnings = (self.maxInnings > 0                                            // innings limit is set
@@ -1144,93 +1164,95 @@ function StraightPool () {
             || self.inningsExtension == 0);									// ... except no innings extension is set
 
         if( wonByPoints || wonByInnings ) {
-            self.isFinished = true;
-
-            // determine winner
-            var ptsDiff = self.players[1].points - self.players[0].points;
-            if( ptsDiff != 0 ) {
-                var idxWinner = (ptsDiff > 0) ? 1 : 0;
-                self.winner = self.players[idxWinner].obj.pID;
-            }
-            // game ended tied
-            else {
-                self.winner = 0;
-            }
-
-            // finish inning
-            self.innings[self.innings.length - 1].ptsToAdd[idxWinner] = -1;
-
-            // block all inputs
-            setTimeout(
+            app.confirmDlg(
+                'This will end the game. Are you sure?',
                 function () {
-                    self.ballRack.unsetHandler();
+                    self.isFinished = true;
+
+                    // determine winner
+                    var ptsDiff = self.players[1].points - self.players[0].points;
+                    if( ptsDiff != 0 ) {
+                        var idxWinner = (ptsDiff > 0) ? 1 : 0;
+                        self.winner = self.players[idxWinner].obj.pID;
+                    }
+                    // game ended tied
+                    else {
+                        self.winner = 0;
+                    }
+
+                    // finish inning
+                    self.innings[self.innings.length - 1].ptsToAdd[idxWinner] = -1;
+
+                    // block all inputs
+                    setTimeout(
+                        function () {
+                            self.ballRack.unsetHandler();
+                            self.updateScoreDisplay();
+                        },
+                        500
+                    );
+                    $btnAccept.off( 'click' ).off( 'vclick' );
+                    $btnFoul.off( 'click' ).off( 'vclick' ).off( 'taphold' );
+                    $btnSafety.off( 'click' ).off( 'vclick' );
+                    $btnUndo.off( 'click' ).off( 'vclick' );
+
+                    // unset the current player marker
+                    $activePlayer.removeClass( 'activePlayer0' )
+                        .removeClass( 'activePlayer1' );
+
+                    // cap off last inning and total points to be no larger than the score goal
+                    if( self.winner != 0 ) {
+                        self.innings[self.innings.length - 1].points[idxWinner] -= Math.max( 0, self.players[idxWinner].points - self.scoreGoal );
+                        self.players[idxWinner].points = Math.min( self.players[idxWinner].points, self.scoreGoal );
+                    }
+
+                    var msg;
+                    if( wonByPoints ) {
+                        msg = (self.players[idxWinner].obj.getDisplayName()) + ' has won the game!';
+                    } else {
+                        if( self.winner === 0 ) { // ended in a tie
+                            msg = 'The game ended tie due to reaching the maximum number of innings!';
+                        } else { // ended because innings limit was reached
+                            msg = (self.players[idxWinner].obj.getDisplayName()) + ' has won the game because the maximum number of innings was reached!';
+                        }
+                    }
+
+                    self.saveHistory();
+                    self.saveGame( function () {
+                        // update statistics
+                        self.players[0].obj.addGameToStatistics( self.gameID, '141' );
+                        self.players[1].obj.addGameToStatistics( self.gameID, '141' );
+
+                        app.currentGame = null;
+                    } );
+
+                    app.alertDlg(
+                        msg,
+                        function () {
+                            $.mobile.changePage( '../viewGames/view141Games_details.html?gID=' + self.gameID + '&from_game=1' );
+                        },
+                        'Game Over!',
+                        'OK'
+                    );
+
+                    return true;
+
+                },
+                function () {
+                    // reset
+                    self = gameClone;
+                    self.ballRack.selectedBall = self.ballRack.ballsOnTable;
+                    self.ballRack.redraw();
+
                     self.updateScoreDisplay();
                 },
-                500
+                'Confirm',
+                'Yes,Undo'
             );
-            $btnAccept.off( 'click' ).off( 'vclick' );
-            $btnFoul.off( 'click' ).off( 'vclick' ).off( 'taphold' );
-            $btnSafety.off( 'click' ).off( 'vclick' );
-            $btnUndo.off( 'click' ).off( 'vclick' );
-
-            // unset the current player marker
-            $activePlayer.removeClass( 'activePlayer0' )
-                .removeClass( 'activePlayer1' );
-
-            // cap off last inning and total points to be no larger than the score goal
-            if( self.winner != 0 ) {
-                self.innings[self.innings.length - 1].points[idxWinner] -= Math.max( 0, self.players[idxWinner].points - self.scoreGoal );
-                self.players[idxWinner].points = Math.min( self.players[idxWinner].points, self.scoreGoal );
-            }
-
-            var msg;
-            if( wonByPoints ) {
-                msg = (self.players[idxWinner].obj.getDisplayName()) + ' has won the game!';
-            } else {
-                if( self.winner === 0 ) { // ended in a tie
-                    msg = 'The game ended tie due to reaching the maximum number of innings!';
-                } else { // ended because innings limit was reached
-                    msg = (self.players[idxWinner].obj.getDisplayName()) + ' has won the game because the maximum number of innings was reached!';
-                }
-            }
-
-            self.saveHistory();
-            self.saveGame( function () {
-                // update statistics
-                self.players[0].obj.addGameToStatistics( self.gameID, '141' );
-                self.players[1].obj.addGameToStatistics( self.gameID, '141' );
-
-                app.currentGame = null;
-            } );
-
-            app.alertDlg(
-                msg,
-                function () {
-                    $.mobile.changePage( '../viewGames/view141Games_details.html?gID=' + self.gameID + '&from_game=1' );
-                },
-                'Game Over!',
-                'OK'
-            );
-
-            return true;
+        } else {
+            lastStep();
         }
 
-        setTimeout( function () {
-            self.updateScoreDisplay();
-            //self.setActivePlayerMarker(self.currPlayer);
-        }, 1000 );
-        self.setActivePlayerMarker( self.currPlayer );
-
-        self.updateConsecutiveFoulsDisplay();
-
-        // communicate the new settings to the rack
-        self.firstShot = ret.firstShot;
-        self.ballRack.ballsOnTable = ret.ballsOnTable;
-        self.ballRack.selectedBall = ret.ballsOnTable;
-
-        self.ballRack.redraw();
-        self.saveHistory();
-        self.saveGame();
         return true;
     }
 
